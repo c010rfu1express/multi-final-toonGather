@@ -1,10 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>미완결된 NAVER 웹툰 썸네일</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .webtoon-thumbnail {
+            width: 300px;
+            height: auto;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+        .webtoon-thumbnail:hover {
+            transform: scale(1.1);
+        }
+        .load-more-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .load-more-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
+<div id="webtoonContainer"></div>
+<button class="load-more-btn" onclick="loadMoreWebtoons()">더 보기</button>
 
+<script>
+    let currentPage = 1; // 초기 페이지 번호
+
+    function fetchWebtoons(page) {
+        const apiUrl = `https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/webtoons?provider=NAVER&page=${page}&perPage=10&sort=ASC`;
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                const webtoons = data.webtoons.filter(webtoon => !webtoon.isEnd && webtoon.isFree); // 미완결된 무료 웹툰만 필터링
+
+                webtoons.forEach(webtoon => {
+                    const { title, thumbnail } = webtoon;
+                    const thumbnailUrl = thumbnail[0]; // 첫 번째 썸네일 이미지만 사용
+
+                    const webtoonImage = document.createElement('img');
+                    webtoonImage.src = thumbnailUrl;
+                    webtoonImage.alt = `${title} 썸네일`;
+                    webtoonImage.classList.add('webtoon-thumbnail');
+                    webtoonImage.title = title;
+
+                    document.getElementById('webtoonContainer').appendChild(webtoonImage); // 이미지를 컨테이너에 추가
+                });
+            })
+            .catch(error => {
+                console.error('웹툰을 불러오는 중 오류가 발생했습니다:', error);
+            });
+    }
+
+    function loadMoreWebtoons() {
+        currentPage++;
+        fetchWebtoons(currentPage); // 다음 페이지의 웹툰을 불러옴
+    }
+
+    // 페이지 로드 시 첫 번째 페이지의 웹툰을 불러옴
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchWebtoons(currentPage);
+    });
+</script>
 </body>
 </html>
