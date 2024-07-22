@@ -1,4 +1,4 @@
-package com.multi.toonGather.social;
+package com.multi.toonGather.config;
 
 public class testtest {
     public static void main(String[] args) {
@@ -11,7 +11,5 @@ public class testtest {
             // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
             System.out.println("i = " + i);
         }
-
-        //testing
     }
 }
