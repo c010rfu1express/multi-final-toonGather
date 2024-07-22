@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:log4jdbc:mysql://localhost:3306/toongather
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    username: scott
+    password: tiger
+
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+
+server:
+  port: 8099
+  servlet:
+    session:
+      timeout: 1800
+
+logging:
+  level:
+    org:
+      springframework:
+        jdbc: TRACE
+        transaction: TRACE
+    com:
+      .zaxxer: TRACE
+    sql: TRACE
