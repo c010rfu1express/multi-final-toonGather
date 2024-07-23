@@ -10,9 +10,15 @@
             background-color: #f0f0f0;
             margin: 20px;
             display: flex;
+            flex-direction: column; /* 세로 정렬 */
+            align-items: center; /* 가운데 정렬 */
+        }
+        #webtoonContainer {
+            display: flex;
             flex-wrap: wrap;
             gap: 20px;
             justify-content: center;
+            max-width: 1200px; /* 최대 너비 설정 */
         }
         .webtoon-card {
             width: 200px; /* 카드의 가로 크기를 설정 */
@@ -100,12 +106,11 @@
 
                     // 제목 추가 (링크)
                     const webtoonTitle = document.createElement('a');
-                    webtoonTitle.href = `/webtoon/onw?id=${id}&title=${title}`;
                     webtoonTitle.textContent = title;
                     webtoonTitle.classList.add('webtoon-title');
                     webtoonTitle.addEventListener('click', (event) => {
                         event.preventDefault(); // 기본 동작 중단
-                        window.location.href = `/webtoon/one?id=${id}`;
+                        window.location.href = `/webtoon/one?id=${id}&title=${title}`;
                     });
                     webtoonInfo.appendChild(webtoonTitle);
 
