@@ -1,124 +1,13 @@
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>미완결된 NAVER 웹툰</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
-        .webtoon-card {
-            width: 300px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-        .webtoon-thumbnail {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-        }
-        .webtoon-info {
-            padding: 10px;
-            background-color: #ffffff;
-        }
-        .webtoon-title {
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-        .webtoon-authors {
-            font-size: 14px;
-            color: #666666;
-        }
-        .load-more-btn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .load-more-btn:hover {
-            background-color: #0056b3;
-        }
-    </style>
-</head>
-<body>
-<div id="webtoonContainer"></div>
-<button class="load-more-btn" onclick="loadMoreWebtoons()">더 보기</button>
+    <body>
 
-<script>
-    let currentPage = 1; // 초기 페이지 번호
-
-    function fetchWebtoons(page) {
-        const apiUrl = `https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/webtoons?provider=NAVER&page=${page}&perPage=10&sort=ASC`;
-
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                const webtoons = data.webtoons.filter(webtoon => !webtoon.isEnd && webtoon.isFree); // 미완결된 무료 웹툰만 필터링
-
-                const webtoonContainer = document.getElementById('webtoonContainer');
-
-                webtoons.forEach(webtoon => {
-                    const { title, thumbnail, authors } = webtoon;
-                    const thumbnailUrl = thumbnail[0]; // 첫 번째 썸네일 이미지만 사용
-
-                    // 웹툰 카드 생성
-                    const webtoonCard = document.createElement('div');
-                    webtoonCard.classList.add('webtoon-card');
-
-                    // 썸네일 이미지 추가
-                    const webtoonImage = document.createElement('img');
-                    webtoonImage.src = thumbnailUrl;
-                    webtoonImage.alt = `${title} 썸네일`;
-                    webtoonImage.classList.add('webtoon-thumbnail');
-                    webtoonCard.appendChild(webtoonImage);
-
-                    // 웹툰 정보 추가
-                    const webtoonInfo = document.createElement('div');
-                    webtoonInfo.classList.add('webtoon-info');
-
-                    // 제목 추가
-                    const webtoonTitle = document.createElement('div');
-                    webtoonTitle.textContent = title;
-                    webtoonTitle.classList.add('webtoon-title');
-                    webtoonInfo.appendChild(webtoonTitle);
-
-                    // 작가 정보 추가
-                    const webtoonAuthors = document.createElement('div');
-                    webtoonAuthors.textContent = `작가: ${authors.join(', ')}`;
-                    webtoonAuthors.classList.add('webtoon-authors');
-                    webtoonInfo.appendChild(webtoonAuthors);
-
-                    webtoonCard.appendChild(webtoonInfo);
-
-                    // 웹툰 카드를 컨테이너에 추가
-                    webtoonContainer.appendChild(webtoonCard);
-                });
-            })
-            .catch(error => {
-                console.error('웹툰을 불러오는 중 오류가 발생했습니다:', error);
-            });
-    }
-
-    function loadMoreWebtoons() {
-        currentPage++;
-        fetchWebtoons(currentPage); // 다음 페이지의 웹툰을 불러옴
-    }
-
-    // 페이지 로드 시 첫 번째 페이지의 웹툰을 불러옴
-    document.addEventListener('DOMContentLoaded', function() {
-        fetchWebtoons(currentPage);
-    });
-</script>
+<div th:replace="common/menubar.html"></div>
 </body>
 </html>
