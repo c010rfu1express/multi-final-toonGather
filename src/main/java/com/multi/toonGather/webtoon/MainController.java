@@ -5,12 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class MainController {
-    @GetMapping(value = {"/","/main"})
-    public String main(){
+    @GetMapping(value = {"/","webtoon/test"})
+    public String webtoon(){
         return "webtoon/test";
     }
-
-
 
 
 }
