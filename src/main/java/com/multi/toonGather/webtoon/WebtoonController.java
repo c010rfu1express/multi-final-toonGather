@@ -14,7 +14,7 @@ public class WebtoonController {
 
     @GetMapping(value = {"webtoon/one"})
     public String Web_toon_One(WebtoonDTO webtoonDTO, Model model){
-        System.out.println(webtoonDTO);
+        
         model.addAttribute("one",webtoonDTO);
         return "webtoon/one";
     }
