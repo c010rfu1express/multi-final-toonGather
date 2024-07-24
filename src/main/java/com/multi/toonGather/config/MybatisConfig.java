@@ -46,6 +46,9 @@ public class MybatisConfig {
         configuration.getTypeAliasRegistry().registerAlias("QuestionDTO", com.multi.toonGather.cs.model.dto.QuestionDTO.class);
         configuration.getTypeAliasRegistry().registerAlias("CsCategoryDTO", com.multi.toonGather.cs.model.dto.CsCategoryDTO.class);
         configuration.getTypeAliasRegistry().registerAlias("CsStatusDTO", com.multi.toonGather.cs.model.dto.CsStatusDTO.class);
+        // 서윤 social
+        configuration.getTypeAliasRegistry().registerAlias("reviewDTO", com.multi.toonGather.social.model.dto.ReviewDTO.class);
+        configuration.getTypeAliasRegistry().registerAlias("writerDTO", com.multi.toonGather.social.model.dto.WriterDTO.class);
 
         seb.setConfiguration(configuration);
 
