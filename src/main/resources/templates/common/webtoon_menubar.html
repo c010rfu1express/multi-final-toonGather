@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        div{box-sizing: border-box;}
+        #header{
+            width:80%;
+            height:100px;
+            padding-top: 20px;
+            margin:auto;
+        }
+        #header>div{width:100%; margin-bottom:10px}
+        #header_1{height:40%;}
+        #header_2{height:60%;}
+
+        #header_1>div{
+            height:100%;
+            float:left;
+        }
+        #header_1_left{width:30%;position:relative;}
+        #header_1_center{width:20%;}
+        #header_1_right{width:40%;}
+
+        #header_1_left>img{height:80%;position:absolute;margin:auto;top:0;bottom:0;right: 0;left:0;}
+        #header_1_right{text-align: center; line-height:35px; font-size: 12px; text-indent: 35px;}
+        #header_1_right>a{margin: 5px;}
+        #header_1_right>a:hover{cursor: pointer;}
+
+        #header_2>ul{width:100%; height:100%; list-style-type: none; margin: auto; padding:0;}
+        #header_2>ul>li{float:left; width:10%; height:100%; line-height: 55px; text-align:center;}
+        #header_2>ul>li a{text-decoration: none; color:black; font-size: 18px; font-weight: 900;}
+
+        #header_2{border-top:1px solid lightgray}
+
+        #header a{text-decoration:none; color:black}
+
+        /* 세부 페이지마다 공통적으로 유지할 style */
+        .content{
+            background-color:rgb(247, 245, 245);
+            width:80%;
+            margin:auto;
+        }
+        .innerOuter{
+            border:1px solid lightgray;
+            width:80%;
+            margin:auto;
+            padding:5% 10%;
+            background:white;
+        }
+
+        /* 로그인 전 스타일 */
+        .before-login {
+            display: block;
+        }
+
+        /* 로그인 후 스타일 */
+        .after-login {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+
+
+
+
+    <div id="header_2">
+        <ul>
+            <li><a href="/">HOME</a></li>
+            <li><a href="/webtoon/test">웹툰 아카이브</a></li>
+            <li><a href="/social/test">툰투게더</a></li>
+            <li><a href="/recruit/test">채용</a></li>
+            <li><a href="/introduction/test">소개</a></li>
+            <li><a href="/cs/test">고객센터</a></li>
+            
+        </ul>
+    </div>
+
+
+<!-- 로그인 클릭 시 뜨는 모달  -->
+
+
+<br clear="both">
+
+
+</body>
+</html>

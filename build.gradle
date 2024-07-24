@@ -39,8 +39,12 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation group: 'org.bgee.log4jdbc-log4j2', name: 'log4jdbc-log4j2-jdbc4.1', version: '1.16'
+
+	//json
+	implementation 'org.json:json:20210307'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+

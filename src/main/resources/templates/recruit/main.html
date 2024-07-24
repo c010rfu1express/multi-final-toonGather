@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html layout:decorate="~{layout}">
+<head>
+    <title>채용 페이지</title>
+    <meta charset="UTF-8">
+    <style>
+        .navbar {
+          position: fixed;
+          z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{common/menubar}"></div>
+<div layout:fragment="content">
+    <nav class="navbar navbar-expand-md">
+        <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+            <li><a th:href="@{/recruit/creator/choice}" class="nav-link px-2">창작자 등록</a></li>
+            <li><a th:href="@{/recruit/job/list}" class="nav-link px-2">구인/구직</a></li>
+            <li><a th:href="@{/board}" class="nav-link px-2">Board</a></li>
+            <li><a th:href="@{/contact}" class="nav-link px-2">Contact</a></li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

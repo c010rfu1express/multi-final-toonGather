@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>미완결된 NAVER 웹툰</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 20px;
+            display: flex;
+            flex-direction: column; /* 세로 정렬 */
+            align-items: center; /* 가운데 정렬 */
+        }
+        #webtoonContainer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            max-width: 1200px; /* 최대 너비 설정 */
+        }
+        .webtoon-card {
+            width: 200px; /* 카드의 가로 크기를 설정 */
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 20px; /* 카드 사이 간격 설정 */
+        }
+        .webtoon-thumbnail {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+        .webtoon-info {
+            padding: 10px;
+            background-color: #ffffff;
+        }
+        .webtoon-title {
+            font-size: 16px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .webtoon-title:hover {
+            text-decoration: underline;
+        }
+        .webtoon-authors {
+            font-size: 14px;
+            color: #666666;
+        }
+        .page-btn {
+            margin-top: 20px;
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        .page-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="common/menubar.html"></div>
+<div id="webtoonContainer"></div>
+<div id="pageButtons"></div>
+
+<script>
+    let currentPage = 1; // 초기 페이지 번호
+
+    function fetchWebtoons(page) {
+        const apiUrl = `https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/webtoons?provider=NAVER&page=${page}&perPage=100&sort=ASC`;
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                const webtoons = data.webtoons; // 미완결된 무료 웹툰만 필터링
+
+                const webtoonContainer = document.getElementById('webtoonContainer');
+                webtoonContainer.innerHTML = ''; // 기존 웹툰 카드 초기화
+
+                webtoons.forEach(webtoon => {
+                    const { id, title, thumbnail, authors } = webtoon;
+                    const thumbnailUrl = thumbnail[0]; // 첫 번째 썸네일 이미지만 사용
+
+                    // 웹툰 카드 생성
+                    const webtoonCard = document.createElement('div');
+                    webtoonCard.classList.add('webtoon-card');
+
+                    // 썸네일 이미지 추가
+                    const webtoonImage = document.createElement('img');
+                    webtoonImage.src = thumbnailUrl;
+                    webtoonImage.alt = `${title} 썸네일`;
+                    webtoonImage.classList.add('webtoon-thumbnail');
+                    webtoonCard.appendChild(webtoonImage);
+
+                    // 웹툰 정보 추가
+                    const webtoonInfo = document.createElement('div');
+                    webtoonInfo.classList.add('webtoon-info');
+
+                    // 제목 추가 (링크)
+                    const webtoonTitle = document.createElement('a');
+                    webtoonTitle.textContent = title;
+                    webtoonTitle.classList.add('webtoon-title');
+                    webtoonTitle.addEventListener('click', (event) => {
+                        event.preventDefault(); // 기본 동작 중단
+                        window.location.href = `/webtoon/one?webtoonId=${id}&webtoonName=${title}`;
+                    });
+                    webtoonInfo.appendChild(webtoonTitle);
+
+                    // 작가 정보 추가
+                    const webtoonAuthors = document.createElement('div');
+                    webtoonAuthors.textContent = `작가: ${authors.join(', ')}`;
+                    webtoonAuthors.classList.add('webtoon-authors');
+                    webtoonInfo.appendChild(webtoonAuthors);
+
+                    webtoonCard.appendChild(webtoonInfo);
+
+                    // 웹툰 카드를 컨테이너에 추가
+                    webtoonContainer.appendChild(webtoonCard);
+                });
+
+                // 페이지 버튼 추가
+                const pageButtons = document.getElementById('pageButtons');
+                pageButtons.innerHTML = '';
+                const total = data.total;
+                const totalPages = Math.ceil(total / 100); // 총 페이지 수 계산
+                for (let i = 1; i <= totalPages; i++) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.textContent = i;
+                    pageBtn.classList.add('page-btn');
+                    if (i === currentPage) {
+                        pageBtn.disabled = true; // 현재 페이지 버튼 비활성화
+                    }
+                    pageBtn.addEventListener('click', () => {
+                        currentPage = i;
+                        fetchWebtoons(currentPage); // 페이지 버튼 클릭 시 해당 페이지의 웹툰을 불러옴
+                    });
+                    pageButtons.appendChild(pageBtn);
+                }
+            })
+            .catch(error => {
+                console.error('웹툰을 불러오는 중 오류가 발생했습니다:', error);
+            });
+    }
+
+    // 페이지 로드 시 첫 번째 페이지의 웹툰을 불러옴
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchWebtoons(currentPage);
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>웹툰 정보</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+
+            justify-content: center;
+        }
+        #webtoonDetail {
+            width: 100%;
+            max-width: 80%;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 5px; /* 패딩을 줄임 */
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top; /* 셀 내용을 상단 정렬 */
+        }
+        th {
+            background-color: #f2f2f2;
+            width: 30%;
+        }
+        #webtoonThumbnail {
+            width: 30%;
+            text-align: center;
+            vertical-align: top; /* 이미지를 표의 상단에 정렬 */
+        }
+        #webtoonThumbnail img {
+            max-width: 100%;
+            border-radius: 8px;
+            height: auto; /* 이미지 높이를 자동으로 조정 */
+        }
+        #menuBar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+        #menuBar a {
+            margin-left: 10px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="common/menubar.html"></div>
+
+<h1>웹툰 정보</h1>
+
+<div id="webtoonDetail">
+    <table>
+        <tr>
+            <td id="webtoonThumbnail" rowspan='9'></td>
+            <th>제목</th>
+            <td id="webtoonTitle"></td>
+        </tr>
+        <tr>
+            <th>제공자</th>
+            <td id="webtoonProvider"></td>
+        </tr>
+        <tr>
+            <th>링크</th>
+            <td id="webtoonLink"></td>
+        </tr>
+        <tr>
+            <th>작가</th>
+            <td id="webtoonAuthors"></td>
+        </tr>
+        <tr>
+            <th>연재 여부</th>
+            <td id="webtoonIsEnd"></td>
+        </tr>
+        <tr>
+            <th>무료 여부</th>
+            <td id="webtoonIsFree"></td>
+        </tr>
+        <tr>
+            <th>업데이트 여부</th>
+            <td id="webtoonIsUpdated"></td>
+        </tr>
+        <tr>
+            <th>연령 등급</th>
+            <td id="webtoonAgeGrade"></td>
+        </tr>
+        <tr>
+            <th>무료 대기 시간(시간)</th>
+            <td id="webtoonFreeWaitHour"></td>
+        </tr>
+    </table>
+</div>
+<div id="comment">
+    <h2>댓글</h2>
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id =  '[[${one.webtoonId}]]';
+
+        const title = '[[${one.webtoonName}]]';
+
+        // 웹툰 세부 정보를 가져오기 위한 API URL
+        const apiUrl = `https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/webtoons?keyword=${title}`;
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.webtoons && data.webtoons.length > 0) {
+                    const webtoon = data.webtoons.find(webtoon => webtoon.id === id);
+                    if (webtoon) {
+                        document.getElementById('webtoonTitle').textContent = webtoon.title;
+                        document.getElementById('webtoonProvider').textContent = webtoon.provider;
+
+                        const linkElement = document.createElement('a');
+                        linkElement.href = webtoon.url;
+                        linkElement.textContent = webtoon.url;
+                        document.getElementById('webtoonLink').appendChild(linkElement);
+
+                        const thumbnailElement = document.createElement('img');
+                        thumbnailElement.src = webtoon.thumbnail[0];
+                        thumbnailElement.alt = `${webtoon.title} 썸네일`;
+                        document.getElementById('webtoonThumbnail').appendChild(thumbnailElement);
+
+                        document.getElementById('webtoonAuthors').textContent = webtoon.authors.join(', ');
+                        document.getElementById('webtoonIsEnd').textContent = webtoon.isEnd ? '종결' : '연재 중';
+                        document.getElementById('webtoonIsFree').textContent = webtoon.isFree ? '무료' : '유료';
+                        document.getElementById('webtoonIsUpdated').textContent = webtoon.isUpdated ? '업데이트 됨' : '업데이트 안 됨';
+                        document.getElementById('webtoonAgeGrade').textContent = webtoon.ageGrade;
+                        document.getElementById('webtoonFreeWaitHour').textContent = webtoon.freeWaitHour;
+                    } else {
+                        console.error('해당 ID의 웹툰이 데이터에서 찾을 수 없습니다.');
+                    }
+                } else {
+                    console.error('웹툰 세부 정보가 없거나 API에서 데이터를 가져오는 중 오류가 발생했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('웹툰 세부 정보를 가져오는 중 오류가 발생했습니다:', error);
+            });
+    });
+</script>
+
+</body>
+</html>

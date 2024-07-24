@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html layout:decorate="~{layout}">
+<head>
+  <title>창작자 등록</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+</head>
+<body>
+<div th:replace="~{common/menubar}"></div>
+<div layout:fragment="content">
+  <nav class="navbar navbar-expand-md">
+    <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+      <li><a th:href="@{/recruit/creator/choice}" class="nav-link px-2">창작자 등록</a></li>
+      <li><a th:href="@{/recruit/job/list}" class="nav-link px-2">구인/구직</a></li>
+      <li><a th:href="@{/board}" class="nav-link px-2">Board</a></li>
+      <li><a th:href="@{/contact}" class="nav-link px-2">Contact</a></li>
+    </ul>
+  </nav>
+  <div class="container mt-5">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="text-center mb-0">창작자 등록</h2>
+      </div>
+      <div class="card-body">
+        <form action="#" th:action="@{/recruit/creator/naverocr_result}" id="form" method="post" enctype="multipart/form-data">
+          <div class="form-group">
+            <span class="input-group-text">IMG</span>
+            <input class="form-control" type="file" name="file">
+          </div>
+          <div class="form-group text-right">
+            <button type="submit" class="btn btn-primary">등록</button>
+            <a href="#" th:href="@{/recruit/main}" class="btn btn-secondary">취소</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--<script>-->
+<!--    $(document).ready(function() {-->
+<!--        $('#insertForm').on('submit', function() {-->
+<!--            $('#writer').prop('disabled', false);-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+</body>
+</html>
