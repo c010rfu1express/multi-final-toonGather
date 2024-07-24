@@ -107,15 +107,31 @@
     </table>
 </div>
 <div id="comment">
-    <h2>댓글</h2>
 
+    <!-- 리뷰 작성 폼 -->
+    <form id="commentForm" th:action="@{/webtoon/one/comment}" method="post">
+        <div class="form-group">
+            <label for="content">댓글</label>
+            <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+            <!-- hidden 필드로 웹툰 번호 전송 -->
+            <input type="hidden" id="userNo" name="userNo" th:value="${one.webtoon_no}">
+            <input type="hidden" id="webtoonNo" name="webtoon_no" th:value="${one.webtoon_no}">
+            <input type="hidden" id="webtoonId" name="webtoon_id" th:value="${one.webtoon_id}">
+            <input type="hidden" id="webtoonName" name="webtoon_name" th:value="${one.webtoon_name}">
+
+
+
+        </div>
+        <button type="submit" class="btn btn-primary">댓글 등록</button>
+    </form>
 </div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const urlParams = new URLSearchParams(window.location.search);
-        const id =  '[[${one.webtoonId}]]';
-
-        const title = '[[${one.webtoonName}]]';
+        const id =  '[[${one.webtoon_id}]]';
+        const no =  [[${one.webtoon_no}]];
+        const title = '[[${one.webtoon_name}]]';
 
         // 웹툰 세부 정보를 가져오기 위한 API URL
         const apiUrl = `https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/webtoons?keyword=${title}`;
@@ -131,7 +147,23 @@
 
                         const linkElement = document.createElement('a');
                         linkElement.href = webtoon.url;
-                        linkElement.textContent = webtoon.url;
+                        linkElement.textContent = "웹툰으로 이동";
+                        linkElement.addEventListener('click', function(event) {
+                            event.preventDefault();
+                            // 클릭 시 서버에 count 증가 요청
+                            fetch(`/webtoon/one/count?webtoon_no=${no}`, {
+                                method: 'PUT'
+                            }).then(response => {
+                                if (response.ok) {
+                                    console.log('count 증가 성공');
+                                    window.location.href = webtoon.url;
+                                } else {
+                                    console.error('count 증가 실패');
+                                }
+                            }).catch(error => {
+                                console.error('에러 발생:', error);
+                            });
+                        });
                         document.getElementById('webtoonLink').appendChild(linkElement);
 
                         const thumbnailElement = document.createElement('img');
