@@ -49,6 +49,7 @@ public class MybatisConfig {
         // 서윤 social
         configuration.getTypeAliasRegistry().registerAlias("reviewDTO", com.multi.toonGather.social.model.dto.ReviewDTO.class);
         configuration.getTypeAliasRegistry().registerAlias("writerDTO", com.multi.toonGather.social.model.dto.WriterDTO.class);
+        configuration.getTypeAliasRegistry().registerAlias("diaryDTO", com.multi.toonGather.social.model.dto.DiaryDTO.class);
 
         seb.setConfiguration(configuration);
 
