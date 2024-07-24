@@ -110,7 +110,7 @@
                     webtoonTitle.classList.add('webtoon-title');
                     webtoonTitle.addEventListener('click', (event) => {
                         event.preventDefault(); // 기본 동작 중단
-                        window.location.href = `/webtoon/one?id=${id}&title=${title}`;
+                        window.location.href = `/webtoon/one?webtoonId=${id}&webtoonName=${title}`;
                     });
                     webtoonInfo.appendChild(webtoonTitle);
 
