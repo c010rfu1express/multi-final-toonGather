@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>OCR 판독 결과</title>
+</head>
+<body>
+<script th:inline="javascript">
+    var message = [[${message}]];
+    alert(message);
+    window.location.href = "/recruit/main";
+</script>
+</body>
+</html>
