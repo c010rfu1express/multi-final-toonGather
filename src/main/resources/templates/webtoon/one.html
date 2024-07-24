@@ -14,11 +14,12 @@
         }
         #webtoonDetail {
             width: 100%;
-            max-width: 800px;
+            max-width: 80%;
             background-color: #ffffff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
         }
         table {
             width: 100%;
@@ -112,9 +113,9 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const urlParams = new URLSearchParams(window.location.search);
-        const id =  '[[${one.id}]]';
+        const id =  '[[${one.webtoonId}]]';
 
-        const title = '[[${one.title}]]';
+        const title = '[[${one.webtoonName}]]';
 
         // 웹툰 세부 정보를 가져오기 위한 API URL
         const apiUrl = `https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/webtoons?keyword=${title}`;
