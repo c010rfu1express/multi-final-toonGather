@@ -5,7 +5,6 @@ import lombok.Data;
 
 import java.sql.Timestamp;
 
-@Entity
 @Data
 public class QuestionDTO {
     private int csQNo;

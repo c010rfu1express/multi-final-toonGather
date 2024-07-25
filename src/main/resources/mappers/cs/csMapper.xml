@@ -13,15 +13,19 @@
 
         <association property="csQCategory" javaType="com.multi.toonGather.cs.model.dto.CsCategoryDTO">
             <result property="csCategoryCode" column="cs_q_category_code"/>
-            <result property="csCategoryDesc" column="category_desc"/>
+            <result property="csCategoryDesc" column="cs_category_desc"/>
         </association>
         <association property="csQStatus" javaType="com.multi.toonGather.cs.model.dto.CsStatusDTO">
             <result property="csStatusCode" column="cs_q_status_code"/>
-            <result property="csStatusDesc" column="status_desc"/>
+            <result property="csStatusDesc" column="cs_status_desc"/>
         </association>
     </resultMap>
 
     <select id="myQuestionList" parameterType="int" resultMap="questionResultMap">
-        SELECT * FROM cs_question WHERE cs_q_writer_no = #{userNo}
+        SELECT q.*, c.cs_category_desc, s.cs_status_desc
+        FROM cs_question q
+        LEFT JOIN cs_category c ON q.cs_q_category_code = c.cs_category_code
+        LEFT JOIN cs_status s ON q.cs_q_status_code = s.cs_status_code
+        WHERE q.cs_q_writer_no = #{userNo}
     </select>
 </mapper>
