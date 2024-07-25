@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html layout:decorate="~{layout}">
+<head>
+    <title>마이페이지</title>
+    <meta charset="UTF-8">
+    <style>
+        .navbar {
+          position: fixed;
+          z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{common/menubar}"></div>
+<div layout:fragment="content">
+    가입완료
+</div>
+</body>
+</html>
