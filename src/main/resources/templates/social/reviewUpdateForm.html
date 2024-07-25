@@ -4,36 +4,79 @@
 <head>
     <meta charset="UTF-8">
     <title>툰게더 toonGather | 리뷰 수정</title>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .review-form {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        .webtoon-info {
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .webtoon-info h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .webtoon-info p {
+            font-size: 16px;
+            color: #666;
+            margin: 5px 0;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="common/menubar.html"></div>
 
-<div class="container mt-4">
-    <h2>리뷰 수정</h2>
-    <form th:action="@{/social/reviewUpdate}" th:object="${review}" method="post">
-        <input type="hidden" th:field="*{reviewNo}">
-        <input type="hidden" th:field="*{webtoonNo}">
-        <div class="form-group">
-            <label for="title">리뷰 제목</label>
-            <input type="text" class="form-control" id="title" th:field="*{title}" required>
+<div class="container">
+    <div class="review-form">
+        <h1>리뷰 수정</h1>
+        <div class="webtoon-info">
+            <h2>웹툰 정보</h2>
+            <p><strong>제목:</strong> <span th:text="${review.webtoon.webtoon_name}"></span></p>
+            <p><strong>작가:</strong> <span th:text="${review.webtoon.author}"></span></p>
         </div>
-        <div class="form-group">
-            <label for="content">리뷰 내용</label>
-            <textarea class="form-control" id="content" th:field="*{content}" rows="5" required style="white-space: pre-wrap;"></textarea>
-        </div>
-        <div class="form-group">
-            <label for="starRating">별점</label>
-            <select class="form-control" id="starRating" th:field="*{starRating}" required>
-                <option value="1">1점</option>
-                <option value="2">2점</option>
-                <option value="3">3점</option>
-                <option value="4">4점</option>
-                <option value="5">5점</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">수정 완료</button>
-        <a th:href="@{/social/reviewDetail(reviewNo=${review.reviewNo})}" class="btn btn-secondary">취소</a>
-    </form>
+        <form th:action="@{/social/reviewUpdate}" th:object="${review}" method="post">
+            <input type="hidden" th:field="*{reviewNo}">
+            <input type="hidden" th:field="*{webtoon.webtoon_no}">
+            <div class="form-group">
+                <label for="title">리뷰 제목</label>
+                <input type="text" class="form-control" id="title" th:field="*{title}" required maxlength="50">
+            </div>
+            <div class="form-group">
+                <label for="content">리뷰 내용</label>
+                <textarea class="form-control" id="content" th:field="*{content}" rows="5" required style="white-space: pre-wrap;" maxlength="1000"></textarea>
+                <small class="form-text text-muted">최대 1000자까지 입력 가능합니다. (<span id="charCount">0</span>/1000)</small>
+            </div>
+            <div class="form-group">
+                <label for="starRating">별점</label>
+                <select class="form-control" id="starRating" th:field="*{starRating}" required>
+                    <option value="1">1점</option>
+                    <option value="2">2점</option>
+                    <option value="3">3점</option>
+                    <option value="4">4점</option>
+                    <option value="5">5점</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">수정 완료</button>
+            <a th:href="@{/social/reviewDetail(reviewNo=${review.reviewNo})}" class="btn btn-secondary">취소</a>
+        </form>
+    </div>
 </div>
 
 <script>
@@ -49,6 +92,13 @@
 
         charCountSpan.textContent = currentLength;
     });
+
+    // 초기 글자 수 표시
+    window.onload = function() {
+        var content = document.getElementById('content');
+        var charCountSpan = document.getElementById('charCount');
+        charCountSpan.textContent = content.value.length;
+    };
 </script>
 
 </body>

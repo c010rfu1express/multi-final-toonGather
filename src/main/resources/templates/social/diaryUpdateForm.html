@@ -4,34 +4,76 @@
 <head>
     <meta charset="UTF-8">
     <title>툰게더 toonGather | 다이어리 수정</title>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .diary-form {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        .webtoon-info {
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .webtoon-info h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .webtoon-info p {
+            font-size: 16px;
+            color: #666;
+            margin: 5px 0;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="common/menubar.html"></div>
 
-<div class="container mt-4">
-    <h2>다이어리 수정</h2>
-    <form th:action="@{/social/diaryUpdate}" th:object="${diary}" method="post">
-        <input type="hidden" th:field="*{diaryNo}">
-        <input type="hidden" th:field="*{webtoon.webtoon_no}">
-        <div class="form-group">
-            <label for="title">제목</label>
-            <input type="text" class="form-control" id="title" th:field="*{title}" required maxlength="50">
+<div class="container">
+    <div class="diary-form">
+        <h1>다이어리 수정</h1>
+        <div class="webtoon-info">
+            <h2>웹툰 정보</h2>
+            <p><strong>제목:</strong> <span th:text="${diary.webtoon.webtoon_name}"></span></p>
+            <p><strong>작가:</strong> <span th:text="${diary.webtoon.author}"></span></p>
         </div>
-        <div class="form-group">
-            <label for="content">내용</label>
-            <textarea class="form-control" id="content" th:field="*{content}" rows="5" required style="white-space: pre-wrap;" maxlength="140"></textarea>
-            <small class="form-text text-muted">최대 140자까지 입력 가능합니다. (<span id="charCount">0</span>/140)</small>
-        </div>
-        <div class="form-group">
-            <label for="statusCode">상태</label>
-            <select class="form-control" id="statusCode" th:field="*{statusCode}" required>
-                <option value="C">정주행중</option>
-                <option value="R">재탕중</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">수정 완료</button>
-        <a th:href="@{/social/diaryDetail(diaryNo=${diary.diaryNo})}" class="btn btn-secondary">취소</a>
-    </form>
+        <form th:action="@{/social/diaryUpdate}" th:object="${diary}" method="post">
+            <input type="hidden" th:field="*{diaryNo}">
+            <input type="hidden" th:field="*{webtoon.webtoon_no}">
+            <div class="form-group">
+                <label for="title">제목</label>
+                <input type="text" class="form-control" id="title" th:field="*{title}" required maxlength="50">
+            </div>
+            <div class="form-group">
+                <label for="content">내용</label>
+                <textarea class="form-control" id="content" th:field="*{content}" rows="5" required style="white-space: pre-wrap;" maxlength="140"></textarea>
+                <small class="form-text text-muted">최대 140자까지 입력 가능합니다. (<span id="charCount">0</span>/140)</small>
+            </div>
+            <div class="form-group">
+                <label for="statusCode">상태</label>
+                <select class="form-control" id="statusCode" th:field="*{statusCode}" required>
+                    <option value="C">정주행중</option>
+                    <option value="R">재탕중</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">수정 완료</button>
+            <a th:href="@{/social/diaryDetail(diaryNo=${diary.diaryNo})}" class="btn btn-secondary">취소</a>
+        </form>
+    </div>
 </div>
 
 <script>
@@ -47,6 +89,13 @@
 
         charCountSpan.textContent = currentLength;
     });
+
+    // 초기 글자 수 표시
+    window.onload = function() {
+        var content = document.getElementById('content');
+        var charCountSpan = document.getElementById('charCount');
+        charCountSpan.textContent = content.value.length;
+    };
 </script>
 
 </body>

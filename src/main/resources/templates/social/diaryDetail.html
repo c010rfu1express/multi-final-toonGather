@@ -4,28 +4,112 @@
 <head>
     <meta charset="UTF-8">
     <title>툰게더 toonGather | 다이어리 상세</title>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .diary-detail {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .webtoon-info {
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .webtoon-info h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .webtoon-info p {
+            font-size: 16px;
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .diary-title {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .diary-meta {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .author {
+            margin-right: 10px;
+        }
+
+        .status {
+            color: #28a745;
+        }
+
+        .diary-content {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .diary-details {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .date, .views {
+            margin-right: 15px;
+        }
+
+        .diary-actions {
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="common/menubar.html"></div>
 
-<div class="container mt-4">
-    <h2>다이어리 상세</h2>
-    <div th:if="${diary != null}">
-        <h3 th:text="${diary.webtoon.webtoon_name}">웹툰 제목</h3>
-        <p>작성자: <span th:text="${diary.writer.nickname}"></span></p>
-        <p>상태: <span th:text="${diary.statusCode == 'C' ? '정주행중' : '재탕중'}"></span></p>
-        <h4 th:text="${diary.title}">다이어리 제목</h4>
-        <p th:utext="${#strings.replace(#strings.escapeXml(diary.content), '&#10;', '<br/>')}">다이어리 내용</p>
-        <p>작성일: <span th:text="${#temporals.format(diary.createdDate, 'yyyy-MM-dd HH:mm')}"></span></p>
-        <p th:if="${!#temporals.format(diary.createdDate, 'yyyyMMddHHmmss').equals(#temporals.format(diary.modifiedDate, 'yyyyMMddHHmmss'))}">
-            수정일: <span th:text="${#temporals.format(diary.modifiedDate, 'yyyy-MM-dd HH:mm')}"></span>
-        </p>
-        <p>조회수: <span th:text="${diary.viewCnt}"></span></p>
-
-        <a th:href="@{/social/diaryList}" class="btn btn-secondary">목록으로</a>
-        <a th:href="@{/social/diaryUpdateForm(diaryNo=${diary.diaryNo})}" class="btn btn-warning">수정</a>
-        <a th:href="@{/social/diaryDelete(diaryNo=${diary.diaryNo})}" class="btn btn-danger"
-           onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</a>
+<div class="container">
+    <div class="diary-detail" th:if="${diary != null}">
+        <div class="webtoon-info">
+            <h1>다이어리 작성 웹툰 정보</h1>
+            <p><strong>제목:</strong> <span th:text="${diary.webtoon.webtoon_name}"></span></p>
+            <p><strong>작가:</strong> <span th:text="${diary.webtoon.author}"></span></p>
+        </div>
+        <h1 class="diary-title" th:text="${diary.title}">다이어리 제목</h1>
+        <div class="diary-meta">
+            <span class="author">by <span th:text="${diary.writer.nickname}"></span></span>
+            <span class="status" th:text="${diary.statusCode == 'C' ? '정주행중' : '재탕중'}"></span>
+        </div>
+        <div class="diary-content" th:utext="${#strings.replace(#strings.escapeXml(diary.content), '&#10;', '<br/>')}">다이어리 내용</div>
+        <div class="diary-details">
+            <span class="date">작성일: <span th:text="${#temporals.format(diary.createdDate, 'yyyy-MM-dd HH:mm')}"></span></span>
+            <span class="date" th:if="${!#temporals.format(diary.createdDate, 'yyyyMMddHHmmss').equals(#temporals.format(diary.modifiedDate, 'yyyyMMddHHmmss'))}">
+                수정일: <span th:text="${#temporals.format(diary.modifiedDate, 'yyyy-MM-dd HH:mm')}"></span>
+            </span>
+            <span class="views">조회수: <span th:text="${diary.viewCnt}"></span></span>
+        </div>
+        <div class="diary-actions">
+            <a th:href="@{/social/diaryList}" class="btn btn-secondary">목록으로</a>
+            <a th:href="@{/social/diaryUpdateForm(diaryNo=${diary.diaryNo})}" class="btn btn-warning">수정</a>
+            <a th:href="@{/social/diaryDelete(diaryNo=${diary.diaryNo})}" class="btn btn-danger"
+               onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</a>
+        </div>
     </div>
     <div th:unless="${diary != null}">
         <p>해당 다이어리를 찾을 수 없습니다.</p>
