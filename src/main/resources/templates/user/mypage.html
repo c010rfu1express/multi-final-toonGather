@@ -1,10 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html layout:decorate="~{layout}">
 <head>
+    <title>마이페이지</title>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <style>
+        .navbar {
+          position: fixed;
+          z-index: 1000;
+        }
+    </style>
 </head>
 <body>
-mypage1
+<div th:replace="~{common/menubar}"></div>
+<div layout:fragment="content">
+    <nav class="navbar navbar-expand-md">
+        <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+            <li><a th:href="@{/user/login}" class="nav-link px-2">나의 웹툰</a></li>
+            <li><a th:href="@{/user/signup}" class="nav-link px-2">나의 소셜</a></li>
+            <li><a th:href="@{/user/my}" class="nav-link px-2">나의 채용</a></li>
+            <li><a th:href="@{/user/login}" class="nav-link px-2">나의 소식</a></li>
+            <li><a th:href="@{/user/signup}" class="nav-link px-2">프로필 수정</a></li>
+            <li><a th:href="@{/user/my}" class="nav-link px-2">나의 결제</a></li>
+        </ul>
+    </nav>
+</div>
 </body>
 </html>
