@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--관련파일 (1) MybatisConfig.java -->
+<!--관련파일 (2) resources/mappers/user/UserMapper.xml (현재파일)-->
+<!--관련파일 (3) user/model/mapper/UserMapper.java-->
+<!-- -->
+
+<!--(A) mapper namespace: 관련파일 (3) Interface-->
+<mapper namespace="com.multi.toonGather.user.model.mapper.UserMapper">
+    <!--(B) resultMap type: 관련파일 (1) 업뎃하면 아래 type="userDTO" 로 바꿔주기-->
+    <!--(C) resultMap id: 왜있는걸까-->
+    <resultMap type="com.multi.toonGather.user.model.dto.UserDTO" id="userResultMap">
+        <!-- 언더바가 들어가는 쿼리문에 한하여 매핑을 해줘야함 -->
+        <!-- property: DTO에 있는 그대로, column: MySQL에 있는 그대로-->
+        <id property="userNo" column="user_no"/>
+        <result property="typeCode" column="type_code"/>
+        <result property="authCode" column="auth_code"/>
+        <result property="userId" column="user_id"/>
+        <result property="password" column="password"/>
+        <result property="nickname" column="nickname"/>
+        <result property="contactNumber" column="contact_number"/>
+        <result property="email" column="email"/>
+        <result property="profileImagePath" column="profile_image_path"/>
+        <result property="bio" column="bio"/>
+
+        <result property="gender" column="gender"/>
+        <result property="dateOfBirth" column="date_of_birth"/>
+        <result property="realName" column="real_name"/>
+        <result property="termsAgreement" column="terms_agreement"/>
+        <result property="termsAgreementDatetime" column="terms_agreement_datetime"/>
+        <result property="registrationDatetime" column="registration_datetime"/>
+        <result property="lastModifiedDatetime" column="last_modified_datetime"/>
+    </resultMap>
+    <!--(D) 관련파일 (3) UserMapper.java, 그리고 이것이 결국 UserServiceImpl.java에 이용됨-->
+    <insert id="insertUser">
+        INSERT INTO users (
+        type_code,
+        auth_code,
+        user_id,
+        password,
+        nickname,
+        contact_number,
+        email,
+        profile_image_path,
+        bio,
+
+        gender,
+        date_of_birth,
+        real_name,
+        terms_agreement,
+        terms_agreement_datetime,
+        registration_datetime,
+        last_modified_datetime
+        )
+
+        VALUES (
+        'G',
+        'B',
+        #{userId},
+        #{password},
+        #{nickname},
+        #{contactNumber},
+        #{email},
+        #{profileImagePath},
+        #{bio},
+
+        #{gender},
+        #{dateOfBirth},
+        #{realName},
+        #{termsAgreement},
+        #{termsAgreementDatetime},
+        #{registrationDatetime},
+        #{lastModifiedDatetime}
+        )
+    </insert>
+</mapper>
