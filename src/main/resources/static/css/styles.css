@@ -1,0 +1,139 @@
+/**
+ * 프로젝트 툰게더 전용 css 스타일 시트입니다.
+ *
+ * HTML 파일의 <head>에 <link rel="stylesheet" href="/css/styles.css"> 추가하면 적용됩니다.
+ * menubar.html이 적용하는 경우 따로 추가할 필요는 없습니다.
+ *
+ * @author : seoyun
+ * @fileName : style.css
+ * @since : 2024-07-25
+ */
+
+/* 전체 스타일 */
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* 헤더 스타일 */
+.header {
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.top-bar {
+  background-color: #f8f9fa;
+  padding: 5px 0;
+}
+
+.user-nav {
+  display: flex;
+  justify-content: flex-end;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.user-nav a {
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+  margin-left: 20px;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 20px;
+}
+
+.logo img {
+  height: 40px;
+}
+
+.main-nav ul {
+  display: flex;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.main-nav li {
+  margin: 0 15px;
+}
+
+.main-nav a {
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* 버튼 스타일 */
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* 메인 버튼(파란색) */
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+/* 기타 버튼(회색) */
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* 폰트 사이즈 */
+h1 { font-size: 28px; }
+h2 { font-size: 24px; }
+h3 { font-size: 20px; }
+p { font-size: 16px; }
+
+/* 호버 효과 */
+.main-nav a:hover {
+  color: #007bff;
+}
+
+.user-nav a:hover {
+  color: #007bff;
+}
+
+/* 활성 메뉴 스타일 */
+.main-nav a.active {
+  color: #007bff;
+  font-weight: 700;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .main-nav ul {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .main-nav li {
+    margin: 10px 0;
+  }
+
+  .user-nav {
+    justify-content: flex-start;
+  }
+}
