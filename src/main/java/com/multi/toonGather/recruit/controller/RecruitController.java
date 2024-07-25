@@ -4,10 +4,12 @@ import com.multi.toonGather.common.model.dto.PageDTO;
 import com.multi.toonGather.common.service.PageService;
 import com.multi.toonGather.recruit.model.dto.creator.CreatorDTO;
 import com.multi.toonGather.recruit.model.dto.creator.NaverDTO;
+import com.multi.toonGather.recruit.model.dto.free.FreeDTO;
 import com.multi.toonGather.recruit.model.dto.job.ApplyDTO;
 import com.multi.toonGather.recruit.model.dto.job.JobDTO;
 import com.multi.toonGather.recruit.service.creator.CreatorService;
 import com.multi.toonGather.recruit.service.creator.NaverOcr;
+import com.multi.toonGather.recruit.service.free.FreeService;
 import com.multi.toonGather.recruit.service.job.JobService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,7 @@ public class RecruitController {
     private final CreatorService creatorService;
     private final PageService pageService;
     private final JobService jobService;
+    private final FreeService freeService;
 
     @RequestMapping("/main")
     public String main(){
@@ -361,6 +364,203 @@ public class RecruitController {
 
         // 서비스 계층에 게시글 저장 요청
         return "redirect:/recruit/job/view?no=" + applyDTO.getBoard_no();
+    }
+
+    @GetMapping("/job/applyView")
+    public String viewApply(@RequestParam("no") int no, Model model) throws Exception{
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
+//            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            model.addAttribute("member_no", 1);
+        } else {
+            model.addAttribute("member_no", "");  // 인증되지 않은 사용자의 경우
+        }
+
+        try {
+            ApplyDTO applyDTO = jobService.findApplyByNo(no);
+            model.addAttribute("apply", applyDTO);
+        } catch (Exception e) {
+            model.addAttribute("msg", "지원글 조회 실패");
+        }
+        return "recruit/job/applyView";
+    }
+
+    @GetMapping("/free/list")
+    public String listFree(@RequestParam(value = "page", required = false, defaultValue = "1")  int page, Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
+//            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            model.addAttribute("auth_code", "C");
+        } else {
+            model.addAttribute("auth_code", "");  // 인증되지 않은 사용자의 경우
+        }
+
+        PageDTO pageDTO = new PageDTO();
+        pageDTO.setPage(page);
+        pageDTO.setStartEnd(pageDTO.getPage());
+        try {
+            int count = pageService.selectFreeCount(pageDTO);
+            int pages = count / 10 + 1;
+
+            List<FreeDTO> frees = freeService.selectBoardAll(pageDTO);
+
+            model.addAttribute("count", count);
+            model.addAttribute("pages", pages);
+            model.addAttribute("frees", frees);
+            model.addAttribute("currentPage", page);
+
+            for (FreeDTO free : frees) {
+                System.out.println(frees);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("free list error : " + e);
+        }
+
+        return "recruit/free/list";
+    }
+
+    @GetMapping("/free/insert")
+    public String showInsert(Model model) {
+        FreeDTO freeDTO = new FreeDTO();
+//        freeDTO.setMemNo(new MemberDTO());
+        freeDTO.setWriter(1);
+
+        model.addAttribute("free", freeDTO);
+        return "recruit/free/insert";
+    }
+
+    @PostMapping("/free/insert")
+    public String insertFree(@ModelAttribute FreeDTO freeDTO, HttpServletRequest request, @RequestPart("singleFile") MultipartFile singleFile, Model model) {
+        // 현재 인증된 사용자 정보를 가져옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        // 작성자의 memberNo와 userName을 설정
+//        MemberDTO writer = new MemberDTO();
+//        writer.setUser_no(userDetails.getMemberNo());
+//        writer.setNickname(userDetails.getNickname());
+//        freeDTO.setMemNo(writer);
+
+        /* 파일을 저장할 경로 설정 */
+        String root = request.getSession().getServletContext().getRealPath("/");
+        System.out.println("root : " + root);
+        String filePath = root + "\\uploadFiles";
+
+        File mkdir = new File(filePath);
+        if (!mkdir.exists()) {
+            mkdir.mkdirs();
+        }
+
+        /* 파일명 변경 처리 */
+        String originFileName = singleFile.getOriginalFilename();
+        if(originFileName != null && !originFileName.isEmpty()){
+            String ext = originFileName.substring(originFileName.lastIndexOf("."));
+            String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
+
+            /* 파일을 저장한다. */
+            try {
+                singleFile.transferTo(new File(filePath + "\\" + savedName));
+                model.addAttribute("savedName", savedName);
+                freeDTO.setImg(savedName);
+                freeService.insertBoard(freeDTO);
+            } catch (Exception e) {
+                System.out.println("free insert error : " + e);
+                /* 실패시 파일 삭제 */
+                new File(filePath + "\\" + savedName).delete();
+                model.addAttribute("message", "파일 업로드 실패!!");
+            }
+        }
+        else{
+            try {
+                freeService.insertBoard(freeDTO);
+            } catch (Exception e) {
+                System.out.println("free insert error : " + e);
+            }
+        }
+
+
+        // 서비스 계층에 게시글 저장 요청
+        return "redirect:/recruit/free/list";
+    }
+
+    @GetMapping("/free/view")
+    public String findFree(@RequestParam("no") int no, Model model) throws Exception{
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
+//            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            model.addAttribute("member_no", 1);
+        } else {
+            model.addAttribute("member_no", "");  // 인증되지 않은 사용자의 경우
+        }
+
+        try {
+            FreeDTO freeDTO = freeService.findBoardByNo(no);
+            model.addAttribute("free", freeDTO);
+        } catch (Exception e) {
+            model.addAttribute("msg", "게시글 조회 실패");
+        }
+        return "recruit/free/view";
+    }
+
+    @GetMapping("/free/update")
+    public void updateFree(@RequestParam("no") int no, Model model) throws Exception {
+        FreeDTO dto = freeService.findBoardByNo(no);
+        model.addAttribute("free", dto);
+    }
+
+    @PostMapping("/free/update")
+    public String updateFree(FreeDTO freeDTO, @RequestParam("board_no") int board_no, HttpServletRequest request, Model model, @RequestParam("existingImage") String existingImage, @RequestPart("singleFile") MultipartFile singleFile) throws Exception {
+        String root = request.getSession().getServletContext().getRealPath("/");
+        System.out.println("root : " + root);
+        String filePath = root + "\\uploadFiles";
+
+        File mkdir = new File(filePath);
+        if (!mkdir.exists()) {
+            mkdir.mkdirs();
+        }
+
+        freeDTO.setBoard_no(board_no);
+
+        /* 파일명 변경 처리 */
+        String originFileName = singleFile.getOriginalFilename();
+        if(originFileName != null && !originFileName.isEmpty()){
+            String ext = originFileName.substring(originFileName.lastIndexOf("."));
+            String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
+
+            /* 파일을 저장한다. */
+            try {
+                singleFile.transferTo(new File(filePath + "\\" + savedName));
+                model.addAttribute("savedName", savedName);
+                freeDTO.setImg(savedName);
+                freeService.updateBoard(freeDTO);
+            } catch (Exception e) {
+                System.out.println("free update error : " + e);
+                /* 실패시 파일 삭제 */
+                new File(filePath + "\\" + savedName).delete();
+                model.addAttribute("message", "파일 업로드 실패!!");
+            }
+        }
+        else{
+            try {
+                freeDTO.setImg(existingImage);
+                freeService.updateBoard(freeDTO);
+            } catch (Exception e) {
+                System.out.println("free update error : " + e);
+            }
+        }
+        return "redirect:/recruit/free/view?no=" + freeDTO.getBoard_no();
+    }
+
+    @GetMapping("/free/delete")
+    public String deleteFree(@RequestParam("no") int no, Model model) throws Exception{
+        try {
+            freeService.deleteBoard(no);
+            model.addAttribute("msg", "게시글 삭제 성공");
+        } catch (Exception e) {
+            model.addAttribute("msg", "게시글 삭제 실패");
+        }
+        return "redirect:/recruit/free/list";
     }
 
 }
