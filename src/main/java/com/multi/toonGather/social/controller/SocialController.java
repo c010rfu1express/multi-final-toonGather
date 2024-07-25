@@ -127,4 +127,44 @@ public class SocialController {
         socialService.createDiary(diary);
         return "redirect:/social/socialHome";
     }
+
+    @GetMapping("/diaryList")
+    public String getDiaryList(Model model) {
+        // 사용자 정보 설정 (Spring Security 구현 후 수정 필요)
+        int userNo = 1; // 테스트용: userNo=1 하드코딩
+
+        List<DiaryDTO> diaries = socialService.getDiariesByUser(userNo);
+        model.addAttribute("diaries", diaries);
+        return "social/diaryList";
+    }
+
+    @GetMapping("/diaryDetail")
+    public String getDiaryDetail(@RequestParam("diaryNo") int diaryNo, Model model) {
+        // 조회수 증가
+        socialService.incrementDiaryViewCount(diaryNo);
+
+        // 다이어리 정보 조회
+        DiaryDTO diary = socialService.getDiaryByNo(diaryNo);
+        model.addAttribute("diary", diary);
+        return "social/diaryDetail";
+    }
+
+    @GetMapping("/diaryUpdateForm")
+    public String showDiaryUpdateForm(@RequestParam("diaryNo") int diaryNo, Model model) {
+        DiaryDTO diary = socialService.getDiaryByNo(diaryNo);
+        model.addAttribute("diary", diary);
+        return "social/diaryUpdateForm";
+    }
+
+    @PostMapping("/diaryUpdate")
+    public String updateDiary(@ModelAttribute DiaryDTO diary) {
+        socialService.updateDiary(diary);
+        return "redirect:/social/diaryDetail?diaryNo=" + diary.getDiaryNo();
+    }
+
+    @GetMapping("/diaryDelete")
+    public String deleteDiary(@RequestParam("diaryNo") int diaryNo) {
+        socialService.deleteDiary(diaryNo);
+        return "redirect:/social/diaryList";
+    }
 }

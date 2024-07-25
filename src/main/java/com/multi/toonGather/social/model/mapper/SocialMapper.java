@@ -26,4 +26,9 @@ public interface SocialMapper {
 
     // 다이어리
     void createDiary(DiaryDTO diary);
+    List<DiaryDTO> getDiariesByUser(int userNo);
+    DiaryDTO getDiaryByNo(int diaryNo);
+    void incrementDiaryViewCount(int diaryNo);
+    void updateDiary(DiaryDTO diary);
+    void deleteDiary(int diaryNo);
 }
