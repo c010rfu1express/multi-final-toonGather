@@ -3,6 +3,18 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.multi.toonGather.webtoon.model.dao.WebToonMapper">
+
+    <resultMap id="commentResultMap" type="com.multi.toonGather.webtoon.model.CommentDTO">
+        <id property="commentNo" column="comment_no" />
+        <result property="webtoonNo" column="webtoon_no" />
+        <result property="userNo" column="user_no" />
+        <result property="content" column="content" />
+        <result property="liked" column="liked" />
+        <result property="dislike" column="dislike" />
+        <result property="nickname" column="nickname" />
+    </resultMap>
+
+
     <select id="WebToonSelectOne" parameterType="com.multi.toonGather.webtoon.model.WebtoonDTO" resultType="com.multi.toonGather.webtoon.model.WebtoonDTO">
         select * from webtoon where platform=#{platform} and webtoon_id=#{webtoon_id}
     </select>

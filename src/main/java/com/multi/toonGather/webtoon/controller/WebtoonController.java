@@ -1,12 +1,19 @@
 package com.multi.toonGather.webtoon.controller;
 
+import com.multi.toonGather.user.model.dto.UserDTO;
+import com.multi.toonGather.webtoon.model.CommentDTO;
 import com.multi.toonGather.webtoon.model.WebtoonDTO;
 import com.multi.toonGather.webtoon.service.WebToonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @Controller
 public class WebtoonController {
@@ -25,6 +32,7 @@ public class WebtoonController {
 
     @GetMapping(value = {"webtoon/one"})
     public String Web_toon_One(WebtoonDTO webtoonDTO, Model model){
+        UserDTO userDTO=new UserDTO();
         WebtoonDTO webtoonDTO1=new WebtoonDTO();
         String id=webtoonDTO.getWebtoon_id();
         String[] words1=id.split("_");
@@ -41,8 +49,17 @@ public class WebtoonController {
         }catch (Exception e){
             e.printStackTrace();
         }
-        webtoonDTO.setWebtoon_no(webtoonDTO1.getWebtoon_no());
 
+        webtoonDTO.setWebtoon_no(webtoonDTO1.getWebtoon_no());
+        try {
+            List<CommentDTO>comments=webToonService.Commentlist(webtoonDTO);
+            model.addAttribute("comments",comments);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+        model.addAttribute("user",userDTO);
         model.addAttribute("one",webtoonDTO);
         return "webtoon/one";
     }

@@ -1,9 +1,12 @@
 package com.multi.toonGather.webtoon.service;
 
+import com.multi.toonGather.webtoon.model.CommentDTO;
 import com.multi.toonGather.webtoon.model.WebtoonDTO;
 import com.multi.toonGather.webtoon.model.dao.WebToonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class WebToonServiceImpl implements WebToonService{
@@ -23,8 +26,12 @@ public class WebToonServiceImpl implements WebToonService{
         if(result>0){
             return true;
         }
-
-
         return false;
+    }
+
+    @Override
+    public List<CommentDTO> Commentlist(WebtoonDTO webtoonDTO) throws Exception {
+        List<CommentDTO> list=webToonMapper.Commentlist(webtoonDTO);
+        return list;
     }
 }
