@@ -20,15 +20,17 @@
     <update id="increaseCount" parameterType="com.multi.toonGather.webtoon.model.WebtoonDTO">
         update webtoon set count =count + 1  where webtoon_no = #{webtoon_no}
     </update>
-    <select id="WebToonSelectOne" parameterType="com.multi.toonGather.webtoon.model.WebtoonDTO" resultType="commentResultMap">
-        select * from webtoon where platform=#{platform} and webtoon_id=#{webtoon_id}
-    </select>
 
-    <select id="Commentlist" parameterType="com.multi.toonGather.webtoon.model.WebtoonDTO" resultType="commentResultMap">
+
+    <select id="Commentlist" parameterType="com.multi.toonGather.webtoon.model.WebtoonDTO" resultMap="commentResultMap">
         SELECT c.comment_no, c.webtoon_no, c.user_no, u.nickname, c.content, c.liked, c.dislike
         FROM wt_comment c
-        INNER JOIN users u ON c.user_no = u.user_id
+        INNER JOIN users u ON c.user_no = u.user_no
         where
         webtoon_no = #{webtoon_no}
     </select>
+    <insert id="insertComment" parameterType="com.multi.toonGather.webtoon.model.CommentDTO">
+        INSERT INTO wt_comment (webtoon_no, user_no, content)
+        VALUES (#{webtoonNo}, #{userNo}, #{content})
+    </insert>
 </mapper>
