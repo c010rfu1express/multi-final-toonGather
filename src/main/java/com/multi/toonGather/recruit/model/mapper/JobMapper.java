@@ -27,4 +27,6 @@ public interface JobMapper {
     int deleteBoard(int no) throws Exception;
 
     int insertApply(ApplyDTO applyDTO) throws Exception;
+
+    ApplyDTO selectApply(int no) throws Exception;
 }

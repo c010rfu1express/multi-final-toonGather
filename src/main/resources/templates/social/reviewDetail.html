@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>툰게더 toonGather | 리뷰 상세</title>
+</head>
+<body>
+<div th:replace="common/menubar.html"></div>
+
+<div class="container mt-4">
+    <h2>리뷰 상세</h2>
+    <div th:if="${review != null}">
+        <h3 th:text="${review.webtoon.webtoonName}">웹툰 제목</h3>
+        <p>작성자: <span th:text="${review.writer.nickname}"></span></p>
+        <p>별점: <span th:text="${review.starRating}"></span></p>
+        <h4 th:text="${review.title}">리뷰 제목</h4>
+        <p th:utext="${#strings.replace(#strings.escapeXml(review.content), '&#10;', '<br/>')}">리뷰 내용</p>
+        <p>작성일: <span th:text="${#temporals.format(review.createdDate, 'yyyy-MM-dd HH:mm')}"></span></p>
+        <p th:if="${!#temporals.format(review.createdDate, 'yyyyMMddHHmmss').equals(#temporals.format(review.modifiedDate, 'yyyyMMddHHmmss'))}">
+            수정일: <span th:text="${#temporals.format(review.modifiedDate, 'yyyy-MM-dd HH:mm')}"></span>
+        </p>
+        <p>조회수: <span th:text="${review.viewCnt}"></span></p>
+
+        <a th:href="@{/social/reviewList}" class="btn btn-secondary">목록으로</a>
+        <a th:href="@{/social/reviewUpdateForm(reviewNo=${review.reviewNo})}" class="btn btn-warning">수정</a>
+        <a th:href="@{/social/reviewDelete(reviewNo=${review.reviewNo})}" class="btn btn-danger"
+           onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</a>
+    </div>
+    <div th:unless="${review != null}">
+        <p>해당 리뷰를 찾을 수 없습니다.</p>
+    </div>
+</div>
+</body>
+</html>

@@ -38,10 +38,12 @@ public class MybatisConfig {
         configuration.setJdbcTypeForNull(JdbcType.NULL);
 
         // Type Aliases 설정
+        // 서영 recruit
         configuration.getTypeAliasRegistry().registerAlias("jobDTO", com.multi.toonGather.recruit.model.dto.job.JobDTO.class);
         configuration.getTypeAliasRegistry().registerAlias("pageDTO", com.multi.toonGather.common.model.dto.PageDTO.class);
         configuration.getTypeAliasRegistry().registerAlias("creatorDTO", CreatorDTO.class);
         configuration.getTypeAliasRegistry().registerAlias("applyDTO", com.multi.toonGather.recruit.model.dto.job.ApplyDTO.class);
+        configuration.getTypeAliasRegistry().registerAlias("freeDTO", com.multi.toonGather.recruit.model.dto.free.FreeDTO.class);
         // 희철 cs
         configuration.getTypeAliasRegistry().registerAlias("QuestionDTO", com.multi.toonGather.cs.model.dto.QuestionDTO.class);
         configuration.getTypeAliasRegistry().registerAlias("CsCategoryDTO", com.multi.toonGather.cs.model.dto.CsCategoryDTO.class);
@@ -49,6 +51,9 @@ public class MybatisConfig {
         // 서윤 social
         configuration.getTypeAliasRegistry().registerAlias("reviewDTO", com.multi.toonGather.social.model.dto.ReviewDTO.class);
         configuration.getTypeAliasRegistry().registerAlias("writerDTO", com.multi.toonGather.social.model.dto.WriterDTO.class);
+        configuration.getTypeAliasRegistry().registerAlias("diaryDTO", com.multi.toonGather.social.model.dto.DiaryDTO.class);
+        // 현구 user
+        configuration.getTypeAliasRegistry().registerAlias("userDTO", com.multi.toonGather.user.model.dto.UserDTO.class);
 
         seb.setConfiguration(configuration);
 

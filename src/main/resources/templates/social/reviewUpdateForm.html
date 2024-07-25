@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>툰게더 toonGather | 리뷰 수정</title>
+</head>
+<body>
+<div th:replace="common/menubar.html"></div>
+
+<div class="container mt-4">
+    <h2>리뷰 수정</h2>
+    <form th:action="@{/social/reviewUpdate}" th:object="${review}" method="post">
+        <input type="hidden" th:field="*{reviewNo}">
+        <input type="hidden" th:field="*{webtoonNo}">
+        <div class="form-group">
+            <label for="title">리뷰 제목</label>
+            <input type="text" class="form-control" id="title" th:field="*{title}" required>
+        </div>
+        <div class="form-group">
+            <label for="content">리뷰 내용</label>
+            <textarea class="form-control" id="content" th:field="*{content}" rows="5" required style="white-space: pre-wrap;"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="starRating">별점</label>
+            <select class="form-control" id="starRating" th:field="*{starRating}" required>
+                <option value="1">1점</option>
+                <option value="2">2점</option>
+                <option value="3">3점</option>
+                <option value="4">4점</option>
+                <option value="5">5점</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">수정 완료</button>
+        <a th:href="@{/social/reviewDetail(reviewNo=${review.reviewNo})}" class="btn btn-secondary">취소</a>
+    </form>
+</div>
+</body>
+</html>

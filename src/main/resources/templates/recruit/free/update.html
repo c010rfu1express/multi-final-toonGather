@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Board</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div th:replace="~{common/menubar}"></div>
+<div layout:fragment="content">
+    <nav class="navbar navbar-expand-md">
+        <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+            <li><a th:href="@{/recruit/creator/choice}" class="nav-link px-2">창작자 등록</a></li>
+            <li><a th:href="@{/recruit/job/list}" class="nav-link px-2">구인/구직</a></li>
+            <li><a th:href="@{/recruit/free/list}" class="nav-link px-2">프리랜서</a></li>
+            <li><a th:href="@{/contact}" class="nav-link px-2">Contact</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h3>게시글 수정 페이지</h3>
+        <hr>
+        <br>
+        <form th:action="@{/recruit/free/update}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="board_no" th:value="${free.board_no}" readonly>
+            <input type="hidden" name="existingImage" th:value="${free.img}">
+                <div class="form-group">
+                    <td class="t1">게시글 제목 :</td>
+                    <td><input name="title" th:value="${free.title}" class="form-control" maxlength='50' ></td>
+                </div>
+                <div class="form-group">
+                    <td class="t1">게시글 내용 :</td>
+                    <td><input name="content" th:value="${free.content}" class="form-control" style="height:300px;"></td>
+                </div>
+                <div class="form-group">
+                    <label for="singleFile">이미지</label>
+                    <input type="file" name="singleFile" class="form-control">
+                </div>
+                <div class="form-group">
+                    <td class="t1">가격 :</td>
+                    <td><input name="price" th:value="${free.price}" type="number" class="form-control"></td>
+                </div>
+                <div class="form-group text-right">
+                    <a th:href="@{/recruit/free/list}">
+                        <button id="b1" class="btn btn-outline-primary">첫페이지로</button>
+                    </a>
+                    <button id="b2" type="submit" class="btn btn-primary">수정</button>
+                </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

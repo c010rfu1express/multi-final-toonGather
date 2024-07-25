@@ -12,7 +12,6 @@
 
 <div class="container">
     <h2 class="mb-4">리뷰 작성</h2>
-    <h3 th:text="${webtoonTitle}">웹툰 제목</h3>
     <form th:action="@{/social/createReview}" th:object="${review}" method="post">
         <input type="hidden" th:field="*{webtoonNo}">
         <div class="form-group">
@@ -21,7 +20,7 @@
         </div>
         <div class="form-group">
             <label for="content">리뷰 내용</label>
-            <textarea class="form-control" id="content" th:field="*{content}" rows="5" required></textarea>
+            <textarea class="form-control" id="content" th:field="*{content}" rows="5" required style="white-space: pre-wrap;"></textarea>
         </div>
         <div class="form-group">
             <label for="starRating">별점</label>

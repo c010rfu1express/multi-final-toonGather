@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+</head>
+<body>
+<div th:replace="~{common/menubar}"></div>
+<div layout:fragment="content">
+    <nav class="navbar navbar-expand-md">
+        <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+            <li><a th:href="@{/recruit/creator/choice}" class="nav-link px-2">창작자 등록</a></li>
+            <li><a th:href="@{/recruit/job/list}" class="nav-link px-2">구인/구직</a></li>
+            <li><a th:href="@{/recruit/free/list}" class="nav-link px-2">프리랜서</a></li>
+            <li><a th:href="@{/contact}" class="nav-link px-2">Contact</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h2 class="text-center mb-4">프리랜서</h2>
+        <hr color="grey">
+        <div id="d1">
+            <table class="table table-hover table-bordered">
+                <thead class="table-dark">
+                <tr>
+                    <th scope="col">NO.</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Writer</th>
+                    <th scope="col">CREATE_DATE</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="free : ${frees}">
+                    <th scope="row" th:text="${free.board_no}"></th>
+                    <td><a th:href="@{/recruit/free/view(no=${free.board_no})}" th:text="${#strings.abbreviate(free.title, 10)}"></a></td>
+                    <td th:text="닉네임"></td>
+                    <td th:text="${#dates.format(free.created_date, 'yyyy-MM-dd')}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <p th:if="${frees == null}" style="text-align: center;">프리랜서 글이 존재하지 않습니다.</p>
+        </div>
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-secondary" th:onclick="|location.href='@{/recruit/free/insert}'|">글쓰기</button>
+        </div>
+
+        <th:block th:if="${pages != null}">
+            <div class="d-flex justify-content-center">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary btn-sm previous" th:onclick="|location.href='@{/recruit/free/list(page=${currentPage - 1})}'|" th:disabled="${currentPage == 1}">이전</button>
+                    <th:block th:each="p : ${#numbers.sequence(1, pages)}">
+                        <button type="button" class="btn btn btn-outline-dark btn-sm me-2 pages"
+                                th:text="${p}" th:onclick="|location.href='@{/recruit/free/list(page=${p})}'|"></button>
+                    </th:block>
+                    <button type="button" class="btn btn-secondary btn-sm  next" th:onclick="|location.href='@{/recruit/free/list(page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">다음</button>
+                </div>
+            </div>
+        </th:block>
+    </div>
+</div>
+
+<script th:inline="javascript">
+		/*<![CDATA[*/
+<!--		let pages = [[${pages}]];-->
+		/*]]>*/
+
+</script>
+	<script th:src="@{/js/paging.js}"></script>
+
+</body>
+</html>

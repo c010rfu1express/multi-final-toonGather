@@ -1,30 +1,18 @@
 package com.multi.toonGather.webtoon.model;
 
+import lombok.Data;
+
+@Data
 public class WebtoonDTO {
-    String id;
-    String title;
+    private int webtoon_no;
+    private String webtoon_id;
+    private int platform;
+    private String webtoon_name;
+    private String author;
+    private String thumbnailUrl;
+    private String genre;
+    private String tags;
+    private int count;
 
-    public String getId() {
-        return id;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    @Override
-    public String toString() {
-        return "WebtoonDTO{" +
-                "id='" + id + '\'' +
-                ", title='" + title + '\'' +
-                '}';
-    }
 }
