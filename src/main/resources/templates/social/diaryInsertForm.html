@@ -3,40 +3,34 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>툰게더 toonGather | 리뷰 작성</title>
+    <title>툰게더 toonGather | 다이어리 작성</title>
 </head>
 <body>
-
 <div th:replace="common/menubar.html"></div>
-<br>
 
-<div class="container">
-    <h2 class="mb-4">리뷰 작성</h2>
-    <form th:action="@{/social/createReview}" th:object="${review}" method="post">
+<div class="container mt-4">
+    <h2>다이어리 작성</h2>
+    <p>오늘 날짜: <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}"></span></p>
+    <form th:action="@{/social/createDiary}" th:object="${diary}" method="post">
         <input type="hidden" th:field="*{webtoonNo}">
         <div class="form-group">
-            <label for="title">리뷰 제목</label>
+            <label for="title">제목</label>
             <input type="text" class="form-control" id="title" th:field="*{title}" required>
         </div>
         <div class="form-group">
-            <label for="content">리뷰 내용</label>
+            <label for="content">내용</label>
             <textarea class="form-control" id="content" th:field="*{content}" rows="5" required style="white-space: pre-wrap;"></textarea>
         </div>
         <div class="form-group">
-            <label for="starRating">별점</label>
-            <select class="form-control" id="starRating" th:field="*{starRating}" required>
-                <option value="1">1점</option>
-                <option value="2">2점</option>
-                <option value="3">3점</option>
-                <option value="4">4점</option>
-                <option value="5">5점</option>
+            <label for="statusCode">상태</label>
+            <select class="form-control" id="statusCode" th:field="*{statusCode}" required>
+                <option value="C">정주행중</option>
+                <option value="R">재탕중</option>
             </select>
         </div>
-        <button type="submit" class="btn btn-primary">리뷰 작성</button>
+        <button type="submit" class="btn btn-primary">다이어리 작성</button>
         <!--<a th:href="@{/webtoon/detail(webtoonNo=${review.webtoonNo})}" class="btn btn-secondary">취소</a>-->
     </form>
 </div>
-
-
 </body>
 </html>
