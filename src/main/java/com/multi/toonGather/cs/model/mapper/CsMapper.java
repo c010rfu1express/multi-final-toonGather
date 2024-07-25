@@ -17,4 +17,8 @@ public interface CsMapper {
     void insertQuestion(QuestionDTO question);
 
     void insertQuestionFile(QuestionFilesDTO questionFilesDTO);
+
+    QuestionDTO getQuestionById(int id);
+
+    List<QuestionFilesDTO> getQuestionFilesByQuestionId(int csQNo);
 }

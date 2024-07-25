@@ -2,6 +2,7 @@ package com.multi.toonGather.cs.service;
 
 import com.multi.toonGather.cs.model.dto.CsCategoryDTO;
 import com.multi.toonGather.cs.model.dto.QuestionDTO;
+import com.multi.toonGather.cs.model.dto.QuestionFilesDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,4 +15,8 @@ public interface CsService {
     List<CsCategoryDTO> getCategories() throws Exception;
 
     boolean insertQuestion(QuestionDTO question, MultipartFile[] images, HttpServletRequest request) throws Exception;
+
+    QuestionDTO getQuestionById(int id) throws Exception;
+
+    List<QuestionFilesDTO> getQuestionByQuestionId(int csQNo) throws Exception;
 }

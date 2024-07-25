@@ -29,8 +29,6 @@ public class CsServiceImpl implements CsService {
     // 내 문의글 목록 조회
     @Override
     public List<QuestionDTO> myQuestionList(int userNo) throws Exception {
-        System.out.println("CsServiceImpl myQuestionList 도착.");
-
         return csMapper.myQuestionList(userNo);
     }
 
@@ -83,5 +81,17 @@ public class CsServiceImpl implements CsService {
             e.printStackTrace();
             throw e; // 트랜잭션 롤백을 위해 예외를 다시 던짐
         }
+    }
+
+    // 문의글 상세 조회
+    @Override
+    public QuestionDTO getQuestionById(int id) throws Exception {
+        return csMapper.getQuestionById(id);
+    }
+
+    // 문의글 상세 조회 이미지 조회
+    @Override
+    public List<QuestionFilesDTO> getQuestionByQuestionId(int csQNo) throws Exception {
+        return csMapper.getQuestionFilesByQuestionId(csQNo);
     }
 }

@@ -119,7 +119,9 @@
                 <tbody>
                 <tr th:each="myQuestion : ${questions}">
                     <td th:text="${myQuestion.csQNo}"></td>
-                    <td th:text="${myQuestion.csQTitle}"></td>
+                    <td>
+                        <a th:href="@{/cs/questionDetail/{id}(id=${myQuestion.csQNo})}" th:text="${myQuestion.csQTitle}"></a>
+                    </td>
                     <td th:text="${#dates.format(myQuestion.createdDate, 'yyyy-MM-dd')}"></td>
                     <td th:text="${myQuestion.csQStatus.csStatusDesc}"></td>
                 </tr>

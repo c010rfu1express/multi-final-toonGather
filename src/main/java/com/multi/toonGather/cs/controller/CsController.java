@@ -2,15 +2,13 @@ package com.multi.toonGather.cs.controller;
 
 import com.multi.toonGather.cs.model.dto.CsCategoryDTO;
 import com.multi.toonGather.cs.model.dto.QuestionDTO;
+import com.multi.toonGather.cs.model.dto.QuestionFilesDTO;
 import com.multi.toonGather.cs.service.CsService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -80,6 +78,15 @@ public class CsController {
             model.addAttribute("errorMessage", "문의글 등록 중 오류가 발생했습니다.");
             return "cs/insertQuestion";
         }
+    }
+
+    @GetMapping("/questionDetail/{id}")
+    public String questionDetail(@PathVariable("id") int id, Model model) throws Exception {
+        QuestionDTO question = csService.getQuestionById(id);
+        List<QuestionFilesDTO> questionFiles = csService.getQuestionByQuestionId(question.getCsQNo());
+        model.addAttribute("question", question);
+        model.addAttribute("questionFiles", questionFiles);
+        return "cs/questionDetail";
     }
 
 }
