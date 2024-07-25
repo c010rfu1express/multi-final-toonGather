@@ -11,7 +11,7 @@
 <div class="container mt-4">
     <h2>리뷰 상세</h2>
     <div th:if="${review != null}">
-        <h3 th:text="${review.webtoon.webtoonName}">웹툰 제목</h3>
+        <h3 th:text="${review.webtoon.webtoon_name}">웹툰 제목</h3>
         <p>작성자: <span th:text="${review.writer.nickname}"></span></p>
         <p>별점: <span th:text="${review.starRating}"></span></p>
         <h4 th:text="${review.title}">리뷰 제목</h4>

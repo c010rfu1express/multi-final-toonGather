@@ -30,7 +30,7 @@
         </thead>
         <tbody>
         <tr th:each="review : ${reviews}" class="clickable-row" th:attr="data-href=@{/social/reviewDetail(reviewNo=${review.reviewNo})}">
-            <td th:text="${review.webtoon.webtoonName}"></td>
+            <td th:text="${review.webtoon.webtoon_name}"></td>
             <td th:text="${review.title}"></td>
             <td th:text="${review.starRating}"></td>
             <td th:text="${#temporals.format(review.createdDate, 'yyyy-MM-dd HH:mm')}"></td>

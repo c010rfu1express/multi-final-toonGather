@@ -2,8 +2,9 @@ package com.multi.toonGather.social.controller;
 
 import com.multi.toonGather.social.model.dto.DiaryDTO;
 import com.multi.toonGather.social.model.dto.ReviewDTO;
-import com.multi.toonGather.social.model.dto.WriterDTO;
 import com.multi.toonGather.social.service.SocialService;
+import com.multi.toonGather.user.model.dto.UserDTO;
+import com.multi.toonGather.webtoon.model.WebtoonDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,10 +37,11 @@ public class SocialController {
 
     // 리뷰
     @GetMapping("/reviewInsertForm")
-    public String showReviewInsertForm(@RequestParam("webtoonNo") int webtoonNo,
-                                       Model model) {
+    public String showReviewInsertForm(@RequestParam("webtoon.webtoon_no") int webtoonNo, Model model) {
         ReviewDTO review = new ReviewDTO();
-        review.setWebtoonNo(webtoonNo);
+        WebtoonDTO webtoon = new WebtoonDTO();
+        webtoon.setWebtoon_no(webtoonNo);
+        review.setWebtoon(webtoon);
 
         model.addAttribute("review", review);
 
@@ -49,7 +51,7 @@ public class SocialController {
     @PostMapping("/createReview")
     public String createReview(@ModelAttribute ReviewDTO review) {
         // 현재 로그인한 사용자 정보 설정 (Spring Security 구현 후 수정 필요)
-        WriterDTO writer = new WriterDTO();
+        UserDTO writer = new UserDTO();
         writer.setUserNo(1);  // 테스트용: userNo=1 하드코딩
         review.setWriter(writer);
 
@@ -105,9 +107,12 @@ public class SocialController {
 
     // 다이어리
     @GetMapping("/diaryInsertForm")
-    public String showDiaryInsertForm(@RequestParam("webtoonNo") int webtoonNo, Model model) {
+    public String showDiaryInsertForm(@RequestParam("webtoon.webtoon_no") int webtoonNo, Model model) {
         DiaryDTO diary = new DiaryDTO();
-        diary.setWebtoonNo(webtoonNo);
+        WebtoonDTO webtoon = new WebtoonDTO();
+        webtoon.setWebtoon_no(webtoonNo);
+        diary.setWebtoon(webtoon);
+
         model.addAttribute("diary", diary);
         return "social/diaryInsertForm";
     }
@@ -115,7 +120,7 @@ public class SocialController {
     @PostMapping("/createDiary")
     public String createDiary(@ModelAttribute DiaryDTO diary) {
         // 현재 로그인한 사용자 정보 설정 (Spring Security 구현 후 수정 필요)
-        WriterDTO writer = new WriterDTO();
+        UserDTO writer = new UserDTO();
         writer.setUserNo(1);  // 테스트용: userNo=1 하드코딩
         diary.setWriter(writer);
 

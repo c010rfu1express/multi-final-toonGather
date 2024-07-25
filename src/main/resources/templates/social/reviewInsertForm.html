@@ -13,7 +13,7 @@
 <div class="container">
     <h2 class="mb-4">리뷰 작성</h2>
     <form th:action="@{/social/createReview}" th:object="${review}" method="post">
-        <input type="hidden" th:field="*{webtoonNo}">
+        <input type="hidden" th:field="*{webtoon.webtoon_no}">
         <div class="form-group">
             <label for="title">리뷰 제목</label>
             <input type="text" class="form-control" id="title" th:field="*{title}" required>
@@ -33,7 +33,6 @@
             </select>
         </div>
         <button type="submit" class="btn btn-primary">리뷰 작성</button>
-        <!--<a th:href="@{/webtoon/detail(webtoonNo=${review.webtoonNo})}" class="btn btn-secondary">취소</a>-->
     </form>
 </div>
 
