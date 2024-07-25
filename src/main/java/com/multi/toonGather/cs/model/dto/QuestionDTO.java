@@ -1,6 +1,5 @@
 package com.multi.toonGather.cs.model.dto;
 
-import jakarta.persistence.Entity;
 import lombok.Data;
 
 import java.sql.Timestamp;

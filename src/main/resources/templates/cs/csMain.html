@@ -2,7 +2,6 @@
 <html xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -138,6 +137,9 @@
         </div>
         <div th:if="${questions == null || questions.isEmpty()}">
             <p>No questions found.</p>
+        </div>
+        <div class="create-button-container">
+            <a href="/cs/insertQuestion" class="create-button">문의글 작성</a>
         </div>
     </section>
 </main>

@@ -21,6 +21,16 @@
         </association>
     </resultMap>
 
+    <resultMap id="categoryResultMap" type="com.multi.toonGather.cs.model.dto.CsCategoryDTO">
+        <result property="csCategoryCode" column="cs_category_code"/>
+        <result property="csCategoryDesc" column="cs_category_desc"/>
+    </resultMap>
+
+    <resultMap id="statusResultMap" type="com.multi.toonGather.cs.model.dto.CsStatusDTO">
+        <result property="csStatusCode" column="cs_status_code"/>
+        <result property="csStatusDesc" column="cs_status_desc"/>
+    </resultMap>
+
     <select id="myQuestionList" parameterType="int" resultMap="questionResultMap">
         SELECT q.*, c.cs_category_desc, s.cs_status_desc
         FROM cs_question q
@@ -28,4 +38,19 @@
         LEFT JOIN cs_status s ON q.cs_q_status_code = s.cs_status_code
         WHERE q.cs_q_writer_no = #{userNo}
     </select>
+
+    <select id="getCategories" resultMap="categoryResultMap">
+        SELECT * FROM cs_category
+    </select>
+
+    <insert id="insertQuestion" parameterType="com.multi.toonGather.cs.model.dto.QuestionDTO" useGeneratedKeys="true" keyProperty="csQNo">
+        INSERT INTO cs_question (cs_q_title, cs_q_content, cs_q_writer_no, cs_q_category_code, cs_q_status_code, cs_q_view_count, created_date, modified_date)
+        VALUES (#{csQTitle}, #{csQContent}, #{csQWriterNo}, #{csQCategory.csCategoryCode}, 'N', 0, NOW(), NOW())
+    </insert>
+
+    <insert id="insertQuestionFile" parameterType="com.multi.toonGather.cs.model.dto.QuestionFilesDTO">
+        INSERT INTO cs_question_files (cs_q_no, cs_q_origin_name, cs_q_saved_name, created_date, modified_date)
+        VALUES (#{csQNo}, #{originName}, #{savedName}, NOW(), NOW())
+    </insert>
+
 </mapper>
