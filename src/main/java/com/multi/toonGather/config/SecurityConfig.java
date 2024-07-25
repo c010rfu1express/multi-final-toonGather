@@ -26,8 +26,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/clearMessage", "/recruit/**", "/uploadFiles/**").permitAll()
-                        .anyRequest().authenticated()
+//                        .requestMatchers("/", "/clearMessage", "/recruit/**", "/uploadFiles/**").permitAll()
+//                        .anyRequest().authenticated()
+                        .requestMatchers("/**").permitAll()
                 );
         http
                 .formLogin((auth) -> auth.loginPage("/login")

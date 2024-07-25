@@ -54,5 +54,12 @@ public class JobServiceImpl implements JobService {
         if (result == 0) new Exception("지원글 작성 실패");
     }
 
+    @Override
+    public ApplyDTO findApplyByNo(int no) throws Exception {
+        ApplyDTO applyDTO = jobMapper.selectApply(no);
+        if (applyDTO != null) new Exception("지원글 상세 조회에 실패했습니다.");
+        return applyDTO;
+    }
+
 
 }

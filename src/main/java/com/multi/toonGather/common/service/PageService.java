@@ -8,4 +8,5 @@ public interface PageService {
 
     int selectJobCount(PageDTO page) throws Exception;
 
+    int selectFreeCount(PageDTO pageDTO) throws Exception;
 }

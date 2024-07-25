@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://www.w3.org/1999/XSL/Transform">
+<html layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>지원글 조회</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous">
+    </script>
+</head>
+<body>
+<div th:replace="~{common/menubar}"></div>
+<div layout:fragment="content">
+    <nav class="navbar navbar-expand-md">
+        <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+            <li><a th:href="@{/recruit/creator/choice}" class="nav-link px-2">창작자 등록</a></li>
+            <li><a th:href="@{/recruit/job/list}" class="nav-link px-2">구인/구직</a></li>
+            <li><a th:href="@{/recruit/free/list}" class="nav-link px-2">프리랜서</a></li>
+            <li><a th:href="@{/contact}" class="nav-link px-2">Contact</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center mb-4" th:text="${apply.title}">지원글 제목</h2>
+            </div>
+            <hr color="grey">
+            <div class="card-body">
+                <div class="row" >
+                    <div class="form-group col-md-6">
+                        <label class="form-control">작성자: 닉네임</label>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="form-control">작성일: [[${apply.created_date}]]</label>
+                    </div>
+                </div>
+                <div class="mb-3 form-group">
+                    <label class="form-control" style="height:auto; padding: 10px;">내용: <br> [[${apply.content}]] <br> <br>
+                        <div th:if="${apply.img != null}">
+                            <img th:src="@{'/uploadFiles/' + ${apply.img}}" width="250" height="250" alt="지원글 이미지">
+                        </div>
+                    </label>
+                </div>
+                <div class="mt-4 text-right">
+                    <a href="/recruit/job/applyList" class="btn btn-outline-primary">목록으로</a>
+                </div>
+            </div>
+            <br>
+        </div>
+    </div>
+</div>
+</body>
+</html>
