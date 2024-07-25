@@ -19,12 +19,15 @@ public interface JournalMapper {
     @Select("SELECT * FROM in_journal WHERE journal_no = #{journalNo}")
     JournalDTO selectJournalByNo(int journalNo);
 
+    //틀렸을 수 있음.
+    @Select("SELECT * FROM in_journal WHERE title = #{title}")
+    JournalDTO selectJournalByTitle(String title);
+
     @Select("SELECT * FROM in_journal_files WHERE journal_no = #{journalNo}")
     List<JournalFileDTO> selectFilesByJournalNo(int journalNo);
 
     @Select("SELECT * FROM in_journal ORDER BY posting_date DESC")
     List<JournalDTO> selectAllJournals();
-
 
 
 
