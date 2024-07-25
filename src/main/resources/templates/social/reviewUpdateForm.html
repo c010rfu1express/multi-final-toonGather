@@ -35,5 +35,21 @@
         <a th:href="@{/social/reviewDetail(reviewNo=${review.reviewNo})}" class="btn btn-secondary">취소</a>
     </form>
 </div>
+
+<script>
+    document.getElementById('content').addEventListener('input', function() {
+        var maxLength = 1000;
+        var currentLength = this.value.length;
+        var charCountSpan = document.getElementById('charCount');
+
+        if (currentLength > maxLength) {
+            this.value = this.value.substring(0, maxLength);
+            currentLength = maxLength;
+        }
+
+        charCountSpan.textContent = currentLength;
+    });
+</script>
+
 </body>
 </html>
