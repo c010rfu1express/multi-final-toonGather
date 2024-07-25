@@ -18,4 +18,6 @@ public interface JobService {
     void updateBoard(JobDTO jobDTO) throws Exception;
 
     void insertApply(ApplyDTO applyDTO) throws Exception;
+
+    ApplyDTO findApplyByNo(int no) throws Exception;
 }

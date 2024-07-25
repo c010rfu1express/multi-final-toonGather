@@ -10,4 +10,7 @@ public interface PageMapper {
 
     @Select("SELECT COUNT(*) FROM rct_job")
     int selectJobCount() throws Exception;
+
+    @Select("SELECT COUNT(*) FROM rct_free")
+    int selectFreeCount() throws Exception;
 }

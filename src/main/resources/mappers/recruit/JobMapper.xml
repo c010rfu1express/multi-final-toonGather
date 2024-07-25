@@ -23,6 +23,17 @@
 <!--		<association property="memNo" column="writer" javaType="memberDTO" resultMap="memberResultMap" />-->
 	</resultMap>
 
+	<resultMap id="ApplyResultMap" type="applyDTO">
+		<id property="apply_no" column="board_no" />
+		<result property="board_no" column="board_no" />
+		<result property="writer" column="writer" />
+		<result property="title" column="title" />
+		<result property="content" column="content" />
+		<result property="img" column="img" />
+		<result property="created_date" column="created_date" />
+<!--		<association property="memNo" column="writer" javaType="memberDTO" resultMap="memberResultMap" />-->
+	</resultMap>
+
 	<select id="selectAll" parameterType="pageDTO" resultMap="JobResultMap">
 		SELECT
 			b.*
@@ -87,5 +98,15 @@
 		, #{ img }
 		)
 	</insert>
+
+	<select id="selectApply" parameterType="int" resultMap="ApplyResultMap">
+		SELECT
+		b.*
+		, m.user_no
+		, m.nickname
+		FROM rct_job_apply b
+		JOIN users m ON b.writer = m.user_no
+		WHERE b.apply_no = #{no}
+	</select>
 
 </mapper>
