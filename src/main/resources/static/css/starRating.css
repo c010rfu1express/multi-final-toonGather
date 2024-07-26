@@ -1,0 +1,44 @@
+.star-rating {
+  display: flex;
+  flex-direction: row-reverse;
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+  justify-content: flex-start;
+  padding: 0 0.2em;
+  text-align: center;
+  width: auto;
+}
+.star-ratings {
+    display: inline-block;
+    font-size: 1.5em; /* 별 크기 조절 */
+    text-align: right;
+    width: auto;
+}
+
+.star-rating input {
+  display: none;
+}
+
+.star-rating label {
+  -webkit-text-fill-color: transparent; /* Will override color (regardless of order) */
+  -webkit-text-stroke-width: 1.6px;
+  -webkit-text-stroke-color: #2b2a29;
+  cursor: pointer;
+}
+
+.star-rating :checked ~ label {
+  -webkit-text-fill-color: gold;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  -webkit-text-fill-color: #fff58c;
+}
+
+.star-ratings .empty-star {
+    color: #ccc; /* 비어있는 별 색상 */
+}
+
+.star-ratings .filled-star {
+    color: #f5a623; /* 채워진 별 색상 */
+}

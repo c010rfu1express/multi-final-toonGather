@@ -22,6 +22,16 @@
 <!--		<association property="memNo" column="writer" javaType="memberDTO" resultMap="memberResultMap" />-->
 	</resultMap>
 
+	<resultMap id="FreeReviewResultMap" type="freeReviewDTO">
+		<id property="review_no" column="review_no" />
+		<result property="writer" column="writer" />
+		<result property="board_no" column="board_no" />
+		<result property="content" column="content" />
+		<result property="star_rating" column="star_rating" />
+		<result property="created_date" column="created_date" />
+<!--		<association property="memNo" column="writer" javaType="memberDTO" resultMap="memberResultMap" />-->
+	</resultMap>
+
 	<select id="selectAll" parameterType="pageDTO" resultMap="FreeResultMap">
 		SELECT
 			f.*
@@ -63,5 +73,50 @@
 		JOIN users m ON f.writer = m.user_no
 		WHERE f.board_no = #{no}
 	</select>
+
+	<select id="selectReviewAll" parameterType="int" resultMap="FreeReviewResultMap">
+		SELECT
+		f.*
+		, m.user_no
+		, m.nickname
+		FROM rct_free_review f
+		JOIN users m ON f.writer = m.user_no
+		WHERE f.board_no = #{no}
+	</select>
+
+	<select id="getAverage" parameterType="int" resultType="double">
+		SELECT COALESCE(AVG(star_rating), 0.0)
+		FROM rct_free_review
+		WHERE board_no = #{no}
+	</select>
+
+	<insert id="insertReview" parameterType="freeReviewDTO">
+		INSERT INTO rct_free_review
+		(
+		writer
+		, board_no
+		, content
+		, star_rating
+		)
+		VALUES
+		(
+		1
+		, #{ board_no }
+		, #{ content }
+		, #{ star_rating }
+		)
+	</insert>
+
+	<select id="selectReview" parameterType="int" resultMap="FreeReviewResultMap">
+		SELECT
+		f.*
+		, m.user_no
+		, m.nickname
+		FROM rct_free_review f
+		JOIN users m ON f.writer = m.user_no
+		WHERE f.review_no = #{no}
+	</select>
+
+
 
 </mapper>
