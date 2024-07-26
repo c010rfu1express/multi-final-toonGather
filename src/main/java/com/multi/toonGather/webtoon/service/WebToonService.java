@@ -11,4 +11,8 @@ public interface WebToonService {
     boolean increaseCount(WebtoonDTO webtoonDTO)throws Exception;
 
     List<CommentDTO> Commentlist(WebtoonDTO webtoonDTO)throws Exception;
+
+    int insertComment(CommentDTO commentDTO)throws Exception;
+
+    int updateComment(CommentDTO commentDTO)throws Exception;
 }
