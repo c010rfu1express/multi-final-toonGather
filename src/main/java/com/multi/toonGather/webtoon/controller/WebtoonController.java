@@ -87,14 +87,12 @@ public class WebtoonController {
 
     }
     @PostMapping("/webtoon/one/update")
-    public ResponseEntity<String> updateComment(@RequestBody CommentDTO request) throws Exception {
+    public ResponseEntity<String> updateComment(@RequestBody CommentDTO commentDTO) throws Exception {
         try {
             // request에서 필요한 정보 추출
-            int commentNo = request.getCommentNo();
-            String content = request.getContent();
 
             // 댓글 수정 로직 호출 (예시: CommentService를 통해 댓글 수정)
-            System.out.println(commentNo+" "+content);
+            webToonService.updateComment(commentDTO);
 
             return ResponseEntity.ok("댓글 수정 성공");
         } catch (Exception e) {

@@ -15,4 +15,6 @@ public interface WebToonMapper {
    List<CommentDTO> Commentlist(WebtoonDTO webtoonDTO);
 
     int insertComment(CommentDTO commentDTO);
+
+    int updateComment(CommentDTO commentDTO);
 }

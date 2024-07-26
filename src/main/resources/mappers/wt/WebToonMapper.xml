@@ -33,4 +33,9 @@
         INSERT INTO wt_comment (webtoon_no, user_no, content)
         VALUES (#{webtoonNo}, #{userNo}, #{content})
     </insert>
+    <update id="updateComment" parameterType="com.multi.toonGather.webtoon.model.CommentDTO">
+        UPDATE wt_comment
+        SET content = #{content}
+        WHERE comment_no = #{commentNo};
+    </update>
 </mapper>

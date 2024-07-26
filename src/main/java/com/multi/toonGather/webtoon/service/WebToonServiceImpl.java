@@ -38,6 +38,12 @@ public class WebToonServiceImpl implements WebToonService{
     @Override
     public int insertComment(CommentDTO commentDTO) throws Exception {
         int result=webToonMapper.insertComment(commentDTO);
-        return 0;
+        return result;
+    }
+
+    @Override
+    public int updateComment(CommentDTO commentDTO) throws Exception {
+        int result=webToonMapper.updateComment(commentDTO);
+        return result;
     }
 }
