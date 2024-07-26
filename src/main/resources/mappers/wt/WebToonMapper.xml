@@ -36,6 +36,9 @@
     <update id="updateComment" parameterType="com.multi.toonGather.webtoon.model.CommentDTO">
         UPDATE wt_comment
         SET content = #{content}
-        WHERE comment_no = #{commentNo};
+        WHERE comment_no = #{commentNo}
     </update>
+    <delete id="deleteComment" parameterType="com.multi.toonGather.webtoon.model.CommentDTO">
+        DELETE FROM wt_comment WHERE comment_no = #{commentNo}
+    </delete>
 </mapper>
