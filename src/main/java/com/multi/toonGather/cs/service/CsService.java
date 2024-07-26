@@ -19,4 +19,6 @@ public interface CsService {
     QuestionDTO getQuestionById(int id) throws Exception;
 
     List<QuestionFilesDTO> getQuestionByQuestionId(int csQNo) throws Exception;
+
+    boolean updateQuestion(QuestionDTO question, MultipartFile[] images, HttpServletRequest request) throws Exception;
 }

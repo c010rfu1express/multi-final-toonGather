@@ -94,4 +94,56 @@ public class CsServiceImpl implements CsService {
     public List<QuestionFilesDTO> getQuestionByQuestionId(int csQNo) throws Exception {
         return csMapper.getQuestionFilesByQuestionId(csQNo);
     }
+
+    // 문의글 수정 메소드
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateQuestion(QuestionDTO question, MultipartFile[] images, HttpServletRequest request) throws Exception {
+        try {
+            csMapper.updateQuestion(question);
+
+            String root = request.getSession().getServletContext().getRealPath("/");
+            String filePath = root + "/uploadFiles";
+
+            // 새로운 이미지가 첨부된 경우
+            if (images != null && images.length > 0 && !images[0].isEmpty()) {
+                // 기존 이미지 삭제
+                List<QuestionFilesDTO> existingFiles = csMapper.getQuestionFilesByQuestionId(question.getCsQNo());
+                for (QuestionFilesDTO file : existingFiles) {
+                    File existingFile = new File(filePath + "/" + file.getSavedName());
+                    if (existingFile.exists()) {
+                        existingFile.delete();
+                    }
+                }
+
+                // 기존 이미지 데이터베이스에서 삭제
+                csMapper.deleteQuestionFiles(question.getCsQNo());
+
+                // 새로운 이미지 저장
+                for (MultipartFile image : images) {
+                    String originName = image.getOriginalFilename();
+                    if (originName != null && !originName.isEmpty()) {
+                        String ext = originName.substring(originName.lastIndexOf("."));
+                        String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
+
+                        try {
+                            image.transferTo(new File(filePath + "/" + savedName));
+                            QuestionFilesDTO questionFilesDTO = new QuestionFilesDTO();
+                            questionFilesDTO.setCsQNo(question.getCsQNo());
+                            questionFilesDTO.setOriginName(originName);
+                            questionFilesDTO.setSavedName(savedName);
+                            csMapper.insertQuestionFile(questionFilesDTO);
+                        } catch (IOException e) {
+                            new File(filePath + "/" + savedName).delete();
+                            throw new Exception("File upload error", e);
+                        }
+                    }
+                }
+            }
+
+            return true;
+        } catch (Exception e) {
+            throw new Exception("Update question failed", e);
+        }
+    }
 }

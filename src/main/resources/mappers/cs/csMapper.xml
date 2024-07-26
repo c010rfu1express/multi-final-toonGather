@@ -74,4 +74,17 @@
         SELECT * FROM cs_question_files WHERE cs_q_no = #{csQNo}
     </select>
 
+    <update id="updateQuestion" parameterType="com.multi.toonGather.cs.model.dto.QuestionDTO">
+        UPDATE cs_question
+        SET cs_q_title = #{csQTitle},
+        cs_q_content = #{csQContent},
+        cs_q_category_code = #{csQCategory.csCategoryCode},
+        modified_date = NOW()
+        WHERE cs_q_no = #{csQNo}
+    </update>
+
+    <delete id="deleteQuestionFiles" parameterType="int">
+        DELETE FROM cs_question_files WHERE cs_q_no = #{csQNo}
+    </delete>
+
 </mapper>
