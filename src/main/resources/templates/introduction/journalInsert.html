@@ -19,15 +19,15 @@
     <form th:action="@{/introduction/journalInsert}" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <label for="title">제목을 입력해주세요</label>
-            <input type="text" class="form-control" id="title" name="title" required>
+            <input type="text" class="form-control" id="title" name="title" maxlength="50" required>
         </div>
         <div class="form-group">
             <label for="file">이미지를 첨부해주세요</label>
             <input type="file" class="form-control-file" id="file" name="file">
         </div>
         <div class="form-group">
-            <label for="content">내용을 입력해주세요</label>
-            <textarea class="form-control" id="content" name="content" rows="10" required></textarea>
+            <label for="content">내용을 입력해주세요(1000자 이내)</label>
+            <textarea class="form-control" id="content" name="content" rows="10" maxlength="1000" required></textarea>
         </div>
         <button type="submit" class="btn btn-primary">등록</button>
         <button type="button" class="btn btn-secondary" onclick="history.back()">수정</button>
