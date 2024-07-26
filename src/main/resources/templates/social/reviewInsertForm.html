@@ -21,13 +21,24 @@
             border-radius: 4px;
             padding: 15px;
             margin-bottom: 20px;
+            display: flex;
+            align-items: start;
         }
-        .webtoon-info h2 {
+        .webtoon-image {
+            width: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 15px;
+        }
+        .webtoon-details {
+            flex-grow: 1;
+        }
+        .webtoon-details h2 {
             font-size: 24px;
             color: #333;
             margin-bottom: 10px;
         }
-        .webtoon-info p {
+        .webtoon-details p {
             font-size: 16px;
             color: #666;
             margin: 5px 0;
@@ -47,9 +58,12 @@
     <div class="review-form">
         <h1>리뷰 작성</h1>
 <!--        <div class="webtoon-info">-->
-<!--            <h2>웹툰 정보</h2>-->
-<!--            <p><strong>제목:</strong> <span th:text="${review.webtoon.webtoon_name}"></span></p>-->
-<!--            <p><strong>작가:</strong> <span th:text="${review.webtoon.author}"></span></p>-->
+<!--            <img class="webtoon-image" th:src="${review.webtoon.thumbnailUrl}" alt="웹툰 썸네일">-->
+<!--            <div class="webtoon-details">-->
+<!--                <h2>웹툰 정보</h2>-->
+<!--                <p><strong>제목:</strong> <span th:text="${review.webtoon.webtoon_name}"></span></p>-->
+<!--                <p><strong>작가:</strong> <span th:text="${review.webtoon.author}"></span></p>-->
+<!--            </div>-->
 <!--        </div>-->
         <form th:action="@{/social/createReview}" th:object="${review}" method="post">
             <input type="hidden" th:field="*{webtoon.webtoon_no}">
