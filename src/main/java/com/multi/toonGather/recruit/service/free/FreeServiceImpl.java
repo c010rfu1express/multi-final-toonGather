@@ -3,6 +3,7 @@ package com.multi.toonGather.recruit.service.free;
 
 import com.multi.toonGather.common.model.dto.PageDTO;
 import com.multi.toonGather.recruit.model.dto.free.FreeDTO;
+import com.multi.toonGather.recruit.model.dto.free.FreeReviewDTO;
 import com.multi.toonGather.recruit.model.mapper.FreeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,5 +46,44 @@ public class FreeServiceImpl implements FreeService {
     public void deleteBoard(int no) throws Exception {
         int result = freeMapper.deleteBoard(no);
         if (result > 0) new Exception("프리랜서 글 삭제에 실패했습니다.");
+    }
+
+    @Override
+    public List<FreeReviewDTO> selectReviewAll(int no) throws Exception {
+        List<FreeReviewDTO> listReview = freeMapper.selectReviewAll(no);
+        if (listReview == null) new Exception("리뷰 리스트 조회 실패");
+
+        return listReview;
+    }
+
+    @Override
+    public double getAverage(int no) throws Exception {
+        double result = freeMapper.getAverage(no);
+        return result;
+    }
+
+    @Override
+    public void insertReview(FreeReviewDTO freeReviewDTO) throws Exception {
+        int result = freeMapper.insertReview(freeReviewDTO);
+        if (result == 0) new Exception("리뷰 작성 실패");
+    }
+
+    @Override
+    public FreeReviewDTO selectReview(int no) throws Exception {
+        FreeReviewDTO freeReviewDTO = freeMapper.selectReview(no);
+        if (freeReviewDTO != null) new Exception("리뷰 상세 조회에 실패했습니다.");
+        return freeReviewDTO;
+    }
+
+    @Override
+    public void updateReview(FreeReviewDTO dto) throws Exception {
+        int result = freeMapper.updateReview(dto);
+        if (result > 0) new Exception(("리뷰 수정에 실패했습니다."));
+    }
+
+    @Override
+    public void deleteReview(int reviewNo) throws Exception {
+        int result = freeMapper.deleteReview(reviewNo);
+        if (result > 0) new Exception("리뷰 삭제에 실패했습니다.");
     }
 }

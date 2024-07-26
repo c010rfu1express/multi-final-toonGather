@@ -5,6 +5,7 @@ import com.multi.toonGather.common.service.PageService;
 import com.multi.toonGather.recruit.model.dto.creator.CreatorDTO;
 import com.multi.toonGather.recruit.model.dto.creator.NaverDTO;
 import com.multi.toonGather.recruit.model.dto.free.FreeDTO;
+import com.multi.toonGather.recruit.model.dto.free.FreeReviewDTO;
 import com.multi.toonGather.recruit.model.dto.job.ApplyDTO;
 import com.multi.toonGather.recruit.model.dto.job.JobDTO;
 import com.multi.toonGather.recruit.service.creator.CreatorService;
@@ -496,7 +497,11 @@ public class RecruitController {
 
         try {
             FreeDTO freeDTO = freeService.findBoardByNo(no);
+            List<FreeReviewDTO> list = freeService.selectReviewAll(no);
             model.addAttribute("free", freeDTO);
+            model.addAttribute("list", list);
+            double avg = freeService.getAverage(no);
+            model.addAttribute("avg", avg);
         } catch (Exception e) {
             model.addAttribute("msg", "게시글 조회 실패");
         }
@@ -561,6 +566,45 @@ public class RecruitController {
             model.addAttribute("msg", "게시글 삭제 실패");
         }
         return "redirect:/recruit/free/list";
+    }
+
+    @PostMapping("/free/review/insert")
+    public String insert(@RequestParam("rating") int rating, @RequestParam("reply") String reply, @RequestParam("board_no") int board_no, Model model) throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        // 작성자의 memberNo와 userName을 설정
+//        MemberDTO writer = new MemberDTO();
+        FreeReviewDTO freeReviewDTO = new FreeReviewDTO();
+//        writer.setUser_no(userDetails.getMemberNo());
+//        writer.setNickname(userDetails.getNickname());
+//        freeReviewDTO.setMemNo(writer);
+
+
+        freeReviewDTO.setContent(reply);
+        freeReviewDTO.setStar_rating(rating);
+        freeReviewDTO.setWriter(1);
+        freeReviewDTO.setBoard_no(board_no);
+        freeService.insertReview(freeReviewDTO);
+
+        return "redirect:/recruit/free/view?no=" + freeReviewDTO.getBoard_no();
+    }
+
+    @PostMapping("/free/review/update")
+    public String updateReview(@RequestParam("review_no") int review_no, @RequestParam("rating") int rating, @RequestParam("content") String content, Model model) throws Exception {
+        FreeReviewDTO dto = freeService.selectReview(review_no);
+        dto.setContent(content);
+        dto.setStar_rating(rating); // 별점 업데이트
+
+        // 리뷰 업데이트
+        freeService.updateReview(dto);
+
+        return "redirect:/recruit/free/view?no=" + dto.getBoard_no();
+    }
+
+    @RequestMapping("/free/review/delete")
+    public String deleteReview(@RequestParam("board_no") String board_no ,@RequestParam("review_no") int review_no) throws Exception {
+        freeService.deleteReview(review_no);
+        return "redirect:/recruit/free/view?no=" + board_no;
     }
 
 }
