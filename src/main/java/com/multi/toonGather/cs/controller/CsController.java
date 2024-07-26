@@ -89,4 +89,45 @@ public class CsController {
         return "cs/questionDetail";
     }
 
+    @GetMapping("/updateQuestion/{csQNo}")
+    public String updateQuestion(@PathVariable("csQNo") int csQNo, Model model) throws Exception {
+        QuestionDTO question = csService.getQuestionById(csQNo);
+        List<CsCategoryDTO> categories = csService.getCategories();
+        model.addAttribute("question", question);
+        model.addAttribute("categories", categories);
+        return "cs/updateQuestion";
+    }
+
+    @PostMapping("/update")
+    public String updateQuestion(@RequestParam("csQNo") int csQNo,
+                                 @RequestParam("csQTitle") String title,
+                                 @RequestParam("csQCategory") String category,
+                                 @RequestParam("csQContent") String content,
+                                 @RequestParam("images") MultipartFile[] images,
+                                 HttpServletRequest request) throws Exception {
+        QuestionDTO question = csService.getQuestionById(csQNo);
+        CsCategoryDTO categoryDTO = new CsCategoryDTO();
+        categoryDTO.setCsCategoryCode(category);
+        question.setCsQTitle(title);
+        question.setCsQCategory(categoryDTO);
+        question.setCsQContent(content);
+
+        boolean isSuccess = csService.updateQuestion(question, images, request);
+        if (isSuccess) {
+            return "redirect:/cs/questionDetail/" + question.getCsQNo();
+        } else {
+            return "redirect:/cs/update/" + question.getCsQNo();
+        }
+    }
+
+    @GetMapping("/deleteQuestion/{csQNo}")
+    public String deleteQuestion(@PathVariable("csQNo") int csQNo, HttpServletRequest request) throws Exception {
+        boolean isDeleted = csService.deleteQuestion(csQNo, request);
+        if (isDeleted) {
+            return "redirect:/cs/csMain";
+        } else {
+            return "redirect:/cs/questionDetail/" + csQNo;
+        }
+    }
+
 }
