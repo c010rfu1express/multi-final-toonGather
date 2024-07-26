@@ -3,6 +3,7 @@ package com.multi.toonGather.recruit.model.mapper;
 
 import com.multi.toonGather.common.model.dto.PageDTO;
 import com.multi.toonGather.recruit.model.dto.free.FreeDTO;
+import com.multi.toonGather.recruit.model.dto.free.FreeReviewDTO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Update;
@@ -23,4 +24,20 @@ public interface FreeMapper {
 
     @Delete("DELETE FROM rct_free WHERE board_no = #{no}")
     int deleteBoard(int no) throws Exception;
+
+
+    List<FreeReviewDTO> selectReviewAll(int no) throws Exception;
+
+
+    double getAverage(int no) throws Exception;
+
+    int insertReview(FreeReviewDTO freeReviewDTO) throws Exception;
+
+    FreeReviewDTO selectReview(int no) throws Exception;
+
+    @Update("UPDATE rct_free_review SET content = #{content}, star_rating = #{star_rating} WHERE review_no = #{review_no}")
+    int updateReview(FreeReviewDTO dto) throws Exception;
+
+    @Delete("DELETE FROM rct_free_review WHERE review_no = #{reviewNo}")
+    int deleteReview(int reviewNo) throws Exception;
 }
