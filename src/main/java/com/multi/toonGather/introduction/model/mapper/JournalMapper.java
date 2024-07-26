@@ -37,6 +37,7 @@ public interface JournalMapper {
 
 
 
+
     //    int insertJournal(JournalDTO journalDTO) throws Exception;
 //
 //    @Update("UPDATE in_journal SET ")

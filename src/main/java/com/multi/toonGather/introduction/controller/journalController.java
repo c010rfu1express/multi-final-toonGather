@@ -38,8 +38,6 @@ public class journalController {
                                 @RequestParam("content") String content,
                                 @RequestParam("file") MultipartFile file) {
         try {
-//            journalService.insertJournal(title, content);
-//            journalService.insertJournalFile(file);
             journalService.insertJournal(title, content, file);
             return "redirect:/introduction/journalList";
         } catch (Exception e) {
@@ -47,22 +45,13 @@ public class journalController {
             return "error";
         }
     }
-//    @GetMapping("introduction/journalList")
-//    public String getJournalDetails(@RequestParam("id") int journalNo, Model model) {
-//        JournalDTO journal = journalService.getJournal(journalNo);
-//        List<JournalFileDTO> files = journalService.getJournalFiles(journalNo);
-//
-//        model.addAttribute("journal", journal);
-//        model.addAttribute("files", files);
-//        return "journalDetails"; // journalDetail.html
-//    }
 
 
-//    @GetMapping(value = {"introduction/journalDetail"})
-//    public String journal_Detail(JournalDTO journalDTO, Model model){
-//
-//        model.addAttribute("journalDetail", journalDTO);
-//        return "introduction/journalDetail";
-//
-//    }
+    @GetMapping(value = {"introduction/journalDetail"})
+    public String journalDetail(@RequestParam(value = "title", required = true) String title, Model model){
+        JournalDTO journalDTO = journalService.getJournalByTitle(title);
+        model.addAttribute("journal", journalDTO);
+        return "introduction/journalDetail";
+
+    }
 }

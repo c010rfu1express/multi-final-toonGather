@@ -30,6 +30,10 @@ public class JournalService {
         return journalMapper.selectAllJournals();
     }
 
+    public JournalDTO getJournalByTitle(String title) {
+        return journalMapper.selectJournalByTitle(title);
+    }
+
     @Transactional
     public void insertJournal(String title, String content, MultipartFile file) throws Exception {
         JournalDTO journalDTO = new JournalDTO();
