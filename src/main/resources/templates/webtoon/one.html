@@ -196,6 +196,7 @@
                 <p class="comment-text" th:text="${comment.content}"></p>
             </div>
             <div class="comments-footer">
+                <th:block th:if="${user.userNo == comment.userNo}">
                 <button type="button" class="btn btn-primary btn-edit" th:data-comment-no="${comment.commentNo}">
                     수정
                 </button>
@@ -205,7 +206,7 @@
                 <input type="hidden"  name="webtoon_id" th:value="${one.webtoon_id}">
                 <button type="submit" class="btn btn-danger">삭제</button>
             </form>
-
+                </th:block>
 
             </div>
         </div>
@@ -349,7 +350,6 @@
                 button.addEventListener('click', handleEditButtonClick);
                   }
             };
-
             // '저장' 버튼 클릭 시 handleEditSave 함수 실행
             button.addEventListener('click', handleEditSave);
 

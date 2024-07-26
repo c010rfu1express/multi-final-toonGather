@@ -46,4 +46,12 @@ public class WebToonServiceImpl implements WebToonService{
         int result=webToonMapper.updateComment(commentDTO);
         return result;
     }
+
+    @Override
+    public int deleteComment(CommentDTO commentDTO) throws Exception{
+        int result=webToonMapper.deleteComment(commentDTO);
+        return result;
+    }
+
+
 }
