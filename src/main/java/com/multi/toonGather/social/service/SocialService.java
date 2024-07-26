@@ -24,4 +24,9 @@ public interface SocialService {
 
     // 다이어리
     void createDiary(DiaryDTO diary);
+    List<DiaryDTO> getDiariesByUser(int userNo);
+    void incrementDiaryViewCount(int diaryNo);
+    DiaryDTO getDiaryByNo(int diaryNo);
+    void updateDiary(DiaryDTO diary);
+    void deleteDiary(int diaryNo);
 }
