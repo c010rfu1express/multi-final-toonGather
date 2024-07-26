@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>툰게더 toonGather | 리뷰 목록</title>
+    <title>툰게더 toonGather | 다이어리 목록</title>
     <style>
         .clickable-row {
             cursor: pointer;
@@ -17,25 +17,25 @@
 <div th:replace="common/menubar.html"></div>
 
 <div class="container mt-4">
-    <h2>리뷰 목록</h2>
+    <h2>다이어리 목록</h2>
     <br>
     <table class="table">
         <thead>
         <tr>
             <th>웹툰 제목</th>
-            <th>리뷰 제목</th>
-            <th>별점</th>
+            <th>다이어리 제목</th>
+            <th>상태</th>
             <th>작성일</th>
             <th>조회수</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="review : ${reviews}" class="clickable-row" th:attr="data-href=@{/social/reviewDetail(reviewNo=${review.reviewNo})}">
-            <td th:text="${review.webtoon.webtoon_name}"></td>
-            <td th:text="${review.title}"></td>
-            <td th:text="${review.starRating}"></td>
-            <td th:text="${#temporals.format(review.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
-            <td th:text="${review.viewCnt}"></td>
+        <tr th:each="diary : ${diaries}" class="clickable-row" th:attr="data-href=@{/social/diaryDetail(diaryNo=${diary.diaryNo})}">
+            <td th:text="${diary.webtoon.webtoon_name}"></td>
+            <td th:text="${diary.title}"></td>
+            <td th:text="${diary.statusCode == 'C' ? '정주행중' : '재탕중'}"></td>
+            <td th:text="${#temporals.format(diary.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${diary.viewCnt}"></td>
         </tr>
         </tbody>
     </table>
