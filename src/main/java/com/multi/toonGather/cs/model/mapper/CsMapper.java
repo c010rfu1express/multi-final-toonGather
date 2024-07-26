@@ -25,4 +25,6 @@ public interface CsMapper {
     void updateQuestion(QuestionDTO question);
 
     void deleteQuestionFiles(int csQNo);
+
+    void deleteQuestion(int csQNo);
 }

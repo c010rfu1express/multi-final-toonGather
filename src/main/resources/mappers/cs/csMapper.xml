@@ -87,4 +87,8 @@
         DELETE FROM cs_question_files WHERE cs_q_no = #{csQNo}
     </delete>
 
+    <delete id="deleteQuestion" parameterType="int">
+        DELETE FROM cs_question WHERE cs_q_no = #{csQNo}
+    </delete>
+
 </mapper>

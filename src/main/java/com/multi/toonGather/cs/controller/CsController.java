@@ -120,4 +120,14 @@ public class CsController {
         }
     }
 
+    @GetMapping("/deleteQuestion/{csQNo}")
+    public String deleteQuestion(@PathVariable("csQNo") int csQNo, HttpServletRequest request) throws Exception {
+        boolean isDeleted = csService.deleteQuestion(csQNo, request);
+        if (isDeleted) {
+            return "redirect:/cs/csMain";
+        } else {
+            return "redirect:/cs/questionDetail/" + csQNo;
+        }
+    }
+
 }

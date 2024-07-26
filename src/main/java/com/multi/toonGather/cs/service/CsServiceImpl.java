@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.beans.Transient;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -144,6 +143,31 @@ public class CsServiceImpl implements CsService {
             return true;
         } catch (Exception e) {
             throw new Exception("Update question failed", e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteQuestion(int csQNo, HttpServletRequest request) throws Exception {
+        try {
+            // 문의글 삭제 (ON DELETE CASCADE 적용)
+            csMapper.deleteQuestion(csQNo);
+
+            // 파일 정보 가져오기
+            List<QuestionFilesDTO> files = csMapper.getQuestionFilesByQuestionId(csQNo);
+
+            // 파일 삭제
+            for (QuestionFilesDTO file : files) {
+                File delFile = new File(request.getSession().getServletContext().getRealPath("/") + "/uploadFiles/" + file.getSavedName());
+                if (delFile.exists()) {
+                    delFile.delete();
+                }
+            }
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to delete question");
         }
     }
 }
