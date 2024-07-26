@@ -20,11 +20,45 @@ public class UserServiceImpl implements UserService {
     }
 
     public String findId(UserDTO userDTO) throws Exception{
-        UserDTO response = userMapper.selectOne(userDTO.getContactNumber());
+        UserDTO response = userMapper.selectOneByContactNumber(userDTO.getContactNumber());
         System.out.println("userDTO: "+ userDTO);
         System.out.println("response: "+ response);
         return response.getUserId();
 //        if(userDTO.getNickname() == response.getNickname()) return response.getUserId();
 //        else return "ERROR";    //추후변경해야함!
     }
+
+    public String findPw(UserDTO userDTO) throws Exception{
+        UserDTO response = userMapper.selectOneByUserIdAndEmail(userDTO.getUserId(), userDTO.getEmail());
+        System.out.println("userDTO: "+ userDTO);
+        System.out.println("response: "+ response);
+        return response.getPassword();
+//        if(userDTO.getNickname() == response.getNickname()) return response.getUserId();
+//        else return "ERROR";    //추후변경해야함!
+    }
+
+    public UserDTO getProfile(int userNo) throws Exception {
+        try {
+            UserDTO response = userMapper.selectOneByUserNo(Integer.toString(userNo));
+            System.out.println("userNo: " + userNo);
+            System.out.println("response: " + response);
+
+            if (response == null) {
+                System.err.println("[ERROR] getProfile 유저번호에 대응되는 프로필 찾지 못함. [userNo: " + userNo + "]");
+            }
+            return response;
+        } catch(Exception e) {
+            System.err.println("[ERROR] getProfile 예외처리 오류: " + e.getMessage());
+            return null;
+        }
+
+    }
+
+    public void updateProfile(int userNo, UserDTO userDTO) throws Exception {
+        System.out.println("userNo: " + userNo);
+        System.out.println("userDTO: " + userDTO);
+        int result = userMapper.updateUser(userNo, userDTO);
+        if(result == 0) new Exception("[ERROR] updateUser 실패. [userNo: " + userNo + "]");
+    }
+
 }

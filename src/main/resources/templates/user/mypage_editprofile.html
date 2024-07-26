@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html layout:decorate="~{layout}">
+<head>
+  <title>KHG70: 프로필수정</title>
+  <meta charset="UTF-8">
+  <style>
+    .navbar {
+      position: fixed;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+
+<div th:replace="~{common/menubar}"></div>
+<div layout:fragment="content">
+  <nav class="navbar navbar-expand-md">
+    <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+      <li><a th:href="@{/user/login}" class="nav-link px-2">나의 웹툰</a></li>
+      <li><a th:href="@{/user/signup}" class="nav-link px-2">나의 소셜</a></li>
+      <li><a th:href="@{/user/my}" class="nav-link px-2">나의 채용</a></li>
+      <li><a th:href="@{/user/login}" class="nav-link px-2">나의 소식</a></li>
+      <li><a th:href="@{/user/my/editprofile}" class="nav-link px-2">프로필 수정</a></li>
+      <li><a th:href="@{/user/my}" class="nav-link px-2">나의 결제</a></li>
+    </ul>
+  </nav>
+</div>
+<div>
+  <form th:action="@{/user/my/editprofile}" th:object="${user}" method="post">
+    아이디 : <input type="text" th:field="*{userId}" readonly/> (중복불가)<br>
+    비밀번호 : <input type="password" th:field="*{password}"/><br>
+    비밀번호 확인 : <br>
+    닉네임 : <input type="text" th:field="*{nickname}"/> (중복불가)<br>
+    연락처 : <input type="text" th:field="*{contactNumber}"/><br>
+    성별 : <select th:field="*{gender}">
+    <option value="P">성별을 공개하지 않습니다
+    <option value="F">여
+    <option value="M">남</select><br>
+    생년월일 : <input type="text" th:field="*{dateOfBirth}"/><br>
+    이메일 : <input type="text" th:field="*{email}"/> (중복불가)<br>
+    자기소개(선택사항) : <input type="text" th:field="*{bio}"/><br>
+    <input type="checkbox" th:field="*{termsAgreement}" disabled/>본인은 툰게더 회원 약관에 동의합니다.<br>
+
+    <input type="submit">수정확인
+    <a href="#">탈퇴하기</a>
+  </form>
+  <!--    <form th:action="@{/user/signup}" th:object="${user}" method="post">-->
+  <!--        아이디 : <input type="text" name="userId"><br>-->
+  <!--        비밀번호 : <input type="password" name="password"><br>-->
+  <!--        비밀번호 확인 : <br>-->
+  <!--        닉네임 : <input type="text" name="nickname"><br>-->
+  <!--        연락처 : <input type="text" name="contactNumber"><br>-->
+  <!--        성별 : <select name="gender">-->
+  <!--        <option>성별을 공개하지 않습니다-->
+  <!--        <option>여-->
+  <!--        <option>남</select><br>-->
+  <!--        생년월일 : <input type="text" name="dateOfBirth"><br>-->
+  <!--        이메일 : <input type="text" name="email"><br>-->
+  <!--        자기소개(선택사항) : <input type="text" name="bio"><br>-->
+  <!--        <input type="checkbox" name="termsAgreement">본인은 툰게더 회원 약관에 동의합니다.<br>-->
+
+  <!--        <input type="submit">가입하기-->
+  <!--    </form>-->
+</div>
+</body>
+</html>
