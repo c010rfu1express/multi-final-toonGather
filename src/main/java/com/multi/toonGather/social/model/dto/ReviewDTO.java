@@ -1,5 +1,7 @@
 package com.multi.toonGather.social.model.dto;
 
+import com.multi.toonGather.user.model.dto.UserDTO;
+import com.multi.toonGather.webtoon.model.WebtoonDTO;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -18,7 +20,7 @@ import java.time.LocalDateTime;
 public class ReviewDTO {
     private int reviewNo;
     private int webtoonNo;
-    private WriterDTO writer;
+    private UserDTO writer;
     private WebtoonDTO webtoon;
     private String title;
     private String content;
