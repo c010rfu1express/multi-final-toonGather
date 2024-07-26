@@ -75,7 +75,7 @@
         )
     </insert>
 
-    <select id="selectOne" parameterType="string" resultType="userDTO">
+    <select id="selectOneByContactNumber" parameterType="string" resultType="userDTO">
         SELECT
         user_no AS userNo,
         type_code AS typeCode,
@@ -97,4 +97,72 @@
         FROM users
         WHERE contact_number = #{contactNumber}
     </select>
+
+    <select id="selectOneByUserIdAndEmail" parameterType="map" resultType="userDTO">
+        SELECT
+        user_no AS userNo,
+        type_code AS typeCode,
+        auth_code AS authCode,
+        user_id AS userId,
+        password,
+        nickname,
+        contact_number AS contactNumber,
+        email,
+        profile_image_path AS profileImagePath,
+        bio,
+        gender,
+        date_of_birth AS dateOfBirth,
+        real_name AS realName,
+        terms_agreement AS termsAgreement,
+        terms_agreement_datetime AS termsAgreementDatetime,
+        registration_datetime AS registrationDatetime,
+        last_modified_datetime AS lastModifiedDatetime
+        FROM users
+        WHERE user_id = #{userId} AND email = #{email}
+    </select>
+
+    <select id="selectOneByUserNo" parameterType="string" resultType="userDTO">
+        SELECT
+        user_no AS userNo,
+        type_code AS typeCode,
+        auth_code AS authCode,
+        user_id AS userId,
+        password,
+        nickname,
+        contact_number AS contactNumber,
+        email,
+        profile_image_path AS profileImagePath,
+        bio,
+        gender,
+        date_of_birth AS dateOfBirth,
+        real_name AS realName,
+        terms_agreement AS termsAgreement,
+        terms_agreement_datetime AS termsAgreementDatetime,
+        registration_datetime AS registrationDatetime,
+        last_modified_datetime AS lastModifiedDatetime
+        FROM users
+        WHERE user_no = #{userNo}
+    </select>
+
+    <update id="updateUser" parameterType="userDTO">
+        UPDATE users
+        SET
+            type_code = #{typeCode},
+            auth_code = #{authCode},
+            user_id = #{userId},
+            password = #{password},
+            nickname = #{nickname},
+            contact_number = #{contactNumber},
+            email = #{email},
+            profile_image_path = #{profileImagePath},
+            bio = #{bio},
+            gender = #{gender},
+            date_of_birth = #{dateOfBirth},
+            real_name = #{realName},
+            terms_agreement = #{termsAgreement},
+            terms_agreement_datetime = #{termsAgreementDatetime},
+            registration_datetime = #{registrationDatetime},
+            last_modified_datetime = #{lastModifiedDatetime}
+        WHERE user_no = #{userNo}
+    </update>
 </mapper>
