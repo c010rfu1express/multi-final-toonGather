@@ -23,6 +23,7 @@ public class journalController {
     @GetMapping(value = {"introduction/journalList"})
     public String journalList(Model model){
         List<JournalDTO> journals = journalService.getAllJournals();
+        System.out.println("Retrieved journals: " + journals);  // 로그 출력 : 실제로 데이터가 반환되고 있는지 확인하기 위해, 컨트롤러에서 로그를 출력
         model.addAttribute("journals", journals);
         return "introduction/journalList";
     }
@@ -37,6 +38,8 @@ public class journalController {
                                 @RequestParam("content") String content,
                                 @RequestParam("file") MultipartFile file) {
         try {
+//            journalService.insertJournal(title, content);
+//            journalService.insertJournalFile(file);
             journalService.insertJournal(title, content, file);
             return "redirect:/introduction/journalList";
         } catch (Exception e) {

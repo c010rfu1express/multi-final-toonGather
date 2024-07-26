@@ -11,8 +11,8 @@
 </head>
 <body>
 
-<div th:replace="common/menubar.html"></div>
-<div th:replace="introduction/introductionMenubar.html"></div>
+<div th:replace="~{common/menubar}"></div>
+<div th:replace="~{introduction/introductionMenubar}"></div>
 
 <div id="">
     <div th:if="${journal != null}">
