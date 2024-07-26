@@ -15,4 +15,6 @@ public interface WebToonService {
     int insertComment(CommentDTO commentDTO)throws Exception;
 
     int updateComment(CommentDTO commentDTO)throws Exception;
+
+    int deleteComment(CommentDTO commentNo)throws Exception;
 }

@@ -17,4 +17,6 @@ public interface WebToonMapper {
     int insertComment(CommentDTO commentDTO);
 
     int updateComment(CommentDTO commentDTO);
+
+    int deleteComment(CommentDTO commentDTO);
 }
