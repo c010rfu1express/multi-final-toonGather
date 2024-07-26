@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
 <html layout:decorate="~{layout}">
 <head>
-    <title>마이페이지</title>
+    <title>KHG02: 회원가입 완료</title>
     <meta charset="UTF-8">
     <style>
         .navbar {
@@ -14,7 +14,10 @@
 <body>
 <div th:replace="~{common/menubar}"></div>
 <div layout:fragment="content">
-    가입완료
+    회원가입 완료<br>
+    성공적으로 가입이 완료되었습니다.<br>
+    로그인하여 다양한 플랫폼을 누려 보세요!<br>
+    <a href="/user/login">툰게더 로그인하기</a>
 </div>
 </body>
 </html>
