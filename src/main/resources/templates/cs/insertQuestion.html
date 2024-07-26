@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 24px;
+        }
+        .form-box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-group textarea {
+            height: 150px;
+            resize: none;
+        }
+        .buttons {
+            text-align: right;
+        }
+        .buttons button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-left: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="common/menubar.html"></div>
+<div class="container">
+    <div class="header">
+        <h1>문의글 작성</h1>
+    </div>
+    <div class="form-box">
+        <form th:action="@{/cs/submit}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>작성자</label>
+                <input type="text" th:value="테스트유저1" readonly>
+            </div>
+            <div class="form-group">
+                <label>제목</label>
+                <input type="text" name="title" required>
+            </div>
+            <div class="form-group">
+                <label>카테고리</label>
+                <select name="category" required>
+                    <option value="">카테고리 선택</option>
+                    <option th:each="category : ${categories}" th:value="${category.csCategoryCode}" th:text="${category.csCategoryDesc}"></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>이미지 첨부</label>
+                <input type="file" name="images" multiple>
+            </div>
+            <div class="form-group">
+                <label>내용</label>
+                <textarea name="content" required></textarea>
+            </div>
+            <div class="buttons">
+                <button type="submit">등록</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
