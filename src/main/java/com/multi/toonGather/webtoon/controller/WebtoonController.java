@@ -62,7 +62,7 @@ public class WebtoonController {
         return "webtoon/one";
     }
     @PutMapping("/webtoon/one/count")
-    public ResponseEntity<Void> increaseCount(WebtoonDTO webtoonDTO) throws Exception {
+    public ResponseEntity<Void> IncreaseCount(WebtoonDTO webtoonDTO) throws Exception {
         boolean result =webToonService.increaseCount(webtoonDTO);
         if (result) {
             System.out.println("증가");
@@ -72,7 +72,7 @@ public class WebtoonController {
         }
     }
     @PostMapping("/webtoon/one/comment")
-    public String insertComment(WebtoonDTO webtoonDTO, @RequestParam("content") String content) throws Exception {
+    public String InsertComment(WebtoonDTO webtoonDTO, @RequestParam("content") String content) throws Exception {
         boolean result =true;
         System.out.println(content);
         CommentDTO commentDTO=new CommentDTO();
@@ -98,6 +98,20 @@ public class WebtoonController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("댓글 수정 실패");
         }
+
+    }
+    @PostMapping("/webtoon/comment/delete")
+    public String deleteComment(WebtoonDTO webtoonDTO, @RequestParam("commentNo") int commentNo) throws Exception {
+        boolean result =true;
+        System.out.println(commentNo);
+        CommentDTO commentDTO=new CommentDTO();
+        commentDTO.setCommentNo(commentNo);
+        
+        System.out.println(webtoonDTO);
+        webToonService.deleteComment(commentDTO);
+        System.out.println("삭제");
+        return "redirect:/webtoon/one?webtoon_id=" + webtoonDTO.getWebtoon_id()
+                +"&webtoon_name="+webtoonDTO.getWebtoon_name();
 
     }
 
