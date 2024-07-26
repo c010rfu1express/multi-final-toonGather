@@ -89,4 +89,13 @@ public class CsController {
         return "cs/questionDetail";
     }
 
+    @GetMapping("/updateQuestion/{csQNo}")
+    public String editQuestionForm(@PathVariable("csQNo") int csQNo, Model model) throws Exception{
+        QuestionDTO question = csService.getQuestionById(csQNo);
+        List<CsCategoryDTO> categories = csService.getCategories();
+        model.addAttribute("question", question);
+        model.addAttribute("categories", categories);
+        return "cs/updateQuestion";
+    }
+
 }
