@@ -18,7 +18,7 @@
         SELECT r.review_no, r.webtoon_no, r.title, r.content, r.star_rating,
         r.created_date, r.modified_date, r.view_cnt,
         u.user_no, u.nickname, u.profile_image_path,
-        w.webtoon_name, w.author
+        w.webtoon_name, w.author, w.thumbnailUrl
         FROM so_review r
         JOIN users u ON r.writer_no = u.user_no
         JOIN webtoon w ON r.webtoon_no = w.webtoon_no
@@ -31,7 +31,7 @@
         SELECT r.review_no, r.webtoon_no, r.title, r.content, r.star_rating,
         r.created_date, r.modified_date, r.view_cnt,
         u.user_no, u.nickname, u.profile_image_path,
-        w.webtoon_name, w.author
+        w.webtoon_name, w.author, w.thumbnailUrl
         FROM so_review r
         JOIN users u ON r.writer_no = u.user_no
         JOIN webtoon w ON r.webtoon_no = w.webtoon_no
@@ -75,7 +75,7 @@
         SELECT d.diary_no, d.webtoon_no, d.title, d.content, d.status_code,
         d.created_date, d.modified_date, d.view_cnt,
         u.user_no, u.nickname, u.profile_image_path,
-        w.webtoon_name, w.author
+        w.webtoon_name, w.author, w.thumbnailUrl
         FROM so_diary d
         JOIN users u ON d.writer_no = u.user_no
         JOIN webtoon w ON d.webtoon_no = w.webtoon_no
@@ -88,7 +88,7 @@
         SELECT d.diary_no, d.webtoon_no, d.title, d.content, d.status_code,
         d.created_date, d.modified_date, d.view_cnt,
         u.user_no, u.nickname, u.profile_image_path,
-        w.webtoon_name, w.author
+        w.webtoon_name, w.author, w.thumbnailUrl
         FROM so_diary d
         JOIN users u ON d.writer_no = u.user_no
         JOIN webtoon w ON d.webtoon_no = w.webtoon_no
@@ -136,6 +136,7 @@
             <id property="webtoon_no" column="webtoon_no"/>
             <result property="webtoon_name" column="webtoon_name"/>
             <result property="author" column="author"/>
+            <result property="thumbnailUrl" column="thumbnailUrl"/>
         </association>
     </resultMap>
 
@@ -157,6 +158,7 @@
             <id property="webtoon_no" column="webtoon_no"/>
             <result property="webtoon_name" column="webtoon_name"/>
             <result property="author" column="author"/>
+            <result property="thumbnailUrl" column="thumbnailUrl"/>
         </association>
     </resultMap>
 </mapper>
