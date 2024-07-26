@@ -35,42 +35,11 @@ public class UserController {
         return "/user/login";
     }
 
-    @GetMapping("/findid")
-    public String findId(Model model){
-        UserDTO userDTO = new UserDTO();
-        model.addAttribute("user", userDTO);
-        return "/user/findid";
-    }
 
-    //KHG10
-    @PostMapping("/findid")
-    public String findIdRequest(@ModelAttribute UserDTO userDTO, HttpServletRequest request, Model model) throws Exception {
-        String userId = userService.findId(userDTO);
-//        if(userId == "ERROR") return "forward:/user/findid";
-//        else {
-            model.addAttribute("userId", userId);
-            return "forward:/user/idfound";     //수정해야함!
-//        }
-    }
 
-    //KHG11
-    @PostMapping("/idfound")
-    public String idFound(@RequestParam(value = "userId", required = false) String userId, Model model){
-        System.out.println("userId???: <"+userId+">");
-        if (userId != null) {
-            model.addAttribute("userId", userId);
-        }
-        return "/user/idfound";
-    }
 
-    //KHG12
-    @GetMapping("/findpw")
-    public String findpw(Model model){
-        UserDTO userDTO = new UserDTO();
-        model.addAttribute("user", userDTO);
-        return "/user/findpw";
-    }
 
+    //KHG01
     @GetMapping("/signup")
     public String signUp(Model model){
         UserDTO userDTO = new UserDTO();
@@ -100,4 +69,77 @@ public class UserController {
 
         return "/user/insert"; //여기로이동해
     }
-}
+
+    //KHG10
+    @GetMapping("/findid")
+    public String findId(Model model){
+        UserDTO userDTO = new UserDTO();
+        model.addAttribute("user", userDTO);
+        return "/user/findid";
+    }
+
+    @PostMapping("/findid")
+    public String findIdRequest(@ModelAttribute UserDTO userDTO, HttpServletRequest request, Model model) throws Exception {
+        String userId = userService.findId(userDTO);
+//        if(userId == "ERROR") return "forward:/user/findid";
+//        else {
+        model.addAttribute("userId", userId);
+        return "forward:/user/idfound";     //수정해야함!
+//        }
+    }
+
+    //KHG11
+    @PostMapping("/idfound")
+    public String idFound(@RequestParam(value = "userId", required = false) String userId, Model model){
+        System.out.println("userId???: <"+userId+">");
+        if (userId != null) {
+            model.addAttribute("userId", userId);
+        }
+        return "/user/idfound";
+    }
+
+    //KHG12
+    @GetMapping("/findpw")
+    public String findPw(Model model){
+        UserDTO userDTO = new UserDTO();
+        model.addAttribute("user", userDTO);
+        return "/user/findpw";
+    }
+
+    @PostMapping("/findpw")
+    public String findPwRequest(@ModelAttribute UserDTO userDTO, HttpServletRequest request, Model model) throws Exception {
+        String password = userService.findPw(userDTO);
+        model.addAttribute("password", password);
+        return "forward:/user/pwfound";     //수정해야함!
+    }
+
+    //KHG13
+    @PostMapping("/pwfound")
+    public String pwFound(@RequestParam(value = "password", required = false) String password, Model model){
+        System.out.println("password???: <"+password+">");
+        if (password != null) {
+            model.addAttribute("password", password);
+        }
+        return "/user/pwfound";
+    }
+
+    //KHG70
+    @GetMapping("/my/editprofile")
+    public String editProfile(Model model) throws Exception {
+        int userNo = 1; //수정필요
+        UserDTO userDTO = userService.getProfile(userNo);
+        model.addAttribute("user", userDTO);
+        model.addAttribute("userNo", userDTO.getUserNo());
+        return "/user/mypage_editprofile";
+    }
+
+    @PostMapping("/my/editprofile")
+    public String editProfileRequest(@ModelAttribute UserDTO userDTO, HttpServletRequest request, Model model) throws Exception {
+        //회원 정보 수정 처리
+//        userService.updateProfile((Integer)model.getAttribute("userNo"), userDTO);
+        userService.updateProfile((Integer)userDTO.getUserNo(), userDTO);
+        //미완성 상태
+        return "redirect:/user/mypage_editprofile";     //수정해야함!
+    }
+
+} //UserController
