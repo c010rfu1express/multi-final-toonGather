@@ -18,4 +18,13 @@ public class UserServiceImpl implements UserService {
         int result = userMapper.insertUser(userDTO);
         if(result == 0) new Exception("[ERROR] insertUser 실패");     //문제있어..?
     }
+
+    public String findId(UserDTO userDTO) throws Exception{
+        UserDTO response = userMapper.selectOne(userDTO.getContactNumber());
+        System.out.println("userDTO: "+ userDTO);
+        System.out.println("response: "+ response);
+        return response.getUserId();
+//        if(userDTO.getNickname() == response.getNickname()) return response.getUserId();
+//        else return "ERROR";    //추후변경해야함!
+    }
 }

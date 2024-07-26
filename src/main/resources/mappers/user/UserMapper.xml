@@ -10,7 +10,7 @@
 <mapper namespace="com.multi.toonGather.user.model.mapper.UserMapper">
     <!--(B) resultMap type: 관련파일 (1) 업뎃하면 아래 type="userDTO" 로 바꿔주기-->
     <!--(C) resultMap id: 왜있는걸까-->
-    <resultMap type="com.multi.toonGather.user.model.dto.UserDTO" id="userResultMap">
+    <resultMap type="userDTO" id="userResultMap">
         <!-- 언더바가 들어가는 쿼리문에 한하여 매핑을 해줘야함 -->
         <!-- property: DTO에 있는 그대로, column: MySQL에 있는 그대로-->
         <id property="userNo" column="user_no"/>
@@ -74,4 +74,27 @@
         #{lastModifiedDatetime}
         )
     </insert>
+
+    <select id="selectOne" parameterType="string" resultType="userDTO">
+        SELECT
+        user_no AS userNo,
+        type_code AS typeCode,
+        auth_code AS authCode,
+        user_id AS userId,
+        password,
+        nickname,
+        contact_number AS contactNumber,
+        email,
+        profile_image_path AS profileImagePath,
+        bio,
+        gender,
+        date_of_birth AS dateOfBirth,
+        real_name AS realName,
+        terms_agreement AS termsAgreement,
+        terms_agreement_datetime AS termsAgreementDatetime,
+        registration_datetime AS registrationDatetime,
+        last_modified_datetime AS lastModifiedDatetime
+        FROM users
+        WHERE contact_number = #{contactNumber}
+    </select>
 </mapper>

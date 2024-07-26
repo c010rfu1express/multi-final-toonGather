@@ -6,10 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -19,8 +16,7 @@ public class UserController {
     //@RequiredArgsConstructor를 쓰는 이유.. Spring의 의존성 자동 주입을 위함
     private final UserService userService;
 
-    @RequestMapping("/login")
-    public String login(){ return "/user/login"; }
+
 
     @RequestMapping("/my")
     public String myPage(){
@@ -31,6 +27,49 @@ public class UserController {
     //요청시작
     //get: 클라이언트가 서버에서 가져올 때
     //post: 클라이언트가 서버로 보낼 때
+
+    @GetMapping("/login")
+    public String login(Model model){
+        UserDTO userDTO = new UserDTO();
+        model.addAttribute("user", userDTO);
+        return "/user/login";
+    }
+
+    @GetMapping("/findid")
+    public String findId(Model model){
+        UserDTO userDTO = new UserDTO();
+        model.addAttribute("user", userDTO);
+        return "/user/findid";
+    }
+
+    //KHG10
+    @PostMapping("/findid")
+    public String findIdRequest(@ModelAttribute UserDTO userDTO, HttpServletRequest request, Model model) throws Exception {
+        String userId = userService.findId(userDTO);
+//        if(userId == "ERROR") return "forward:/user/findid";
+//        else {
+            model.addAttribute("userId", userId);
+            return "forward:/user/idfound";     //수정해야함!
+//        }
+    }
+
+    //KHG11
+    @PostMapping("/idfound")
+    public String idFound(@RequestParam(value = "userId", required = false) String userId, Model model){
+        System.out.println("userId???: <"+userId+">");
+        if (userId != null) {
+            model.addAttribute("userId", userId);
+        }
+        return "/user/idfound";
+    }
+
+    //KHG12
+    @GetMapping("/findpw")
+    public String findpw(Model model){
+        UserDTO userDTO = new UserDTO();
+        model.addAttribute("user", userDTO);
+        return "/user/findpw";
+    }
 
     @GetMapping("/signup")
     public String signUp(Model model){
