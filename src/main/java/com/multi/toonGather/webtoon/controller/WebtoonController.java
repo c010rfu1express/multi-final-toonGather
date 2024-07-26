@@ -5,13 +5,11 @@ import com.multi.toonGather.webtoon.model.CommentDTO;
 import com.multi.toonGather.webtoon.model.WebtoonDTO;
 import com.multi.toonGather.webtoon.service.WebToonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -57,7 +55,7 @@ public class WebtoonController {
         }catch (Exception e){
             e.printStackTrace();
         }
-
+        userDTO.setUserNo(1);
 
         model.addAttribute("user",userDTO);
         model.addAttribute("one",webtoonDTO);
@@ -77,14 +75,30 @@ public class WebtoonController {
     public String insertComment(WebtoonDTO webtoonDTO, @RequestParam("content") String content) throws Exception {
         boolean result =true;
         System.out.println(content);
+        CommentDTO commentDTO=new CommentDTO();
+        commentDTO.setUserNo(1);
+        commentDTO.setContent(content);
+        commentDTO.setWebtoonNo(webtoonDTO.getWebtoon_no());
         System.out.println(webtoonDTO);
-        if (result) {
+        webToonService.insertComment(commentDTO);
             System.out.println("증가");
             return "redirect:/webtoon/one?webtoon_id=" + webtoonDTO.getWebtoon_id()
                     +"&webtoon_name="+webtoonDTO.getWebtoon_name();
-        } else {
-            return "webtoon/one";
+
+    }
+    @PostMapping("/webtoon/one/update")
+    public ResponseEntity<String> updateComment(@RequestBody CommentDTO commentDTO) throws Exception {
+        try {
+            // request에서 필요한 정보 추출
+
+            // 댓글 수정 로직 호출 (예시: CommentService를 통해 댓글 수정)
+            webToonService.updateComment(commentDTO);
+
+            return ResponseEntity.ok("댓글 수정 성공");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("댓글 수정 실패");
         }
+
     }
 
 

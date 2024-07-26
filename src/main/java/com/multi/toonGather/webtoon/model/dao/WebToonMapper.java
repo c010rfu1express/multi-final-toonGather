@@ -12,5 +12,9 @@ public interface WebToonMapper {
 
     int increaseCount(WebtoonDTO webtoonDTO);
 
-    List<CommentDTO> Commentlist(WebtoonDTO webtoonDTO);
+   List<CommentDTO> Commentlist(WebtoonDTO webtoonDTO);
+
+    int insertComment(CommentDTO commentDTO);
+
+    int updateComment(CommentDTO commentDTO);
 }
