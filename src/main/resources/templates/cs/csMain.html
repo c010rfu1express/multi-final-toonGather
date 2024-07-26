@@ -2,7 +2,6 @@
 <html xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -120,7 +119,9 @@
                 <tbody>
                 <tr th:each="myQuestion : ${questions}">
                     <td th:text="${myQuestion.csQNo}"></td>
-                    <td th:text="${myQuestion.csQTitle}"></td>
+                    <td>
+                        <a th:href="@{/cs/questionDetail/{id}(id=${myQuestion.csQNo})}" th:text="${myQuestion.csQTitle}"></a>
+                    </td>
                     <td th:text="${#dates.format(myQuestion.createdDate, 'yyyy-MM-dd')}"></td>
                     <td th:text="${myQuestion.csQStatus.csStatusDesc}"></td>
                 </tr>
@@ -138,6 +139,9 @@
         </div>
         <div th:if="${questions == null || questions.isEmpty()}">
             <p>No questions found.</p>
+        </div>
+        <div class="create-button-container">
+            <a href="/cs/insertQuestion" class="create-button">문의글 작성</a>
         </div>
     </section>
 </main>
