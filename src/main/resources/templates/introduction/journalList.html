@@ -21,45 +21,13 @@
 </head>
 <body>
 
-<div th:replace="common/menubar.html"></div>
-<div th:replace="introduction/introductionMenubar.html"></div>
+<div th:replace="~{common/menubar}"></div>
+<div th:replace="~{introduction/introductionMenubar}"></div>
 
 <div class="container mt-4">
-<!--    <div class="mt-3">-->
-<!--        <div class="input-group mb-3">-->
-<!--            <h2>소식</h2>-->
-<!--            <input type="text" class="form-control" placeholder="검색어 입력" aria-label="검색어 입력">-->
-<!--            <div class="input-group-append">-->
-<!--                <button class="btn btn-outline-secondary" type="button">검색</button>-->
-<!--            </div>-->
-<!--            <a href="/introduction/journalInsert" class="btn btn-primary">소식 등록</a>-->
-<!--&lt;!&ndash;            <button class="btn btn-primary">소식 등록</button>&ndash;&gt;-->
-<!--            <button class="btn btn-primary">수정</button>-->
-<!--            <button class="btn btn-danger">삭제</button>-->
-<!--        </div>-->
-<!--        <table class="table">-->
-<!--            <thead>-->
-<!--            <tr>-->
-<!--                <th scope="col"><input type="checkbox"></th>-->
-<!--                <th scope="col">제목</th>-->
-<!--                <th scope="col">작성자</th>-->
-<!--                <th scope="col">작성일</th>-->
-<!--                <th scope="col">조회수</th>-->
-<!--            </tr>-->
-<!--            </thead>-->
-<!--            <tbody>-->
-<!--            <tr>-->
-<!--                <td><input type="checkbox"></td>-->
-<!--                <td>네이버웹툰 '신의 탑' 애니메이션 2기, 오는 7월 소개 공개</td>-->
-<!--                <td>관리자</td>-->
-<!--                <td>2023-05-24</td>-->
-<!--                <td>7</td>-->
-<!--            </tr>-->
-<!--            &lt;!&ndash; 추가 행들... &ndash;&gt;-->
-<!--            </tbody>-->
-<!--        </table>-->
-<!--    </div>-->
 
+    <!-- 디버그 출력 추가 : Thymeleaf 템플릿에서 데이터가 제대로 렌더링되지 않는 경우, 템플릿 내에서 디버그 출력을 추가 -->
+<!--    <div th:text="${journals}">디버그: journals 내용</div>-->
 
     <div class="d-flex justify-content-between mb-3">
         <h2>소식</h2>
@@ -80,18 +48,20 @@
         <!-- 각 소식 항목을 카드로 표시 -->
         <div class="col-md-4" th:each="journal : ${journals}">
             <div class="card">
-                <img class="card-img-top" th:src="${journal.imagePath}" alt="소식 이미지">
+<!--                <img th:if="${#lists.size(journal.journalFiles) > 0}" th:src="@{'/path/to/images/' + ${journal.journalFiles[0].filePath}}" class="card-img-top" alt="썸네일 이미지">-->
                 <div class="card-body">
-                    <h5 class="card-title" th:text="${journal.title}">네이버웹툰 '신의 탑' 애니메이션 2기, 오는 7월 소개 공개</h5>
+                    <a href="/introduction/journalDetail?id=5" class="card-title" th:text="${journal.title}">제목</a>
+<!--                    <a th:href="@{/introduction/journalDetail(id=${journal.journalNo})}" class="card-title" th:text="${journal.title}">제목</a>-->
+<!--                    <a th:href="@{/journalDetail(id=${journal.id})}" class="card-title" th:text="${journal.title}">제목</a>-->
                     <p class="card-text">
-                        <small class="text-muted" th:text="${journal.postingDate}">2023-05-24</small>
-                        <span class="ml-2" th:text="${journal.viewCount + ' 조회'}">7 조회</span>
+                        <small class="text-muted" th:text="${#temporals.format(journal.postingDate, 'yyyy-MM-dd')}">게시일시</small>
                     </p>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" th:value="${journal.id}" id="journalCheck">
-                        <label class="form-check-label" for="journalCheck">
+                        <input class="form-check-input" type="checkbox" th:value="${journal.journalNo}" th:id="'journalCheck' + ${journal.journalNo}">
+                        <label class="form-check-label" th:for="'journalCheck' + ${journal.journalNo}">
                             선택
                         </label>
+
                     </div>
                 </div>
             </div>
