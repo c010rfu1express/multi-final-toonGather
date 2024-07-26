@@ -62,4 +62,28 @@ public class SocialServiceImpl implements SocialService {
         socialMapper.createDiary(diary);
     }
 
+    @Override
+    public List<DiaryDTO> getDiariesByUser(int userNo) {
+        return socialMapper.getDiariesByUser(userNo);
+    }
+
+    @Override
+    public DiaryDTO getDiaryByNo(int diaryNo) {
+        return socialMapper.getDiaryByNo(diaryNo);
+    }
+
+    @Override
+    public void incrementDiaryViewCount(int diaryNo) {
+        socialMapper.incrementDiaryViewCount(diaryNo);
+    }
+
+    @Override
+    public void updateDiary(DiaryDTO diary) {
+        socialMapper.updateDiary(diary);
+    }
+
+    @Override
+    public void deleteDiary(int diaryNo) {
+        socialMapper.deleteDiary(diaryNo);
+    }
 }
