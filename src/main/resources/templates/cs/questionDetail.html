@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .detail-container {
+            width: 80%;
+            margin: 0 auto;
+        }
+        .detail-header, .detail-body {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+        }
+        .detail-header div {
+            flex: 1;
+        }
+        .detail-body {
+            display: flex;
+            flex-direction: column;
+        }
+        .content {
+            margin-bottom: 20px;
+        }
+        .images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .images img {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+        .detail-footer {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .detail-footer button {
+            margin-left: 10px;
+        }
+        .spacer {
+            padding-bottom: 100px;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="common/menubar.html"></div>
+<div class="detail-container">
+    <div class="detail-header">
+        <div>작성자 | <span th:text="${question.csQWriterNo}"></span></div>
+        <div>작성일 | <span th:text="${#dates.format(question.createdDate, 'yyyy-MM-dd')}"></span></div>
+    </div>
+    <div class="detail-header">
+        <div>카테고리 | <span th:text="${question.csQCategory.csCategoryDesc}"></span></div>
+        <div>제목 | <span th:text="${question.csQTitle}"></span></div>
+        <div>상태 | <span th:text="${question.csQStatus.csStatusDesc}"></span></div>
+    </div>
+    <div class="detail-body">
+        <div class="content">
+            <p th:text="${question.csQContent}"></p>
+        </div>
+        <div class="images">
+            <div th:each="file : ${questionFiles}">
+                <img th:src="@{/uploadFiles/{fileName}(fileName=${file.savedName})}" th:alt="${file.originName}" style="max-width: 100%; height: auto;"/>
+            </div>
+        </div>
+    </div>
+    <div class="detail-footer">
+        <button th:onclick="'location.href=\'/cs/updateQuestion/' + ${question.csQNo} + '\';'">수정</button>
+        <button th:onclick="'location.href=\'/cs/deleteQuestion/' + ${question.csQNo} + '\';'">삭제</button>
+    </div>
+<!--    <div class="admin-reply">-->
+<!--        <h3>관리자 답변</h3>-->
+<!--        <textarea rows="4" cols="50" th:text="${question.csAContent != null ? question.csAContent : ''}"></textarea>-->
+<!--        <div class="detail-footer">-->
+<!--            <button th:onclick="'location.href=\'/cs/saveAnswer/' + ${question.csQNo} + '\';'">등록</button>-->
+<!--        </div>-->
+<!--    </div>-->
+    <div class="spacer"></div>
+</div>
+</body>
+</html>

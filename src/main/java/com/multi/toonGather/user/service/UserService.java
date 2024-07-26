@@ -5,4 +5,5 @@ import com.multi.toonGather.user.model.dto.UserDTO;
 public interface UserService {
 
     void insertUser(UserDTO userDTO) throws Exception;
+    String findId(UserDTO userDTO) throws Exception;
 }
