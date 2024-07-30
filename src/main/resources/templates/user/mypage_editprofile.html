@@ -27,7 +27,10 @@
   </nav>
 </div>
 <div>
-  <form th:action="@{/user/my/editprofile}" th:object="${user}" method="post">
+  <form th:action="@{/user/my/editprofile}" th:object="${user}" method="post" enctype="multipart/form-data">
+    프로필 사진<br>
+    <img th:src="@{/uploadFiles/{fileName}(fileName=${user.profileImagePath})}" style="width: 100px; height: auto;"/><br>
+    <input type="file" name="image"><br>
     아이디 : <input type="text" th:field="*{userId}" readonly/> (중복불가)<br>
     비밀번호 : <input type="password" th:field="*{password}"/><br>
     비밀번호 확인 : <br>
