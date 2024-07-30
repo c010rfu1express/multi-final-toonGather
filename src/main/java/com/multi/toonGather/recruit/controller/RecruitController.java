@@ -141,7 +141,7 @@ public class RecruitController {
         pageDTO.setStartEnd(pageDTO.getPage());
         try {
             int count = pageService.selectJobCount(pageDTO);
-            int pages = count / 10 + 1;
+            int pages = (int) Math.ceil((double) count / 10);
 
             List<JobDTO> jobs = jobService.selectBoardAll(pageDTO);
 
@@ -285,7 +285,9 @@ public class RecruitController {
         }
         else{
             try {
-                jobDTO.setImg(existingImage);
+                if (existingImage != null && !existingImage.isEmpty()){
+                    jobDTO.setImg(existingImage);
+                }
                 jobService.updateBoard(jobDTO);
             } catch (Exception e) {
                 System.out.println("job update error : " + e);
@@ -401,7 +403,7 @@ public class RecruitController {
         pageDTO.setStartEnd(pageDTO.getPage());
         try {
             int count = pageService.selectFreeCount(pageDTO);
-            int pages = count / 10 + 1;
+            int pages = (int) Math.ceil((double) count / 10);
 
             List<FreeDTO> frees = freeService.selectBoardAll(pageDTO);
 
@@ -548,7 +550,9 @@ public class RecruitController {
         }
         else{
             try {
-                freeDTO.setImg(existingImage);
+                if (existingImage != null && !existingImage.isEmpty()){
+                    freeDTO.setImg(existingImage);
+                }
                 freeService.updateBoard(freeDTO);
             } catch (Exception e) {
                 System.out.println("free update error : " + e);
