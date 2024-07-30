@@ -16,5 +16,6 @@ public class FreeDTO {
     private Date created_date;
     private Date modified_date;
     private UserDTO member;
+    private String type_code;
 
 }

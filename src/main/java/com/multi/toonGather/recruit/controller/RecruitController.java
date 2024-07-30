@@ -46,7 +46,8 @@ public class RecruitController {
     }
 
     @RequestMapping("/creator/choice")
-    public String choice() {
+    public String choice(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        model.addAttribute("auth_code", String.valueOf(userDetails.getAuthCode()));
         return "recruit/creator/choice";
     }
 
@@ -65,6 +66,7 @@ public class RecruitController {
         // 현재 인증된 사용자 정보를 가져옴
         creatorDTO.setMember_no(userDetails.getMemNo());
         creatorDTO.setStatus("A");
+        creatorDTO.setType_code("I");
 
         creatorService.insertCreator(creatorDTO);
         creatorService.updateMember(creatorDTO.getMember_no());
@@ -74,7 +76,8 @@ public class RecruitController {
 
     @RequestMapping("/creator/naverocr_result")
     public String ocr(HttpServletRequest request, @RequestPart("file")
-    MultipartFile file, Model model, @ModelAttribute CreatorDTO creatorDTO, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+    MultipartFile file, Model model, @ModelAttribute CreatorDTO creatorDTO, @AuthenticationPrincipal CustomUserDetails userDetails,
+                      @RequestParam("regist_no") String regist_no) throws Exception {
 
 
         //파일첨부한 경우에는 file이름 텍스트 + 이미지파일자체
@@ -101,20 +104,23 @@ public class RecruitController {
         //dto
         creatorDTO.setMember_no(userDetails.getMemNo());
         creatorDTO.setImg(savedName);
+        creatorDTO.setRegist_no(regist_no);
         boolean containsA = list.contains("사업자등록증");
         boolean containsB = list.contains(userDetails.getRealName());
-        boolean containsC = list.contains("만화");
+        boolean containsC = list.contains(creatorDTO.getRegist_no());
 
         if (containsA && containsB && containsC) {
             model.addAttribute("message", "창작자 등록 성공");
             System.out.println("성공");
             creatorDTO.setStatus("A");
+            creatorDTO.setType_code("C");
             creatorService.insertCreator(creatorDTO);
             creatorService.updateMember(creatorDTO.getMember_no());
         } else {
             model.addAttribute("message", "창작자 등록 실패");
             System.out.println("실패");
             creatorDTO.setStatus("R");
+            creatorDTO.setType_code("C");
             creatorService.insertCreator(creatorDTO);
         }
 
@@ -228,6 +234,8 @@ public class RecruitController {
         try {
             JobDTO jobDTO = jobService.findBoardByNo(no);
             model.addAttribute("job", jobDTO);
+            boolean hasApplied = jobService.hasApplied(no, userDetails.getMemNo());
+            model.addAttribute("hasApplied", hasApplied);
         } catch (Exception e) {
             model.addAttribute("msg", "게시글 조회 실패");
         }

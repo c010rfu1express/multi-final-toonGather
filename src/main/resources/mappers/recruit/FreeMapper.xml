@@ -19,6 +19,7 @@
 		<result property="price" column="price" />
 		<result property="created_date" column="created_date" />
 		<result property="modified_date" column="modified_date" />
+		<result property="type_code" column="type_code" />
 		<association property="member" column="writer" javaType="userDTO" resultMap="memberResultMap" />
 	</resultMap>
 
@@ -34,11 +35,16 @@
 
 	<select id="selectAll" parameterType="pageDTO" resultMap="FreeResultMap">
 		SELECT
-			f.*
-			, m.user_no
-			, m.nickname
-		FROM rct_free f
-		JOIN users m ON f.writer = m.user_no
+		f.*,
+		m.user_no,
+		m.nickname,
+		c.type_code
+		FROM
+		rct_free f
+		JOIN
+		users m ON f.writer = m.user_no
+		LEFT JOIN
+		rct_creator_regist c ON f.writer = c.member_no
 		<if test="page != null">
 			ORDER BY f.board_no DESC
 			LIMIT #{start}, 10
@@ -69,8 +75,11 @@
 		f.*
 		, m.user_no
 		, m.nickname
+		, c.type_code
 		FROM rct_free f
 		JOIN users m ON f.writer = m.user_no
+		LEFT JOIN
+		rct_creator_regist c ON f.writer = c.member_no
 		WHERE f.board_no = #{no}
 	</select>
 

@@ -95,7 +95,8 @@
 
                 <div th:if="${member_no != null and member_no != ''}">
                     <div style="margin-right:1px;" class="mt-4 text-center">
-                        <a th:href="@{/recruit/job/apply(no=${job.board_no})}" class="btn btn-success">지원하기</a>
+                        <a th:if="${hasApplied == false}" th:href="@{/recruit/job/apply(no=${job.board_no})}" class="btn btn-success">지원하기</a>
+                        <button th:if="${hasApplied == true}" class="btn btn-success" disabled>지원완료</button>
                     </div>
                 </div>
                 <div class="mt-4 text-right">
