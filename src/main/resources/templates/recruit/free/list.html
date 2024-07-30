@@ -20,19 +20,19 @@
         <h2 class="text-center mb-4">프리랜서</h2>
         <hr color="grey">
         <div id="d1">
-            <table class="table table-hover table-bordered">
-                <thead class="table-dark">
+            <table class="table table-hover">
+                <thead class="table-light">
                 <tr>
-                    <th scope="col">NO.</th>
-                    <th scope="col">Title</th>
-                    <th scope="col">Writer</th>
-                    <th scope="col">CREATE_DATE</th>
+                    <th scope="col">#</th>
+                    <th scope="col">제목</th>
+                    <th scope="col">작성자</th>
+                    <th scope="col">작성일</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="free : ${frees}">
-                    <th scope="row" th:text="${free.board_no}"></th>
-                    <td><a th:href="@{/recruit/free/view(no=${free.board_no})}" th:text="${#strings.abbreviate(free.title, 10)}"></a></td>
+                    <td scope="row" th:text="${free.board_no}"></td>
+                    <td><a th:href="@{/recruit/free/view(no=${free.board_no})}" th:text="${#strings.abbreviate(free.title, 15)}"></a></td>
                     <td>
                         <span th:text="${free.member.nickname}"></span>
                         <span th:if="${free.type_code == 'C'}">
@@ -54,24 +54,24 @@
         <th:block th:if="${pages != null}">
             <div class="d-flex justify-content-center">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-secondary btn-sm previous" th:onclick="|location.href='@{/recruit/free/list(page=${currentPage - 1})}'|" th:disabled="${currentPage == 1}">이전</button>
+                    <button type="button" class="btn btn-sm previous" th:onclick="|location.href='@{/recruit/free/list(page=${currentPage - 1})}'|" th:disabled="${currentPage == 1}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                        </svg>
+                    </button>
                     <th:block th:each="p : ${#numbers.sequence(1, pages)}">
-                        <button type="button" class="btn btn btn-outline-dark btn-sm me-2 pages"
+                        <button type="button" class="btn btn-sm me-2 pages"
                                 th:text="${p}" th:onclick="|location.href='@{/recruit/free/list(page=${p})}'|"></button>
                     </th:block>
-                    <button type="button" class="btn btn-secondary btn-sm  next" th:onclick="|location.href='@{/recruit/free/list(page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">다음</button>
+                    <button type="button" class="btn btn-sm  next" th:onclick="|location.href='@{/recruit/free/list(page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </th:block>
     </div>
 </div>
-
-<script th:inline="javascript">
-		/*<![CDATA[*/
-<!--		let pages = [[${pages}]];-->
-		/*]]>*/
-
-</script>
-
 </body>
 </html>
