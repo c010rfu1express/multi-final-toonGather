@@ -29,4 +29,66 @@
         FROM cs_question
         WHERE cs_q_writer_no = #{userNo}
     </select>
+
+    <resultMap type="MyInJournalDTO" id="MyInJournalResultMap">
+        <!-- in_journal_like 테이블의 컬럼 -->
+        <id property="likedNo" column="liked_no" />
+        <result property="userNo" column="user_no" />
+        <result property="likedDate" column="liked_date" />
+
+        <!-- in_journal 테이블의 컬럼 -->
+        <result property="journalNo" column="journal_no" />
+        <result property="title" column="title" />
+        <result property="content" column="content" />
+        <result property="postingDate" column="posting_date" />
+    </resultMap>
+
+    <select id="selectListMyInJournal" resultType="MyInJournalDTO">
+        SELECT
+        ijl.liked_no AS likedNo,
+        ijl.user_no AS userNo,
+        ijl.liked_date AS likedDate,
+        ij.journal_no AS journalNo,
+        ij.title AS title,
+        ij.content AS content,
+        ij.posting_date AS postingDate
+
+        FROM
+        in_journal ij
+        INNER JOIN
+        in_journal_like ijl
+        ON
+        ij.journal_no = ijl.journal_no
+        WHERE
+        ijl.user_no = #{userNo}
+    </select>
+
+    <resultMap type="MyRctJobDTO" id="MyRctJobResultMap">
+        <id property="boardNo" column="board_no" />
+        <result property="writer" column="writer" />
+        <result property="title" column="title" />
+        <result property="content" column="content" />
+        <result property="location" column="location" />
+        <result property="img" column="img" />
+        <result property="createdDate" column="created_date" jdbcType="TIMESTAMP" />
+        <result property="modifiedDate" column="modified_date" jdbcType="TIMESTAMP" />
+        <result property="deadLine" column="dead_line" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <select id="selectListMyRctJob" resultType="MyRctJobDTO">
+        SELECT
+        board_no AS boardNo,
+        writer AS writer,
+        title AS title,
+        content AS content,
+        location AS location,
+        img AS img,
+        created_date AS createdDate,
+        modified_date AS modifiedDate,
+        dead_line AS deadLine
+        FROM
+        rct_job
+        WHERE
+        writer = #{userNo}
+    </select>
 </mapper>

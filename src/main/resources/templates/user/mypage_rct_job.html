@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
 <html layout:decorate="~{layout}">
 <head>
-    <title>KHG60: 마이페이지-나의문의</title>
+    <title>KHG40: 마이페이지-나의채용-내가올린공고</title>
     <meta charset="UTF-8">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -86,32 +86,33 @@
 </div>
 <div class="container">
     <div class="review-list">
-        <h2>회원 목록</h2>
+        <h2>내가 올린 공고</h2>
         <table>
             <thead>
             <tr>
-                <th>문의글 번호</th>
-                <th>문의글 제목</th>
-                <th>문의글 내용</th>
-                <th>문의글 작성자</th>
-                <th>문의 카테고리 코드</th>
-                <th>문의 상태 코드</th>
-                <th>문의글 조회수</th>
-                <th>문의 작성일자</th>
-                <th>문의 수정일자</th>
+                <th>게시글 번호</th>
+                <th>작성자</th>
+                <th>제목</th>
+                <th>내용</th>
+                <th>근무지</th>
+                <th>이미지</th>
+                <th>작성 일자</th>
+                <th>수정 일자</th>
+                <th>마감 일자</th>
+
             </tr>
             </thead>
             <tbody>
-            <tr th:each="myCsQuestion : ${myCsQuestions}" class="clickable-row" th:attr="data-href=@{/cs/questionDetail/{id}(id=${myCsQuestion.csQNo})}">
-                <td th:text="${myCsQuestion.csQNo}">문의글 번호</td>
-                <td th:text="${myCsQuestion.csQTitle}">문의글 제목</td>
-                <td th:text="${myCsQuestion.csQContent}">문의글 내용</td>
-                <td th:text="${myCsQuestion.csQWriterNo}">문의글 작성자</td>
-                <td th:text="${myCsQuestion.csQCategoryCode}">문의 카테고리 코드</td>
-                <td th:text="${myCsQuestion.csQStatusCode}">문의 상태 코드</td>
-                <td th:text="${myCsQuestion.csQViewCount}">문의글 조회수</td>
-                <td th:text="${myCsQuestion.createdDate}">문의 작성일자</td>
-                <td th:text="${myCsQuestion.modifiedDate}">문의 수정일자</td>
+            <tr th:each="myRctJob : ${myRctJobs}" class="clickable-row" th:attr="data-href=@{/recruit/job/view(no=${myRctJob.boardNo})}">
+                <td th:text="${myRctJob.boardNo}">게시글 번호</td>
+                <td th:text="${myRctJob.writer}">작성자</td>
+                <td th:text="${myRctJob.title}">제목</td>
+                <td th:text="${myRctJob.content}">내용</td>
+                <td th:text="${myRctJob.location}">근무지</td>
+                <td th:text="${myRctJob.img}">이미지</td>
+                <td th:text="${myRctJob.createdDate}">작성 일자</td>
+                <td th:text="${myRctJob.modifiedDate}">수정 일자</td>
+                <td th:text="${myRctJob.deadLine}">마감 일자</td>
             </tr>
             </tbody>
         </table>

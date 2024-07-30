@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
 <html layout:decorate="~{layout}">
 <head>
-    <title>KHG60: 마이페이지-나의문의</title>
+    <title>KHG50: 마이페이지-나의소식-좋아요한웹툰소식</title>
     <meta charset="UTF-8">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -86,32 +86,37 @@
 </div>
 <div class="container">
     <div class="review-list">
-        <h2>회원 목록</h2>
+        <h2>좋아요한 웹툰 소식</h2>
         <table>
             <thead>
             <tr>
-                <th>문의글 번호</th>
-                <th>문의글 제목</th>
-                <th>문의글 내용</th>
-                <th>문의글 작성자</th>
-                <th>문의 카테고리 코드</th>
-                <th>문의 상태 코드</th>
-                <th>문의글 조회수</th>
-                <th>문의 작성일자</th>
-                <th>문의 수정일자</th>
+                <th>좋아요 번호</th>
+                <th>회원번호</th>
+                <th>좋아요 날짜</th>
+                <th>소식 게시글 번호</th>
+                <th>소식 제목</th>
+                <th>소식 내용</th>
+                <th>게시 일시</th>
+
+<!--                <th>ijl.liked_no</th>-->
+<!--                <th>ijl.user_no</th>-->
+<!--                <th>ijl.liked_date</th>-->
+<!--                <th>ij.journal_no</th>-->
+<!--                <th>ij.title</th>-->
+<!--                <th>ij.content</th>-->
+<!--                <th>ij.posting_date</th>-->
+
             </tr>
             </thead>
             <tbody>
-            <tr th:each="myCsQuestion : ${myCsQuestions}" class="clickable-row" th:attr="data-href=@{/cs/questionDetail/{id}(id=${myCsQuestion.csQNo})}">
-                <td th:text="${myCsQuestion.csQNo}">문의글 번호</td>
-                <td th:text="${myCsQuestion.csQTitle}">문의글 제목</td>
-                <td th:text="${myCsQuestion.csQContent}">문의글 내용</td>
-                <td th:text="${myCsQuestion.csQWriterNo}">문의글 작성자</td>
-                <td th:text="${myCsQuestion.csQCategoryCode}">문의 카테고리 코드</td>
-                <td th:text="${myCsQuestion.csQStatusCode}">문의 상태 코드</td>
-                <td th:text="${myCsQuestion.csQViewCount}">문의글 조회수</td>
-                <td th:text="${myCsQuestion.createdDate}">문의 작성일자</td>
-                <td th:text="${myCsQuestion.modifiedDate}">문의 수정일자</td>
+            <tr th:each="myInJournal : ${myInJournals}" class="clickable-row" th:attr="data-href=@{/introduction/journalDetail(id=${myInJournal.journalNo})}">
+                <td th:text="${myInJournal.likedNo}">좋아요 번호</td>
+                <td th:text="${myInJournal.userNo}">회원번호</td>
+                <td th:text="${myInJournal.likedDate}">좋아요 날짜</td>
+                <td th:text="${myInJournal.journalNo}">소식 게시글 번호</td>
+                <td th:text="${myInJournal.title}">소식 제목</td>
+                <td th:text="${myInJournal.content}">소식 내용</td>
+                <td th:text="${myInJournal.postingDate}">게시 일시</td>
             </tr>
             </tbody>
         </table>

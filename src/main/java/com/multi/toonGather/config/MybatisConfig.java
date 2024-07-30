@@ -55,6 +55,8 @@ public class MybatisConfig {
         // 현구 user
         configuration.getTypeAliasRegistry().registerAlias("userDTO", com.multi.toonGather.user.model.dto.UserDTO.class);
         configuration.getTypeAliasRegistry().registerAlias("MyCsQuestionDTO", com.multi.toonGather.user.model.dto.MyCsQuestionDTO.class);
+        configuration.getTypeAliasRegistry().registerAlias("MyInJournalDTO", com.multi.toonGather.user.model.dto.MyInJournalDTO.class);
+        configuration.getTypeAliasRegistry().registerAlias("MyRctJobDTO", com.multi.toonGather.user.model.dto.MyRctJobDTO.class);
 
         seb.setConfiguration(configuration);
 
