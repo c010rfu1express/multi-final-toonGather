@@ -24,4 +24,6 @@ public interface WebToonService {
     int insertLog(WtUserLogDTO wtUserLogDTO);
 
     int updateLog(WtUserLogDTO wtUserLogDTO);
+
+    int webToonInsert(WebtoonDTO webtoonDTO);
 }

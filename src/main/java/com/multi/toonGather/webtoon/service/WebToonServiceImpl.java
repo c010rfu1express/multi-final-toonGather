@@ -72,5 +72,11 @@ public class WebToonServiceImpl implements WebToonService{
         return result;
     }
 
+    @Override
+    public int webToonInsert(WebtoonDTO webtoonDTO) {
+        int result=webToonMapper.webToonInsert(webtoonDTO);
+        return result;
+    }
+
 
 }

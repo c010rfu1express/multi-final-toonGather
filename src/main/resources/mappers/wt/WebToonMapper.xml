@@ -26,6 +26,14 @@
 <select id="WebToonSelectOne" parameterType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO" resultType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO">
         select * from webtoon where platform=#{platform} and webtoon_id=#{webtoon_id}
     </select>
+
+    <insert id="webToonInsert" parameterType="com.multi.toonGather.webtoon.model.dto.WtUserLogDTO">
+        INSERT INTO webtoon (webtoon_id, platform, webtoon_name, author,thumbnail_url,genre,tags)
+        VALUES (#{webtoon_id}, #{platform}, #{webtoon_name}, #{author},#{thumbnail_url},#{genre},#{tags})
+    </insert>
+
+
+
     <update id="increaseCount" parameterType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO">
         update webtoon set count =count + 1  where webtoon_no = #{webtoon_no}
     </update>
@@ -68,4 +76,8 @@
         set count =count + 1
         WHERE log_no = #{logNo}
     </update>
+
+
+
+
 </mapper>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>미완결된 NAVER 웹툰</title>
+    <title>NAVER 웹툰</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -69,6 +69,7 @@
 </head>
 <body>
 <div  th:replace="common/menubar.html"></div>
+<div  th:replace="common/webtoon_menubar.html"></div>
 <br>
 <div id="webtoonList">
 <div id="webtoonContainer"></div>
@@ -77,7 +78,7 @@
 <script>
     let currentPage = 1; // 초기 페이지 번호
     const urlParams = new URLSearchParams(window.location.search);
-    let provider='NAVER';//urlParams.get('webtoon_id');
+    let provider='KAKAO';//urlParams.get('webtoon_id');
     let updateDay=urlParams.get('updateDay');
 
     if (provider === null) {
@@ -88,14 +89,24 @@
     }
 
     function fetchWebtoons(page) {
-        const apiUrl = `https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/webtoons?provider=${provider}&page=${page}&perPage=100&sort=ASC&updateDay=${updateDay}`;
+        let apiUrl = `https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/webtoons?provider=${provider}&page=${page}&perPage=100&sort=ASC&updateDay=${updateDay}`;
 
+        if (updateDay === "COM") {
+        apiUrl = `https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/webtoons?provider=${provider}&page=${page}&perPage=100&sort=ASC`; // 원하는 값으로 초기화
+        }
         fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
-                const webtoons = data.webtoons.filter(webtoon => {
-                  return webtoon.provider === "NAVER" || webtoon.provider === "KAKAO";
-                  });
+
+                  const webtoons = data.webtoons.filter(webtoon => {
+                   if (updateDay === "COM") {
+                        return webtoon.isEnd;
+                    } else {
+                      return webtoon.provider === "NAVER" || webtoon.provider === "KAKAO";
+                        }
+                  }
+
+                  );
 
                 const webtoonContainer = document.getElementById('webtoonContainer');
                 webtoonContainer.innerHTML = ''; // 기존 웹툰 카드 초기화
@@ -125,7 +136,8 @@
                     webtoonTitle.classList.add('webtoon-title');
                     webtoonTitle.addEventListener('click', (event) => {
                         event.preventDefault(); // 기본 동작 중단
-                        window.location.href = `/webtoon/one?webtoon_id=${id}&webtoon_name=${title}`;
+                        const queryString = `webtoon_id=${id}&webtoon_name=${encodeURIComponent(title)}&author=${encodeURIComponent(authors.join('/'))}`;
+                        window.location.href = `/webtoon/one?${queryString}`;
                     });
                     webtoonInfo.appendChild(webtoonTitle);
 

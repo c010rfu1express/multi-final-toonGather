@@ -247,7 +247,7 @@
                             event.preventDefault();
                             // 클릭 시 서버에 count 증가 요청
                             fetch(`/webtoon/one/count?webtoon_no=${no}`, {
-                                method: 'PUT'
+                                method: 'GET'
                             }).then(response => {
                                 if (response.ok) {
                                     console.log('count 증가 성공');
