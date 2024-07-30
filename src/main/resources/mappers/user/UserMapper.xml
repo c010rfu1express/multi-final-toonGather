@@ -33,6 +33,29 @@
         <result property="lastModifiedDatetime" column="last_modified_datetime"/>
     </resultMap>
     <!--(D) 관련파일 (3) UserMapper.java, 그리고 이것이 결국 UserServiceImpl.java에 이용됨-->
+    <select id="selectOneByUserId" parameterType="string" resultType="userDTO">
+        SELECT
+        user_no AS userNo,
+        type_code AS typeCode,
+        auth_code AS authCode,
+        user_id AS userId,
+        password,
+        nickname,
+        contact_number AS contactNumber,
+        email,
+        profile_image_path AS profileImagePath,
+        bio,
+        gender,
+        date_of_birth AS dateOfBirth,
+        real_name AS realName,
+        terms_agreement AS termsAgreement,
+        terms_agreement_datetime AS termsAgreementDatetime,
+        registration_datetime AS registrationDatetime,
+        last_modified_datetime AS lastModifiedDatetime
+        FROM users
+        WHERE user_id = #{userId}
+    </select>
+
     <insert id="insertUser">
         INSERT INTO users (
         type_code,
@@ -144,25 +167,49 @@
         WHERE user_no = #{userNo}
     </select>
 
-    <update id="updateUser" parameterType="userDTO">
+    <update id="updateUser" parameterType="map">
         UPDATE users
         SET
-            type_code = #{typeCode},
-            auth_code = #{authCode},
-            user_id = #{userId},
-            password = #{password},
-            nickname = #{nickname},
-            contact_number = #{contactNumber},
-            email = #{email},
-            profile_image_path = #{profileImagePath},
-            bio = #{bio},
-            gender = #{gender},
-            date_of_birth = #{dateOfBirth},
-            real_name = #{realName},
-            terms_agreement = #{termsAgreement},
-            terms_agreement_datetime = #{termsAgreementDatetime},
-            registration_datetime = #{registrationDatetime},
-            last_modified_datetime = #{lastModifiedDatetime}
+            password = #{userDTO.password},
+            nickname = #{userDTO.nickname},
+            contact_number = #{userDTO.contactNumber},
+            email = #{userDTO.email},
+            profile_image_path = #{userDTO.profileImagePath},
+            bio = #{userDTO.bio},
+            gender = #{userDTO.gender},
+            date_of_birth = #{userDTO.dateOfBirth},
+            real_name = #{userDTO.realName},
+            terms_agreement = #{userDTO.termsAgreement},
+            terms_agreement_datetime = #{userDTO.termsAgreementDatetime},
+            registration_datetime = #{userDTO.registrationDatetime},
+            last_modified_datetime = #{userDTO.lastModifiedDatetime}
         WHERE user_no = #{userNo}
     </update>
+
+    <delete id="deleteUser" parameterType="int">
+        DELETE FROM users
+        WHERE user_no = #{userNo}
+    </delete>
+
+    <select id="selectList" resultType="userDTO">
+        SELECT
+        user_no AS userNo,
+        type_code AS typeCode,
+        auth_code AS authCode,
+        user_id AS userId,
+        nickname,
+        contact_number AS contactNumber,
+        email,
+        profile_image_path AS profileImagePath,
+        bio,
+        gender,
+        date_of_birth AS dateOfBirth,
+        real_name AS realName,
+        terms_agreement AS termsAgreement,
+        terms_agreement_datetime AS termsAgreementDatetime,
+        registration_datetime AS registrationDatetime,
+        last_modified_datetime AS lastModifiedDatetime
+        FROM users
+    </select>
+
 </mapper>
