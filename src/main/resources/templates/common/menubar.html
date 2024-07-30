@@ -7,9 +7,9 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- 폰트: 'Noto Sans KR' 사용 -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
     <!-- 프로젝트 툰게더 전용 css 스타일 시트 -->
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -22,22 +22,22 @@
 <header class="header">
     <div class="top-bar">
         <div class="user-nav">
-            <a href="/user/signup">회원가입</a>
-            <a href="/user/login">로그인</a>
-            <a href="/user/my">마이페이지</a>
+            <a th:href="@{/user/signup}">회원가입</a>
+            <a th:href="@{/user/login}">로그인</a>
+            <a th:href="@{/user/my}">마이페이지</a>
         </div>
     </div>
     <div class="header-container">
-        <a href="/" class="logo">
-            <img src="/images/toonGather_logo.png" alt="툰게더 로고">
+        <a th:href="@{/}" class="logo">
+            <img th:src="@{/images/toonGather_logo.png}" alt="툰게더 로고">
         </a>
         <nav class="main-nav">
             <ul>
-                <li><a href="/webtoon/test">웹툰 아카이브</a></li>
-                <li><a href="/social/socialHome">툰투게더</a></li>
-                <li><a href="/recruit/main">채용</a></li>
-                <li><a href="/introduction/journalList">소개</a></li>
-                <li><a href="/cs/csMain">고객센터</a></li>
+                <li><a th:href="@{/webtoon/test}">웹툰 아카이브</a></li>
+                <li><a th:href="@{/social/socialHome}">툰투게더</a></li>
+                <li><a th:href="@{/recruit/main}">채용</a></li>
+                <li><a th:href="@{/introduction/journalList}">소개</a></li>
+                <li><a th:href="@{/cs/csMain}">고객센터</a></li>
             </ul>
         </nav>
     </div>
