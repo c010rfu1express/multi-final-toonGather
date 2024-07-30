@@ -19,7 +19,7 @@
             <li><a th:href="@{/recruit/creator/choice}" class="nav-link px-2">창작자 등록</a></li>
             <li><a th:href="@{/recruit/job/list}" class="nav-link px-2">구인/구직</a></li>
             <li><a th:href="@{/recruit/free/list}" class="nav-link px-2">프리랜서</a></li>
-            <li><a th:href="@{/contact}" class="nav-link px-2">Contact</a></li>
+            <li><a th:href="@{/recruit/ask/list}" class="nav-link px-2">문의 내역</a></li>
         </ul>
     </nav>
     <div class="container">
@@ -41,7 +41,10 @@
                 <div class="mb-3 form-group">
                     <label class="form-control" style="height:auto; padding: 10px;">내용: <br> [[${job.content}]] <br> <br>
                         근무지: <br> [[${job.location}]] <br>
-                        <div id="map" style="width:350px;height:350px;"></div>
+                        <div th:if="${job.location != null and not(job.location.isEmpty())}" >
+                            <div id="map" style="width:350px;height:350px;"></div>
+                        </div>
+
                         <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5cb41ed3e9d236412bf5bb02c8b9e896&libraries=services"></script>
                         <script>
                             var mapContainer = document.getElementById('map'), // 지도를 표시할 div
