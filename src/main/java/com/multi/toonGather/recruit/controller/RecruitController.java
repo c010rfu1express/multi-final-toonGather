@@ -12,10 +12,13 @@ import com.multi.toonGather.recruit.service.creator.CreatorService;
 import com.multi.toonGather.recruit.service.creator.NaverOcr;
 import com.multi.toonGather.recruit.service.free.FreeService;
 import com.multi.toonGather.recruit.service.job.JobService;
+import com.multi.toonGather.security.CustomUserDetails;
+import com.multi.toonGather.user.model.dto.UserDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,13 +61,9 @@ public class RecruitController {
     }
 
     @PostMapping("/creator/registInd")
-    public String viewInd(@ModelAttribute CreatorDTO creatorDTO, HttpServletRequest request, Model model) throws Exception {
+    public String viewInd(@ModelAttribute CreatorDTO creatorDTO, HttpServletRequest request, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
         // 현재 인증된 사용자 정보를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
-//        creatorDTO.setMember_no(userDetails.getMemberNo());
-        creatorDTO.setMember_no(1);
+        creatorDTO.setMember_no(userDetails.getMemNo());
         creatorDTO.setStatus("A");
 
         creatorService.insertCreator(creatorDTO);
@@ -75,9 +74,8 @@ public class RecruitController {
 
     @RequestMapping("/creator/naverocr_result")
     public String ocr(HttpServletRequest request, @RequestPart("file")
-    MultipartFile file, Model model, @ModelAttribute CreatorDTO creatorDTO) throws Exception {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    MultipartFile file, Model model, @ModelAttribute CreatorDTO creatorDTO, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+
 
         //파일첨부한 경우에는 file이름 텍스트 + 이미지파일자체
 
@@ -101,12 +99,10 @@ public class RecruitController {
         model.addAttribute("savedName", savedName);
 
         //dto
-//        creatorDTO.setMember_no(userDetails.getMemberNo());
-        creatorDTO.setMember_no(1);
+        creatorDTO.setMember_no(userDetails.getMemNo());
         creatorDTO.setImg(savedName);
         boolean containsA = list.contains("사업자등록증");
-//        boolean containsB = list.contains(userDetails.getUserName());
-        boolean containsB = list.contains("홍길동");
+        boolean containsB = list.contains(userDetails.getRealName());
         boolean containsC = list.contains("만화");
 
         if (containsA && containsB && containsC) {
@@ -126,12 +122,10 @@ public class RecruitController {
     }
 
     @GetMapping("/job/list")
-    public String listBoard(@RequestParam(value = "page", required = false, defaultValue = "1")  int page, Model model) {
+    public String listBoard(@RequestParam(value = "page", required = false, defaultValue = "1")  int page, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
-//            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-//            model.addAttribute("auth_code", userDetails.getAuthCode());
-            model.addAttribute("auth_code", "C");
+            model.addAttribute("auth_code", String.valueOf(userDetails.getAuthCode()));
         } else {
             model.addAttribute("auth_code", "");  // 인증되지 않은 사용자의 경우
         }
@@ -164,24 +158,21 @@ public class RecruitController {
     @GetMapping("/job/insert")
     public String showInsertForm(Model model) {
         JobDTO jobDTO = new JobDTO();
-//        jobDTO.setMemNo(new MemberDTO());
-        jobDTO.setWriter(1);
+        jobDTO.setMember(new UserDTO());
 
         model.addAttribute("job", jobDTO);
         return "recruit/job/insert";
     }
 
     @PostMapping("/job/insert")
-    public String insertBoard(@ModelAttribute JobDTO jobDTO, HttpServletRequest request, @RequestPart("singleFile") MultipartFile singleFile, Model model) {
-        // 현재 인증된 사용자 정보를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    public String insertBoard(@ModelAttribute JobDTO jobDTO, HttpServletRequest request, @RequestPart("singleFile") MultipartFile singleFile, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+
 
         // 작성자의 memberNo와 userName을 설정
-//        MemberDTO writer = new MemberDTO();
-//        writer.setUser_no(userDetails.getMemberNo());
-//        writer.setNickname(userDetails.getNickname());
-//        jobDTO.setMemNo(writer);
+        UserDTO writer = new UserDTO();
+        writer.setUserNo(userDetails.getMemNo());
+        writer.setNickname(userDetails.getNickname());
+        jobDTO.setMember(writer);
 
         /* 파일을 저장할 경로 설정 */
         String root = request.getSession().getServletContext().getRealPath("/");
@@ -226,12 +217,10 @@ public class RecruitController {
     }
 
     @GetMapping("/job/view")
-    public String findUser(@RequestParam("no") int no, Model model) throws Exception{
+    public String findUser(@RequestParam("no") int no, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
-//            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-//            model.addAttribute("member_no", userDetails.getMemberNo());
-            model.addAttribute("member_no", 1);
+            model.addAttribute("member_no", userDetails.getMemNo());
         } else {
             model.addAttribute("member_no", "");  // 인증되지 않은 사용자의 경우
         }
@@ -316,16 +305,17 @@ public class RecruitController {
     }
 
     @PostMapping("/job/apply")
-    public String insertApply(@ModelAttribute ApplyDTO applyDTO, HttpServletRequest request, @RequestPart("singleFile") MultipartFile singleFile, Model model, @RequestParam("board_no") int board_no) {
+    public String insertApply(@ModelAttribute ApplyDTO applyDTO, HttpServletRequest request, @RequestPart("singleFile") MultipartFile singleFile, Model model, @RequestParam("board_no") int board_no, @AuthenticationPrincipal CustomUserDetails userDetails) {
         // 현재 인증된 사용자 정보를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
 
         // 작성자의 memberNo와 userName을 설정
-//        applyDTO.setWriter(userDetails.getMemberNo());
-        applyDTO.setWriter(1);
+        UserDTO writer = new UserDTO();
+        writer.setUserNo(userDetails.getMemNo());
+        writer.setNickname(userDetails.getNickname());
+        applyDTO.setMember(writer);
+        applyDTO.setWriter(userDetails.getMemNo());
         applyDTO.setBoard_no(board_no);
-        System.out.println("----------------------------------------" + applyDTO.getBoard_no());
 
         /* 파일을 저장할 경로 설정 */
         String root = request.getSession().getServletContext().getRealPath("/");
@@ -370,11 +360,10 @@ public class RecruitController {
     }
 
     @GetMapping("/job/applyView")
-    public String viewApply(@RequestParam("no") int no, Model model) throws Exception{
+    public String viewApply(@RequestParam("no") int no, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
-//            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            model.addAttribute("member_no", 1);
+            model.addAttribute("member_no", userDetails.getMemNo());
         } else {
             model.addAttribute("member_no", "");  // 인증되지 않은 사용자의 경우
         }
@@ -389,11 +378,10 @@ public class RecruitController {
     }
 
     @GetMapping("/free/list")
-    public String listFree(@RequestParam(value = "page", required = false, defaultValue = "1")  int page, Model model) {
+    public String listFree(@RequestParam(value = "page", required = false, defaultValue = "1")  int page, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
-//            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            model.addAttribute("auth_code", "C");
+            model.addAttribute("auth_code", String.valueOf(userDetails.getAuthCode()));
         } else {
             model.addAttribute("auth_code", "");  // 인증되지 않은 사용자의 경우
         }
@@ -426,24 +414,20 @@ public class RecruitController {
     @GetMapping("/free/insert")
     public String showInsert(Model model) {
         FreeDTO freeDTO = new FreeDTO();
-//        freeDTO.setMemNo(new MemberDTO());
-        freeDTO.setWriter(1);
+        freeDTO.setMember(new UserDTO());
 
         model.addAttribute("free", freeDTO);
         return "recruit/free/insert";
     }
 
     @PostMapping("/free/insert")
-    public String insertFree(@ModelAttribute FreeDTO freeDTO, HttpServletRequest request, @RequestPart("singleFile") MultipartFile singleFile, Model model) {
-        // 현재 인증된 사용자 정보를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    public String insertFree(@ModelAttribute FreeDTO freeDTO, HttpServletRequest request, @RequestPart("singleFile") MultipartFile singleFile, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         // 작성자의 memberNo와 userName을 설정
-//        MemberDTO writer = new MemberDTO();
-//        writer.setUser_no(userDetails.getMemberNo());
-//        writer.setNickname(userDetails.getNickname());
-//        freeDTO.setMemNo(writer);
+        UserDTO writer = new UserDTO();
+        writer.setUserNo(userDetails.getMemNo());
+        writer.setNickname(userDetails.getNickname());
+        freeDTO.setMember(writer);
 
         /* 파일을 저장할 경로 설정 */
         String root = request.getSession().getServletContext().getRealPath("/");
@@ -488,11 +472,10 @@ public class RecruitController {
     }
 
     @GetMapping("/free/view")
-    public String findFree(@RequestParam("no") int no, Model model) throws Exception{
+    public String findFree(@RequestParam("no") int no, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
-//            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            model.addAttribute("member_no", 1);
+            model.addAttribute("member_no", userDetails.getMemNo());
         } else {
             model.addAttribute("member_no", "");  // 인증되지 않은 사용자의 경우
         }
@@ -573,20 +556,18 @@ public class RecruitController {
     }
 
     @PostMapping("/free/review/insert")
-    public String insert(@RequestParam("rating") int rating, @RequestParam("reply") String reply, @RequestParam("board_no") int board_no, Model model) throws Exception {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    public String insert(@RequestParam("rating") int rating, @RequestParam("reply") String reply, @RequestParam("board_no") int board_no, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
         // 작성자의 memberNo와 userName을 설정
-//        MemberDTO writer = new MemberDTO();
+        UserDTO writer = new UserDTO();
         FreeReviewDTO freeReviewDTO = new FreeReviewDTO();
-//        writer.setUser_no(userDetails.getMemberNo());
-//        writer.setNickname(userDetails.getNickname());
-//        freeReviewDTO.setMemNo(writer);
+        writer.setUserNo(userDetails.getMemNo());
+        writer.setNickname(userDetails.getNickname());
+        freeReviewDTO.setMember(writer);
 
 
         freeReviewDTO.setContent(reply);
         freeReviewDTO.setStar_rating(rating);
-        freeReviewDTO.setWriter(1);
+        freeReviewDTO.setWriter(userDetails.getMemNo());
         freeReviewDTO.setBoard_no(board_no);
         freeService.insertReview(freeReviewDTO);
 

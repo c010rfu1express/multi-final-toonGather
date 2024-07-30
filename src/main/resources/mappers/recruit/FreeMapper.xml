@@ -5,10 +5,10 @@
 
 <!-- 네임스페이스는 풀클래스명을 써야한다 와 DTO 타입을 변경한 후 마이바티스 config 설정파일에 매퍼 부분은 지워주고, spring-context.xml에 매퍼 스캐닝을 추가해야 한다. -->
 <mapper namespace="com.multi.toonGather.recruit.model.mapper.FreeMapper">
-<!--	<resultMap id="memberResultMap" type="memberDTO">-->
-<!--		<result property="user_no" column="user_no"/>-->
-<!--		<result property="nickname" column="nickname"/>-->
-<!--	</resultMap>-->
+	<resultMap id="memberResultMap" type="userDTO">
+		<result property="userNo" column="user_no"/>
+		<result property="nickname" column="nickname"/>
+	</resultMap>
 
 	<resultMap id="FreeResultMap" type="freeDTO">
 		<id property="board_no" column="board_no" />
@@ -19,7 +19,7 @@
 		<result property="price" column="price" />
 		<result property="created_date" column="created_date" />
 		<result property="modified_date" column="modified_date" />
-<!--		<association property="memNo" column="writer" javaType="memberDTO" resultMap="memberResultMap" />-->
+		<association property="member" column="writer" javaType="userDTO" resultMap="memberResultMap" />
 	</resultMap>
 
 	<resultMap id="FreeReviewResultMap" type="freeReviewDTO">
@@ -29,7 +29,7 @@
 		<result property="content" column="content" />
 		<result property="star_rating" column="star_rating" />
 		<result property="created_date" column="created_date" />
-<!--		<association property="memNo" column="writer" javaType="memberDTO" resultMap="memberResultMap" />-->
+		<association property="member" column="writer" javaType="userDTO" resultMap="memberResultMap" />
 	</resultMap>
 
 	<select id="selectAll" parameterType="pageDTO" resultMap="FreeResultMap">
@@ -56,7 +56,7 @@
 		)
 		VALUES
 		(
-		1
+		#{ member.userNo }
 		, #{ title }
 		, #{ content }
 		, #{ img }
@@ -100,7 +100,7 @@
 		)
 		VALUES
 		(
-		1
+		#{ member.userNo }
 		, #{ board_no }
 		, #{ content }
 		, #{ star_rating }

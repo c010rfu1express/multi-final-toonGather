@@ -1,5 +1,6 @@
 package com.multi.toonGather.recruit.model.dto.free;
 
+import com.multi.toonGather.user.model.dto.UserDTO;
 import lombok.Data;
 
 import java.util.Date;
@@ -14,6 +15,6 @@ public class FreeDTO {
     private int price;
     private Date created_date;
     private Date modified_date;
-//    private MemberDTO memNo;
+    private UserDTO member;
 
 }

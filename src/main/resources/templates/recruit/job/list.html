@@ -36,8 +36,7 @@
                 <tr th:each="job : ${jobs}">
                     <th scope="row" th:text="${job.board_no}"></th>
                     <td><a th:href="@{/recruit/job/view(no=${job.board_no})}" th:text="${#strings.abbreviate(job.title, 10)}"></a></td>
-
-                    <td th:text="닉네임"></td>
+                    <td th:text="${job.member.nickname}"></td>
                     <td th:text="${#dates.format(job.created_date, 'yyyy-MM-dd')}"></td>
                 </tr>
                 </tbody>
@@ -45,7 +44,7 @@
             <p th:if="${jobs == null}" style="text-align: center;">구인/구직 글이 존재하지 않습니다.</p>
         </div>
         <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-secondary" th:onclick="|location.href='@{/recruit/job/insert}'|">글쓰기</button>
+            <button type="button" class="btn btn-secondary" th:if="${auth_code == 'C'}" th:onclick="|location.href='@{/recruit/job/insert}'|">글쓰기</button>
         </div>
 
         <th:block th:if="${pages != null}">
@@ -69,7 +68,6 @@
 		/*]]>*/
 
 </script>
-	<script th:src="@{/js/paging.js}"></script>
 
 </body>
 </html>
