@@ -20,13 +20,17 @@
     <a href="#">카카오로 시작하기</a><br>
     또는<br>
 
-
-    <form th:action="@{/user/login}" th:object="${user}" method="post">
-        아이디 : <input type="text" th:field="*{userId}"/> (중복불가)<br>
-        비밀번호 : <input type="password" th:field="*{password}"/><br>
-
+    <form th:action="@{/user/login}" method="post">
+        아이디 : <input type="text" name="username"/> (중복불가)<br>
+        비밀번호 : <input type="password" name="password"/><br>
         <input type="submit">로그인<br>
     </form>
+<!--    <form th:action="@{/user/login}" th:object="${user}" method="post">-->
+<!--        아이디 : <input type="text" th:field="*{userId}"/> (중복불가)<br>-->
+<!--        비밀번호 : <input type="password" th:field="*{password}"/><br>-->
+
+<!--        <input type="submit">로그인<br>-->
+<!--    </form>-->
     <a href="/user/signup">회원가입</a> | <a href="/user/findid">ID/PW 찾기</a>
     <!--    <form th:action="@{/user/signup}" th:object="${user}" method="post">-->
     <!--        아이디 : <input type="text" name="userId"><br>-->
