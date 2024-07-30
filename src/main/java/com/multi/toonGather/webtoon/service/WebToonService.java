@@ -1,7 +1,8 @@
 package com.multi.toonGather.webtoon.service;
 
-import com.multi.toonGather.webtoon.model.CommentDTO;
-import com.multi.toonGather.webtoon.model.WebtoonDTO;
+import com.multi.toonGather.webtoon.model.dto.CommentDTO;
+import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
+import com.multi.toonGather.webtoon.model.dto.WtUserLogDTO;
 
 import java.util.List;
 
@@ -17,4 +18,10 @@ public interface WebToonService {
     int updateComment(CommentDTO commentDTO)throws Exception;
 
     int deleteComment(CommentDTO commentNo)throws Exception;
+
+    WtUserLogDTO selrctLog(WtUserLogDTO dto)throws Exception;
+
+    int insertLog(WtUserLogDTO wtUserLogDTO);
+
+    int updateLog(WtUserLogDTO wtUserLogDTO);
 }

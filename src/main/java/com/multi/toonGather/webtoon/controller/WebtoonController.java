@@ -1,9 +1,11 @@
 package com.multi.toonGather.webtoon.controller;
 
 import com.multi.toonGather.user.model.dto.UserDTO;
-import com.multi.toonGather.webtoon.model.CommentDTO;
-import com.multi.toonGather.webtoon.model.WebtoonDTO;
+import com.multi.toonGather.webtoon.model.dto.CommentDTO;
+import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
+import com.multi.toonGather.webtoon.model.dto.WtUserLogDTO;
 import com.multi.toonGather.webtoon.service.WebToonService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +31,9 @@ public class WebtoonController {
     }
 
     @GetMapping(value = {"webtoon/one"})
-    public String Web_toon_One(WebtoonDTO webtoonDTO, Model model){
+    public String Web_toon_One(WebtoonDTO webtoonDTO, Model model, HttpSession session){
+
+
         UserDTO userDTO=new UserDTO();
         WebtoonDTO webtoonDTO1=new WebtoonDTO();
         String id=webtoonDTO.getWebtoon_id();
@@ -59,11 +63,29 @@ public class WebtoonController {
 
         model.addAttribute("user",userDTO);
         model.addAttribute("one",webtoonDTO);
+        session.setAttribute("user",userDTO);
+
         return "webtoon/one";
     }
     @PutMapping("/webtoon/one/count")
-    public ResponseEntity<Void> IncreaseCount(WebtoonDTO webtoonDTO) throws Exception {
+    public ResponseEntity<Void> IncreaseCount(WebtoonDTO webtoonDTO,HttpSession session) throws Exception {
+
+
+
         boolean result =webToonService.increaseCount(webtoonDTO);
+        UserDTO dto=(UserDTO) session.getAttribute("user");
+        System.out.println(dto);
+        WtUserLogDTO wtUserLogDTO=new WtUserLogDTO();
+        wtUserLogDTO.setUserNo(dto.getUserNo());
+        wtUserLogDTO.setWebtoonNo(webtoonDTO.getWebtoon_no());
+        if(dto.getUserNo()>0){
+            WtUserLogDTO resultDTO =webToonService.selrctLog(wtUserLogDTO);
+            if(resultDTO==null){
+                webToonService.insertLog(wtUserLogDTO);
+            }else {
+                webToonService.updateLog(resultDTO);
+            }
+        }
         if (result) {
             System.out.println("증가");
             return ResponseEntity.ok().build();

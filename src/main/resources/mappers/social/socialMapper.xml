@@ -132,7 +132,7 @@
             <result property="nickname" column="nickname"/>
             <result property="profileImagePath" column="profile_image_path"/>
         </association>
-        <association property="webtoon" javaType="com.multi.toonGather.webtoon.model.WebtoonDTO"><!--MybatisConfig Type Aliases 설정시 수정 예정-->
+        <association property="webtoon" javaType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO"><!--MybatisConfig Type Aliases 설정시 수정 예정-->
             <id property="webtoon_no" column="webtoon_no"/>
             <result property="webtoon_name" column="webtoon_name"/>
             <result property="author" column="author"/>
@@ -154,7 +154,7 @@
             <result property="nickname" column="nickname"/>
             <result property="profileImagePath" column="profile_image_path"/>
         </association>
-        <association property="webtoon" javaType="com.multi.toonGather.webtoon.model.WebtoonDTO">
+        <association property="webtoon" javaType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO">
             <id property="webtoon_no" column="webtoon_no"/>
             <result property="webtoon_name" column="webtoon_name"/>
             <result property="author" column="author"/>

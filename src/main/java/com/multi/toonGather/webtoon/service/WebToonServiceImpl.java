@@ -1,8 +1,9 @@
 package com.multi.toonGather.webtoon.service;
 
-import com.multi.toonGather.webtoon.model.CommentDTO;
-import com.multi.toonGather.webtoon.model.WebtoonDTO;
+import com.multi.toonGather.webtoon.model.dto.CommentDTO;
+import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
 import com.multi.toonGather.webtoon.model.dao.WebToonMapper;
+import com.multi.toonGather.webtoon.model.dto.WtUserLogDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +51,24 @@ public class WebToonServiceImpl implements WebToonService{
     @Override
     public int deleteComment(CommentDTO commentDTO) throws Exception{
         int result=webToonMapper.deleteComment(commentDTO);
+        return result;
+    }
+
+    @Override
+    public WtUserLogDTO selrctLog(WtUserLogDTO dto) throws Exception {
+        WtUserLogDTO wtUserLogDTO=webToonMapper.selrctLog(dto);
+        return wtUserLogDTO;
+    }
+
+    @Override
+    public int insertLog(WtUserLogDTO wtUserLogDTO) {
+        int result=webToonMapper.insertLog(wtUserLogDTO);
+        return result;
+    }
+
+    @Override
+    public int updateLog(WtUserLogDTO wtUserLogDTO) {
+        int result=webToonMapper.updateLog(wtUserLogDTO);
         return result;
     }
 

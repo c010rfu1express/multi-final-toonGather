@@ -12,6 +12,12 @@
 
             justify-content: center;
         }
+        #webtoonOne {
+            width: 100%;
+            max-width: 80%;
+
+            margin: auto;
+        }
         #webtoonDetail {
             width: 100%;
             max-width: 80%;
@@ -119,7 +125,8 @@
 <body>
 
 <div th:replace="common/menubar.html"></div>
-
+<br>
+<div id="webtoonOne">
 <h1>웹툰 정보</h1>
 
 <div id="webtoonDetail">
@@ -163,7 +170,7 @@
         </tr>
     </table>
 </div>
-<div id="commentdiv">
+
 
     <div id="commentinto">
     <!-- 리뷰 작성 폼 -->
