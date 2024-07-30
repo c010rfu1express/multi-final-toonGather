@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>툰게더 toonGather | 툰투게더<</title>
+    <link rel="stylesheet" th:href="@{/css/social-styles.css}">
+</head>
+<body>
+<div th:replace="common/menubar.html"></div>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="user-profile-info">
+                <img th:src="${profileUser.profileImagePath}" alt="프로필 사진" class="profile-image">
+                <div class="profile-text">
+                    <h2 th:text="${profileUser.nickname}">사용자 닉네임</h2>
+                    <p th:text="${profileUser.bio}">사용자 자기소개</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="social-user-profile-placeholder"></div>
+            <nav class="social-user-menu">
+                <ul>
+                    <li><a th:href="@{/social/users/{userId}/profile(userId=${profileUser.userId})}">홈</a></li>
+                    <li><a th:href="@{/social/users/{userId}/reviews(userId=${profileUser.userId})}">리뷰</a></li>
+                    <li><a th:href="@{/social/users/{userId}/diaries(userId=${profileUser.userId})}">다이어리</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- 사용자 리뷰 목록 -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <h2>작성한 리뷰</h2>
+            <div class="row">
+                <div class="col-md-4" th:each="review : ${userReviews}">
+                    <div class="card mb-4">
+                        <img th:src="${review.webtoon.thumbnailUrl}" class="card-img-top" alt="웹툰 썸네일">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${review.title}"></h5>
+                            <p class="card-text" th:text="${#strings.abbreviate(review.content, 100)}"></p>
+                            <p>별점: <span th:text="${review.starRating}"></span></p>
+                            <p>조회수: <span th:text="${review.viewCnt}"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
