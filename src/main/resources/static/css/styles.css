@@ -1,8 +1,8 @@
 /**
  * 프로젝트 툰게더 전용 css 스타일 시트입니다.
  *
- * HTML 파일의 <head>에 <link rel="stylesheet" href="/css/styles.css"> 추가하면 적용됩니다.
- * menubar.html이 적용하는 경우 따로 추가할 필요는 없습니다.
+ * HTML 파일의 <head>에 <link rel="stylesheet" th:href="@{/css/styles.css}"> 추가하면 적용됩니다.
+ * menubar.html 적용하는 경우 따로 추가할 필요는 없습니다.
  *
  * @author : seoyun
  * @fileName : style.css

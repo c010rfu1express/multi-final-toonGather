@@ -18,7 +18,7 @@
             <li><a th:href="@{/recruit/creator/choice}" class="nav-link px-2">창작자 등록</a></li>
             <li><a th:href="@{/recruit/job/list}" class="nav-link px-2">구인/구직</a></li>
             <li><a th:href="@{/recruit/free/list}" class="nav-link px-2">프리랜서</a></li>
-            <li><a th:href="@{/contact}" class="nav-link px-2">Contact</a></li>
+            <li><a th:href="@{/recruit/ask/list}" class="nav-link px-2">문의 내역</a></li>
         </ul>
     </nav>
     <div class="container">
@@ -71,7 +71,7 @@
 
                     <!-- 별점 평가 -->
                     <div class="star-rating space-x-4 mx-auto">
-                        <input type="radio" id="5-stars" name="rating" value="5" v-model="ratings"/>
+                        <input type="radio" id="5-stars" name="rating" value="5" v-model="ratings" required/>
                         <label for="5-stars" class="star pr-4">★</label>
                         <input type="radio" id="4-stars" name="rating" value="4" v-model="ratings"/>
                         <label for="4-stars" class="star">★</label>
@@ -84,8 +84,8 @@
                     </div>
 
                     <!-- 리뷰 입력 필드 -->
-                    <textarea id="reply" name="reply" class="form-control" style="height:100px;" maxlength='500'></textarea>
-                    <input type="hidden" id="board_no" name="board_no" th:value="${free.board_no}" />
+                    <textarea id="reply" name="reply" class="form-control" style="height:100px;" maxlength='500' required></textarea>
+                    <input type="hidden" id="board_no" name="board_no" th:value="${free.board_no}"/>
                     <br>
                     <button type="submit" id="b2" class="btn btn-primary">입력</button>
                     <hr>
@@ -123,7 +123,7 @@
                         <div class="modal-body">
                             <!-- 별점 평가 -->
                             <div class="star-rating space-x-4 mx-auto">
-                                <input type="radio" id="update-5-stars" name="rating" value="5"/>
+                                <input type="radio" id="update-5-stars" name="rating" value="5" required/>
                                 <label for="update-5-stars" class="star pr-4">★</label>
                                 <input type="radio" id="update-4-stars" name="rating" value="4"/>
                                 <label for="update-4-stars" class="star">★</label>
@@ -135,7 +135,7 @@
                                 <label for="update-1-star" class="star">★</label>
                             </div>
                             <!-- 리뷰 입력 필드 -->
-                            <textarea id="update-reply" name="content" class="form-control" style="height:100px;" maxlength="500"></textarea>
+                            <textarea id="update-reply" name="content" class="form-control" style="height:100px;" maxlength="500" required></textarea>
                             <input type="hidden" id="update-review_no" name="review_no" value=""/>
                         </div>
                         <script>
