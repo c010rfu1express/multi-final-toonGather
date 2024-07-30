@@ -15,7 +15,7 @@
             <li><a th:href="@{/recruit/creator/choice}" class="nav-link px-2">창작자 등록</a></li>
             <li><a th:href="@{/recruit/job/list}" class="nav-link px-2">구인/구직</a></li>
             <li><a th:href="@{/recruit/free/list}" class="nav-link px-2">프리랜서</a></li>
-            <li><a th:href="@{/contact}" class="nav-link px-2">Contact</a></li>
+            <li><a th:href="@{/recruit/ask/list}" class="nav-link px-2">문의 내역</a></li>
         </ul>
     </nav>
     <div class="container">
@@ -27,11 +27,11 @@
             <input type="hidden" name="existingImage" th:value="${free.img}">
                 <div class="form-group">
                     <td class="t1">게시글 제목 :</td>
-                    <td><input name="title" th:value="${free.title}" class="form-control" maxlength='50' ></td>
+                    <td><input name="title" th:value="${free.title}" class="form-control" maxlength='50' required></td>
                 </div>
                 <div class="form-group">
                     <td class="t1">게시글 내용 :</td>
-                    <td><input name="content" th:value="${free.content}" class="form-control" style="height:300px;"></td>
+                    <td><input name="content" th:value="${free.content}" class="form-control" style="height:300px;" required></td>
                 </div>
                 <div class="form-group">
                     <label for="singleFile">이미지</label>
@@ -39,7 +39,7 @@
                 </div>
                 <div class="form-group">
                     <td class="t1">가격 :</td>
-                    <td><input name="price" th:value="${free.price}" type="number" class="form-control"></td>
+                    <td><input name="price" th:value="${free.price}" type="number" class="form-control" required></td>
                 </div>
                 <div class="form-group text-right">
                     <a th:href="@{/recruit/free/list}">
