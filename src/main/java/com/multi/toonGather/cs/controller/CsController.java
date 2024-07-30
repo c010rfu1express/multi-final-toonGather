@@ -75,7 +75,6 @@ public class CsController {
         if (isSuccess) {
             return "redirect:/cs/csMain";
         } else {
-            model.addAttribute("errorMessage", "문의글 등록 중 오류가 발생했습니다.");
             return "cs/insertQuestion";
         }
     }

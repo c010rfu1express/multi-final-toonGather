@@ -150,11 +150,11 @@ public class CsServiceImpl implements CsService {
     @Transactional
     public boolean deleteQuestion(int csQNo, HttpServletRequest request) throws Exception {
         try {
-            // 문의글 삭제 (ON DELETE CASCADE 적용)
-            csMapper.deleteQuestion(csQNo);
-
             // 파일 정보 가져오기
             List<QuestionFilesDTO> files = csMapper.getQuestionFilesByQuestionId(csQNo);
+
+            // 문의글 삭제 (ON DELETE CASCADE 적용)
+            csMapper.deleteQuestion(csQNo);
 
             // 파일 삭제
             for (QuestionFilesDTO file : files) {
