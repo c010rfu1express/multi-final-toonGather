@@ -1,7 +1,7 @@
 package com.multi.toonGather.social.service;
 
-import com.multi.toonGather.social.model.dto.DiaryDTO;
 import com.multi.toonGather.social.model.dto.ReviewDTO;
+import com.multi.toonGather.user.model.dto.UserDTO;
 
 import java.util.List;
 
@@ -14,19 +14,27 @@ import java.util.List;
  */
 public interface SocialService {
 
+    // 메인 페이지
+    //List<ReviewDTO> getPopularReviews();
+
+    // 사용자 메인 페이지
+    UserDTO selectUserProfile(String userId);
+    List<ReviewDTO> getReviewsByUserId(String userId);
+
+
     // 리뷰
-    void createReview(ReviewDTO review);
-    List<ReviewDTO> getReviewsByUser(int userNo);
     ReviewDTO getReviewByNo(int reviewNo);
-    void incrementViewCount(int reviewNo);
+    void incrementReviewViewCount(int reviewNo);
     void updateReview(ReviewDTO review);
-    void deleteReview(int reviewNo);
+    boolean deleteReview(int reviewNo);
+//    void createReview(ReviewDTO review);
+//    void deleteReview(int reviewNo);
 
     // 다이어리
-    void createDiary(DiaryDTO diary);
-    List<DiaryDTO> getDiariesByUser(int userNo);
-    void incrementDiaryViewCount(int diaryNo);
-    DiaryDTO getDiaryByNo(int diaryNo);
-    void updateDiary(DiaryDTO diary);
-    void deleteDiary(int diaryNo);
+//    void createDiary(DiaryDTO diary);
+//    List<DiaryDTO> getDiariesByUser(int userNo);
+//    void incrementDiaryViewCount(int diaryNo);
+//    DiaryDTO getDiaryByNo(int diaryNo);
+//    void updateDiary(DiaryDTO diary);
+//    void deleteDiary(int diaryNo);
 }

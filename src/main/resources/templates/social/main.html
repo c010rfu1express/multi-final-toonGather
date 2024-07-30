@@ -47,6 +47,7 @@
     <div class="row mt-4">
         <div class="col-12">
             <h2>인기 리뷰</h2>
+            <hr>
             <div class="row">
                 <div class="col-md-4" th:each="review : ${popularReviews}">
                     <div class="card">
@@ -66,6 +67,8 @@
     <!-- 검색바 -->
     <div class="row mt-4">
         <div class="col-12">
+            <h2>발견하기</h2>
+            <hr>
             <form th:action="@{/social/search}" method="get">
                 <div class="search-bar">
                     <input type="text" name="query" placeholder="리뷰, 다이어리, 작성자 검색...">
