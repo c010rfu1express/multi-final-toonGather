@@ -21,18 +21,12 @@ public class UserController {
     //@RequiredArgsConstructor를 쓰는 이유.. Spring의 의존성 자동 주입을 위함
     private final UserService userService;
 
-
-
-    @RequestMapping("/my")
-    public String myPage(){
-        return "/user/mypage";
-    }
-
     ///////////////////////////////////
     //요청시작
     //get: 클라이언트가 서버에서 가져올 때
     //post: 클라이언트가 서버로 보낼 때
 
+    //KHG00
     @GetMapping("/login")
     public String login(Model model){
         UserDTO userDTO = new UserDTO();
@@ -40,11 +34,7 @@ public class UserController {
         return "/user/login";
     }
 
-
-
-
-
-    //KHG01
+    //KHG01-(1)GET
     @GetMapping("/signup")
     public String signUp(Model model){
         UserDTO userDTO = new UserDTO();
@@ -52,6 +42,7 @@ public class UserController {
         return "/user/signup";
     }
 
+    //KHG01-(2)POST
     @PostMapping("/signup")
     public String insertUser(@ModelAttribute UserDTO userDTO, HttpServletRequest request, Model model) throws Exception {
         //이동전에 할것들
