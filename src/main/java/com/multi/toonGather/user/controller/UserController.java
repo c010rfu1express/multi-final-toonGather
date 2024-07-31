@@ -9,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,18 +21,12 @@ public class UserController {
     //@RequiredArgsConstructor를 쓰는 이유.. Spring의 의존성 자동 주입을 위함
     private final UserService userService;
 
-
-
-    @RequestMapping("/my")
-    public String myPage(){
-        return "/user/mypage";
-    }
-
     ///////////////////////////////////
     //요청시작
     //get: 클라이언트가 서버에서 가져올 때
     //post: 클라이언트가 서버로 보낼 때
 
+    //KHG00
     @GetMapping("/login")
     public String login(Model model){
         UserDTO userDTO = new UserDTO();
@@ -39,11 +34,7 @@ public class UserController {
         return "/user/login";
     }
 
-
-
-
-
-    //KHG01
+    //KHG01-(1)GET
     @GetMapping("/signup")
     public String signUp(Model model){
         UserDTO userDTO = new UserDTO();
@@ -51,6 +42,7 @@ public class UserController {
         return "/user/signup";
     }
 
+    //KHG01-(2)POST
     @PostMapping("/signup")
     public String insertUser(@ModelAttribute UserDTO userDTO, HttpServletRequest request, Model model) throws Exception {
         //이동전에 할것들
@@ -146,12 +138,14 @@ public class UserController {
 
     //KHG70-(2)POST
     @PostMapping("/my/editprofile")
-    public String editProfileRequest(@AuthenticationPrincipal CustomUserDetails c, @ModelAttribute UserDTO userDTO, HttpServletRequest request, Model model) throws Exception {
+    public String editProfileRequest(@AuthenticationPrincipal CustomUserDetails c, @ModelAttribute UserDTO userDTO, @RequestParam("image") MultipartFile image, HttpServletRequest request, Model model) throws Exception {
+
         int userNo = c.getUserDTO().getUserNo();
         System.out.println("editProfileReq @RequestParam userNo: "+userNo);
         System.out.println("editProfileReq userDTO: "+userDTO);
+
         //회원 정보 수정 처리
-        userService.updateProfile(userNo, userDTO);
+        userService.updateProfile(userNo, userDTO, image, request);
         return "redirect:/user/my/editprofile";
     }
 
@@ -185,10 +179,10 @@ public class UserController {
 
     //KHG81-(2)POST
     @PostMapping("/admin/updateuser")
-    public String adminUpdateUser(@RequestParam("userNo") int userNo, @ModelAttribute UserDTO userDTO, HttpServletRequest request, Model model) throws Exception {
+    public String adminUpdateUser(@RequestParam("userNo") int userNo, @ModelAttribute UserDTO userDTO, @RequestParam("image") MultipartFile image, HttpServletRequest request, Model model) throws Exception {
         System.out.println("adminUpdateUser @RequestParam userNo: "+userNo);
         //회원 정보 수정 처리
-        userService.updateProfile(userNo, userDTO);
+        userService.updateProfile(userNo, userDTO, image, request);
         return "redirect:/user/admin/userlist";
     }
 

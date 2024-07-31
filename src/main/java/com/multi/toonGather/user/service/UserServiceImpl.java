@@ -2,11 +2,16 @@ package com.multi.toonGather.user.service;
 
 import com.multi.toonGather.user.model.dto.UserDTO;
 import com.multi.toonGather.user.model.mapper.UserMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor //@RequiredArgsConstructor: 요구되는, 파라미터로, 생성자 자동으로 만들어줌
@@ -73,9 +78,42 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    public void updateProfile(int userNo, UserDTO userDTO) throws Exception {
+    public void updateProfile(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception {
         System.out.println("userNo: " + userNo);
         System.out.println("userDTO: " + userDTO);
+
+        // 비밀번호 암호화
+        String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
+        userDTO.setPassword(encodedPassword);
+
+        // 파일 처리 추가!
+        String root = request.getSession().getServletContext().getRealPath("/");
+        System.out.println("root : " + root);
+        String filePath = root + "/uploadFiles";
+
+        File mkdir = new File(filePath);
+        if (!mkdir.exists()) {
+            mkdir.mkdirs();
+        }
+
+        String originName = image.getOriginalFilename();
+        if (originName != null && !originName.isEmpty()) {
+            String ext = originName.substring(originName.lastIndexOf("."));
+            String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
+
+            // 파일 저장
+            try {
+                image.transferTo(new File(filePath + "/" + savedName));
+//                userDTO.setOriginFileName(originName);
+                userDTO.setProfileImagePath(savedName);
+                System.out.println("[editProfileRequest] profileImagePath: " + userDTO.getProfileImagePath());
+            } catch (IOException e) {
+                System.out.println("File upload error : " + e);
+                new File(filePath + "/" + savedName).delete();
+                throw new Exception("File upload failed, rolling back transaction.", e); // 예외를 던져 트랜잭션을 롤백함
+            }
+        } // if origin not null
+
         int result = userMapper.updateUser(userNo, userDTO);
         if(result == 0) new Exception("[ERROR] updateUser 실패. [userNo: " + userNo + "]");
     }
