@@ -9,5 +9,6 @@ public class CreatorDTO {
     private String content;
     private String img;
     private String status;
-
+    private String type_code;
+    private String regist_no;
 }

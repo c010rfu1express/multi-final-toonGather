@@ -63,4 +63,20 @@ public class CustomUserDetails implements UserDetails {
         return true;
     }
 
+    public String getRealName() {
+        return userDTO.getRealName();
+    }
+
+    public char getAuthCode() {
+        return userDTO.getAuthCode();
+    }
+
+    public String getNickname() {
+        return userDTO.getNickname();
+    }
+
+    public int getMemNo() {
+        return userDTO.getUserNo();
+    }
+
 }

@@ -32,7 +32,7 @@
                 <div class="row" >
                     <div class="form-group col-md-6">
 
-                        <label class="form-control">작성자: 닉네임</label>
+                        <label class="form-control">작성자: [[${job.member.nickname}]]</label>
                     </div>
                     <div class="form-group col-md-6">
                         <label class="form-control">작성일: [[${job.created_date}]]</label>
@@ -93,19 +93,20 @@
                     </label>
                 </div>
 
-
+                <div th:if="${member_no != null and member_no != ''}">
                     <div style="margin-right:1px;" class="mt-4 text-center">
-                        <a th:href="@{/recruit/job/apply(no=${job.board_no})}" class="btn btn-success">지원하기</a>
+                        <a th:if="${hasApplied == false}" th:href="@{/recruit/job/apply(no=${job.board_no})}" class="btn btn-success">지원하기</a>
+                        <button th:if="${hasApplied == true}" class="btn btn-success" disabled>지원완료</button>
                     </div>
-
+                </div>
                 <div class="mt-4 text-right">
                     <a href="/recruit/job/list" class="btn btn-outline-primary">목록으로</a>
 
-
+                    <div th:if="${member_no == job.member.userNo}">
                         <br>
                         <a th:href="@{/recruit/job/update(no=${job.board_no})}" class="btn btn-primary">수정</a>
                         <a th:href="@{/recruit/job/delete(no=${job.board_no})}" class="btn btn-danger">삭제</a>
-
+                    </div>
                 </div>
             </div>
             <br>
