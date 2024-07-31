@@ -1,9 +1,7 @@
 package com.multi.toonGather.user.controller;
 
 import com.multi.toonGather.security.CustomUserDetails;
-import com.multi.toonGather.user.model.dto.MyCsQuestionDTO;
-import com.multi.toonGather.user.model.dto.MyInJournalDTO;
-import com.multi.toonGather.user.model.dto.MyRctJobDTO;
+import com.multi.toonGather.user.model.dto.*;
 import com.multi.toonGather.user.service.MyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,6 +25,26 @@ public class MyController {
         return "/user/mypage";
     }
 
+    //KHG30
+    @GetMapping("/so/review")
+    public String mySoReview(@AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
+        int userNo = c.getUserDTO().getUserNo();
+        List<MySoReviewDTO> mySoReviews = myService.getMySoReviews(userNo);
+
+        model.addAttribute("mySoReviews", mySoReviews);
+        return "/user/mypage_so_review";
+    }
+
+    //KHG31
+    @GetMapping("/so/diary")
+    public String mySoDiary(@AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
+        int userNo = c.getUserDTO().getUserNo();
+        List<MySoDiaryDTO> mySoDiaries = myService.getMySoDiaries(userNo);
+
+        model.addAttribute("mySoDiaries", mySoDiaries);
+        return "/user/mypage_so_diary";
+    }
+
     //KHG40
     @GetMapping("/rct/job")
     public String myRctJob(@AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
@@ -45,6 +63,16 @@ public class MyController {
 
         model.addAttribute("myInJournals", myInJournals);
         return "/user/mypage_in_journal";
+    }
+
+    //KHG51
+    @GetMapping("/in/event")
+    public String myInEvent(@AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
+        int userNo = c.getUserDTO().getUserNo();
+        List<MyInEventDTO> myInEvents = myService.getMyInEvents(userNo);
+
+        model.addAttribute("myInEvents", myInEvents);
+        return "/user/mypage_in_event";
     }
 
     //KHG60

@@ -91,4 +91,135 @@
         WHERE
         writer = #{userNo}
     </select>
+
+    <resultMap type="MySoReviewDTO" id="MySoReviewResultMap">
+        <id property="likeNo" column="like_no" />
+        <result property="reviewNo" column="review_no" />
+        <result property="likedUser" column="liked_user" />
+        <result property="likedDate" column="liked_date" />
+
+        <result property="webtoonNo" column="webtoon_no" />
+        <result property="title" column="title" />
+        <result property="content" column="content" />
+        <result property="starRating" column="star_rating" />
+        <result property="createdDate" column="created_date" />
+        <result property="modifiedDate" column="modified_date" />
+        <result property="viewCnt" column="view_cnt" />
+    </resultMap>
+
+    <select id="selectListMySoReview" resultType="MySoReviewDTO">
+        SELECT
+        srl.like_no AS likeNo,
+        srl.review_no AS reviewNo,
+        srl.liked_user AS likedUser,
+        srl.liked_date AS likedDate,
+
+        sr.webtoon_no AS webtoonNo,
+        sr.title AS title,
+        sr.content AS content,
+        sr.star_rating AS starRating,
+        sr.created_date AS createdDate,
+        sr.modified_date AS modifiedDate,
+        sr.view_cnt AS viewCnt
+        FROM
+        so_review sr
+        INNER JOIN
+        so_review_likes srl
+        ON
+        sr.writer_no = srl.liked_user
+        WHERE
+        srl.liked_user = #{userNo}
+    </select>
+
+    <resultMap type="MySoDiaryDTO" id="MySoDiaryResultMap">
+        <id property="commentNo" column="comment_no"/>
+        <result property="diaryNo" column="diary_no"/>
+        <result property="commenterNo" column="commenter_no"/>
+        <result property="commentContent" column="comment_content"/>
+        <result property="commentCreatedDate" column="comment_created_date"/>
+
+        <result property="webtoonNo" column="webtoon_no"/>
+        <result property="writerNo" column="writer_no"/>
+        <result property="title" column="title"/>
+        <result property="diaryContent" column="diary_content"/>
+        <result property="statusCode" column="status_code"/>
+        <result property="diaryCreatedDate" column="diary_created_date"/>
+        <result property="diaryModifiedDate" column="diary_modified_date"/>
+        <result property="viewCnt" column="view_cnt"/>
+    </resultMap>
+
+    <select id="selectListMySoDiary" resultType="MySoDiaryDTO">
+        SELECT
+        sdc.comment_no AS commentNo,
+        sdc.diary_no AS diaryNo,
+        sdc.commenter_no AS commenterNo,
+        sdc.content AS commentContent,
+        sdc.created_date AS commentCreatedDate,
+
+        sd.webtoon_no AS webtoonNo,
+        sd.writer_no AS writerNo,
+        sd.title AS title,
+        sd.content AS diaryContent,
+        sd.status_code AS statusCode,
+        sd.created_date AS diaryCreatedDate,
+        sd.modified_date AS diaryModifiedDate,
+        sd.view_cnt AS viewCnt
+        FROM
+        so_diary sd
+        INNER JOIN
+        so_diary_comments sdc
+        ON
+        sd.diary_no = sdc.diary_no
+        WHERE
+        sdc.commenter_no = #{userNo}
+    </select>
+
+    <resultMap type="MyInEventDTO" id="MyInEventResultMap">
+        <!-- `in_event_like` 테이블의 컬럼들 -->
+        <id property="likedNo" column="liked_no" />
+        <result property="userNo" column="user_no" />
+        <result property="likedDate" column="liked_date" />
+
+        <!-- `in_event` 테이블의 컬럼들 -->
+        <result property="eventNo" column="event_no" />
+        <result property="title" column="title" />
+        <result property="eventCategoryCode" column="event_category_code" />
+        <result property="startDate" column="start_date" />
+        <result property="endDate" column="end_date" />
+        <result property="cost" column="cost" />
+        <result property="site" column="site" />
+        <result property="place" column="place" />
+        <result property="address" column="address" />
+        <result property="coordinates" column="coordinates" />
+        <result property="content" column="content" />
+        <result property="postingDate" column="posting_date" />
+    </resultMap>
+
+    <select id="selectListMyInEvent" resultType="MyInEventDTO">
+        SELECT
+        iel.liked_no AS likedNo,
+        iel.user_no AS userNo,
+        iel.liked_date AS likedDate,
+
+        ie.event_no AS eventNo,
+        ie.title AS title,
+        ie.event_category_code AS eventCategoryCode,
+        ie.start_date AS startDate,
+        ie.end_date AS endDate,
+        ie.cost AS cost,
+        ie.site AS site,
+        ie.place AS place,
+        ie.address AS address,
+        ie.coordinates AS coordinates,
+        ie.content AS content,
+        ie.posting_date AS postingDate
+        FROM
+        in_event ie
+        INNER JOIN
+        in_event_like iel
+        ON
+        ie.event_no = iel.event_no
+        WHERE
+        iel.user_no = #{userNo}
+    </select>
 </mapper>
