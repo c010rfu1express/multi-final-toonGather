@@ -637,7 +637,7 @@ public class RecruitController {
     }
 
     @GetMapping("/free/report/list")
-    public String listReport(@RequestParam(value = "page", required = false, defaultValue = "1")  int page, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public String listReport(@RequestParam(value = "page", required = false, defaultValue = "1")  int page, Model model) {
         PageDTO pageDTO = new PageDTO();
         pageDTO.setPage(page);
         pageDTO.setStartEnd(pageDTO.getPage());
@@ -661,6 +661,21 @@ public class RecruitController {
         }
 
         return "recruit/free/report/list";
+    }
+
+    @GetMapping("/free/report/view")
+    public String findReport(@RequestParam("no") int no, Model model) throws Exception{
+
+        try {
+            FreeReviewReportDTO reportDTO = freeService.findReportByNo(no);
+            FreeReviewDTO reviewDTO = freeService.selectReview(reportDTO.getReview_no());
+            model.addAttribute("report", reportDTO);
+            model.addAttribute("board_no", reviewDTO.getBoard_no());
+
+        } catch (Exception e) {
+            model.addAttribute("msg", "게시글 조회 실패");
+        }
+        return "recruit/free/report/view";
     }
 
 }

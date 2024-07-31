@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://www.w3.org/1999/XSL/Transform">
+<html layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>신고글 조회</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/starRating.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:replace="~{common/menubar}"></div>
+<div layout:fragment="content">
+    <br>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center mb-4">신고 내역</h2>
+            </div>
+            <hr color="grey">
+            <div class="card-body">
+                <div class="row" >
+                    <div class="form-group col-md-6">
+                        <label class="form-control">신고자: [[${report.member.nickname}]]</label>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="form-control">신고일: [[${report.reported_date}]]</label>
+                    </div>
+                </div>
+                <div class="mb-3 form-group">
+                    <label class="form-control" style="height:auto; padding: 10px;">내용: <br> [[${report.content}]]</label>
+                </div>
+                <div class="mt-4 text-right">
+                    <a href="/recruit/free/report/list" class="btn btn-outline-primary">목록으로</a>
+                    <div>
+                        <br>
+                        <a th:href="@{/recruit/free/view(no=${board_no})}" class="btn btn-primary">이동</a>
+                        <a th:href="@{/recruit/free/report/delete(no=${report.report_no})}" class="btn btn-danger">삭제</a>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <hr>
+        </div>
+    </div>
+</div>
+</body>
+</html>

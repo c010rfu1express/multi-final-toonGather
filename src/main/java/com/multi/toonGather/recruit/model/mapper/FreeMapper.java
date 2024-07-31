@@ -56,4 +56,6 @@ public interface FreeMapper {
     int reportReview(FreeReviewReportDTO reportDTO) throws Exception;
 
     List<FreeReviewReportDTO> selectReportAll(PageDTO page) throws Exception;
+
+    FreeReviewReportDTO selectReport(int no) throws Exception;
 }

@@ -44,4 +44,6 @@ public interface FreeService {
     void reportReview(FreeReviewReportDTO reportDTO) throws Exception;
 
     List<FreeReviewReportDTO> selectReportAll(PageDTO pageDTO) throws Exception;
+
+    FreeReviewReportDTO findReportByNo(int no) throws Exception;
 }

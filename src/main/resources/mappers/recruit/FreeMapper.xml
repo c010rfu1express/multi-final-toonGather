@@ -188,4 +188,14 @@
 		</if>
 	</select>
 
+	<select id="selectReport" parameterType="int" resultMap="ReportResultMap">
+		SELECT
+		r.*
+		, m.user_no
+		, m.nickname
+		FROM rct_free_review_report r
+		JOIN users m ON r.reporter = m.user_no
+		WHERE r.report_no = #{no}
+	</select>
+
 </mapper>

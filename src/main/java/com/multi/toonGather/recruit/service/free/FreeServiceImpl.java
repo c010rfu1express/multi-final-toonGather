@@ -126,4 +126,11 @@ public class FreeServiceImpl implements FreeService {
 
         return listReport;
     }
+
+    @Override
+    public FreeReviewReportDTO findReportByNo(int no) throws Exception {
+        FreeReviewReportDTO reportDTO = freeMapper.selectReport(no);
+        if (reportDTO != null) new Exception("신고글 상세 조회 실패");
+        return reportDTO;
+    }
 }

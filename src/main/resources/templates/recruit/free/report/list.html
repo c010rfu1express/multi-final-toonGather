@@ -24,8 +24,8 @@
                 </thead>
                 <tbody>
                 <tr th:each="report : ${reports}">
-                    <td scope="row" th:text="${report.review_no}"></td>
-                    <td><a th:href="@{/recruit/free/report/view(no=${report.review_no})}" th:text="${#strings.abbreviate(report.content, 15)}"></a></td>
+                    <td scope="row" th:text="${report.report_no}"></td>
+                    <td><a th:href="@{/recruit/free/report/view(no=${report.report_no})}" th:text="${#strings.abbreviate(report.content, 15)}"></a></td>
                     <td>
                         <span th:text="${report.member.nickname}"></span>
                     </td>
