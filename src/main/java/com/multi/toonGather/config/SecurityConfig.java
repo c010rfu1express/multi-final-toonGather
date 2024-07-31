@@ -50,7 +50,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer configure() {
 
         return (web) -> web.ignoring().requestMatchers(
-                "/css/**", "/js/**", "/img/**", "/uploadFiles/**"
+                "/css/**", "/js/**", "/images/**", "/uploadFiles/**"
         );
 
     }
@@ -60,6 +60,7 @@ public class SecurityConfig {
         ////// KHG NOTE) chatGPT를 통해 추가한 부분임
         http
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/**").permitAll()
                         .requestMatchers("/user/my/**").authenticated()
                         .requestMatchers("/user/**").permitAll()
                         .anyRequest().authenticated()

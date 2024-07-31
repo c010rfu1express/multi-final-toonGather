@@ -41,11 +41,39 @@
         <form action="#" id="form">
           <div class="form-group">
             <p class="text">개인 창작자로 등록하고 싶다면 <br></p>
-            <a href="/recruit/creator/registInd" color="default" role="button" class="btn btn-outline-secondary btn-block"><span class="button__start-icon-wrapper"><span color="#e4e5ed" role="img" rotate="0" class="css-nh621w"><svg aria-hidden="true" fill="currentColor" focusable="false" height="24" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" width="24" class="css-7kp13n"><path d="M0 0h24v24H0V0z" fill="none"></path><path clip-rule="evenodd" d="M19.9245 6.41243C20.3357 6.78117 20.37 7.4134 20.0013 7.82456L11.3089 17.5169C11.1256 17.7214 10.8662 17.8415 10.5916 17.8489C10.3171 17.8564 10.0515 17.7506 9.85735 17.5564L4.20049 11.8995C3.80997 11.509 3.80997 10.8759 4.20049 10.4853C4.59102 10.0948 5.22418 10.0948 5.61471 10.4853L10.5249 15.3956L18.5124 6.48924C18.8811 6.07809 19.5133 6.0437 19.9245 6.41243Z" fill-rule="evenodd"></path></svg></span></span><span class="css-7zhfhb">개인 창작자로 등록</span></a>
+            <a href="/recruit/creator/registInd"
+               color="default"
+               role="button"
+               class="btn btn-outline-secondary btn-block"
+               th:classappend="${auth_code == 'C'} ? 'disabled' : ''">
+            <span class="button__start-icon-wrapper">
+                <span color="#e4e5ed" role="img" rotate="0" class="css-nh621w">
+                    <svg aria-hidden="true" fill="currentColor" focusable="false" height="24" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" width="24" class="css-7kp13n">
+                        <path d="M0 0h24v24H0V0z" fill="none"></path>
+                        <path clip-rule="evenodd" d="M19.9245 6.41243C20.3357 6.78117 20.37 7.4134 20.0013 7.82456L11.3089 17.5169C11.1256 17.7214 10.8662 17.8415 10.5916 17.8489C10.3171 17.8564 10.0515 17.7506 9.85735 17.5564L4.20049 11.8995C3.80997 11.509 3.80997 10.8759 4.20049 10.4853C4.59102 10.0948 5.22418 10.0948 5.61471 10.4853L10.5249 15.3956L18.5124 6.48924C18.8811 6.07809 19.5133 6.0437 19.9245 6.41243Z" fill-rule="evenodd"></path>
+                    </svg>
+                </span>
+            </span>
+              <span class="css-7zhfhb">개인 창작자로 등록</span>
+            </a>
           </div>
           <div class="form-group">
             <p class="text">기업 창작자로 등록하고 싶다면 <br></p>
-            <a href="/recruit/creator/registCorp" color="default" role="button" class="btn btn-outline-secondary btn-block"><span class="button__start-icon-wrapper"><span color="#e4e5ed" role="img" rotate="0" class="css-nh621w"><svg aria-hidden="true" fill="currentColor" focusable="false" height="24" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" width="24" class="css-7kp13n"><path d="M0 0h24v24H0V0z" fill="none"></path><path clip-rule="evenodd" d="M19.9245 6.41243C20.3357 6.78117 20.37 7.4134 20.0013 7.82456L11.3089 17.5169C11.1256 17.7214 10.8662 17.8415 10.5916 17.8489C10.3171 17.8564 10.0515 17.7506 9.85735 17.5564L4.20049 11.8995C3.80997 11.509 3.80997 10.8759 4.20049 10.4853C4.59102 10.0948 5.22418 10.0948 5.61471 10.4853L10.5249 15.3956L18.5124 6.48924C18.8811 6.07809 19.5133 6.0437 19.9245 6.41243Z" fill-rule="evenodd"></path></svg></span></span><span class="css-7zhfhb">기업 창작자로 등록</span></a>
+            <a href="/recruit/creator/registCorp"
+               color="default"
+               role="button"
+               class="btn btn-outline-secondary btn-block"
+               th:classappend="${auth_code == 'C'} ? 'disabled' : ''">
+            <span class="button__start-icon-wrapper">
+                <span color="#e4e5ed" role="img" rotate="0" class="css-nh621w">
+                    <svg aria-hidden="true" fill="currentColor" focusable="false" height="24" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" width="24" class="css-7kp13n">
+                        <path d="M0 0h24v24H0V0z" fill="none"></path>
+                        <path clip-rule="evenodd" d="M19.9245 6.41243C20.3357 6.78117 20.37 7.4134 20.0013 7.82456L11.3089 17.5169C11.1256 17.7214 10.8662 17.8415 10.5916 17.8489C10.3171 17.8564 10.0515 17.7506 9.85735 17.5564L4.20049 11.8995C3.80997 11.509 3.80997 10.8759 4.20049 10.4853C4.59102 10.0948 5.22418 10.0948 5.61471 10.4853L10.5249 15.3956L18.5124 6.48924C18.8811 6.07809 19.5133 6.0437 19.9245 6.41243Z" fill-rule="evenodd"></path>
+                    </svg>
+                </span>
+            </span>
+              <span class="css-7zhfhb">기업 창작자로 등록</span>
+            </a>
           </div>
         </form>
       </div>

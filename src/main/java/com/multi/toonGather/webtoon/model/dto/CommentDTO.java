@@ -1,4 +1,4 @@
-package com.multi.toonGather.webtoon.model;
+package com.multi.toonGather.webtoon.model.dto;
 
 
 import lombok.Data;

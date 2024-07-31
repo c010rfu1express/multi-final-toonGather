@@ -19,15 +19,18 @@
     <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
       <li><a th:href="@{/user/login}" class="nav-link px-2">나의 웹툰</a></li>
       <li><a th:href="@{/user/signup}" class="nav-link px-2">나의 소셜</a></li>
-      <li><a th:href="@{/user/my}" class="nav-link px-2">나의 채용</a></li>
-      <li><a th:href="@{/user/login}" class="nav-link px-2">나의 소식</a></li>
+      <li><a th:href="@{/user/my/rct/job}" class="nav-link px-2">나의 채용</a></li>
+      <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">나의 소식</a></li>
       <li><a th:href="@{/user/my/editprofile}" class="nav-link px-2">프로필 수정</a></li>
       <li><a th:href="@{/user/admin/userlist}" class="nav-link px-2">나의 결제</a></li>
     </ul>
   </nav>
 </div>
 <div>
-  <form th:action="@{/user/my/editprofile}" th:object="${user}" method="post">
+  <form th:action="@{/user/my/editprofile}" th:object="${user}" method="post" enctype="multipart/form-data">
+    프로필 사진<br>
+    <img th:src="@{/uploadFiles/{fileName}(fileName=${user.profileImagePath})}" style="width: 100px; height: auto;"/><br>
+    <input type="file" name="image"><br>
     아이디 : <input type="text" th:field="*{userId}" readonly/> (중복불가)<br>
     비밀번호 : <input type="password" th:field="*{password}"/><br>
     비밀번호 확인 : <br>

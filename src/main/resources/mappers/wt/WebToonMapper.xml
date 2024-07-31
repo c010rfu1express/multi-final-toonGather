@@ -4,7 +4,7 @@
 
 <mapper namespace="com.multi.toonGather.webtoon.model.dao.WebToonMapper">
 
-    <resultMap id="commentResultMap" type="com.multi.toonGather.webtoon.model.CommentDTO">
+    <resultMap id="commentResultMap" type="com.multi.toonGather.webtoon.model.dto.CommentDTO">
         <id property="commentNo" column="comment_no" />
         <result property="webtoonNo" column="webtoon_no" />
         <result property="userNo" column="user_no" />
@@ -14,31 +14,70 @@
         <result property="nickname" column="nickname" />
     </resultMap>
 
-<select id="WebToonSelectOne" parameterType="com.multi.toonGather.webtoon.model.WebtoonDTO" resultType="com.multi.toonGather.webtoon.model.WebtoonDTO">
+
+    <resultMap id="wtUserLogResultMap" type="com.multi.toonGather.webtoon.model.dto.WtUserLogDTO">
+
+        <id property="logNo" column="log_no"/>
+        <result property="webtoonNo" column="webtoon_no"/>
+        <result property="userNo" column="user_no"/>
+        <result property="count" column="count"/>
+    </resultMap>
+
+<select id="WebToonSelectOne" parameterType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO" resultType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO">
         select * from webtoon where platform=#{platform} and webtoon_id=#{webtoon_id}
     </select>
-    <update id="increaseCount" parameterType="com.multi.toonGather.webtoon.model.WebtoonDTO">
+
+    <insert id="webToonInsert" parameterType="com.multi.toonGather.webtoon.model.dto.WtUserLogDTO">
+        INSERT INTO webtoon (webtoon_id, platform, webtoon_name, author,thumbnail_url,genre,tags)
+        VALUES (#{webtoon_id}, #{platform}, #{webtoon_name}, #{author},#{thumbnail_url},#{genre},#{tags})
+    </insert>
+
+
+
+    <update id="increaseCount" parameterType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO">
         update webtoon set count =count + 1  where webtoon_no = #{webtoon_no}
     </update>
 
 
-    <select id="Commentlist" parameterType="com.multi.toonGather.webtoon.model.WebtoonDTO" resultMap="commentResultMap">
+    <select id="Commentlist" parameterType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO" resultMap="commentResultMap">
         SELECT c.comment_no, c.webtoon_no, c.user_no, u.nickname, c.content, c.liked, c.dislike
         FROM wt_comment c
         INNER JOIN users u ON c.user_no = u.user_no
         where
         webtoon_no = #{webtoon_no}
     </select>
-    <insert id="insertComment" parameterType="com.multi.toonGather.webtoon.model.CommentDTO">
+    <insert id="insertComment" parameterType="com.multi.toonGather.webtoon.model.dto.CommentDTO">
         INSERT INTO wt_comment (webtoon_no, user_no, content)
         VALUES (#{webtoonNo}, #{userNo}, #{content})
     </insert>
-    <update id="updateComment" parameterType="com.multi.toonGather.webtoon.model.CommentDTO">
+    <update id="updateComment" parameterType="com.multi.toonGather.webtoon.model.dto.CommentDTO">
         UPDATE wt_comment
         SET content = #{content}
         WHERE comment_no = #{commentNo}
     </update>
-    <delete id="deleteComment" parameterType="com.multi.toonGather.webtoon.model.CommentDTO">
+    <delete id="deleteComment" parameterType="com.multi.toonGather.webtoon.model.dto.CommentDTO">
         DELETE FROM wt_comment WHERE comment_no = #{commentNo}
     </delete>
+
+    <select id="selrctLog" resultMap="wtUserLogResultMap">
+        SELECT log_no, webtoon_no, user_no, count
+        FROM wt_user_log
+        WHERE webtoon_no = #{webtoonNo}
+        AND user_no = #{userNo}
+    </select>
+
+    <insert id="insertLog" parameterType="com.multi.toonGather.webtoon.model.dto.WtUserLogDTO">
+        INSERT INTO wt_user_log (webtoon_no, user_no)
+        VALUES (#{webtoonNo}, #{userNo})
+    </insert>
+
+    <update id="updateLog">
+        UPDATE wt_user_log
+        set count =count + 1
+        WHERE log_no = #{logNo}
+    </update>
+
+
+
+
 </mapper>

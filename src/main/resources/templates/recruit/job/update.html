@@ -42,8 +42,12 @@
                     <td><input type="date" name="dead_line" th:value="${job.dead_line}" class="form-control"></td>
                 </div>
                 <div class="form-group">
-                    <label for="singleFile">이미지</label>
-                    <input type="file" name="singleFile" class="form-control">
+                    <label for="singleFile">이미지 변경</label>
+                    <input type="file" name="singleFile" class="form-control" onchange="handleFileSelect(event)">
+                    <div id="selectedImage" th:if="${job.img != '' && job.img != null}">
+                        <img th:src="@{'/uploadFiles/' + ${job.img}}" alt="Selected Image" style="max-width: 200px; max-height: 200px;">
+                        <button type="button" onclick="removeImage()" class="btn btn-sm">x</button>
+                    </div>
                 </div>
                 <div class="form-group text-right">
                     <a th:href="@{/recruit/job/list}">
@@ -54,5 +58,29 @@
         </form>
     </div>
 </div>
+<script>
+    function removeImage() {
+         var hiddenInput = document.querySelector('input[name="existingImage"]');
+
+            if (hiddenInput) {
+                hiddenInput.value = ''; // Hidden input의 value를 빈 문자열로 설정
+            }
+
+            // 선택된 이미지와 버튼을 숨김
+            var selectedImageDiv = document.getElementById('selectedImage');
+            if (selectedImageDiv) {
+                selectedImageDiv.style.display = 'none';
+            }
+
+    }
+
+    function handleFileSelect(event) {
+            // 파일이 선택되면 #selectedImage 요소를 숨깁니다.
+            var selectedImageDiv = document.getElementById('selectedImage');
+            if (selectedImageDiv) {
+                selectedImageDiv.style.display = 'none'; // 숨김
+            }
+    }
+</script>
 </body>
 </html>

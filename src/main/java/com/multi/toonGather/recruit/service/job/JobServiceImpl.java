@@ -61,5 +61,11 @@ public class JobServiceImpl implements JobService {
         return applyDTO;
     }
 
+    @Override
+    public boolean hasApplied(int board_no, int writer) throws Exception {
+        boolean result = jobMapper.hasApplied(board_no, writer);
+        return result;
+    }
+
 
 }
