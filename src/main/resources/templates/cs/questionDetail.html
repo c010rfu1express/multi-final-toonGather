@@ -54,7 +54,7 @@
 <div th:replace="common/menubar.html"></div>
 <div class="detail-container">
     <div class="detail-header">
-        <div>작성자 | <span th:text="${question.csQWriterNo}"></span></div>
+        <div>작성자 | <span th:text="${question.nickname}"></span></div>
         <div>작성일 | <span th:text="${#dates.format(question.createdDate, 'yyyy-MM-dd')}"></span></div>
     </div>
     <div class="detail-header">

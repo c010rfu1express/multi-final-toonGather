@@ -10,6 +10,7 @@ public class QuestionDTO {
     private String csQTitle;
     private String csQContent;
     private int csQWriterNo;
+    private String nickname;
     private CsCategoryDTO csQCategory;
     private CsStatusDTO csQStatus;
     private int csQViewCount;

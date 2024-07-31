@@ -7,6 +7,7 @@
         <result property="csQTitle" column="cs_q_title"/>
         <result property="csQContent" column="cs_q_content"/>
         <result property="csQWriterNo" column="cs_q_writer_no"/>
+        <result property="nickname" column="nickname"/>
         <result property="csQViewCount" column="cs_q_view_count"/>
         <result property="createdDate" column="created_date"/>
         <result property="modifiedDate" column="modified_date"/>
@@ -31,7 +32,7 @@
         <result property="csStatusDesc" column="cs_status_desc"/>
     </resultMap>
 
-    <resultMap id="QuestionFilesResultMap" type="com.multi.toonGather.cs.model.dto.QuestionFilesDTO">
+    <resultMap id="questionFilesResultMap" type="com.multi.toonGather.cs.model.dto.QuestionFilesDTO">
         <id property="csQFileNo" column="cs_q_file_no"/>
         <result property="csQNo" column="cs_q_no"/>
         <result property="originName" column="cs_q_origin_name"/>
@@ -41,10 +42,11 @@
     </resultMap>
 
     <select id="myQuestionList" parameterType="int" resultMap="questionResultMap">
-        SELECT q.*, c.cs_category_desc, s.cs_status_desc
+        SELECT q.*, c.cs_category_desc, s.cs_status_desc, u.nickname
         FROM cs_question q
         LEFT JOIN cs_category c ON q.cs_q_category_code = c.cs_category_code
         LEFT JOIN cs_status s ON q.cs_q_status_code = s.cs_status_code
+        LEFT JOIN users u ON q.cs_q_writer_no = u.user_no
         WHERE q.cs_q_writer_no = #{userNo}
     </select>
 
@@ -63,14 +65,15 @@
     </insert>
 
     <select id="getQuestionById" parameterType="int" resultMap="questionResultMap">
-        SELECT q.*, c.cs_category_desc, s.cs_status_desc
+        SELECT q.*, c.cs_category_desc, s.cs_status_desc, u.nickname
         FROM cs_question q
         LEFT JOIN cs_category c ON q.cs_q_category_code = c.cs_category_code
         LEFT JOIN cs_status s ON q.cs_q_status_code = s.cs_status_code
-        WHERE q.cs_q_no = #{id}
+        LEFT JOIN users u ON q.cs_q_writer_no = u.user_no
+        WHERE q.cs_q_no = #{csQNo}
     </select>
 
-    <select id="getQuestionFilesByQuestionId" parameterType="int" resultMap="QuestionFilesResultMap">
+    <select id="getQuestionFilesByQuestionId" parameterType="int" resultMap="questionFilesResultMap">
         SELECT * FROM cs_question_files WHERE cs_q_no = #{csQNo}
     </select>
 
@@ -91,4 +94,11 @@
         DELETE FROM cs_question WHERE cs_q_no = #{csQNo}
     </delete>
 
+    <select id="questionList" resultMap="questionResultMap">
+        SELECT q.*, c.cs_category_desc, s.cs_status_desc, u.nickname
+        FROM cs_question q
+        LEFT JOIN cs_category c ON q.cs_q_category_code = c.cs_category_code
+        LEFT JOIN cs_status s ON q.cs_q_status_code = s.cs_status_code
+        LEFT JOIN users u ON q.cs_q_writer_no = u.user_no
+    </select>
 </mapper>

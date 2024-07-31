@@ -84,8 +84,8 @@ public class CsServiceImpl implements CsService {
 
     // 문의글 상세 조회
     @Override
-    public QuestionDTO getQuestionById(int id) throws Exception {
-        return csMapper.getQuestionById(id);
+    public QuestionDTO getQuestionById(int csQNo) throws Exception {
+        return csMapper.getQuestionById(csQNo);
     }
 
     // 문의글 상세 조회 이미지 조회
@@ -169,5 +169,10 @@ public class CsServiceImpl implements CsService {
             e.printStackTrace();
             throw new RuntimeException("Failed to delete question");
         }
+    }
+
+    @Override
+    public List<QuestionDTO> questionList() throws Exception {
+        return csMapper.questionList();
     }
 }

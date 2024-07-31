@@ -15,11 +15,13 @@ public interface CsService {
 
     boolean insertQuestion(QuestionDTO question, MultipartFile[] images, HttpServletRequest request) throws Exception;
 
-    QuestionDTO getQuestionById(int id) throws Exception;
+    QuestionDTO getQuestionById(int csQNo) throws Exception;
 
     List<QuestionFilesDTO> getQuestionByQuestionId(int csQNo) throws Exception;
 
     boolean updateQuestion(QuestionDTO question, MultipartFile[] images, HttpServletRequest request) throws Exception;
 
     boolean deleteQuestion(int csQNo, HttpServletRequest request) throws Exception;
+
+    List<QuestionDTO> questionList() throws Exception;
 }

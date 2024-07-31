@@ -4,8 +4,11 @@ import com.multi.toonGather.cs.model.dto.CsCategoryDTO;
 import com.multi.toonGather.cs.model.dto.QuestionDTO;
 import com.multi.toonGather.cs.model.dto.QuestionFilesDTO;
 import com.multi.toonGather.cs.service.CsService;
+import com.multi.toonGather.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,10 +35,23 @@ public class CsController {
         this.csService = csService;
     }
 
-    // csMain 페이지 호출 메소드
     @GetMapping("/csMain")
-    public String csMain(Model model) throws Exception {
-        int userNo = 1; // 임시로 부여한 넘버. DB에 수기로 입력한 데이터의 No값과 일치하게 입력.
+    public String csMain() {
+        return "cs/csMain";
+    }
+
+    // csMain 페이지 호출 메소드
+    @GetMapping("/csUser")
+    public String csUser(Model model) throws Exception {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+            return "cs/csUser";
+        }
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        int userNo = userDetails.getMemNo();
 
         List<QuestionDTO> questions = csService.myQuestionList(userNo);
 
@@ -43,12 +59,18 @@ public class CsController {
 
         model.addAttribute("questions", questions);
 
-        return "cs/csMain";
+        return "cs/csUser";
     }
 
     // 문의글 작성 페이지 호출 메소드
     @GetMapping("/insertQuestion")
     public String insertQuestion(Model model) throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            model.addAttribute("user", userDetails);
+        }
+
         List<CsCategoryDTO> categories = csService.getCategories();
 
         model.addAttribute("categories", categories);
@@ -66,10 +88,20 @@ public class CsController {
         QuestionDTO question = new QuestionDTO();
         CsCategoryDTO categoryDTO = new CsCategoryDTO();
         categoryDTO.setCsCategoryCode(category);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+            return "cs/csUser";
+        }
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        int userNo = userDetails.getMemNo();
+
         question.setCsQTitle(title);
         question.setCsQCategory(categoryDTO);
         question.setCsQContent(content);
-        question.setCsQWriterNo(1);
+        question.setCsQWriterNo(userNo);
 
         boolean isSuccess = csService.insertQuestion(question, images, request);
         if (isSuccess) {
@@ -79,9 +111,9 @@ public class CsController {
         }
     }
 
-    @GetMapping("/questionDetail/{id}")
-    public String questionDetail(@PathVariable("id") int id, Model model) throws Exception {
-        QuestionDTO question = csService.getQuestionById(id);
+    @GetMapping("/questionDetail/{csQNo}")
+    public String questionDetail(@PathVariable("csQNo") int csQNo, Model model) throws Exception {
+        QuestionDTO question = csService.getQuestionById(csQNo);
         List<QuestionFilesDTO> questionFiles = csService.getQuestionByQuestionId(question.getCsQNo());
         model.addAttribute("question", question);
         model.addAttribute("questionFiles", questionFiles);
@@ -127,6 +159,17 @@ public class CsController {
         } else {
             return "redirect:/cs/questionDetail/" + csQNo;
         }
+    }
+
+    @GetMapping("/csAdmin")
+    public String csAdmin(Model model) throws Exception {
+        List<QuestionDTO> questions = csService.questionList();
+
+        System.out.println(questions);
+
+        model.addAttribute("questions", questions);
+
+        return "/cs/csAdmin";
     }
 
 }
