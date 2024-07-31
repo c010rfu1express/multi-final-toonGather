@@ -678,4 +678,15 @@ public class RecruitController {
         return "recruit/free/report/view";
     }
 
+    @GetMapping("/free/report/delete")
+    public String deleteReport(@RequestParam("no") int no, Model model) throws Exception{
+        try {
+            freeService.deleteReport(no);
+            model.addAttribute("msg", "신고글 삭제 성공");
+        } catch (Exception e) {
+            model.addAttribute("msg", "신고글 삭제 실패");
+        }
+        return "redirect:/recruit/free/report/list";
+    }
+
 }

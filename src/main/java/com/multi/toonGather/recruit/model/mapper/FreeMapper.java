@@ -58,4 +58,7 @@ public interface FreeMapper {
     List<FreeReviewReportDTO> selectReportAll(PageDTO page) throws Exception;
 
     FreeReviewReportDTO selectReport(int no) throws Exception;
+
+    @Delete("DELETE FROM rct_free_review_report WHERE report_no = #{no}")
+    int deleteReport(int no) throws Exception;
 }
