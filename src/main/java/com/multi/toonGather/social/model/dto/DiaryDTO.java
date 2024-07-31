@@ -1,7 +1,7 @@
 package com.multi.toonGather.social.model.dto;
 
 import com.multi.toonGather.user.model.dto.UserDTO;
-import com.multi.toonGather.webtoon.model.WebtoonDTO;
+import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
 import lombok.Data;
 
 import java.time.LocalDateTime;
