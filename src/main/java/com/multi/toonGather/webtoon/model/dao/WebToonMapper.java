@@ -1,7 +1,8 @@
 package com.multi.toonGather.webtoon.model.dao;
 
-import com.multi.toonGather.webtoon.model.CommentDTO;
-import com.multi.toonGather.webtoon.model.WebtoonDTO;
+import com.multi.toonGather.webtoon.model.dto.CommentDTO;
+import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
+import com.multi.toonGather.webtoon.model.dto.WtUserLogDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -19,4 +20,12 @@ public interface WebToonMapper {
     int updateComment(CommentDTO commentDTO);
 
     int deleteComment(CommentDTO commentDTO);
+
+    WtUserLogDTO selrctLog(WtUserLogDTO dto);
+
+    int insertLog(WtUserLogDTO wtUserLogDTO);
+
+    int updateLog(WtUserLogDTO wtUserLogDTO);
+
+    int webToonInsert(WebtoonDTO webtoonDTO);
 }
