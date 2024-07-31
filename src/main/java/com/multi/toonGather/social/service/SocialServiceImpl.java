@@ -1,6 +1,7 @@
 package com.multi.toonGather.social.service;
 
 import com.multi.toonGather.common.exception.NotFoundException;
+import com.multi.toonGather.social.model.dto.DiaryDTO;
 import com.multi.toonGather.social.model.dto.ReviewDTO;
 import com.multi.toonGather.social.model.mapper.SocialMapper;
 import com.multi.toonGather.user.model.dto.UserDTO;
@@ -75,9 +76,6 @@ public class SocialServiceImpl implements SocialService {
         }
     }
 
-    // 다이어리
-
-
     @Override
     public WebtoonDTO getWebtoonByNo(int webtoonNo) throws Exception {
         return socialMapper.selectWebtoonByNo(webtoonNo);
@@ -90,40 +88,38 @@ public class SocialServiceImpl implements SocialService {
 //    public void createReview(ReviewDTO review) {
 //        socialMapper.createReview(review);
 //    }
-//
-//    @Override
-//    public void deleteReview(int reviewNo) {
-//        socialMapper.deleteReview(reviewNo);
-//    }
-//
-//    // 다이어리
 //    @Override
 //    public void createDiary(DiaryDTO diary) {
 //        socialMapper.createDiary(diary);
 //    }
-//
-//    @Override
-//    public List<DiaryDTO> getDiariesByUser(int userNo) {
-//        return socialMapper.getDiariesByUser(userNo);
-//    }
-//
-//    @Override
-//    public DiaryDTO getDiaryByNo(int diaryNo) {
-//        return socialMapper.getDiaryByNo(diaryNo);
-//    }
-//
-//    @Override
-//    public void incrementDiaryViewCount(int diaryNo) {
-//        socialMapper.incrementDiaryViewCount(diaryNo);
-//    }
-//
-//    @Override
-//    public void updateDiary(DiaryDTO diary) {
-//        socialMapper.updateDiary(diary);
-//    }
-//
-//    @Override
-//    public void deleteDiary(int diaryNo) {
-//        socialMapper.deleteDiary(diaryNo);
-//    }
+
+    // 다이어리
+    @Override
+    @Transactional(readOnly = true)
+    public List<DiaryDTO> getDiariesByUserId(String userId) throws Exception {
+        return socialMapper.selectDiariesByUserId(userId);
+    }
+    @Override
+    @Transactional
+    public void incrementDiaryViewCount(int diaryNo) throws Exception {
+        socialMapper.incrementDiaryViewCount(diaryNo);
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public DiaryDTO getDiaryByNo(int diaryNo) throws Exception {
+        return socialMapper.selectDiaryByNo(diaryNo);
+    }
+    @Override
+    @Transactional
+    public void updateDiary(DiaryDTO diaryDTO) throws Exception {
+        socialMapper.updateDiary(diaryDTO);
+    }
+    @Override
+    @Transactional
+    public void deleteDiary(int diaryNo) throws Exception {
+        int result = socialMapper.deleteDiary(diaryNo);
+        if (result == 0) {
+            throw new NotFoundException("삭제할 리뷰를 찾을 수 없습니다.");
+        }
+    }
 }

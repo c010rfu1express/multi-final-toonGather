@@ -2,6 +2,7 @@ package com.multi.toonGather.social.controller;
 
 import com.multi.toonGather.common.exception.AccessDeniedException;
 import com.multi.toonGather.security.CustomUserDetails;
+import com.multi.toonGather.social.model.dto.DiaryDTO;
 import com.multi.toonGather.social.model.dto.ReviewDTO;
 import com.multi.toonGather.social.service.SocialService;
 import com.multi.toonGather.user.model.dto.UserDTO;
@@ -157,13 +158,6 @@ public class SocialController {
         return "redirect:/webtoon/" + webtoonNo; // 웹툰 상세 페이지로 리다이렉트
     }
 
-
-//    @GetMapping("/users/{userId}/diaries")
-//    public String getUserDiaries(@PathVariable int userId, Model model) {
-//        // 로직 구현
-//    }
-
-    // 리뷰
 //    @GetMapping("/review/insert")
 //    public String showReviewInsertForm(@RequestParam("webtoon.webtoon_no") int webtoonNo, Model model) {
 //        ReviewDTO review = new ReviewDTO();
@@ -209,44 +203,80 @@ public class SocialController {
 //        socialService.createDiary(diary);
 //        return "redirect:/social/diary/detail?diaryNo=" + diary.getDiaryNo();
 //    }
-//
-//    @GetMapping("/diary/list")
-//    public String getDiaryList(Model model) {
-//        // 사용자 정보 설정 (Spring Security 구현 후 수정 필요)
-//        int userNo = 1; // 테스트용: userNo=1 하드코딩
-//
-//        List<DiaryDTO> diaries = socialService.getDiariesByUser(userNo);
-//        model.addAttribute("diaries", diaries);
-//        return "social/diary/list";
-//    }
-//
-//    @GetMapping("/diary/detail")
-//    public String getDiaryDetail(@RequestParam("diaryNo") int diaryNo, Model model) {
-//        // 조회수 증가
-//        socialService.incrementDiaryViewCount(diaryNo);
-//
-//        // 다이어리 정보 조회
-//        DiaryDTO diary = socialService.getDiaryByNo(diaryNo);
-//        model.addAttribute("diary", diary);
-//        return "social/diary/detail";
-//    }
-//
-//    @GetMapping("/diaryUpdateForm")
-//    public String showDiaryUpdateForm(@RequestParam("diaryNo") int diaryNo, Model model) {
-//        DiaryDTO diary = socialService.getDiaryByNo(diaryNo);
-//        model.addAttribute("diary", diary);
-//        return "social/diaryUpdateForm";
-//    }
-//
-//    @PostMapping("/diaryUpdate")
-//    public String updateDiary(@ModelAttribute DiaryDTO diary) {
-//        socialService.updateDiary(diary);
-//        return "redirect:/social/diary/detail?diaryNo=" + diary.getDiaryNo();
-//    }
-//
-//    @GetMapping("/diary/delete")
-//    public String deleteDiary(@RequestParam("diaryNo") int diaryNo) {
-//        socialService.deleteDiary(diaryNo);
-//        return "redirect:/social/diary/list";
-//    }
+
+    // 사용자별 다이어리 목록 페이지
+    @GetMapping("/users/{userId}/diaries")
+    public String userDiaries(@PathVariable("userId") String userId, Model model) throws Exception {
+        UserDTO profileUser = socialService.selectUserProfile(userId);
+        List<DiaryDTO> diaries = socialService.getDiariesByUserId(userId);
+
+        model.addAttribute("profileUser", profileUser);
+        model.addAttribute("diaries", diaries);
+
+        return "social/user/diaries";
+    }
+
+    // 다이어리 상세 페이지
+    @GetMapping("/diaries/{diaryNo}")
+    public String diaryDetail(@PathVariable("diaryNo") int diaryNo, Model model) throws Exception {
+        // 조회수 증가
+        socialService.incrementDiaryViewCount(diaryNo);
+
+        // 다이어리 정보 가져오기
+        DiaryDTO diary = socialService.getDiaryByNo(diaryNo);
+        // 다이어리 작성자의 프로필 정보 가져오기
+        UserDTO profileUser = socialService.selectUserProfile(diary.getWriter().getUserId());
+
+        model.addAttribute("diary", diary);
+        model.addAttribute("profileUser", profileUser);
+
+        return "social/diary/detail";
+    }
+
+    // 다이어리 수정 페이지
+    @GetMapping("/diaries/{diaryNo}/edit")
+    public String showEditDiaryForm(@PathVariable("diaryNo") int diaryNo,
+                                    @AuthenticationPrincipal CustomUserDetails currentUser,
+                                    Model model) throws Exception {
+        DiaryDTO diary = socialService.getDiaryByNo(diaryNo);
+        if (diary == null || !diary.getWriter().getUserId().equals(currentUser.getUserDTO().getUserId())) {
+            throw new AccessDeniedException("수정 권한이 없습니다.");
+        }
+
+        UserDTO profileUser = socialService.selectUserProfile(currentUser.getUserDTO().getUserId());
+        model.addAttribute("diary", diary);
+        model.addAttribute("profileUser", profileUser);
+        return "social/diary/edit";
+    }
+
+    // 다이어리 수정
+    @PostMapping("/diaries/{diaryNo}/edit")
+    public String updateDiary(@PathVariable("diaryNo") int diaryNo,
+                              @ModelAttribute DiaryDTO diaryDTO,
+                              @AuthenticationPrincipal CustomUserDetails currentUser) throws Exception {
+        DiaryDTO existingDiary = socialService.getDiaryByNo(diaryNo);
+        if (existingDiary == null || !existingDiary.getWriter().getUserId().equals(currentUser.getUserDTO().getUserId())) {
+            throw new AccessDeniedException("수정 권한이 없습니다.");
+        }
+
+        diaryDTO.setDiaryNo(diaryNo);
+        diaryDTO.setWriter(currentUser.getUserDTO());
+        socialService.updateDiary(diaryDTO);
+        return "redirect:/social/diaries/" + diaryNo;
+    }
+
+    // 다이어리 삭제
+    @PostMapping("/diaries/{diaryNo}/delete")
+    public String deleteDiary(@PathVariable("diaryNo") int diaryNo,
+                               @AuthenticationPrincipal CustomUserDetails currentUser,
+                               RedirectAttributes redirectAttributes) throws Exception {
+        DiaryDTO diary = socialService.getDiaryByNo(diaryNo);
+        if (!diary.getWriter().getUserId().equals(currentUser.getUserDTO().getUserId())) {
+            throw new AccessDeniedException("삭제 권한이 없습니다.");
+        }
+
+        socialService.deleteDiary(diaryNo);
+        redirectAttributes.addFlashAttribute("message", "리뷰가 성공적으로 삭제되었습니다.");
+        return "redirect:/social/users/" + currentUser.getUserDTO().getUserId() + "/diaries";
+    }
 }

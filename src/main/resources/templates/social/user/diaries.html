@@ -4,12 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>툰게더 toonGather | 다이어리 목록</title>
+    <link rel="stylesheet" th:href="@{/css/social-styles.css}">
     <style>
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
         .diary-list {
             background-color: #fff;
             border-radius: 8px;
@@ -60,25 +56,49 @@
 <body>
 <div th:replace="common/menubar.html"></div>
 
-<div class="container">
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="user-profile-info">
+                <div class="profile-text">
+                    <h2 th:text="${profileUser.nickname}">사용자 닉네임</h2>
+                    <p th:text="${profileUser.bio}">사용자 자기소개</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="social-user-profile-placeholder"></div>
+            <nav class="social-user-menu">
+                <ul>
+                    <li><a th:href="@{/social/users/{userId}/profile(userId=${profileUser.userId})}">홈</a></li>
+                    <li><a th:href="@{/social/users/{userId}/reviews(userId=${profileUser.userId})}">리뷰</a></li>
+                    <li><a th:href="@{/social/users/{userId}/diaries(userId=${profileUser.userId})}">다이어리</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
     <div class="diary-list">
         <h2>다이어리 목록</h2>
-        <table>
+        <div th:if="${#lists.isEmpty(diaries)}">
+            <p>작성된 다이어리가 없습니다.</p>
+        </div>
+        <table th:unless="${#lists.isEmpty(diaries)}">
             <thead>
             <tr>
                 <th>웹툰</th>
                 <th>다이어리 제목</th>
                 <th>상태</th>
-                <th>작성자</th>
                 <th>작성일</th>
                 <th>조회수</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="diary : ${diaries}" class="clickable-row" th:attr="data-href=@{/social/diaryDetail(diaryNo=${diary.diaryNo})}">
+            <tr th:each="diary : ${diaries}" class="clickable-row" th:attr="data-href=@{/social/diaries/{diaryNo}(diaryNo=${diary.diaryNo})}">
                 <td>
                     <div class="webtoon-info">
-                        <img class="webtoon-image" th:src="${diary.webtoon.thumbnailUrl}" alt="웹툰 썸네일">
+                        <img class="webtoon-image" th:src="${diary.webtoon.thumbnail_url}" alt="웹툰 썸네일">
                         <div class="webtoon-details">
                             <span th:text="${diary.webtoon.webtoon_name}">웹툰 제목</span>
                             <small th:text="${diary.webtoon.author}">작가</small>
@@ -86,11 +106,8 @@
                     </div>
                 </td>
                 <td th:text="${diary.title}">다이어리 제목</td>
-                <td>
-                    <span th:class="${#strings.toString(diary.statusCode) == 'C' ? 'status status-ongoing' : 'status status-reread'}"
-                          th:text="${#strings.toString(diary.statusCode) == 'C' ? '정주행중' : '재탕중'}"></span>
-                </td>
-                <td th:text="${diary.writer.nickname}">작성자</td>
+                <td th:class="${diary.statusCode == 'C' ? 'status status-ongoing' : 'status status-reread'}"
+                    th:text="${diary.statusCode == 'C' ? '정주행중' : '재탕중'}">상태</td>
                 <td th:text="${#temporals.format(diary.createdDate, 'yyyy-MM-dd HH:mm')}">작성일</td>
                 <td th:text="${diary.viewCnt}">조회수</td>
             </tr>

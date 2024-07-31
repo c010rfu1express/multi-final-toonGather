@@ -1,5 +1,6 @@
 package com.multi.toonGather.social.service;
 
+import com.multi.toonGather.social.model.dto.DiaryDTO;
 import com.multi.toonGather.social.model.dto.ReviewDTO;
 import com.multi.toonGather.user.model.dto.UserDTO;
 import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
@@ -30,13 +31,12 @@ public interface SocialService {
 
     WebtoonDTO getWebtoonByNo(int webtoonNo) throws Exception;
     void createReview(ReviewDTO reviewDTO) throws Exception;
-
+//    void createDiary(DiaryDTO diary);
 
     // 다이어리
-//    void createDiary(DiaryDTO diary);
-//    List<DiaryDTO> getDiariesByUser(int userNo);
-//    void incrementDiaryViewCount(int diaryNo);
-//    DiaryDTO getDiaryByNo(int diaryNo);
-//    void updateDiary(DiaryDTO diary);
-//    void deleteDiary(int diaryNo);
+    List<DiaryDTO> getDiariesByUserId(String userId) throws Exception;
+    void incrementDiaryViewCount(int diaryNo) throws Exception;
+    DiaryDTO getDiaryByNo(int diaryNo) throws Exception;
+    void updateDiary(DiaryDTO diaryDTO) throws Exception;
+    void deleteDiary(int diaryNo) throws Exception;
 }

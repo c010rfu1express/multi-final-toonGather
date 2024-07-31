@@ -1,5 +1,6 @@
 package com.multi.toonGather.social.model.mapper;
 
+import com.multi.toonGather.social.model.dto.DiaryDTO;
 import com.multi.toonGather.social.model.dto.ReviewDTO;
 import com.multi.toonGather.user.model.dto.UserDTO;
 import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
@@ -25,18 +26,19 @@ public interface SocialMapper {
     List<ReviewDTO> selectReviewsByUserId(String userId) throws Exception;
 
     // 리뷰
-    WebtoonDTO selectWebtoonByNo(int webtoonNo) throws Exception;
     ReviewDTO selectReviewByNo(int reviewNo) throws Exception;
     void incrementReviewViewCount(int reviewNo) throws Exception;
     void updateReview(ReviewDTO review) throws Exception;
     int deleteReview(int reviewNo) throws Exception;
+
+    WebtoonDTO selectWebtoonByNo(int webtoonNo) throws Exception;
     void createReview(ReviewDTO review) throws Exception;
+//    void createDiary(DiaryDTO diary);
 
     // 다이어리
-//    void createDiary(DiaryDTO diary);
-//    List<DiaryDTO> getDiariesByUser(int userNo);
-//    DiaryDTO getDiaryByNo(int diaryNo);
-//    void incrementDiaryViewCount(int diaryNo);
-//    void updateDiary(DiaryDTO diary);
-//    void deleteDiary(int diaryNo);
+    List<DiaryDTO> selectDiariesByUserId(String userId) throws Exception;
+    void incrementDiaryViewCount(int diaryNo) throws Exception;
+    DiaryDTO selectDiaryByNo(int diaryNo) throws Exception;
+    void updateDiary(DiaryDTO diary) throws Exception;
+    int deleteDiary(int diaryNo) throws Exception;
 }

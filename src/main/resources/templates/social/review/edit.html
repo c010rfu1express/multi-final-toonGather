@@ -7,10 +7,32 @@
     <link rel="stylesheet" th:href="@{/css/social-styles.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/starRating.css}">
     <style>
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+        .webtoon-info {
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: start;
+        }
+        .webtoon-image {
+            width: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 15px;
+        }
+        .webtoon-details {
+            flex-grow: 1;
+        }
+        .webtoon-details h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .webtoon-details p {
+            font-size: 16px;
+            color: #666;
+            margin: 5px 0;
         }
         .review-form {
             background-color: #fff;
@@ -65,7 +87,14 @@
     </div>
 
     <div class="review-form">
-        <h2>리뷰 수정</h2>
+        <div class="webtoon-info">
+            <img class="webtoon-image" th:src="${review.webtoon.thumbnail_url}" alt="웹툰 썸네일">
+            <div class="webtoon-details">
+                <h2>웹툰 정보</h2>
+                <p><strong>제목:</strong> <span th:text="${review.webtoon.webtoon_name}"></span></p>
+                <p><strong>작가:</strong> <span th:text="${review.webtoon.author}"></span></p>
+            </div>
+        </div>
         <form th:action="@{/social/reviews/{reviewNo}/edit(reviewNo=${review.reviewNo})}" method="post">
             <div class="form-group">
                 <label for="title">리뷰 제목</label>
@@ -108,6 +137,13 @@
             document.getElementById('charCount').textContent = 1000;
         }
     });
+
+    // 초기 글자 수 표시
+    window.onload = function() {
+        var content = document.getElementById('content');
+        var charCountSpan = document.getElementById('charCount');
+        charCountSpan.textContent = content.value.length;
+    };
 </script>
 </body>
 </html>
