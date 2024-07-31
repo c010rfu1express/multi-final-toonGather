@@ -14,14 +14,36 @@
 <div th:replace="~{common/menubar}"></div>
 <div th:replace="~{introduction/introductionMenubar}"></div>
 
-<div id="">
+<div id="journal-details">
     <div th:if="${journal != null}">
         <h1 th:text="${journal.title}">제목</h1>
         <p th:text="${journal.content}">내용</p>
 
-        <div th:each="file : ${files}">
-            <img th:src="@{${file.filePath}}" alt="파일 이미지" />
+
+
+<!--        <div th:each="file : ${files}">-->
+<!--            <img th:src="@{${file.filePath}}" alt="파일 이미지" />-->
+<!--        </div>-->
+
+
+
+
+        <!-- 첨부파일 목록 표시 -->
+        <div th:each="file : ${journal.journalFiles}">
+            <div th:if="${file.fileType.startsWith('image/')}">
+<!--                <img th:src="@{/path/to/images/ + ${file.filePath}}" alt="파일 이미지" />-->
+<!--                <img th:src="@{${file.filePath}}" alt="파일 이미지" />-->
+                <img src="C:\workspace\multi\imgJournal\d9ba737a-9558-4342-88af-138141dfa4b3_ragnarok.png" alt="파일 이미지" />
+
+            </div>
+<!--            <div th:if="${!file.fileType.startsWith('image/')}">-->
+<!--                <a th:href="@{/path/to/files/ + ${file.filePath}}" th:text="${file.fileName}" download>파일 다운로드</a>-->
+<!--            </div>-->
         </div>
+
+        "C:\workspace\multi\imgJournal\d9ba737a-9558-4342-88af-138141dfa4b3_ragnarok.png"
+
+
     </div>
 </div>
 
