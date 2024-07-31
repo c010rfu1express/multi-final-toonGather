@@ -222,4 +222,163 @@
         WHERE
         iel.user_no = #{userNo}
     </select>
+
+    <resultMap type="MyWtWebtoonDTO" id="MyWtWebtoonResultMap">
+        <id property="saveNo" column="save_no"/>
+        <result property="webtoonNo" column="webtoon_no"/>
+        <result property="userNo" column="user_no"/>
+
+        <result property="webtoonId" column="webtoon_id"/>
+        <result property="platform" column="platform"/>
+        <result property="webtoonName" column="webtoon_name"/>
+        <result property="author" column="author"/>
+        <result property="thumbnailUrl" column="thumbnail_url"/>
+        <result property="genre" column="genre"/>
+        <result property="tags" column="tags"/>
+        <result property="count" column="count"/>
+    </resultMap>
+
+    <select id="selectListMyWtWebtoon" resultType="MyWtWebtoonDTO">
+        SELECT
+        wu.save_no AS saveNo,
+        wu.webtoon_no AS webtoonNo,
+        wu.user_no AS userNo,
+
+        w.webtoon_id AS webtoonId,
+        w.platform AS platform,
+        w.webtoon_name AS webtoonName,
+        w.author AS author,
+        w.thumbnail_url AS thumbnailUrl,
+        w.genre AS genre,
+        w.tags AS tags,
+        w.count AS count
+        FROM
+        webtoon w
+        INNER JOIN
+        wt_user_save wu
+        ON
+        w.webtoon_no = wu.webtoon_no
+        WHERE
+        wu.user_no = #{userNo}
+    </select>
+
+    <resultMap type="MyWtCommentDTO" id="MyWtCommentResultMap">
+        <id property="commentNo" column="comment_no"/>
+        <result property="webtoonNo" column="webtoon_no"/>
+        <result property="userNo" column="user_no"/>
+        <result property="content" column="content"/>
+        <result property="liked" column="liked"/>
+        <result property="dislike" column="dislike"/>
+        <result property="webtoonId" column="webtoon_id"/>
+        <result property="platform" column="platform"/>
+        <result property="webtoonName" column="webtoon_name"/>
+        <result property="author" column="author"/>
+        <result property="thumbnailUrl" column="thumbnail_url"/>
+        <result property="genre" column="genre"/>
+        <result property="tags" column="tags"/>
+        <result property="count" column="count"/>
+    </resultMap>
+
+    <select id="selectListMyWtComment" resultType="MyWtCommentDTO">
+        SELECT
+        c.comment_no AS commentNo,
+        c.webtoon_no AS webtoonNo,
+        c.user_no AS userNo,
+        c.content AS content,
+        c.liked AS liked,
+        c.dislike AS dislike,
+
+        w.webtoon_id AS webtoonId,
+        w.platform AS platform,
+        w.webtoon_name AS webtoonName,
+        w.author AS author,
+        w.thumbnail_url AS thumbnailUrl,
+        w.genre AS genre,
+        w.tags AS tags,
+        w.count AS count
+        FROM
+        webtoon w
+        INNER JOIN
+        wt_comment c
+        ON
+        w.webtoon_no = c.webtoon_no
+        WHERE
+        c.user_no = #{userNo}
+    </select>
+
+    <resultMap type="MyRctApplicationDTO" id="MyRctApplicationResultMap">
+        <id property="applyNo" column="apply_no"/>
+        <result property="boardNo" column="board_no"/>
+        <result property="writer" column="writer"/>
+        <result property="applyTitle" column="title"/>
+        <result property="applyContent" column="content"/>
+        <result property="applyImg" column="img"/>
+        <result property="applyCreatedDate" column="created_date"/>
+        <result property="applyCheckStatus" column="check_status"/>
+
+        <result property="jobWriter" column="writer"/>
+        <result property="jobTitle" column="title"/>
+        <result property="jobContent" column="content"/>
+        <result property="jobLocation" column="location"/>
+        <result property="jobImg" column="img"/>
+        <result property="jobCreatedDate" column="created_date"/>
+        <result property="jobModifiedDate" column="modified_date"/>
+        <result property="jobDeadLine" column="dead_line"/>
+    </resultMap>
+
+    <select id="selectListMyRctApplication" resultType="MyRctApplicationDTO">
+        SELECT
+        rja.apply_no AS applyNo,
+        rja.board_no AS boardNo,
+        rja.writer AS writer,
+        rja.title AS applyTitle,
+        rja.content AS applyContent,
+        rja.img AS applyImg,
+        rja.created_date AS applyCreatedDate,
+        rja.check_status AS applyCheckStatus,
+
+        rj.writer AS jobWriter,
+        rj.title AS jobTitle,
+        rj.content AS jobContent,
+        rj.location AS jobLocation,
+        rj.img AS jobImg,
+        rj.created_date AS jobCreatedDate,
+        rj.modified_date AS jobModifiedDate,
+        rj.dead_line AS jobDeadLine
+        FROM
+        rct_job rj
+        INNER JOIN
+        rct_job_apply rja
+        ON
+        rj.board_no = rja.board_no
+        WHERE
+        rja.writer = #{userNo}
+    </select>
+
+    <resultMap type="MyRctFreeDTO" id="MyRctFreeResultMap">
+        <id property="boardNo" column="board_no"/>
+        <result property="writer" column="writer"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="img" column="img"/>
+        <result property="price" column="price"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="modifiedDate" column="modified_date"/>
+    </resultMap>
+
+    <select id="selectListMyRctFree" resultType="MyRctFreeDTO">
+        SELECT
+        board_no AS boardNo,
+        writer AS writer,
+        title AS title,
+        content AS content,
+        img AS img,
+        price AS price,
+        created_date AS createdDate,
+        modified_date AS modifiedDate
+        FROM
+        rct_free
+        WHERE
+        writer = #{userNo}
+    </select>
 </mapper>

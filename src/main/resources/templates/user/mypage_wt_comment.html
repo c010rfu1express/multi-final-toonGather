@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
 <html layout:decorate="~{layout}">
 <head>
-    <title>KHG50: 마이페이지-나의소식-좋아요한웹툰소식</title>
+    <title>KHG21: 마이페이지-나의웹툰-내가남긴코멘트</title>
     <meta charset="UTF-8">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -87,44 +87,54 @@
 <div layout:fragment="content">
     <nav class="navbar navbar-expand-md">
         <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-            <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">좋아요한 웹툰소식</a></li>
-            <li><a th:href="@{/user/my/in/event}" class="nav-link px-2">좋아요한 행사</a></li>
+            <li><a th:href="@{/user/my}" class="nav-link px-2">북마크한 웹툰</a></li>
+            <li><a th:href="@{/user/my/wt/comment}" class="nav-link px-2">내가 남긴 코멘트</a></li>
         </ul>
     </nav>
 </div>
 <div class="container">
     <div class="review-list">
-        <h2>좋아요한 웹툰 소식</h2>
+        <h2>내가 남긴 코멘트</h2>
         <table>
             <thead>
             <tr>
-                <th>좋아요 번호</th>
-                <th>회원번호</th>
-                <th>좋아요 날짜</th>
-                <th>소식 게시글 번호</th>
-                <th>소식 제목</th>
-                <th>소식 내용</th>
-                <th>게시 일시</th>
-
-<!--                <th>ijl.liked_no</th>-->
-<!--                <th>ijl.user_no</th>-->
-<!--                <th>ijl.liked_date</th>-->
-<!--                <th>ij.journal_no</th>-->
-<!--                <th>ij.title</th>-->
-<!--                <th>ij.content</th>-->
-<!--                <th>ij.posting_date</th>-->
-
+                <th>댓글 번호</th>
+                <th>웹툰 번호</th>
+                <th>유저 번호</th>
+                <th>내용</th>
+                <th>좋아요</th>
+                <th>싫어요</th>
+                <th>웹툰아이디</th>
+                <th>플렛폼</th>
+                <th>제목</th>
+                <th>작가</th>
+                <th>이미지URL</th>
+                <th>장르</th>
+                <th>태그</th>
+                <th>조회수</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="myInJournal : ${myInJournals}" class="clickable-row" th:attr="data-href=@{/introduction/journalDetail(id=${myInJournal.journalNo})}">
-                <td th:text="${myInJournal.likedNo}">좋아요 번호</td>
-                <td th:text="${myInJournal.userNo}">회원번호</td>
-                <td th:text="${myInJournal.likedDate}">좋아요 날짜</td>
-                <td th:text="${myInJournal.journalNo}">소식 게시글 번호</td>
-                <td th:text="${myInJournal.title}">소식 제목</td>
-                <td th:text="${myInJournal.content}">소식 내용</td>
-                <td th:text="${myInJournal.postingDate}">게시 일시</td>
+            <tr th:each="myWtComment : ${myWtComments}" class="clickable-row"
+                th:attr="data-href=@{/webtoon/one(
+            webtoon_id=${(myWtComment.platform == 1 ? 'naver_' : myWtComment.platform == 2 ? 'kakao_' : '') + myWtComment.webtoonId},
+            webtoon_name=${myWtComment.webtoonName},
+            author=${myWtComment.author}
+            )}">
+                <td th:text="${myWtComment.commentNo}">댓글 번호</td>
+                <td th:text="${myWtComment.webtoonNo}">웹툰 번호</td>
+                <td th:text="${myWtComment.userNo}">유저 번호</td>
+                <td th:text="${myWtComment.content}">내용</td>
+                <td th:text="${myWtComment.liked}">좋아요</td>
+                <td th:text="${myWtComment.dislike}">싫어요</td>
+                <td th:text="${myWtComment.webtoonId}">웹툰아이디</td>
+                <td th:text="${myWtComment.platform}">플렛폼</td>
+                <td th:text="${myWtComment.webtoonName}">제목</td>
+                <td th:text="${myWtComment.author}">작가</td>
+                <td th:text="${myWtComment.thumbnailUrl}">이미지URL</td>
+                <td th:text="${myWtComment.genre}">장르</td>
+                <td th:text="${myWtComment.tags}">태그</td>
+                <td th:text="${myWtComment.count}">조회수</td>
             </tr>
             </tbody>
         </table>

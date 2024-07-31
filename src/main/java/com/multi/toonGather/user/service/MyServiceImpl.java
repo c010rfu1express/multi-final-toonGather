@@ -41,4 +41,24 @@ public class MyServiceImpl implements MyService {
         return response;
     }
 
+    public List<MyWtWebtoonDTO> getMyWtWebtoons(int userNo) throws Exception {
+        List<MyWtWebtoonDTO> response = myMapper.selectListMyWtWebtoon(userNo);
+        return response;
+    }
+
+    public List<MyWtCommentDTO> getMyWtComments(int userNo) throws Exception {
+        List<MyWtCommentDTO> response = myMapper.selectListMyWtComment(userNo);
+        return response;
+    }
+
+    public List<MyRctApplicationDTO> getMyRctApplications(int userNo) throws Exception {
+        List<MyRctApplicationDTO> response = myMapper.selectListMyRctApplication(userNo);
+        return response;
+    }
+
+    public List<MyRctFreeDTO> getMyRctFrees(int userNo) throws Exception {
+        List<MyRctFreeDTO> response = myMapper.selectListMyRctFree(userNo);
+        return response;
+    }
+
 }

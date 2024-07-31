@@ -12,4 +12,8 @@ public interface MyService {
     List<MySoReviewDTO> getMySoReviews(int userNo) throws Exception;
     List<MySoDiaryDTO> getMySoDiaries(int userNo) throws Exception;
     List<MyInEventDTO> getMyInEvents(int userNo) throws Exception;
+    List<MyWtWebtoonDTO> getMyWtWebtoons(int userNo) throws Exception;
+    List<MyWtCommentDTO> getMyWtComments(int userNo) throws Exception;
+    List<MyRctApplicationDTO> getMyRctApplications(int userNo) throws Exception;
+    List<MyRctFreeDTO> getMyRctFrees(int userNo) throws Exception;
 }

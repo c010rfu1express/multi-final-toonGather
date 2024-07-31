@@ -19,11 +19,32 @@ public class MyController {
 
     private final MyService myService;
 
+//    //KHG20
+//    @RequestMapping("")
+//    public String myPage(){
+//        return "/user/mypage";
+//    }
+
     //KHG20
-    @RequestMapping("")
-    public String myPage(){
-        return "/user/mypage";
+    @GetMapping("")
+    public String myWtWebtoon(@AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception {
+        int userNo = c.getUserDTO().getUserNo();
+        List<MyWtWebtoonDTO> myWtWebtoons = myService.getMyWtWebtoons(userNo);
+
+        model.addAttribute("myWtWebtoons", myWtWebtoons);
+        return "/user/mypage_wt_webtoon";
     }
+
+    //KHG20
+    @GetMapping("/wt/comment")
+    public String myWtComment(@AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception {
+        int userNo = c.getUserDTO().getUserNo();
+        List<MyWtCommentDTO> myWtComments = myService.getMyWtComments(userNo);
+
+        model.addAttribute("myWtComments", myWtComments);
+        return "/user/mypage_wt_comment";
+    }
+
 
     //KHG30
     @GetMapping("/so/review")
@@ -53,6 +74,26 @@ public class MyController {
 
         model.addAttribute("myRctJobs", myRctJobs);
         return "/user/mypage_rct_job";
+    }
+
+    //KHG44
+    @GetMapping("/rct/apply")
+    public String myRctApply(@AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
+        int userNo = c.getUserDTO().getUserNo();
+        List<MyRctApplicationDTO> myRctApplications = myService.getMyRctApplications(userNo);
+
+        model.addAttribute("myRctApplications", myRctApplications);
+        return "/user/mypage_rct_application";
+    }
+
+    //KHG45
+    @GetMapping("/rct/free")
+    public String myRctFree(@AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
+        int userNo = c.getUserDTO().getUserNo();
+        List<MyRctFreeDTO> myRctFrees = myService.getMyRctFrees(userNo);
+
+        model.addAttribute("myRctFrees", myRctFrees);
+        return "/user/mypage_rct_free";
     }
 
     //KHG50

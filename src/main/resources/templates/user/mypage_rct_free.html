@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
 <html layout:decorate="~{layout}">
 <head>
-    <title>KHG50: 마이페이지-나의소식-좋아요한웹툰소식</title>
+    <title>KHG45: 마이페이지-나의채용-내가 올린 프리랜서게시글관리</title>
     <meta charset="UTF-8">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -87,44 +87,40 @@
 <div layout:fragment="content">
     <nav class="navbar navbar-expand-md">
         <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-            <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">좋아요한 웹툰소식</a></li>
-            <li><a th:href="@{/user/my/in/event}" class="nav-link px-2">좋아요한 행사</a></li>
+            <li><a th:href="@{/user/my/rct/job}" class="nav-link px-2">내가 올린 공고</a></li>
+            <li><a th:href="@{/user/my/rct/creator}" class="nav-link px-2">창작자 등록 현황</a></li>
+            <li><a th:href="@{/user/my/rct/apply}" class="nav-link px-2">나의 지원서 관리</a></li>
+            <li><a th:href="@{/user/my/rct/free}" class="nav-link px-2">프리랜서 게시글 관리</a></li>
+            <li><a th:href="@{/user/my/rct/order}" class="nav-link px-2">프리랜서 구매 목록</a></li>
         </ul>
     </nav>
 </div>
 <div class="container">
     <div class="review-list">
-        <h2>좋아요한 웹툰 소식</h2>
+        <h2>프리랜서 게시글 관리</h2>
         <table>
             <thead>
             <tr>
-                <th>좋아요 번호</th>
-                <th>회원번호</th>
-                <th>좋아요 날짜</th>
-                <th>소식 게시글 번호</th>
-                <th>소식 제목</th>
-                <th>소식 내용</th>
-                <th>게시 일시</th>
-
-<!--                <th>ijl.liked_no</th>-->
-<!--                <th>ijl.user_no</th>-->
-<!--                <th>ijl.liked_date</th>-->
-<!--                <th>ij.journal_no</th>-->
-<!--                <th>ij.title</th>-->
-<!--                <th>ij.content</th>-->
-<!--                <th>ij.posting_date</th>-->
-
+                <th>게시글 번호</th>
+                <th>작성자</th>
+                <th>제목</th>
+                <th>내용</th>
+                <th>이미지</th>
+                <th>가격</th>
+                <th>작성 일자</th>
+                <th>수정 일자</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="myInJournal : ${myInJournals}" class="clickable-row" th:attr="data-href=@{/introduction/journalDetail(id=${myInJournal.journalNo})}">
-                <td th:text="${myInJournal.likedNo}">좋아요 번호</td>
-                <td th:text="${myInJournal.userNo}">회원번호</td>
-                <td th:text="${myInJournal.likedDate}">좋아요 날짜</td>
-                <td th:text="${myInJournal.journalNo}">소식 게시글 번호</td>
-                <td th:text="${myInJournal.title}">소식 제목</td>
-                <td th:text="${myInJournal.content}">소식 내용</td>
-                <td th:text="${myInJournal.postingDate}">게시 일시</td>
+            <tr th:each="myRctFree : ${myRctFrees}" class="clickable-row" th:attr="data-href=@{/recruit/free/view(no=${myRctFree.boardNo})}">
+                <td th:text="${myRctFree.boardNo}">게시글 번호</td>
+                <td th:text="${myRctFree.writer}">작성자</td>
+                <td th:text="${myRctFree.title}">제목</td>
+                <td th:text="${myRctFree.content}">내용</td>
+                <td th:text="${myRctFree.img}">이미지</td>
+                <td th:text="${myRctFree.price}">가격</td>
+                <td th:text="${myRctFree.createdDate}">작성 일자</td>
+                <td th:text="${myRctFree.modifiedDate}">수정 일자</td>
             </tr>
             </tbody>
         </table>

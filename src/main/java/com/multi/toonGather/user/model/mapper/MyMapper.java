@@ -15,4 +15,8 @@ public interface MyMapper {
     List<MySoReviewDTO> selectListMySoReview(@Param("userNo") int userNo) throws Exception;
     List<MySoDiaryDTO> selectListMySoDiary(@Param("userNo") int userNo) throws Exception;
     List<MyInEventDTO> selectListMyInEvent(@Param("userNo") int userNo) throws Exception;
+    List<MyWtWebtoonDTO> selectListMyWtWebtoon(@Param("userNo") int userNo) throws Exception;
+    List<MyWtCommentDTO> selectListMyWtComment(@Param("userNo") int userNo) throws Exception;
+    List<MyRctApplicationDTO> selectListMyRctApplication(@Param("userNo") int userNo) throws Exception;
+    List<MyRctFreeDTO> selectListMyRctFree(@Param("userNo") int userNo) throws Exception;
 }
