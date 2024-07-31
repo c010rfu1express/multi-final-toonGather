@@ -636,4 +636,31 @@ public class RecruitController {
         return "redirect:/recruit/free/view?no=" + board_no;
     }
 
+    @GetMapping("/free/report/list")
+    public String listReport(@RequestParam(value = "page", required = false, defaultValue = "1")  int page, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        PageDTO pageDTO = new PageDTO();
+        pageDTO.setPage(page);
+        pageDTO.setStartEnd(pageDTO.getPage());
+        try {
+            int count = pageService.selectReportCount(pageDTO);
+            int pages = (int) Math.ceil((double) count / 10);
+
+            List<FreeReviewReportDTO> reports = freeService.selectReportAll(pageDTO);
+
+            model.addAttribute("count", count);
+            model.addAttribute("pages", pages);
+            model.addAttribute("reports", reports);
+            model.addAttribute("currentPage", page);
+
+            for (FreeReviewReportDTO report: reports) {
+                System.out.println(report);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("free list error : " + e);
+        }
+
+        return "recruit/free/report/list";
+    }
+
 }

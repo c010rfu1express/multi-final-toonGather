@@ -54,4 +54,6 @@ public interface FreeMapper {
     int deleteWriterAvg(int reviewNo) throws Exception;
 
     int reportReview(FreeReviewReportDTO reportDTO) throws Exception;
+
+    List<FreeReviewReportDTO> selectReportAll(PageDTO page) throws Exception;
 }

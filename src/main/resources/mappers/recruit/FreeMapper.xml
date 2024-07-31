@@ -33,6 +33,15 @@
 		<association property="member" column="writer" javaType="userDTO" resultMap="memberResultMap" />
 	</resultMap>
 
+	<resultMap id="ReportResultMap" type="freeReviewReportDTO">
+		<id property="report_no" column="report_no" />
+		<result property="review_no" column="review_no" />
+		<result property="reporter" column="reporter" />
+		<result property="content" column="content" />
+		<result property="reported_date" column="reported_date" />
+		<association property="member" column="reporter" javaType="userDTO" resultMap="memberResultMap" />
+	</resultMap>
+
 	<select id="selectAll" parameterType="pageDTO" resultMap="FreeResultMap">
 		SELECT
 		f.*,
@@ -163,5 +172,20 @@
 		, #{ content }
 		)
 	</insert>
+
+	<select id="selectReportAll" parameterType="pageDTO" resultMap="ReportResultMap">
+		SELECT
+		r.*,
+		m.user_no,
+		m.nickname
+		FROM
+		rct_free_review_report r
+		JOIN
+		users m ON r.reporter = m.user_no
+		<if test="page != null">
+			ORDER BY r.report_no DESC
+			LIMIT #{start}, 10
+		</if>
+	</select>
 
 </mapper>

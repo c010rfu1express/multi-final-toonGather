@@ -42,4 +42,6 @@ public interface FreeService {
     void deleteWriterAvg(int reviewNo) throws Exception;
 
     void reportReview(FreeReviewReportDTO reportDTO) throws Exception;
+
+    List<FreeReviewReportDTO> selectReportAll(PageDTO pageDTO) throws Exception;
 }

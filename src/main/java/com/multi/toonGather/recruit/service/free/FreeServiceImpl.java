@@ -118,4 +118,12 @@ public class FreeServiceImpl implements FreeService {
         int result = freeMapper.reportReview(reportDTO);
         if (result == 0) new Exception("리뷰 신고 실패");
     }
+
+    @Override
+    public List<FreeReviewReportDTO> selectReportAll(PageDTO pageDTO) throws Exception {
+        List<FreeReviewReportDTO> listReport = freeMapper.selectReportAll(pageDTO);
+        if (listReport == null) new Exception("프리랜서 글 리스트 조회 실패");
+
+        return listReport;
+    }
 }
