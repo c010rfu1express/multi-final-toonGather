@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>툰게더 toonGather | 에러</title>
+    <style>
+        .container {
+            max-width: 800px;
+            padding: 50px;
+            display: flex;
+            justify-content: center;
+            text-align: center;
+        }
+        .error-message {
+            padding: 30px;
+        }
+        .error-img {
+            max-width: 300px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="common/menubar.html"></div>
+
+<div class="container">
+    <div id="error-message">
+        <img class="error-img" th:src="@{/images/error_logo.png}" alt="에러 페이지 로고">
+        <h3>Something went wrong...</h3>
+        <p th:text="${errorMessage}">에러 메시지 표시</p>
+        <br>
+        <a th:href="@{/}">메인으로 돌아가기</a>
+    </div>
+</div>
+
+</body>
+</html>
