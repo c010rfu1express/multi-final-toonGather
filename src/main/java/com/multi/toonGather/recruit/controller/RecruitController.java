@@ -486,8 +486,10 @@ public class RecruitController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
             model.addAttribute("member_no", userDetails.getMemNo());
+            model.addAttribute("auth_code", String.valueOf(userDetails.getAuthCode()));
         } else {
             model.addAttribute("member_no", "");  // 인증되지 않은 사용자의 경우
+            model.addAttribute("auth_code", "");
         }
 
         try {

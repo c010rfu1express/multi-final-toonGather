@@ -104,19 +104,22 @@
             </div>
 
             <div th:each="re : ${list}" class="comment" data-comment-id="${re.review_no}">
+                <div class="text-left" th:if="${auth_code == 'A'}">
+                    #[[${re.review_no}]]
+                </div>
                 <b>작성자: <span th:text="${re.member.nickname}"></span></b>
                 <div class="star-ratings">
                     <div class="star-ratings-fill">
                         <span class="filled-star" th:each="star : ${#numbers.sequence(1, re.star_rating)}">★</span>
                     </div>
                 </div>
-                <div class="text-right" th:if="${member_no == re.member.userNo}">
+                <div class="text-right" th:if="${member_no == re.member.userNo or auth_code == 'A'}">
                     <button class="btn btn-sm update-btn" id="updateReview" data-toggle="modal" data-target="#reviewModal" type="button" th:data-review-no="${re.review_no}">수정</button>
                     <a th:href="@{/recruit/free/review/delete(review_no=${re.review_no}, board_no=${re.board_no})}">
                         <button id="b1" class="btn btn-sm">삭제</button>
                     </a>
                 </div>
-                <div class="text-right" th:if="${member_no != re.member.userNo and member_no != null and member_no != ''}">
+                <div class="text-right" th:if="${member_no != re.member.userNo and member_no != null and member_no != '' and auth_code != 'A'}">
                     <button class="btn btn-sm report-btn" id="reportReview" data-toggle="modal" data-target="#reportModal" type="button" th:data-review-no="${re.review_no}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-octagon-fill" viewBox="0 0 16 16">
                             <path d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
