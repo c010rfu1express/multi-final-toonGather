@@ -2,6 +2,7 @@ package com.multi.toonGather.recruit.service.free;
 
 
 import com.multi.toonGather.common.model.dto.PageDTO;
+import com.multi.toonGather.recruit.model.dto.free.FreeAvgRatingsDTO;
 import com.multi.toonGather.recruit.model.dto.free.FreeDTO;
 import com.multi.toonGather.recruit.model.dto.free.FreeReviewDTO;
 import com.multi.toonGather.recruit.model.mapper.FreeMapper;
@@ -85,5 +86,29 @@ public class FreeServiceImpl implements FreeService {
     public void deleteReview(int reviewNo) throws Exception {
         int result = freeMapper.deleteReview(reviewNo);
         if (result > 0) new Exception("리뷰 삭제에 실패했습니다.");
+    }
+
+    @Override
+    public double getWriterAvg(int writer) throws Exception {
+        double result = freeMapper.getWriterAvg(writer);
+        return result;
+    }
+
+    @Override
+    public void insertWriterAvg(FreeAvgRatingsDTO freeAvgRatingsDTO) throws Exception {
+        int result = freeMapper.insertWriterAvg(freeAvgRatingsDTO);
+        if (result == 0) new Exception("작성자 평균 별점 실패");
+    }
+
+    @Override
+    public void updateWriterAvg(FreeAvgRatingsDTO freeAvgRatingsDTO) throws Exception {
+        int result = freeMapper.updateWriterAvg(freeAvgRatingsDTO);
+        if (result > 0) new Exception(("작성자 별점 수정 실패"));
+    }
+
+    @Override
+    public void deleteWriterAvg(int reviewNo) throws Exception {
+        int result = freeMapper.deleteWriterAvg(reviewNo);
+        if (result > 0) new Exception("작성자 별점 삭제 실패");
     }
 }

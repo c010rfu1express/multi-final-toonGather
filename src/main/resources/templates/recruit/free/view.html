@@ -70,8 +70,10 @@
             <hr>
         </div>
         <div id="result">
-            평균 별점: <span th:text="${avg}"></span>
+            평균 별점: <span th:text="${avg}"></span> <br>
+            작성자 평균 별점: <span th:text="${writerAvg}"></span>
             <form th:action="@{/recruit/free/review/insert}" id="form" method="post" >
+                <input type="hidden" id="writer_no" name="writer_no" th:value="${free.writer}"/>
                 <div>
                     <br>
                     <div class="t1">리뷰</div>
