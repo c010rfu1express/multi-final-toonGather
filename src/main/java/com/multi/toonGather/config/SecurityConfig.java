@@ -50,7 +50,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer configure() {
 
         return (web) -> web.ignoring().requestMatchers(
-                "/css/**", "/js/**", "/img/**", "/uploadFiles/**"
+                "/css/**", "/js/**", "/images/**", "/uploadFiles/**"
         );
 
     }

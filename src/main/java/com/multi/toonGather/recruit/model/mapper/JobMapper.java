@@ -4,9 +4,7 @@ package com.multi.toonGather.recruit.model.mapper;
 import com.multi.toonGather.common.model.dto.PageDTO;
 import com.multi.toonGather.recruit.model.dto.job.ApplyDTO;
 import com.multi.toonGather.recruit.model.dto.job.JobDTO;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -29,4 +27,7 @@ public interface JobMapper {
     int insertApply(ApplyDTO applyDTO) throws Exception;
 
     ApplyDTO selectApply(int no) throws Exception;
+
+    @Select("SELECT EXISTS (SELECT 1 FROM rct_job_apply WHERE board_no = #{board_no} AND writer = #{writer})")
+    boolean hasApplied(@Param("board_no") int boardNo, @Param("writer") int writer) throws Exception;
 }

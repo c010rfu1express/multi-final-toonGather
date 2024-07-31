@@ -20,4 +20,6 @@ public interface JobService {
     void insertApply(ApplyDTO applyDTO) throws Exception;
 
     ApplyDTO findApplyByNo(int no) throws Exception;
+
+    boolean hasApplied(int board_no, int writer) throws Exception;
 }

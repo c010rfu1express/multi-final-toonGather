@@ -1,5 +1,6 @@
 package com.multi.toonGather.recruit.model.dto.job;
 
+import com.multi.toonGather.user.model.dto.UserDTO;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -16,6 +17,6 @@ public class JobDTO {
     private Date created_date;
     private Date modified_date;
     private LocalDate dead_line;
-//    private MemberDTO memNo;
+    private UserDTO member;
 
 }
