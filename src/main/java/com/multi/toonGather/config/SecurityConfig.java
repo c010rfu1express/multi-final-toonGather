@@ -60,9 +60,18 @@ public class SecurityConfig {
         ////// KHG NOTE) chatGPT를 통해 추가한 부분임
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**").permitAll()
+                        // 공개 접근 가능한 경로
+                        .requestMatchers("/", "/webtoon/**", "/recruit/**", "/introduction/**", "/cs/**", "/common/error/**").permitAll()
+                        // social (최서윤): 소셜 파트 관련 경로
+                        .requestMatchers("/social/main").permitAll()
+                        .requestMatchers("/social/users/*/profile", "/social/users/*/reviews", "/social/users/*/diaries").permitAll()
+                        .requestMatchers("/social/reviews/*").permitAll()
+                        //  social (최서윤): 인증이 필요한 소셜 파트 경로
+                        .requestMatchers("/social/reviews/*/edit", "/social/reviews/*/delete").authenticated()
+                        // 마이페이지 관련 경로
                         .requestMatchers("/user/my/**").authenticated()
                         .requestMatchers("/user/**").permitAll()
+                        // 그 외 모든 요청은 인증 필요
                         .anyRequest().authenticated()
                 );
         ////////////////////////////////////////////////////////////////////////////////////
@@ -92,13 +101,12 @@ public class SecurityConfig {
         http    //예외 처리 : 접근이 거부되었을 때의 예외 처리 페이지를 설정
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling
-                                .accessDeniedPage("/error/denied"));
+                                .accessDeniedPage("/common/error/403"));
 
         http
+                // CSRF 보호 비활성화
                 .csrf((auth) -> auth.disable());
-
 
         return http.build();
     }
 }
-//"/admin" ,
