@@ -89,7 +89,7 @@
                             <img th:src="@{'/uploadFiles/' + ${job.img}}" width="250" height="250" alt="게시글 이미지">
                         </div>
                         <br>
-                        <div th:if="${member_no != null and member_no != ''}">
+                        <div th:if="${member_no != null and member_no != '' and member_no != job.writer}">
                             <div style="margin-right:1px;" class="mt-4 text-center">
                                 <a th:if="${hasApplied == false}" th:href="@{/recruit/job/apply(no=${job.board_no})}" class="btn btn-success">지원하기</a>
                                 <button th:if="${hasApplied == true}" class="btn btn-success" disabled>지원완료</button>
