@@ -20,7 +20,7 @@
         }
         #webtoonDetail {
             width: 100%;
-            max-width: 80%;
+            max-width: 100%;
             background-color: #ffffff;
             padding: 20px;
             border-radius: 8px;
@@ -120,11 +120,35 @@
         .btn-delete:hover {
             background-color: #c82333;
         }
+        #social {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end; /* Align social to the right */
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        #social form {
+            margin-bottom: 10px;
+        }
+        #social button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-left: 10px; /* Adjust margin between buttons */
+        }
+        #social button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
 
 <div th:replace="common/menubar.html"></div>
+<div  th:replace="common/webtoon_menubar.html"></div>
 <br>
 <div id="webtoonOne">
 <h1>웹툰 정보</h1>
@@ -132,7 +156,7 @@
 <div id="webtoonDetail">
     <table>
         <tr>
-            <td id="webtoonThumbnail" rowspan='9'></td>
+            <td id="webtoonThumbnail" rowspan='11'></td>
             <th>제목</th>
             <td id="webtoonTitle"></td>
         </tr>
@@ -147,6 +171,14 @@
         <tr>
             <th>작가</th>
             <td id="webtoonAuthors"></td>
+        </tr>
+        <tr>
+            <th>장르</th>
+            <td id="webtoonGenre" th:text="${one.genre}"></td>
+        </tr>
+        <tr>
+            <th>태그</th>
+            <td id="webtoonTags" th:text="${one.tags}"></td>
         </tr>
         <tr>
             <th>연재 여부</th>
@@ -169,6 +201,23 @@
             <td id="webtoonFreeWaitHour"></td>
         </tr>
     </table>
+    <div id="social"> <th:block th:if="${user.userNo > 0}">
+        <!-- 리뷰 작성 폼 -->
+        <form id="ReviewForm" th:action="@{/social/review/insert/{webtoonNo}(webtoonNo=${one.webtoon_no})}" method="get">
+
+
+            <button type="submit" class="btn btn-primary">리뷰 등록</button>
+        </form>
+
+        <form id="DiaryForm" th:action="@{/social/diary/insert/{webtoonNo}(webtoonNo=${one.webtoon_no})}" method="get">
+
+
+
+            <button type="submit" class="btn btn-primary">다이어리 등록</button>
+        </form>
+
+    </th:block>
+    </div>
 </div>
 
 
