@@ -7,6 +7,7 @@ import com.multi.toonGather.recruit.model.dto.creator.NaverDTO;
 import com.multi.toonGather.recruit.model.dto.free.FreeAvgRatingsDTO;
 import com.multi.toonGather.recruit.model.dto.free.FreeDTO;
 import com.multi.toonGather.recruit.model.dto.free.FreeReviewDTO;
+import com.multi.toonGather.recruit.model.dto.free.FreeReviewReportDTO;
 import com.multi.toonGather.recruit.model.dto.job.ApplyDTO;
 import com.multi.toonGather.recruit.model.dto.job.JobDTO;
 import com.multi.toonGather.recruit.service.creator.CreatorService;
@@ -567,7 +568,7 @@ public class RecruitController {
     }
 
     @PostMapping("/free/review/insert")
-    public String insert(@RequestParam("rating") int rating, @RequestParam("reply") String reply, @RequestParam("board_no") int board_no, Model model,
+    public String insert(@RequestParam("rating") int rating, @RequestParam("reply") String reply, @RequestParam("board_no") int board_no,
                          @AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam("writer_no") int writer_no) throws Exception {
         // 작성자의 memberNo와 userName을 설정
         UserDTO writer = new UserDTO();
@@ -617,6 +618,21 @@ public class RecruitController {
     public String deleteReview(@RequestParam("board_no") String board_no ,@RequestParam("review_no") int review_no) throws Exception {
         freeService.deleteReview(review_no);
         freeService.deleteWriterAvg(review_no);
+        return "redirect:/recruit/free/view?no=" + board_no;
+    }
+
+    @PostMapping("/free/review/report")
+    public String reportReview(@RequestParam("review_no") int review_no, @RequestParam("content") String content, @RequestParam("board_no") int board_no,
+                               @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+        FreeReviewReportDTO reportDTO = new FreeReviewReportDTO();
+
+        reportDTO.setContent(content);
+        reportDTO.setReview_no(review_no);
+        reportDTO.setReporter(userDetails.getMemNo());
+
+        // 리뷰 업데이트
+        freeService.reportReview(reportDTO);
+
         return "redirect:/recruit/free/view?no=" + board_no;
     }
 

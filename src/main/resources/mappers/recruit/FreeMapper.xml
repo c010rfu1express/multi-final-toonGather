@@ -149,4 +149,19 @@
 		)
 	</insert>
 
+	<insert id="reportReview" parameterType="freeReviewReportDTO">
+		INSERT INTO rct_free_review_report
+		(
+		review_no
+		, reporter
+		, content
+		)
+		VALUES
+		(
+		#{ review_no }
+		, #{ reporter }
+		, #{ content }
+		)
+	</insert>
+
 </mapper>

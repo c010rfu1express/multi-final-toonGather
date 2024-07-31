@@ -5,6 +5,7 @@ import com.multi.toonGather.common.model.dto.PageDTO;
 import com.multi.toonGather.recruit.model.dto.free.FreeAvgRatingsDTO;
 import com.multi.toonGather.recruit.model.dto.free.FreeDTO;
 import com.multi.toonGather.recruit.model.dto.free.FreeReviewDTO;
+import com.multi.toonGather.recruit.model.dto.free.FreeReviewReportDTO;
 
 import java.util.List;
 
@@ -39,4 +40,6 @@ public interface FreeService {
     void updateWriterAvg(FreeAvgRatingsDTO freeAvgRatingsDTO) throws Exception;
 
     void deleteWriterAvg(int reviewNo) throws Exception;
+
+    void reportReview(FreeReviewReportDTO reportDTO) throws Exception;
 }

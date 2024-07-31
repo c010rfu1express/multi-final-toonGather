@@ -5,6 +5,7 @@ import com.multi.toonGather.common.model.dto.PageDTO;
 import com.multi.toonGather.recruit.model.dto.free.FreeAvgRatingsDTO;
 import com.multi.toonGather.recruit.model.dto.free.FreeDTO;
 import com.multi.toonGather.recruit.model.dto.free.FreeReviewDTO;
+import com.multi.toonGather.recruit.model.dto.free.FreeReviewReportDTO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Update;
@@ -51,4 +52,6 @@ public interface FreeMapper {
 
     @Delete("DELETE FROM rct_free_avg_ratings WHERE review_no = #{reviewNo}")
     int deleteWriterAvg(int reviewNo) throws Exception;
+
+    int reportReview(FreeReviewReportDTO reportDTO) throws Exception;
 }
