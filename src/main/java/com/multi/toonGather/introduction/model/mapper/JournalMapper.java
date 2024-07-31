@@ -41,7 +41,7 @@ public interface JournalMapper {
     List<JournalFileDTO> selectFilesByJournalNo(int journalNo);
 
 
-    @Select("SELECT * FROM in_journal ORDER BY posting_date DESC")
+    @Select("SELECT journal_no AS journalNo, title, content, posting_date AS postingDate FROM in_journal ORDER BY posting_date DESC")
     List<JournalDTO> selectAllJournals();
 
 

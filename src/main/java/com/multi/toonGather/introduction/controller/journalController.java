@@ -2,6 +2,7 @@ package com.multi.toonGather.introduction.controller;
 
 import com.multi.toonGather.introduction.model.dto.JournalDTO;
 import com.multi.toonGather.introduction.service.JournalServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,9 +37,10 @@ public class journalController {
     @PostMapping(value = {"introduction/journalInsert"})
     public String journalInsert(@RequestParam("title") String title,
                                 @RequestParam("content") String content,
-                                @RequestParam("file") MultipartFile file) {
+                                @RequestParam("file") MultipartFile file,
+                                HttpServletRequest request) {
         try {
-            journalService.insertJournal(title, content, file);
+            journalService.insertJournal(title, content, file, request);
             return "redirect:/introduction/journalList";
         } catch (Exception e) {
             // 에러 처리
@@ -53,7 +55,7 @@ public class journalController {
 
 
 
-        System.out.println("Retrieved journal: " + journalDTO);
+        System.out.println("Retrieved journal 상세페이지 : " + journalDTO);
         model.addAttribute("journal", journalDTO);
         return "introduction/journalDetail";
 
