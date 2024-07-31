@@ -42,3 +42,7 @@
 .star-ratings .filled-star {
     color: #f5a623; /* 채워진 별 색상 */
 }
+
+.star-avg {
+    color: #f5a623;
+}

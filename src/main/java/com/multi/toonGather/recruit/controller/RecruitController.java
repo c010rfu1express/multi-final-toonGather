@@ -143,7 +143,7 @@ public class RecruitController {
         pageDTO.setStartEnd(pageDTO.getPage());
         try {
             int count = pageService.selectJobCount(pageDTO);
-            int pages = (int) Math.ceil((double) count / 10);
+            int pages = count > 0 ? (int) Math.ceil((double) count / 10) : 1;
 
             List<JobDTO> jobs = jobService.selectBoardAll(pageDTO);
 
@@ -401,7 +401,7 @@ public class RecruitController {
         pageDTO.setStartEnd(pageDTO.getPage());
         try {
             int count = pageService.selectFreeCount(pageDTO);
-            int pages = (int) Math.ceil((double) count / 10);
+            int pages = count > 0 ? (int) Math.ceil((double) count / 10) : 1;
 
             List<FreeDTO> frees = freeService.selectBoardAll(pageDTO);
 
@@ -645,7 +645,7 @@ public class RecruitController {
         pageDTO.setStartEnd(pageDTO.getPage());
         try {
             int count = pageService.selectReportCount(pageDTO);
-            int pages = (int) Math.ceil((double) count / 10);
+            int pages = count > 0 ? (int) Math.ceil((double) count / 10) : 1;
 
             List<FreeReviewReportDTO> reports = freeService.selectReportAll(pageDTO);
 

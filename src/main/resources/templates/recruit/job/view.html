@@ -25,26 +25,30 @@
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <h2 class="text-center mb-4" th:text="${job.title}">구인/구직 글 제목</h2>
+                <h2 class="text-center mb-4">구인/구직</h2>
             </div>
-            <hr color="grey">
             <div class="card-body">
-                <div class="row" >
-                    <div class="form-group col-md-6">
-
-                        <label class="form-control">작성자: [[${job.member.nickname}]]</label>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label class="form-control">작성일: [[${job.created_date}]]</label>
-                    </div>
+                <div>
+                    <h3 class="font-bold">[[${job.title}]]</h3>
                 </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; color: #6B7280;">
+                    <div style="display: flex; align-items: center;">
+                        <span th:text="${#dates.format(job.created_date, 'yyyy-MM-dd HH:mm')}"></span>
+                        <span style="margin-left: 10px; color: #0099DD" th:if="${job.modified_date != null and job.modified_date != ''}" th:text="'수정됨'"></span>
+                    </div>
+                    <span style="text-align: right;">[[${job.member.nickname}]]</span>
+                </div>
+                <hr>
                 <div class="mb-3 form-group">
-                    <label class="form-control" style="height:auto; padding: 10px;">내용: <br> [[${job.content}]] <br> <br>
-                        근무지: <br> [[${job.location}]] <br>
+                    <label class="form-control" style="height:auto; border: none;">
+                        <br>
+                        <span class="font-weight-bold" style="font-size : 15pt;">모집 마감</span>
+                        <br><span th:text="${job.dead_line != null ? job.dead_line.toString() : '미정'}"></span><br><br>
+                        <span class="font-weight-bold" style="font-size : 15pt;">근무지</span>
+                        <br><span th:text="${job.location != null and not(job.location.isEmpty()) ? job.location : '재택 근무'}"></span><br><br>
                         <div th:if="${job.location != null and not(job.location.isEmpty())}" >
-                            <div id="map" style="width:350px;height:350px;"></div>
+                            <div class="form-control" id="map" style="height:350px;"></div>
                         </div>
-
                         <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5cb41ed3e9d236412bf5bb02c8b9e896&libraries=services"></script>
                         <script>
                             var mapContainer = document.getElementById('map'), // 지도를 표시할 div
@@ -73,44 +77,37 @@
                                         position: coords
                                     });
 
-                                    // 인포윈도우로 장소에 대한 설명을 표시합니다
-                                    var infowindow = new kakao.maps.InfoWindow({
-                                        content: '<div style="width:150px;text-align:center;padding:6px 0;">근무지</div>'
-                                    });
-                                    infowindow.open(map, marker);
-
                                     // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
                                     map.setCenter(coords);
                                 }
                             });
                         </script>
-                        <br>
+                        <br><br>
+                        <span class="font-weight-bold" style="font-size : 15pt;">상세 요강</span>
+                        <hr>[[${job.content}]] <br>
                         <div th:if="${job.img != null}">
                             <img th:src="@{'/uploadFiles/' + ${job.img}}" width="250" height="250" alt="게시글 이미지">
                         </div>
                         <br>
-                        마감 일자: <br> [[${job.dead_line}]] <br>
+                        <div th:if="${member_no != null and member_no != ''}">
+                            <div style="margin-right:1px;" class="mt-4 text-center">
+                                <a th:if="${hasApplied == false}" th:href="@{/recruit/job/apply(no=${job.board_no})}" class="btn btn-success">지원하기</a>
+                                <button th:if="${hasApplied == true}" class="btn btn-success" disabled>지원완료</button>
+                            </div>
+                        </div>
                     </label>
-                </div>
-
-                <div th:if="${member_no != null and member_no != ''}">
-                    <div style="margin-right:1px;" class="mt-4 text-center">
-                        <a th:if="${hasApplied == false}" th:href="@{/recruit/job/apply(no=${job.board_no})}" class="btn btn-success">지원하기</a>
-                        <button th:if="${hasApplied == true}" class="btn btn-success" disabled>지원완료</button>
-                    </div>
-                </div>
-                <div class="mt-4 text-right">
-                    <a href="/recruit/job/list" class="btn btn-outline-primary">목록으로</a>
-
-                    <div th:if="${member_no == job.member.userNo}">
-                        <br>
-                        <a th:href="@{/recruit/job/update(no=${job.board_no})}" class="btn btn-primary">수정</a>
-                        <a th:href="@{/recruit/job/delete(no=${job.board_no})}" class="btn btn-danger">삭제</a>
+                    <div class="mt-4 text-right">
+                        <a href="/recruit/job/list" class="btn btn-outline-primary">목록으로</a>
+                        <div th:if="${member_no == job.member.userNo}">
+                            <br>
+                            <a th:href="@{/recruit/job/update(no=${job.board_no})}" class="btn btn-primary">수정</a>
+                            <a th:href="@{/recruit/job/delete(no=${job.board_no})}" class="btn btn-danger">삭제</a>
+                        </div>
                     </div>
                 </div>
             </div>
-            <br>
         </div>
+
     </div>
 </div>
 </body>
