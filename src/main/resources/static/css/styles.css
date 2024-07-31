@@ -73,10 +73,44 @@ body {
   font-weight: 500;
 }
 
+/* 검색바 스타일 */
+.search-bar {
+  display: flex;
+  align-items: center;
+}
+
+.search-bar input[type="text"],
+.search-bar select,
+.search-bar button {
+  height: 38px; /* 버튼 높이와 동일하게 설정 */
+  box-sizing: border-box;
+}
+
+.search-bar input[type="text"] {
+  flex-grow: 1;
+  padding: 0 10px;
+  border: 1px solid #ced4da;
+  border-radius: 5px 0 0 5px;
+}
+
+.search-bar select {
+  width: auto;
+  padding: 0 10px;
+  border: 1px solid #ced4da;
+  border-left: none;
+  border-radius: 0;
+}
+
+.search-bar button {
+  border-radius: 0 5px 5px 0;
+}
+
 /* 버튼 스타일 */
 .btn {
+  padding: 8px 20px; /* 상하 패딩을 조정하여 높이를 맞춤 */
+  height: 38px; /* 검색바 요소들과 동일한 높이 */
+  line-height: 22px; /* 텍스트 수직 정렬을 위해 조정 */
   display: inline-block;
-  padding: 10px 20px;
   border: none;
   border-radius: 5px;
   font-size: 16px;
