@@ -74,6 +74,17 @@
         WHERE review_no = #{reviewNo}
     </update>
 
+    <!-- 리뷰 삭제 -->
+    <delete id="deleteReview" parameterType="int">
+        DELETE FROM so_review
+        WHERE review_no = #{reviewNo}
+    </delete>
+
+    <!-- 리뷰/다이어리 작성 웹툰 정보 -->
+    <select id="selectWebtoonByNo" resultType="webtoonDTO">
+        SELECT * FROM webtoon WHERE webtoon_no = #{webtoonNo}
+    </select>
+
     <!-- 리뷰 작성 -->
     <insert id="createReview" parameterType="reviewDTO">
         INSERT INTO so_review (webtoon_no, writer_no, title, content, star_rating)
@@ -82,12 +93,6 @@
         WHERE u.user_no = #{writer.userNo}
         AND w.webtoon_no = #{webtoon.webtoon_no}
     </insert>
-
-    <!-- 리뷰 삭제 -->
-    <!--    <delete id="deleteReview" parameterType="int">-->
-    <!--        DELETE FROM so_review-->
-    <!--        WHERE review_no = #{reviewNo}-->
-    <!--    </delete>-->
 
     <!-- 다이어리 작성 -->
     <!--    <insert id="createDiary" parameterType="diaryDTO">-->

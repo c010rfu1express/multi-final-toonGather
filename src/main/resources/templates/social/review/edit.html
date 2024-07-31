@@ -43,7 +43,7 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-6">
-            <div class="user-profile-info">
+            <div class="user-profile-info" th:if="${profileUser != null}">
                 <img th:src="${profileUser.profileImagePath}" alt="프로필 사진" class="profile-image">
                 <div class="profile-text">
                     <h2 th:text="${profileUser.nickname}">사용자 닉네임</h2>
@@ -111,3 +111,4 @@
 </script>
 </body>
 </html>
+
