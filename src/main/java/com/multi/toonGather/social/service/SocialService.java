@@ -23,11 +23,12 @@ public interface SocialService {
     List<ReviewDTO> getReviewsByUserId(String userId) throws Exception;
 
     // 리뷰
-    WebtoonDTO getWebtoonByNo(int webtoonNo) throws Exception;
     ReviewDTO getReviewByNo(int reviewNo) throws Exception;
     void incrementReviewViewCount(int reviewNo) throws Exception;
     void updateReview(ReviewDTO review) throws Exception;
-    boolean deleteReview(int reviewNo) throws Exception;
+    void deleteReview(int reviewNo) throws Exception;
+
+    WebtoonDTO getWebtoonByNo(int webtoonNo) throws Exception;
     void createReview(ReviewDTO reviewDTO) throws Exception;
 
 

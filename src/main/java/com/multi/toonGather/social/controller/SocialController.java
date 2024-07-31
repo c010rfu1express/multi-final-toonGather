@@ -120,19 +120,13 @@ public class SocialController {
                                @AuthenticationPrincipal CustomUserDetails currentUser,
                                RedirectAttributes redirectAttributes) throws Exception {
         ReviewDTO review = socialService.getReviewByNo(reviewNo);
-        if (review == null || !review.getWriter().getUserId().equals(currentUser.getUserDTO().getUserId())) {
-            redirectAttributes.addFlashAttribute("errorMessage", "삭제 권한이 없습니다.");
-            return "redirect:/social/reviews/" + reviewNo;
+        if (!review.getWriter().getUserId().equals(currentUser.getUserDTO().getUserId())) {
+            throw new AccessDeniedException("삭제 권한이 없습니다.");
         }
 
-        boolean isDeleted = socialService.deleteReview(reviewNo);
-        if (isDeleted) {
-            redirectAttributes.addFlashAttribute("message", "리뷰가 성공적으로 삭제되었습니다.");
-            return "redirect:/social/users/" + currentUser.getUserDTO().getUserId() + "/reviews";
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "리뷰 삭제 중 오류가 발생했습니다.");
-            return "redirect:/social/reviews/" + reviewNo;
-        }
+        socialService.deleteReview(reviewNo);
+        redirectAttributes.addFlashAttribute("message", "리뷰가 성공적으로 삭제되었습니다.");
+        return "redirect:/social/users/" + currentUser.getUserDTO().getUserId() + "/reviews";
     }
 
     // 리뷰 작성 페이지 // 미완성

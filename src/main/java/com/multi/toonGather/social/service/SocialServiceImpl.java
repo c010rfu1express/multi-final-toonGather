@@ -36,6 +36,7 @@ public class SocialServiceImpl implements SocialService {
 
     // 사용자 메인 페이지
     @Override
+    @Transactional(readOnly = true)
     public UserDTO selectUserProfile(String userId) throws Exception {
         UserDTO user = socialMapper.selectUserProfile(userId);
         if (user == null) {
@@ -43,38 +44,43 @@ public class SocialServiceImpl implements SocialService {
         }
         return user;
     }
-
     @Override
+    @Transactional(readOnly = true)
     public List<ReviewDTO> getReviewsByUserId(String userId) throws Exception {
         return socialMapper.selectReviewsByUserId(userId);
     }
 
     // 리뷰
     @Override
-    public WebtoonDTO getWebtoonByNo(int webtoonNo) throws Exception {
-        return socialMapper.selectWebtoonByNo(webtoonNo);
-    }
-    @Override
+    @Transactional(readOnly = true)
     public ReviewDTO getReviewByNo(int reviewNo) throws Exception {
         return socialMapper.selectReviewByNo(reviewNo);
     }
     @Override
+    @Transactional
     public void incrementReviewViewCount(int reviewNo) throws Exception {
         socialMapper.incrementReviewViewCount(reviewNo);
     }
     @Override
+    @Transactional
     public void updateReview(ReviewDTO review) throws Exception {
         socialMapper.updateReview(review);
     }
     @Override
     @Transactional
-    public boolean deleteReview(int reviewNo) throws Exception {
-        try {
-            int result = socialMapper.deleteReview(reviewNo);
-            return result > 0;
-        } catch (Exception e) {
-            return false;
+    public void deleteReview(int reviewNo) throws Exception {
+        int result = socialMapper.deleteReview(reviewNo);
+        if (result == 0) {
+            throw new NotFoundException("삭제할 리뷰를 찾을 수 없습니다.");
         }
+    }
+
+    // 다이어리
+
+
+    @Override
+    public WebtoonDTO getWebtoonByNo(int webtoonNo) throws Exception {
+        return socialMapper.selectWebtoonByNo(webtoonNo);
     }
     @Override
     public void createReview(ReviewDTO review) throws Exception {
