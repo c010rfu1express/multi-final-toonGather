@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>툰게더 toonGather | 리뷰 상세</title>
+    <link rel="stylesheet" th:href="@{/css/social-styles.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/starRating.css}">
     <style>
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
         .review-detail {
             background-color: #fff;
             border-radius: 8px;
@@ -83,11 +80,33 @@
 <body>
 <div th:replace="common/menubar.html"></div>
 
-<div class="container">
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="user-profile-info">
+                <img th:src="${profileUser.profileImagePath}" alt="프로필 사진" class="profile-image">
+                <div class="profile-text">
+                    <h2 th:text="${profileUser.nickname}">사용자 닉네임</h2>
+                    <p th:text="${profileUser.bio}">사용자 자기소개</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="social-user-profile-placeholder"></div>
+            <nav class="social-user-menu">
+                <ul>
+                    <li><a th:href="@{/social/users/{userId}/profile(userId=${profileUser.userId})}">홈</a></li>
+                    <li><a th:href="@{/social/users/{userId}/reviews(userId=${profileUser.userId})}">리뷰</a></li>
+                    <li><a th:href="@{/social/users/{userId}/diaries(userId=${profileUser.userId})}">다이어리</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
     <div class="review-detail" th:if="${review != null}">
-        <h2>리뷰 목록</h2>
         <div class="webtoon-info">
-            <img class="webtoon-image" th:src="${review.webtoon.thumbnailUrl}" alt="웹툰 썸네일">
+            <img class="webtoon-image" th:src="${review.webtoon.thumbnail_url}" alt="웹툰 썸네일">
             <div class="webtoon-details">
                 <h2>웹툰 정보</h2>
                 <p><strong>제목:</strong> <span th:text="${review.webtoon.webtoon_name}"></span></p>
@@ -107,9 +126,9 @@
             </span>
             <span class="views">조회수: <span th:text="${review.viewCnt}"></span></span>
         </div>
-        <div class="review-actions">
-            <a th:href="@{/social/reviewList}" class="btn btn-secondary">목록으로</a>
-            <a th:href="@{/social/reviewUpdateForm(reviewNo=${review.reviewNo})}" class="btn btn-warning">수정</a>
+        <div class="review-actions" th:if="${#authentication.principal.userDTO.userId == review.writer.userId}">
+            <a th:href="@{/social/users/{userId}/reviews(userId=${profileUser.userId})}" class="btn btn-secondary">목록으로</a>
+            <a th:href="@{/social/reviews/{reviewNo}/edit(reviewNo=${review.reviewNo})}" class="btn btn-warning">수정</a>
             <a th:href="@{/social/reviewDelete(reviewNo=${review.reviewNo})}" class="btn btn-danger"
                onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</a>
         </div>

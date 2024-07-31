@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @Data
 public class DiaryDTO {
     private int diaryNo;
-    private int webtoonNo;
     private UserDTO writer;
     private WebtoonDTO webtoon;
     private String title;
