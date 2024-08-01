@@ -67,7 +67,7 @@
         <form th:action="@{/cs/submit}" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label>작성자</label>
-                <input type="text" th:value="테스트유저1" readonly>
+                <input type="text" th:value="${user.getNickname}" disabled>
             </div>
             <div class="form-group">
                 <label>제목</label>
