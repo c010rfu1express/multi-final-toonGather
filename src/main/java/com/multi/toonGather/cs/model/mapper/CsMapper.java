@@ -37,4 +37,6 @@ public interface CsMapper {
     boolean insertFaq(FaqDTO faq);
 
     FaqDTO getFaqById(int csFaqNo);
+
+    boolean updateFaq(FaqDTO faq);
 }

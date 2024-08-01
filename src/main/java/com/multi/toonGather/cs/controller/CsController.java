@@ -245,4 +245,27 @@ public class CsController {
         return "cs/faqDetail";
     }
 
+    @GetMapping("/updateFaq/{csFaqNo}")
+    public String updateFaq(@PathVariable("csFaqNo") int csFaqNo, Model model) throws Exception {
+        FaqDTO faq = csService.getFaqById(csFaqNo);
+        model.addAttribute("faq", faq);
+        return "cs/updateFaq";
+    }
+
+    @PostMapping("/updateFaq")
+    public String updateQuestion(@RequestParam("csFaqNo") int csFaqNo,
+                                 @RequestParam("csFaqTitle") String title,
+                                 @RequestParam("csFaqContent") String content) throws Exception {
+        FaqDTO faq = csService.getFaqById(csFaqNo);
+        faq.setCsFaqTitle(title);
+        faq.setCsFaqContent(content);
+
+        boolean isSuccess = csService.updateFaq(faq);
+        if (isSuccess) {
+            return "redirect:/cs/faqDetail/" + faq.getCsFaqNo();
+        } else {
+            return "redirect:/cs/updateFaq/" + faq.getCsFaqNo();
+        }
+    }
+
 }

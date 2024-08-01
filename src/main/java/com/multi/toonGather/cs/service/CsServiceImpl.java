@@ -198,4 +198,9 @@ public class CsServiceImpl implements CsService {
     public FaqDTO getFaqById(int csFaqNo) throws Exception {
         return csMapper.getFaqById(csFaqNo);
     }
+
+    @Override
+    public boolean updateFaq(FaqDTO faq) throws Exception {
+        return csMapper.updateFaq(faq);
+    }
 }
