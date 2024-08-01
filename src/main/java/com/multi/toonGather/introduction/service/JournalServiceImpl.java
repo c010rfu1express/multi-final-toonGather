@@ -212,5 +212,29 @@ public class JournalServiceImpl implements JournalService {
 
     }
 
-
+    @Transactional
+    public void deleteJournalByTitle(String title) throws Exception {
+        try {
+            // 제목으로 게시글 찾기
+            JournalDTO journal = journalMapper.selectJournalByTitle(title);
+            if (journal != null) {
+                // 파일 삭제
+                List<JournalFileDTO> files = journalMapper.selectFilesByJournalNo(journal.getJournalNo());
+                String filePath = UPLOAD_DIR;
+                for (JournalFileDTO file : files) {
+                    File existingFile = new File(filePath + "/" + file.getFileName());
+                    if (existingFile.exists()) {
+                        existingFile.delete();
+                    }
+                }
+                // 파일 정보 삭제
+                journalMapper.deleteFiles(journal.getJournalNo());
+                // 게시글 삭제
+                journalMapper.deleteJournal(journal.getJournalNo());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("Failed to delete journal", e);
+        }
+    }
 }

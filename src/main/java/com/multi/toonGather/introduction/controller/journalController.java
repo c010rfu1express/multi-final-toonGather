@@ -8,10 +8,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class journalController {
@@ -77,6 +79,21 @@ public class journalController {
     }
 
 
+    @PostMapping(value = {"/introduction/deleteJournal"})
+    public String deleteJournal(@RequestBody Map<String, String> requestBody) {
+        String title = requestBody.get("title");
+        if (title != null) {
+            try {
+                journalService.deleteJournalByTitle(title);
+                return "success";
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "error";
+            }
+        }
+        return "error";
+    }
+
     @GetMapping(value = {"introduction/journalDetail"})
     public String journalDetail(@RequestParam(value = "title", required = true) String title, Model model){
 
@@ -86,6 +103,5 @@ public class journalController {
         model.addAttribute("journal", journalDTO);
 
         return "introduction/journalDetail";
-
     }
 }

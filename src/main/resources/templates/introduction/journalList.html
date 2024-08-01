@@ -19,7 +19,7 @@
         }
     </style>
     <script>
-        // 체크된 체크박스의 값을 가져와서 수정 페이지로 이동하는 함수
+        // 선택된 radio 버튼의 값을 가져와서 수정 페이지로 이동하는 함수
         function getCheckedTitle() {
             var checkedValue = document.querySelector('input[name="journalCheck"]:checked');
             if (checkedValue) {
@@ -31,6 +31,31 @@
                 alert("수정할 게시글을 선택하세요.");
             }
         }
+
+        // 선택된 radio 버튼의 값을 가져와서 삭제 요청을 보내는 함수
+        function deleteSelectedJournal() {
+            var checkedValue = document.querySelector('input[name="journalCheck"]:checked');
+            if (checkedValue) {
+                var title = checkedValue.value;
+
+                // AJAX를 통해 삭제 요청 보내기
+                $.ajax({
+                    url: '/introduction/deleteJournal',
+                    method: 'POST',
+                    data: JSON.stringify({title: title}),
+                    contentType: 'application/json',
+                    success: function(response) {
+                        // 삭제 후 다시 목록 페이지로 이동 또는 페이지 갱신
+                        window.location.reload();
+                    },
+                    error: function(error) {
+                        console.error("Error deleting journal:", error);
+                    }
+                });
+            } else {
+                alert("삭제할 게시글을 선택하세요.");
+            }
+        }
     </script>
 </head>
 <body>
@@ -39,9 +64,6 @@
 <div th:replace="~{introduction/introductionMenubar}"></div>
 
 <div class="container mt-4">
-
-    <!-- 디버그 출력 추가 : Thymeleaf 템플릿에서 데이터가 제대로 렌더링되지 않는 경우, 템플릿 내에서 디버그 출력을 추가 -->
-<!--    <div th:text="${journals}">디버그: journals 내용</div>-->
 
     <div class="d-flex justify-content-between mb-3">
         <h2>소식</h2>
@@ -52,16 +74,9 @@
             </div>
         </div>
         <div>
-            <a href="/introduction/journalInsert" class="btn btn-primary">소식 등록</a>
-
-
-<!--            <a href="/introduction/journalUpdate" class="btn btn-primary">수정</a>-->
-<!--            <button class="btn btn-primary">수정</button>-->
-<!--            <button th:onclick="'location.href=\'/introduction/journalUpdate/' + ${journal.title} + '\';'">수정</button>-->
-            <button class="btn btn-primary" onclick="getCheckedTitle()">수정</button>
-
-
-            <button class="btn btn-danger">삭제</button>
+            <a href="/introduction/journalInsert" class="btn btn-primary">작성</a>
+            <button class="btn btn-warning" onclick="getCheckedTitle()">수정</button>
+            <button class="btn btn-danger" onclick="deleteSelectedJournal()">삭제</button>
         </div>
     </div>
 
@@ -72,19 +87,16 @@
 
                 <img th:if="${#lists.size(journal.journalFiles) > 0}" th:src="@{/uploadFiles/{fileName}(fileName=${journal.journalFiles.get(0).fileName})}" class="card-img-top" alt="썸네일 이미지">
                 <div class="card-body">
-<!--                    <a href="/introduction/journalDetail?id=5" class="card-title" th:text="${journal.title}">제목</a>-->
-<!--                    <a th:href="@{/introduction/journalDetail(id=${journal.journalNo})}" class="card-title" th:text="${journal.title}">제목</a>-->
-<!--                    <a th:href="@{/journalDetail(id=${journal.id})}" class="card-title" th:text="${journal.title}">제목</a>-->
                     <a th:href="@{/introduction/journalDetail(title=${journal.title})}" class="card-title" th:text="${journal.title}">제목</a>
 
                     <p class="card-text">
                         <small class="text-muted" th:text="${#dates.format(journal.postingDate, 'yyyy-MM-dd')}">게시일시</small>
-<!--                        <small class="text-muted" th:text="${#temporals.format(journal.postingDate, 'yyyy-MM-dd')}">게시일시</small>-->
-<!--                        <small class="text-muted" th:text="${#temporals.format(journal.posting_date, 'yyyy-MM-dd')}">게시일시</small>-->
                     </p>
+<!--                    <div class="form-check">-->
+<!--                        <input class="form-check-input" type="checkbox"  name="journalCheck" th:value="${journal.title}" th:id="'journalCheck' + ${journal.title}">-->
+<!--                    </div>-->
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox"  name="journalCheck" th:value="${journal.title}" th:id="'journalCheck' + ${journal.title}">
-
+                        <input class="form-check-input" type="radio" name="journalCheck" th:value="${journal.title}" th:id="'journalCheck' + ${journal.title}">
                     </div>
                 </div>
             </div>
