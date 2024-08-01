@@ -27,7 +27,8 @@
                 <a th:href="@{/user/login}">로그인</a>
             </div>
             <div sec:authorize="isAuthenticated()">
-                <a th:href="@{/user/my}">마이페이지</a>
+                <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/user/admin/userlist}">관리자</a>
+                <a sec:authorize="!hasRole('ROLE_ADMIN')" th:href="@{/user/my}">마이페이지</a>
                 <a th:href="@{/logout}">로그아웃</a>
             </div>
         </div>

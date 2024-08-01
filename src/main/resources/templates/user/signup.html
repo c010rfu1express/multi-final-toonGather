@@ -12,22 +12,106 @@
           z-index: 1000;
         }
     </style>
+    <script>
+        //VALIDATION 1) 생년월일
+            function autoFormatDate(input) {
+                // Remove all non-digit characters
+                let date = input.value.replace(/\D/g, '');
+
+                // Apply the formatting based on the length of the input
+                if (date.length > 4 && date.length <= 6) {
+                    date = date.substring(0, 4) + '-' + date.substring(4);
+                } else if (date.length > 6) {
+                    date = date.substring(0, 4) + '-' + date.substring(4, 6) + '-' + date.substring(6, 8);
+                }
+
+                // Update the input value
+                input.value = date;
+            }
+
+            // 생년월일을 검증하는 함수
+            function validateDateOfBirth(dateOfBirth) {
+                const datePattern = /^\d{4}-\d{2}-\d{2}$/; // yyyy-mm-dd 형식
+                return datePattern.test(dateOfBirth);
+            }
+
+        //VALIDATION 2) 연락처
+            function autoFormatPhoneNumber(input) {
+                let phoneNumber = input.value.replace(/\D/g, ''); // Remove all non-digit characters
+                if (phoneNumber.length > 3 && phoneNumber.length <= 7) {
+                    phoneNumber = phoneNumber.substring(0, 3) + '-' + phoneNumber.substring(3);
+                } else if (phoneNumber.length > 7) {
+                    phoneNumber = phoneNumber.substring(0, 3) + '-' + phoneNumber.substring(3, 7) + '-' + phoneNumber.substring(7, 11);
+                }
+                input.value = phoneNumber;
+            }
+
+
+            // 연락처를 검증하는 함수
+            function validatePhoneNumber(phoneNumber) {
+                const phonePattern = /^\d{3}-\d{4}-\d{4}$/; // 000-0000-0000 형식
+                return phonePattern.test(phoneNumber);
+            }
+
+        // 폼 제출 전에 모든 필드를 검증하는 함수
+
+        //VALIDATION 3) 이메일
+            // 이메일 형식을 확인하는 함수
+            function validateEmail(email) {
+                // 이메일 형식을 검증하는 정규 표현식
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailPattern.test(email);
+            }
+
+            // 폼 제출 전 이메일 형식을 검증하는 함수
+            function validateForm(event) {
+            const emailInput = document.querySelector('input[name="email"]');
+            const email = emailInput.value;
+
+            const dateOfBirthInput = document.querySelector('input[name="dateOfBirth"]');
+            const dateOfBirth = dateOfBirthInput.value;
+
+            const phoneNumberInput = document.querySelector('input[name="contactNumber"]');
+            const phoneNumber = phoneNumberInput.value;
+
+            // 이메일 검증
+            if (!validateEmail(email)) {
+                alert("이메일 형식이 올바르지 않습니다. 예: example@example.com");
+                event.preventDefault(); // 폼 제출을 막음
+                return;
+            }
+
+            // 생년월일 검증
+            if (!validateDateOfBirth(dateOfBirth)) {
+                alert("생년월일 형식이 올바르지 않습니다. 예: yyyy-mm-dd");
+                event.preventDefault(); // 폼 제출을 막음
+                return;
+            }
+
+            // 연락처 검증
+            if (!validatePhoneNumber(phoneNumber)) {
+                alert("연락처 형식이 올바르지 않습니다. 예: 000-0000-0000");
+                event.preventDefault(); // 폼 제출을 막음
+                return;
+            }
+        }
+    </script>
 </head>
 <body>
 
 <div th:replace="~{common/menubar}"></div>
 <div>
-    <form th:action="@{/user/signup}" th:object="${user}" method="post">
-        아이디 : <input type="text" th:field="*{userId}"/> (중복불가)<br>
-        비밀번호 : <input type="password" th:field="*{password}"/><br>
+    <form th:action="@{/user/signup}" th:object="${user}" method="post" onsubmit="validateForm(event)">
+        아이디 : <input type="text" th:field="*{userId}" maxlength="20" minlength="4"/> (중복불가)<br>
+        비밀번호 : <input type="password" th:field="*{password}" maxlength="30" minlength="8"/><br>
         비밀번호 확인 : <br>
-        닉네임 : <input type="text" th:field="*{nickname}"/> (중복불가)<br>
-        연락처 : <input type="text" th:field="*{contactNumber}"/><br>
+        닉네임 : <input type="text" th:field="*{nickname}" maxlength="20" minlength="4"/> (중복불가)<br>
+        연락처 : <input type="text" th:field="*{contactNumber}" oninput="autoFormatPhoneNumber(this)" placeholder="000-0000-0000"/><br>
         성별 : <select th:field="*{gender}">
         <option value="P">성별을 공개하지 않습니다
         <option value="F">여
         <option value="M">남</select><br>
-        생년월일 : <input type="text" th:field="*{dateOfBirth}"/><br>
+        생년월일 : <input type="text" th:field="*{dateOfBirth}" oninput="autoFormatDate(this)" placeholder="yyyy-mm-dd"/><br>
         이메일 : <input type="text" th:field="*{email}"/> (중복불가)<br>
         자기소개(선택사항) : <input type="text" th:field="*{bio}"/><br>
         <input type="checkbox" th:field="*{termsAgreement}"/>본인은 툰게더 회원 약관에 동의합니다.<br>
