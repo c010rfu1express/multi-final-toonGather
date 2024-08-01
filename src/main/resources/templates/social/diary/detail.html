@@ -4,12 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>툰게더 toonGather | 다이어리 상세</title>
+    <link rel="stylesheet" th:href="@{/css/social-styles.css}">
     <style>
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
         .diary-detail {
             background-color: #fff;
             border-radius: 8px;
@@ -86,11 +82,33 @@
 <body>
 <div th:replace="common/menubar.html"></div>
 
-<div class="container">
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="user-profile-info">
+                <img th:src="${profileUser.profileImagePath}" alt="프로필 사진" class="profile-image">
+                <div class="profile-text">
+                    <h2 th:text="${profileUser.nickname}">사용자 닉네임</h2>
+                    <p th:text="${profileUser.bio}">사용자 자기소개</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="social-user-profile-placeholder"></div>
+            <nav class="social-user-menu">
+                <ul>
+                    <li><a th:href="@{/social/users/{userId}/profile(userId=${profileUser.userId})}">홈</a></li>
+                    <li><a th:href="@{/social/users/{userId}/reviews(userId=${profileUser.userId})}">리뷰</a></li>
+                    <li><a th:href="@{/social/users/{userId}/diaries(userId=${profileUser.userId})}">다이어리</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
     <div class="diary-detail" th:if="${diary != null}">
-        <h2>다이어리 상세</h2>
         <div class="webtoon-info">
-            <img class="webtoon-image" th:src="${diary.webtoon.thumbnailUrl}" alt="웹툰 썸네일">
+            <img class="webtoon-image" th:src="${diary.webtoon.thumbnail_url}" alt="웹툰 썸네일">
             <div class="webtoon-details">
                 <h2>웹툰 정보</h2>
                 <p><strong>제목:</strong> <span th:text="${diary.webtoon.webtoon_name}"></span></p>
@@ -100,10 +118,12 @@
         <h1 class="diary-title" th:text="${diary.title}">다이어리 제목</h1>
         <div class="diary-meta">
             <span class="author">by <span th:text="${diary.writer.nickname}"></span></span>
-            <span th:class="${#strings.toString(diary.statusCode) == 'C' ? 'status status-ongoing' : 'status status-reread'}"
-                  th:text="${#strings.toString(diary.statusCode) == 'C' ? '정주행중' : '재탕중'}"></span>
+            <span th:class="${diary.statusCode == 'C' ? 'status status-ongoing' : 'status status-reread'}"
+                  th:text="${diary.statusCode == 'C' ? '정주행중' : '재탕중'}"></span>
         </div>
-        <div class="diary-content" th:utext="${#strings.replace(#strings.escapeXml(diary.content), '&#10;', '<br/>')}">다이어리 내용</div>
+        <div class="diary-content" th:utext="${#strings.replace(#strings.escapeXml(diary.content), '&#10;', '<br/>')}">
+            다이어리 내용
+        </div>
         <div class="diary-details">
             <span class="date">작성일: <span th:text="${#temporals.format(diary.createdDate, 'yyyy-MM-dd HH:mm')}"></span></span>
             <span class="date" th:if="${!#temporals.format(diary.createdDate, 'yyyyMMddHHmmss').equals(#temporals.format(diary.modifiedDate, 'yyyyMMddHHmmss'))}">
@@ -112,10 +132,13 @@
             <span class="views">조회수: <span th:text="${diary.viewCnt}"></span></span>
         </div>
         <div class="diary-actions">
-            <a th:href="@{/social/diaryList}" class="btn btn-secondary">목록으로</a>
-            <a th:href="@{/social/diaryUpdateForm(diaryNo=${diary.diaryNo})}" class="btn btn-warning">수정</a>
-            <a th:href="@{/social/diaryDelete(diaryNo=${diary.diaryNo})}" class="btn btn-danger"
-               onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</a>
+            <a th:href="@{/social/users/{userId}/diaries(userId=${profileUser.userId})}" class="btn btn-secondary">목록으로</a>
+            <th:block th:if="${#authentication.principal != null and #authentication.principal.userDTO.userId == diary.writer.userId}">
+            <a th:href="@{/social/diaries/{diaryNo}/edit(diaryNo=${diary.diaryNo})}" class="btn btn-warning">수정</a>
+            <form th:action="@{/social/diaries/{diaryNo}/delete(diaryNo=${diary.diaryNo})}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</button>
+            </form>
+            </th:block>
         </div>
     </div>
     <div th:unless="${diary != null}">

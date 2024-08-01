@@ -4,18 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>툰게더 toonGather | 다이어리 수정</title>
+    <link rel="stylesheet" th:href="@{/css/social-styles.css}">
     <style>
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .diary-form {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 30px;
-        }
         .webtoon-info {
             background-color: #f8f9fa;
             border-radius: 4px;
@@ -43,49 +33,87 @@
             color: #666;
             margin: 5px 0;
         }
+        .diary-form {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
         .form-group {
             margin-bottom: 20px;
         }
-        label {
-            font-weight: bold;
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .form-group textarea {
+            height: 200px;
         }
     </style>
 </head>
 <body>
 <div th:replace="common/menubar.html"></div>
 
-<div class="container">
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="user-profile-info" th:if="${profileUser != null}">
+                <img th:src="${profileUser.profileImagePath}" alt="프로필 사진" class="profile-image">
+                <div class="profile-text">
+                    <h2 th:text="${profileUser.nickname}">사용자 닉네임</h2>
+                    <p th:text="${profileUser.bio}">사용자 자기소개</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="social-user-profile-placeholder"></div>
+            <nav class="social-user-menu">
+                <ul>
+                    <li><a th:href="@{/social/users/{userId}/profile(userId=${profileUser.userId})}">홈</a></li>
+                    <li><a th:href="@{/social/users/{userId}/reviews(userId=${profileUser.userId})}">리뷰</a></li>
+                    <li><a th:href="@{/social/users/{userId}/diaries(userId=${profileUser.userId})}">다이어리</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
     <div class="diary-form">
-        <h1>다이어리 수정</h1>
         <div class="webtoon-info">
-            <img class="webtoon-image" th:src="${diary.webtoon.thumbnailUrl}" alt="웹툰 썸네일">
+            <img class="webtoon-image" th:src="${diary.webtoon.thumbnail_url}" alt="웹툰 썸네일">
             <div class="webtoon-details">
                 <h2>웹툰 정보</h2>
                 <p><strong>제목:</strong> <span th:text="${diary.webtoon.webtoon_name}"></span></p>
                 <p><strong>작가:</strong> <span th:text="${diary.webtoon.author}"></span></p>
             </div>
         </div>
-        <form th:action="@{/social/diaryUpdate}" th:object="${diary}" method="post">
-            <input type="hidden" th:field="*{diaryNo}">
-            <input type="hidden" th:field="*{webtoon.webtoon_no}">
+        <form th:action="@{/social/diaries/{diaryNo}/edit(diaryNo=${diary.diaryNo})}" method="post">
             <div class="form-group">
-                <label for="title">제목</label>
-                <input type="text" class="form-control" id="title" th:field="*{title}" required maxlength="50">
+                <label for="title">다이어리 제목</label>
+                <input type="text" id="title" name="title" th:value="${diary.title}" required>
             </div>
             <div class="form-group">
                 <label for="content">내용</label>
-                <textarea class="form-control" id="content" th:field="*{content}" rows="5" required style="white-space: pre-wrap;" maxlength="140"></textarea>
-                <small class="form-text text-muted">최대 140자까지 입력 가능합니다. (<span id="charCount">0</span>/140)</small>
+                <textarea id="content" name="content" th:text="${diary.content}" required></textarea>
+                <p class="small">최대 140자까지 입력 가능합니다. (<span id="charCount">0</span>/140)</p>
             </div>
             <div class="form-group">
-                <label for="statusCode">상태</label>
-                <select class="form-control" id="statusCode" th:field="*{statusCode}" required>
-                    <option value="C">정주행중</option>
-                    <option value="R">재탕중</option>
-                </select>
+                <label>상태</label>
+                <div class="status-buttons">
+                    <input type="radio" id="ongoing" name="statusCode" value="C" th:checked="${diary.statusCode == 'C'}">
+                    <label for="ongoing">정주행중</label>
+                    <input type="radio" id="reread" name="statusCode" value="R" th:checked="${diary.statusCode == 'R'}">
+                    <label for="reread">재탕중</label>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">수정 완료</button>
-            <a th:href="@{/social/diaryDetail(diaryNo=${diary.diaryNo})}" class="btn btn-secondary">취소</a>
+            <button type="submit" class="btn btn-primary">수정</button>
         </form>
     </div>
 </div>
