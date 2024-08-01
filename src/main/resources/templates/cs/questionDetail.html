@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Question Detail</title>
     <style>
         .detail-container {
             width: 80%;
@@ -45,6 +45,9 @@
         .detail-footer button {
             margin-left: 10px;
         }
+        .admin-reply {
+            margin-top: 20px;
+        }
         .spacer {
             padding-bottom: 100px;
         }
@@ -54,7 +57,7 @@
 <div th:replace="common/menubar.html"></div>
 <div class="detail-container">
     <div class="detail-header">
-        <div>작성자 | <span th:text="${question.csQWriterNo}"></span></div>
+        <div>작성자 | <span th:text="${question.nickname}"></span></div>
         <div>작성일 | <span th:text="${#dates.format(question.createdDate, 'yyyy-MM-dd')}"></span></div>
     </div>
     <div class="detail-header">
@@ -76,13 +79,26 @@
         <button th:onclick="'location.href=\'/cs/updateQuestion/' + ${question.csQNo} + '\';'">수정</button>
         <button th:onclick="'location.href=\'/cs/deleteQuestion/' + ${question.csQNo} + '\';'">삭제</button>
     </div>
-<!--    <div class="admin-reply">-->
-<!--        <h3>관리자 답변</h3>-->
-<!--        <textarea rows="4" cols="50" th:text="${question.csAContent != null ? question.csAContent : ''}"></textarea>-->
-<!--        <div class="detail-footer">-->
-<!--            <button th:onclick="'location.href=\'/cs/saveAnswer/' + ${question.csQNo} + '\';'">등록</button>-->
-<!--        </div>-->
-<!--    </div>-->
+    <div class="admin-reply">
+        <div class="admin-reply">
+            <div style="display: flex; align-items: center;">
+                <h3 style="margin: 0; padding-right: 10px; white-space: nowrap;">관리자 답변</h3>
+                <div sec:authorize="hasRole('ROLE_ADMIN')" style="display: flex; align-items: center; width: 100%;">
+                    <form th:action="@{'/cs/insertAnswer/' + ${question.csQNo}}" method="post" style="display: flex; align-items: center; width: 100%;">
+                        <textarea name="answer" th:placeholder="'답변을 입력하세요'" style="flex-grow: 1; resize: vertical; height: 30px; margin-right: 10px;"></textarea>
+                        <button type="submit" style="height: 30px; width: 50px;">등록</button>
+                    </form>
+                </div>
+            </div>
+            <hr>
+            <div class="reply-content" style="margin-top: 20px;">
+                <div th:each="answer : ${answers}">
+                    <p th:text="${answer.csAContent != null ? answer.csAContent : '관리자 답변 내용 없음'}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="spacer"></div>
 </div>
 </body>
