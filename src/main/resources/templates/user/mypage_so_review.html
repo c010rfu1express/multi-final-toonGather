@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html layout:decorate="~{layout}">
+<head>
+    <title>KHG30: 마이페이지-나의소셜-좋아요한리뷰</title>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function($) {
+            $(".clickable-row").click(function() {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
+    <style>
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .review-list {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .webtoon-info {
+            display: flex;
+            align-items: center;
+        }
+        .webtoon-image {
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .webtoon-details {
+            display: flex;
+            flex-direction: column;
+        }
+        .rating {
+            color: #f39c12;
+        }
+        .clickable-row {
+            cursor: pointer;
+        }
+        .clickable-row:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
+    <style>
+        .navbar {
+          position: fixed;
+          z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{common/menubar}"></div>
+<div layout:fragment="content">
+    <nav class="navbar navbar-expand-md">
+        <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+            <li><a th:href="@{/user/my}" class="nav-link px-2">나의 웹툰</a></li>
+            <li><a th:href="@{/user/my/so/review}" class="nav-link px-2">나의 소셜</a></li>
+            <li><a th:href="@{/user/my/rct/job}" class="nav-link px-2">나의 채용</a></li>
+            <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">나의 소식</a></li>
+            <li><a th:href="@{/user/my/editprofile}" class="nav-link px-2">프로필 수정</a></li>
+            <li><a th:href="@{/user/my/cs}" class="nav-link px-2">나의 문의</a></li>
+            <li><a th:href="@{/user/admin/userlist}" class="nav-link px-2">관리자-회원관리</a></li>
+        </ul>
+    </nav>
+</div>
+<div layout:fragment="content">
+    <nav class="navbar navbar-expand-md">
+        <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+            <li><a th:href="@{/user/my/so/review}" class="nav-link px-2">좋아요한 리뷰</a></li>
+            <li><a th:href="@{/user/my/so/diary}" class="nav-link px-2">내가 남긴 다이어리 댓글</a></li>
+        </ul>
+    </nav>
+</div>
+<div class="container">
+    <div class="review-list">
+        <h2>좋아요한 리뷰</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>좋아요 번호</th>
+                <th>리뷰 번호</th>
+                <th>좋아요 한 회원</th>
+                <th>좋아요 일시</th>
+                <th>웹툰 번호</th>
+                <th>제목</th>
+                <th>내용</th>
+                <th>별점 평가</th>
+                <th>작성일시</th>
+                <th>수정일시</th>
+                <th>조회수</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="mySoReview : ${mySoReviews}" class="clickable-row" th:attr="data-href=@{/social/reviews/{reviewNo}(reviewNo=${mySoReview.reviewNo})}">
+                <td th:text="${mySoReview.likeNo}">좋아요 번호</td>
+                <td th:text="${mySoReview.reviewNo}">리뷰 번호</td>
+                <td th:text="${mySoReview.likedUser}">좋아요 한 회원</td>
+                <td th:text="${mySoReview.likedDate}">좋아요 일시</td>
+                <td th:text="${mySoReview.webtoonNo}">웹툰 번호</td>
+                <td th:text="${mySoReview.title}">제목</td>
+                <td th:text="${mySoReview.content}">내용</td>
+                <td th:text="${mySoReview.starRating}">별점 평가</td>
+                <td th:text="${mySoReview.createdDate}">작성일시</td>
+                <td th:text="${mySoReview.modifiedDate}">수정일시</td>
+                <td th:text="${mySoReview.viewCnt}">조회수</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

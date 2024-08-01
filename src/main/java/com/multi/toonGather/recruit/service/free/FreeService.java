@@ -2,8 +2,10 @@ package com.multi.toonGather.recruit.service.free;
 
 
 import com.multi.toonGather.common.model.dto.PageDTO;
+import com.multi.toonGather.recruit.model.dto.free.FreeAvgRatingsDTO;
 import com.multi.toonGather.recruit.model.dto.free.FreeDTO;
 import com.multi.toonGather.recruit.model.dto.free.FreeReviewDTO;
+import com.multi.toonGather.recruit.model.dto.free.FreeReviewReportDTO;
 
 import java.util.List;
 
@@ -30,4 +32,20 @@ public interface FreeService {
     void updateReview(FreeReviewDTO dto) throws Exception;
 
     void deleteReview(int reviewNo) throws Exception;
+
+    double getWriterAvg(int writer) throws Exception;
+
+    void insertWriterAvg(FreeAvgRatingsDTO freeAvgRatingsDTO) throws Exception;
+
+    void updateWriterAvg(FreeAvgRatingsDTO freeAvgRatingsDTO) throws Exception;
+
+    void deleteWriterAvg(int reviewNo) throws Exception;
+
+    void reportReview(FreeReviewReportDTO reportDTO) throws Exception;
+
+    List<FreeReviewReportDTO> selectReportAll(PageDTO pageDTO) throws Exception;
+
+    FreeReviewReportDTO findReportByNo(int no) throws Exception;
+
+    void deleteReport(int no) throws Exception;
 }

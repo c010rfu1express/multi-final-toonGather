@@ -9,6 +9,12 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        .centered-div {
+            text-align: center;
+            font-size: 15pt;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="~{common/menubar}"></div>
@@ -24,39 +30,49 @@
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <h2 class="text-center mb-4" th:text="${free.title}">프리랜서 글 제목</h2>
+                <h2 class="text-center mb-4">프리랜서</h2>
             </div>
             <hr color="grey">
             <div class="card-body">
-                <div class="row" >
-                    <div class="form-group col-md-6">
-                        <label class="form-control">작성자: [[${free.member.nickname}]]
-                            <span th:if="${free.type_code == 'C'}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#1E90FF" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-                                </svg>
-                            </span>
-                        </label>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label class="form-control">작성일: [[${free.created_date}]]</label>
-                    </div>
+                <div>
+                    <h3 class="font-bold">[[${free.title}]]</h3>
                 </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; color: #6B7280;">
+                    <div style="display: flex; align-items: center;">
+                        <span th:text="${#dates.format(free.created_date, 'yyyy-MM-dd HH:mm')}"></span>
+                        <span style="margin-left: 10px; color: #0099DD" th:if="${free.modified_date != null and free.modified_date != ''}" th:text="'수정됨'"></span>
+                    </div>
+                    <span style="text-align: right;">[[${free.member.nickname}]]
+                        <span th:if="${free.type_code == 'C'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#1E90FF" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                            </svg>
+                        </span>
+                        <span class="star-avg">&nbsp;&nbsp;★</span>
+                        <span th:text="${writerAvg}"></span>
+                        <br>
+                    </span>
+                </div>
+                <hr>
                 <div class="mb-3 form-group">
-                    <label class="form-control" style="height:auto; padding: 10px;">내용: <br> [[${free.content}]] <br> <br>
+                    <label class="form-control" style="height:auto; border: none;">
+                        <br>
                         <div th:if="${free.img != null}">
-                            <img th:src="@{'/uploadFiles/' + ${free.img}}" width="250" height="250" alt="프리랜서 글 이미지">
+                            <img th:src="@{'/uploadFiles/' + ${free.img}}" width="500" height="500" alt="프리랜서 글 이미지">
                         </div>
+                        <br> <br>
+                        <span class="font-weight-bold" style="font-size : 15pt;">서비스 설명</span>
+                        <br> [[${free.content}]]<br><br>
+                        <span class="font-weight-bold" style="font-size : 15pt;">가격 정보</span>
+                        <br> [[${free.price}]]원 <span style="font-size : 10pt; color:#b0b0b0">(VAT 포함)</span><br><br>
                     </label>
                 </div>
-                <div class="mb-3 form-group">
-                    <label class="form-control" style="height:auto; padding: 10px;">가격: <br> [[${free.price}]]</label>
-                </div>
-
+                <div th:if="${member_no != null and member_no != '' and member_no != free.writer}">
                     <div style="margin-right:1px;" class="mt-4 text-center">
                         <a th:href="@{/recruit/free/pay(no=${free.board_no})}" class="btn btn-success">구매하기</a>
                     </div>
-
+                </div>
+                <br>
                 <div class="mt-4 text-right">
                     <a href="/recruit/free/list" class="btn btn-outline-primary">목록으로</a>
                     <div th:if="${member_no == free.member.userNo}">
@@ -66,50 +82,70 @@
                     </div>
                 </div>
             </div>
-            <br>
-            <hr>
         </div>
         <div id="result">
-            평균 별점: <span th:text="${avg}"></span>
-            <form th:action="@{/recruit/free/review/insert}" id="form" method="post" >
-                <div>
-                    <br>
-                    <div class="t1">리뷰</div>
-
-                    <!-- 별점 평가 -->
-                    <div class="star-rating space-x-4 mx-auto">
-                        <input type="radio" id="5-stars" name="rating" value="5" v-model="ratings" required/>
-                        <label for="5-stars" class="star pr-4">★</label>
-                        <input type="radio" id="4-stars" name="rating" value="4" v-model="ratings"/>
-                        <label for="4-stars" class="star">★</label>
-                        <input type="radio" id="3-stars" name="rating" value="3" v-model="ratings"/>
-                        <label for="3-stars" class="star">★</label>
-                        <input type="radio" id="2-stars" name="rating" value="2" v-model="ratings"/>
-                        <label for="2-stars" class="star">★</label>
-                        <input type="radio" id="1-star" name="rating" value="1" v-model="ratings" />
-                        <label for="1-star" class="star">★</label>
+            <br> <br>
+            <div class="centered-div">
+                <span>평균<span class="star-avg">&nbsp;&nbsp;★</span> [[${avg}]]</span>
+            </div>
+            <div th:if="${member_no != null and member_no != ''}">
+                <form th:action="@{/recruit/free/review/insert}" id="form" method="post" >
+                    <input type="hidden" id="writer_no" name="writer_no" th:value="${free.writer}"/>
+                    <div>
+                        <br>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; align-items: center;">
+                                <span>리뷰</span>
+                                <div class="star-rating space-x-4 mx-auto" style="text-align: right;">
+                                    <input type="radio" id="5-stars" name="rating" value="5" v-model="ratings" required/>
+                                    <label for="5-stars" class="star pr-4">★</label>
+                                    <input type="radio" id="4-stars" name="rating" value="4" v-model="ratings"/>
+                                    <label for="4-stars" class="star">★</label>
+                                    <input type="radio" id="3-stars" name="rating" value="3" v-model="ratings"/>
+                                    <label for="3-stars" class="star">★</label>
+                                    <input type="radio" id="2-stars" name="rating" value="2" v-model="ratings"/>
+                                    <label for="2-stars" class="star">★</label>
+                                    <input type="radio" id="1-star" name="rating" value="1" v-model="ratings" />
+                                    <label for="1-star" class="star">★</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 리뷰 입력 필드 -->
+                        <textarea id="reply" name="reply" class="form-control" style="height:100px;" maxlength='500' required></textarea>
+                        <input type="hidden" id="board_no" name="board_no" th:value="${free.board_no}"/>
+                        <br>
+                        <button type="submit" id="b2" class="btn btn-primary">입력</button>
                     </div>
-
-                    <!-- 리뷰 입력 필드 -->
-                    <textarea id="reply" name="reply" class="form-control" style="height:100px;" maxlength='500' required></textarea>
-                    <input type="hidden" id="board_no" name="board_no" th:value="${free.board_no}"/>
-                    <br>
-                    <button type="submit" id="b2" class="btn btn-primary">입력</button>
-                    <hr>
-                </div>
-            </form>
+                </form>
+            </div>
+            <hr>
             <div th:each="re : ${list}" class="comment" data-comment-id="${re.review_no}">
-                <b>작성자: <span th:text="${re.member.nickname}"></span></b>
-                <div class="star-ratings">
-                    <div class="star-ratings-fill">
-                        <span class="filled-star" th:each="star : ${#numbers.sequence(1, re.star_rating)}">★</span>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="text-left" th:if="${auth_code == 'A'}">
+                        <b>#[[${re.review_no}]]</b>&nbsp;
                     </div>
+                    <span th:text="${re.member.nickname} "></span>
+                    &nbsp;
+                    <div class="star-ratings">
+                        <div class="star-ratings-fill">
+                            <span class="filled-star" th:each="star : ${#numbers.sequence(1, re.star_rating)}">★</span>
+                        </div>
+                    </div>
+                    <span style="margin-left: auto; color: #9CA3AF;" th:text="${#dates.format(re.created_date, 'yyyy-MM-dd HH:mm')} "></span>
                 </div>
-                <div class="text-right" th:if="${member_no == re.member.userNo}">
+                <div class="text-right" th:if="${member_no == re.member.userNo or auth_code == 'A'}">
                     <button class="btn btn-sm update-btn" id="updateReview" data-toggle="modal" data-target="#reviewModal" type="button" th:data-review-no="${re.review_no}">수정</button>
                     <a th:href="@{/recruit/free/review/delete(review_no=${re.review_no}, board_no=${re.board_no})}">
                         <button id="b1" class="btn btn-sm">삭제</button>
                     </a>
+                </div>
+                <div class="text-right" th:if="${member_no != re.member.userNo and member_no != null and member_no != '' and auth_code != 'A'}">
+                    <button class="btn btn-sm report-btn" id="reportReview" data-toggle="modal" data-target="#reportModal" type="button" th:data-review-no="${re.review_no}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-octagon-fill" viewBox="0 0 16 16">
+                            <path d="M11.46.146A.5.5 0 0 0 11.107 0H4.893a.5.5 0 0 0-.353.146L.146 4.54A.5.5 0 0 0 0 4.893v6.214a.5.5 0 0 0 .146.353l4.394 4.394a.5.5 0 0 0 .353.146h6.214a.5.5 0 0 0 .353-.146l4.394-4.394a.5.5 0 0 0 .146-.353V4.893a.5.5 0 0 0-.146-.353zM8 4c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995A.905.905 0 0 1 8 4m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                        </svg>
+                        신고
+                    </button>
                 </div>
                 <br>
                 <span th:text="${re.content}"></span> <br>
@@ -142,7 +178,7 @@
                                 <label for="update-1-star" class="star">★</label>
                             </div>
                             <!-- 리뷰 입력 필드 -->
-                            <textarea id="update-reply" name="content" class="form-control" style="height:100px;" maxlength="500" required></textarea>
+                            <textarea id="update-reply" name="content" class="form-control" style="height:100px;" maxlength="500" required placeholder="수정 내용을 입력해주세요"></textarea>
                             <input type="hidden" id="update-review_no" name="review_no" value=""/>
                         </div>
                         <script>
@@ -157,6 +193,41 @@
 
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">수정</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="reportModalLabel">리뷰 신고</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <form th:action="@{/recruit/free/review/report}" method="post">
+                        <div class="modal-body">
+                            <!-- 리뷰 입력 필드 -->
+                            <textarea id="report-reply" name="content" class="form-control" style="height:100px;" maxlength="500" required placeholder="신고 내용을 입력해주세요"></textarea>
+                            <input type="hidden" id="report-review_no" name="review_no" value=""/>
+                            <input type="hidden" id="board_no" name="board_no" th:value="${free.board_no}"/>
+                        </div>
+                        <script>
+                            $(document).on('click', '.report-btn', function() {
+                                   // 리뷰 번호 가져오기
+                                   var reviewNo = $(this).data('reviewNo');
+
+                                   // 모달 내의 hidden input에 리뷰 번호 설정
+                                   $('#report-review_no').val(reviewNo);
+                               });
+                        </script>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">신고</button>
                             <button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
                         </div>
                     </form>

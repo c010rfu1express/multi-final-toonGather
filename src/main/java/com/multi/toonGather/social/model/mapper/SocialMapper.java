@@ -1,8 +1,9 @@
 package com.multi.toonGather.social.model.mapper;
 
+import com.multi.toonGather.social.model.dto.DiaryDTO;
 import com.multi.toonGather.social.model.dto.ReviewDTO;
 import com.multi.toonGather.user.model.dto.UserDTO;
-import org.apache.ibatis.annotations.Delete;
+import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -21,22 +22,23 @@ public interface SocialMapper {
     //List<ReviewDTO> selectPopularReviews();
 
     // 사용자 메인 페이지
-    UserDTO selectUserProfile(String userId);
-    List<ReviewDTO> selectReviewsByUserId(String userId);
+    UserDTO selectUserProfile(String userId) throws Exception;
+    List<ReviewDTO> selectReviewsByUserId(String userId) throws Exception;
 
     // 리뷰
-    ReviewDTO selectReviewByNo(int reviewNo);
-    void incrementReviewViewCount(int reviewNo);
-    void updateReview(ReviewDTO review);
-    @Delete("DELETE FROM so_review WHERE review_no = #{reviewNo}")
-    int deleteReview(int reviewNo);
-//    void createReview(ReviewDTO review);
+    ReviewDTO selectReviewByNo(int reviewNo) throws Exception;
+    void incrementReviewViewCount(int reviewNo) throws Exception;
+    void updateReview(ReviewDTO review) throws Exception;
+    int deleteReview(int reviewNo) throws Exception;
+
+    WebtoonDTO selectWebtoonByNo(int webtoonNo) throws Exception;
+    void createReview(ReviewDTO review) throws Exception;
+//    void createDiary(DiaryDTO diary);
 
     // 다이어리
-//    void createDiary(DiaryDTO diary);
-//    List<DiaryDTO> getDiariesByUser(int userNo);
-//    DiaryDTO getDiaryByNo(int diaryNo);
-//    void incrementDiaryViewCount(int diaryNo);
-//    void updateDiary(DiaryDTO diary);
-//    void deleteDiary(int diaryNo);
+    List<DiaryDTO> selectDiariesByUserId(String userId) throws Exception;
+    void incrementDiaryViewCount(int diaryNo) throws Exception;
+    DiaryDTO selectDiaryByNo(int diaryNo) throws Exception;
+    void updateDiary(DiaryDTO diary) throws Exception;
+    int deleteDiary(int diaryNo) throws Exception;
 }

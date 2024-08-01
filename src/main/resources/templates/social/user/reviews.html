@@ -79,7 +79,11 @@
     </div>
 
     <div class="review-list">
-        <table>
+        <h2>리뷰 목록</h2>
+        <div th:if="${#lists.isEmpty(reviews)}">
+            <p>작성된 리뷰가 없습니다.</p>
+        </div>
+        <table th:unless="${#lists.isEmpty(reviews)}">
             <thead>
             <tr>
                 <th>웹툰</th>

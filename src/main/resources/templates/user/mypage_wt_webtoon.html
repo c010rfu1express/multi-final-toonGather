@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html layout:decorate="~{layout}">
+<head>
+    <title>KHG20: 마이페이지-나의웹툰-북마크한웹툰</title>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function($) {
+            $(".clickable-row").click(function() {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
+    <style>
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .review-list {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .webtoon-info {
+            display: flex;
+            align-items: center;
+        }
+        .webtoon-image {
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .webtoon-details {
+            display: flex;
+            flex-direction: column;
+        }
+        .rating {
+            color: #f39c12;
+        }
+        .clickable-row {
+            cursor: pointer;
+        }
+        .clickable-row:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
+    <style>
+        .navbar {
+          position: fixed;
+          z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{common/menubar}"></div>
+<div layout:fragment="content">
+    <nav class="navbar navbar-expand-md">
+        <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+            <li><a th:href="@{/user/my}" class="nav-link px-2">나의 웹툰</a></li>
+            <li><a th:href="@{/user/my/so/review}" class="nav-link px-2">나의 소셜</a></li>
+            <li><a th:href="@{/user/my/rct/job}" class="nav-link px-2">나의 채용</a></li>
+            <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">나의 소식</a></li>
+            <li><a th:href="@{/user/my/editprofile}" class="nav-link px-2">프로필 수정</a></li>
+            <li><a th:href="@{/user/my/cs}" class="nav-link px-2">나의 문의</a></li>
+            <li><a th:href="@{/user/admin/userlist}" class="nav-link px-2">관리자-회원관리</a></li>
+        </ul>
+    </nav>
+</div>
+<div layout:fragment="content">
+    <nav class="navbar navbar-expand-md">
+        <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+            <li><a th:href="@{/user/my}" class="nav-link px-2">북마크한 웹툰</a></li>
+            <li><a th:href="@{/user/my/wt/comment}" class="nav-link px-2">내가 남긴 코멘트</a></li>
+        </ul>
+    </nav>
+</div>
+<div class="container">
+    <div class="review-list">
+        <h2>북마크한 웹툰</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>저장번호</th>
+                <th>웹툰 번호</th>
+                <th>유저넘버</th>
+                <th>웹툰아이디</th>
+                <th>플렛폼</th>
+                <th>제목</th>
+                <th>작가</th>
+                <th>이미지URL</th>
+                <th>장르</th>
+                <th>태그</th>
+                <th>조회수</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="myWtWebtoon : ${myWtWebtoons}" class="clickable-row"
+                th:attr="data-href=@{/webtoon/one(
+                webtoon_id=${(myWtWebtoon.platform == 1 ? 'naver_' : myWtWebtoon.platform == 2 ? 'kakao_' : '') + myWtWebtoon.webtoonId},
+                webtoon_name=${myWtWebtoon.webtoonName},
+                author=${myWtWebtoon.author}
+                )}">
+                <td th:text="${myWtWebtoon.saveNo}">저장번호</td>
+                <td th:text="${myWtWebtoon.webtoonNo}">웹툰 번호</td>
+                <td th:text="${myWtWebtoon.userNo}">유저넘버</td>
+                <td th:text="${myWtWebtoon.webtoonId}">웹툰아이디</td>
+                <td th:text="${myWtWebtoon.platform}">플렛폼</td>
+                <td th:text="${myWtWebtoon.webtoonName}">제목</td>
+                <td th:text="${myWtWebtoon.author}">작가</td>
+                <td th:text="${myWtWebtoon.thumbnailUrl}">이미지URL</td>
+                <td th:text="${myWtWebtoon.genre}">장르</td>
+                <td th:text="${myWtWebtoon.tags}">태그</td>
+                <td th:text="${myWtWebtoon.count}">조회수</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
