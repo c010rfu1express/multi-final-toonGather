@@ -118,8 +118,8 @@
         <h1 class="diary-title" th:text="${diary.title}">다이어리 제목</h1>
         <div class="diary-meta">
             <span class="author">by <span th:text="${diary.writer.nickname}"></span></span>
-            <span th:class="${diary.statusCode == 'C' ? 'status status-ongoing' : 'status status-reread'}"
-                  th:text="${diary.statusCode == 'C' ? '정주행중' : '재탕중'}"></span>
+            <span th:class="${#strings.toString(diary.statusCode) == 'C' ? 'status status-ongoing' : 'status status-reread'}"
+                  th:text="${#strings.toString(diary.statusCode) == 'C' ? '정주행중' : '재탕중'}"></span>
         </div>
         <div class="diary-content" th:utext="${#strings.replace(#strings.escapeXml(diary.content), '&#10;', '<br/>')}">
             다이어리 내용
@@ -134,10 +134,10 @@
         <div class="diary-actions">
             <a th:href="@{/social/users/{userId}/diaries(userId=${profileUser.userId})}" class="btn btn-secondary">목록으로</a>
             <th:block th:if="${#authentication.principal != null and #authentication.principal.userDTO.userId == diary.writer.userId}">
-            <a th:href="@{/social/diaries/{diaryNo}/edit(diaryNo=${diary.diaryNo})}" class="btn btn-warning">수정</a>
-            <form th:action="@{/social/diaries/{diaryNo}/delete(diaryNo=${diary.diaryNo})}" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-danger" onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</button>
-            </form>
+                <a th:href="@{/social/diaries/{diaryNo}/edit(diaryNo=${diary.diaryNo})}" class="btn btn-warning">수정</a>
+                <form th:action="@{/social/diaries/{diaryNo}/delete(diaryNo=${diary.diaryNo})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</button>
+                </form>
             </th:block>
         </div>
     </div>

@@ -23,7 +23,7 @@ public class DiaryDTO {
     private WebtoonDTO webtoon;
     private String title;
     private String content;
-    private char statusCode;  // 'C' 또는 'R'
+    private char statusCode;  // 'C'이면 '정주행중', 'R'이면 '재탕중'
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
     private int viewCnt;

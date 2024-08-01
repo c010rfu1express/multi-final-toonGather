@@ -50,17 +50,22 @@ public class SocialServiceImpl implements SocialService {
     public List<ReviewDTO> getReviewsByUserId(String userId) throws Exception {
         return socialMapper.selectReviewsByUserId(userId);
     }
-
-    // 리뷰
     @Override
     @Transactional(readOnly = true)
-    public ReviewDTO getReviewByNo(int reviewNo) throws Exception {
-        return socialMapper.selectReviewByNo(reviewNo);
+    public List<DiaryDTO> getDiariesByUserId(String userId) throws Exception {
+        return socialMapper.selectDiariesByUserId(userId);
     }
+
+    // 리뷰
     @Override
     @Transactional
     public void incrementReviewViewCount(int reviewNo) throws Exception {
         socialMapper.incrementReviewViewCount(reviewNo);
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public ReviewDTO getReviewByNo(int reviewNo) throws Exception {
+        return socialMapper.selectReviewByNo(reviewNo);
     }
     @Override
     @Transactional
@@ -94,11 +99,6 @@ public class SocialServiceImpl implements SocialService {
 //    }
 
     // 다이어리
-    @Override
-    @Transactional(readOnly = true)
-    public List<DiaryDTO> getDiariesByUserId(String userId) throws Exception {
-        return socialMapper.selectDiariesByUserId(userId);
-    }
     @Override
     @Transactional
     public void incrementDiaryViewCount(int diaryNo) throws Exception {

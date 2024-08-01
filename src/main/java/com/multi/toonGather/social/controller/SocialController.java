@@ -158,51 +158,8 @@ public class SocialController {
         return "redirect:/webtoon/" + webtoonNo; // 웹툰 상세 페이지로 리다이렉트
     }
 
-//    @GetMapping("/review/insert")
-//    public String showReviewInsertForm(@RequestParam("webtoon.webtoon_no") int webtoonNo, Model model) {
-//        ReviewDTO review = new ReviewDTO();
-//        WebtoonDTO webtoon = new WebtoonDTO();
-//        webtoon.setWebtoon_no(webtoonNo);
-//        review.setWebtoon(webtoon);
-//
-//        model.addAttribute("review", review);
-//
-//        return "social/reviewInsertForm";
-//    }
-//
-//    @PostMapping("/createReview")
-//    public String createReview(@ModelAttribute ReviewDTO review) {
-//        // 현재 로그인한 사용자 정보 설정 (Spring Security 구현 후 수정 필요)
-//        UserDTO writer = new UserDTO();
-//        writer.setUserNo(1);  // 테스트용: userNo=1 하드코딩
-//        review.setWriter(writer);
-//
-//        socialService.createReview(review);
-//        return "redirect:/social/review/list";
-//    }
-
-    // 다이어리
-//    @GetMapping("/diaryInsertForm")
-//    public String showDiaryInsertForm(@RequestParam("webtoon.webtoon_no") int webtoonNo, Model model) {
-//        DiaryDTO diary = new DiaryDTO();
-//        WebtoonDTO webtoon = new WebtoonDTO();
-//        webtoon.setWebtoon_no(webtoonNo);
-//        diary.setWebtoon(webtoon);
-//
-//        model.addAttribute("diary", diary);
-//        return "social/diaryInsertForm";
-//    }
-//
-//    @PostMapping("/createDiary")
-//    public String createDiary(@ModelAttribute DiaryDTO diary) {
-//        // 현재 로그인한 사용자 정보 설정 (Spring Security 구현 후 수정 필요)
-//        UserDTO writer = new UserDTO();
-//        writer.setUserNo(1);  // 테스트용: userNo=1 하드코딩
-//        diary.setWriter(writer);
-//
-//        socialService.createDiary(diary);
-//        return "redirect:/social/diary/detail?diaryNo=" + diary.getDiaryNo();
-//    }
+    // 다이어리 작성 페이지
+    // 다이어리 작성
 
     // 사용자별 다이어리 목록 페이지
     @GetMapping("/users/{userId}/diaries")

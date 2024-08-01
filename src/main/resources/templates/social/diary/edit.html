@@ -105,15 +105,14 @@
                 <p class="small">최대 140자까지 입력 가능합니다. (<span id="charCount">0</span>/140)</p>
             </div>
             <div class="form-group">
-                <label>상태</label>
-                <div class="status-buttons">
-                    <input type="radio" id="ongoing" name="statusCode" value="C" th:checked="${diary.statusCode == 'C'}">
-                    <label for="ongoing">정주행중</label>
-                    <input type="radio" id="reread" name="statusCode" value="R" th:checked="${diary.statusCode == 'R'}">
-                    <label for="reread">재탕중</label>
-                </div>
+                <label for="statusCode">상태</label>
+                <select class="form-control" id="statusCode" name="statusCode" th:value="${diary.statusCode}" required>
+                    <option value="C">정주행중</option>
+                    <option value="R">재탕중</option>
+                </select>
             </div>
             <button type="submit" class="btn btn-primary">수정</button>
+            <a th:href="@{/social/diaries/{diaryNo}(diaryNo=${diary.diaryNo})}" class="btn btn-secondary">취소</a>
         </form>
     </div>
 </div>

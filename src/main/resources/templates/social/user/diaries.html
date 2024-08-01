@@ -106,8 +106,10 @@
                     </div>
                 </td>
                 <td th:text="${diary.title}">다이어리 제목</td>
-                <td th:class="${diary.statusCode == 'C' ? 'status status-ongoing' : 'status status-reread'}"
-                    th:text="${diary.statusCode == 'C' ? '정주행중' : '재탕중'}">상태</td>
+                <td>
+                    <span th:class="${#strings.toString(diary.statusCode) == 'C' ? 'status status-ongoing' : 'status status-reread'}"
+                          th:text="${#strings.toString(diary.statusCode) == 'C' ? '정주행중' : '재탕중'}"></span>
+                </td>
                 <td th:text="${#temporals.format(diary.createdDate, 'yyyy-MM-dd HH:mm')}">작성일</td>
                 <td th:text="${diary.viewCnt}">조회수</td>
             </tr>

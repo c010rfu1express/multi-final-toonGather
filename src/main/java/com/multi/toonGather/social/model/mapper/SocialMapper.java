@@ -24,10 +24,11 @@ public interface SocialMapper {
     // 사용자 메인 페이지
     UserDTO selectUserProfile(String userId) throws Exception;
     List<ReviewDTO> selectReviewsByUserId(String userId) throws Exception;
+    List<DiaryDTO> selectDiariesByUserId(String userId) throws Exception;
 
     // 리뷰
-    ReviewDTO selectReviewByNo(int reviewNo) throws Exception;
     void incrementReviewViewCount(int reviewNo) throws Exception;
+    ReviewDTO selectReviewByNo(int reviewNo) throws Exception;
     void updateReview(ReviewDTO review) throws Exception;
     int deleteReview(int reviewNo) throws Exception;
 
@@ -36,7 +37,6 @@ public interface SocialMapper {
 //    void createDiary(DiaryDTO diary);
 
     // 다이어리
-    List<DiaryDTO> selectDiariesByUserId(String userId) throws Exception;
     void incrementDiaryViewCount(int diaryNo) throws Exception;
     DiaryDTO selectDiaryByNo(int diaryNo) throws Exception;
     void updateDiary(DiaryDTO diary) throws Exception;

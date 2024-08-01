@@ -22,10 +22,11 @@ public interface SocialService {
     // 사용자 메인 페이지
     UserDTO selectUserProfile(String userId) throws Exception;
     List<ReviewDTO> getReviewsByUserId(String userId) throws Exception;
+    List<DiaryDTO> getDiariesByUserId(String userId) throws Exception;
 
     // 리뷰
-    ReviewDTO getReviewByNo(int reviewNo) throws Exception;
     void incrementReviewViewCount(int reviewNo) throws Exception;
+    ReviewDTO getReviewByNo(int reviewNo) throws Exception;
     void updateReview(ReviewDTO review) throws Exception;
     void deleteReview(int reviewNo) throws Exception;
 
@@ -34,7 +35,6 @@ public interface SocialService {
 //    void createDiary(DiaryDTO diary);
 
     // 다이어리
-    List<DiaryDTO> getDiariesByUserId(String userId) throws Exception;
     void incrementDiaryViewCount(int diaryNo) throws Exception;
     DiaryDTO getDiaryByNo(int diaryNo) throws Exception;
     void updateDiary(DiaryDTO diaryDTO) throws Exception;
