@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-public class Main {
+public class Test {
 
     public static void main(String[] args) throws IOException {
         // 현재 날짜 가져오기
