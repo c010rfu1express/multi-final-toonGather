@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
 <html layout:decorate="~{layout}">
 <head>
-    <title>KHG80: 회원관리</title>
+    <title>KHG31: 마이페이지-나의소셜-내가남긴다이어리댓글</title>
     <meta charset="UTF-8">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -74,8 +74,8 @@
 <div layout:fragment="content">
     <nav class="navbar navbar-expand-md">
         <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-            <li><a th:href="@{/user/login}" class="nav-link px-2">나의 웹툰</a></li>
-            <li><a th:href="@{/user/signup}" class="nav-link px-2">나의 소셜</a></li>
+            <li><a th:href="@{/user/my}" class="nav-link px-2">나의 웹툰</a></li>
+            <li><a th:href="@{/user/my/so/review}" class="nav-link px-2">나의 소셜</a></li>
             <li><a th:href="@{/user/my/rct/job}" class="nav-link px-2">나의 채용</a></li>
             <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">나의 소식</a></li>
             <li><a th:href="@{/user/my/editprofile}" class="nav-link px-2">프로필 수정</a></li>
@@ -84,48 +84,50 @@
         </ul>
     </nav>
 </div>
+<div layout:fragment="content">
+    <nav class="navbar navbar-expand-md">
+        <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+            <li><a th:href="@{/user/my/so/review}" class="nav-link px-2">좋아요한 리뷰</a></li>
+            <li><a th:href="@{/user/my/so/diary}" class="nav-link px-2">내가 남긴 다이어리 댓글</a></li>
+        </ul>
+    </nav>
+</div>
 <div class="container">
     <div class="review-list">
-        <h2>회원 목록</h2>
+        <h2>내가 남긴 다이어리 댓글</h2>
         <table>
             <thead>
             <tr>
-                <th>회원번호</th>
-                <th>유형 코드</th>
-                <th>권한 코드</th>
-                <th>사용자 ID</th>
-                <th>닉네임</th>
-                <th>연락처</th>
-                <th>이메일</th>
-                <th>프로필 이미지 경로</th>
-                <th>소개</th>
-                <th>성별</th>
-                <th>생년월일</th>
-                <th>실명</th>
-                <th>약관 동의</th>
-                <th>약관 동의 시간</th>
-                <th>등록 시간</th>
-                <th>마지막 수정 시간</th>
+                <th>댓글 번호</th>
+                <th>다이어리 번호</th>
+                <th>댓글 작성자</th>
+                <th>댓글 내용</th>
+                <th>댓글 작성일시</th>
+                <th>웹툰 번호</th>
+                <th>작성자</th>
+                <th>제목</th>
+                <th>다이어리 내용</th>
+                <th>상태 코드</th>
+                <th>다이어리 작성일시</th>
+                <th>다이어리 수정일시</th>
+                <th>조회수</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="user : ${users}" class="clickable-row" th:attr="data-href=@{/user/admin/userdetails(userNo=${user.userNo})}">
-                <td th:text="${user.userNo}">회원번호</td>
-                <td th:text="${user.typeCode}">유형 코드</td>
-                <td th:text="${user.authCode}">권한 코드</td>
-                <td th:text="${user.userId}">사용자 ID</td>
-                <td th:text="${user.nickname}">닉네임</td>
-                <td th:text="${user.contactNumber}">연락처</td>
-                <td th:text="${user.email}">이메일</td>
-                <td th:text="${user.profileImagePath}">프로필 이미지 경로</td>
-                <td th:text="${user.bio}">소개</td>
-                <td th:text="${user.gender}">성별</td>
-                <td th:text="${user.dateOfBirth}">생년월일</td>
-                <td th:text="${user.realName}">실명</td>
-                <td th:text="${user.termsAgreement}">약관 동의</td>
-                <td th:text="${user.termsAgreementDatetime}">약관 동의 시간</td>
-                <td th:text="${user.registrationDatetime}">등록 시간</td>
-                <td th:text="${user.lastModifiedDatetime}">마지막 수정 시간</td>
+            <tr th:each="mySoDiary : ${mySoDiaries}" class="clickable-row" th:attr="data-href=@{/social/diaries/{diaryNo}(diaryNo=${mySoDiary.diaryNo})}">
+                <td th:text="${mySoDiary.commentNo}">댓글 번호</td>
+                <td th:text="${mySoDiary.diaryNo}">다이어리 번호</td>
+                <td th:text="${mySoDiary.commenterNo}">댓글 작성자</td>
+                <td th:text="${mySoDiary.commentContent}">댓글 내용</td>
+                <td th:text="${mySoDiary.commentCreatedDate}">댓글 작성일시</td>
+                <td th:text="${mySoDiary.webtoonNo}">웹툰 번호</td>
+                <td th:text="${mySoDiary.writerNo}">작성자</td>
+                <td th:text="${mySoDiary.title}">제목</td>
+                <td th:text="${mySoDiary.diaryContent}">다이어리 내용</td>
+                <td th:text="${mySoDiary.statusCode}">상태 코드</td>
+                <td th:text="${mySoDiary.diaryCreatedDate}">다이어리 작성일시</td>
+                <td th:text="${mySoDiary.diaryModifiedDate}">다이어리 수정일시</td>
+                <td th:text="${mySoDiary.viewCnt}">조회수</td>
             </tr>
             </tbody>
         </table>
