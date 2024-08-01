@@ -32,7 +32,12 @@
                 <tbody>
                 <tr th:each="free : ${frees}">
                     <td scope="row" th:text="${free.board_no}"></td>
-                    <td><a th:href="@{/recruit/free/view(no=${free.board_no})}" th:text="${#strings.abbreviate(free.title, 15)}"></a></td>
+                    <td>
+                        <a th:href="@{/recruit/free/view(no=${free.board_no})}">
+                            <span th:text="${#strings.abbreviate(free.title, 15)}"></span>
+                            <span style="font-size: 0.9em;"> ([[${reviews[free.board_no]}]])</span>
+                        </a>
+                    </td>
                     <td>
                         <span th:text="${free.member.nickname}"></span>
                         <span th:if="${free.type_code == 'C'}">

@@ -28,9 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -410,9 +408,13 @@ public class RecruitController {
             model.addAttribute("frees", frees);
             model.addAttribute("currentPage", page);
 
+            Map<Integer, Integer> reviews = new HashMap<>();
             for (FreeDTO free : frees) {
+                int reviewCount = freeService.selectCountReview(free.getBoard_no());
+                reviews.put(free.getBoard_no(), reviewCount);
                 System.out.println(frees);
             }
+            model.addAttribute("reviews", reviews);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("free list error : " + e);
@@ -497,10 +499,15 @@ public class RecruitController {
             List<FreeReviewDTO> list = freeService.selectReviewAll(no);
             model.addAttribute("free", freeDTO);
             model.addAttribute("list", list);
+
             double avg = freeService.getAverage(no);
             model.addAttribute("avg", avg);
+
             double writerAvg = freeService.getWriterAvg(freeDTO.getWriter());
             model.addAttribute("writerAvg", writerAvg);
+
+            int review = freeService.selectCountReview(freeDTO.getBoard_no());
+            model.addAttribute("review", review);
         } catch (Exception e) {
             model.addAttribute("msg", "게시글 조회 실패");
         }
