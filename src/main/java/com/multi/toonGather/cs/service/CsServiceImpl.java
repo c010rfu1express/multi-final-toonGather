@@ -1,5 +1,6 @@
 package com.multi.toonGather.cs.service;
 
+import com.multi.toonGather.cs.model.dto.AnswerDTO;
 import com.multi.toonGather.cs.model.dto.CsCategoryDTO;
 import com.multi.toonGather.cs.model.dto.QuestionFilesDTO;
 import com.multi.toonGather.cs.model.mapper.CsMapper;
@@ -174,5 +175,15 @@ public class CsServiceImpl implements CsService {
     @Override
     public List<QuestionDTO> questionList() throws Exception {
         return csMapper.questionList();
+    }
+
+    @Override
+    public List<AnswerDTO> getAnswerList(int csQNo) throws Exception {
+        return csMapper.getAnswerList(csQNo);
+    }
+
+    @Override
+    public boolean insertAnswer(AnswerDTO answerDTO) throws Exception {
+        return csMapper.insertAnswer(answerDTO);
     }
 }

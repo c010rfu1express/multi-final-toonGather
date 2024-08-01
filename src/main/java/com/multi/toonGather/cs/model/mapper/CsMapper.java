@@ -1,5 +1,6 @@
 package com.multi.toonGather.cs.model.mapper;
 
+import com.multi.toonGather.cs.model.dto.AnswerDTO;
 import com.multi.toonGather.cs.model.dto.CsCategoryDTO;
 import com.multi.toonGather.cs.model.dto.QuestionDTO;
 import com.multi.toonGather.cs.model.dto.QuestionFilesDTO;
@@ -29,4 +30,8 @@ public interface CsMapper {
     void deleteQuestion(int csQNo);
 
     List<QuestionDTO> questionList();
+
+    List<AnswerDTO> getAnswerList(int csQNo);
+
+    boolean insertAnswer(AnswerDTO answerDTO);
 }

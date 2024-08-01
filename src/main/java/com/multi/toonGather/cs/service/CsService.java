@@ -1,5 +1,6 @@
 package com.multi.toonGather.cs.service;
 
+import com.multi.toonGather.cs.model.dto.AnswerDTO;
 import com.multi.toonGather.cs.model.dto.CsCategoryDTO;
 import com.multi.toonGather.cs.model.dto.QuestionDTO;
 import com.multi.toonGather.cs.model.dto.QuestionFilesDTO;
@@ -24,4 +25,8 @@ public interface CsService {
     boolean deleteQuestion(int csQNo, HttpServletRequest request) throws Exception;
 
     List<QuestionDTO> questionList() throws Exception;
+
+    List<AnswerDTO> getAnswerList(int csQNo) throws Exception;
+
+    boolean insertAnswer(AnswerDTO answerDTO) throws Exception;
 }

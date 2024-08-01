@@ -1,5 +1,6 @@
 package com.multi.toonGather.cs.controller;
 
+import com.multi.toonGather.cs.model.dto.AnswerDTO;
 import com.multi.toonGather.cs.model.dto.CsCategoryDTO;
 import com.multi.toonGather.cs.model.dto.QuestionDTO;
 import com.multi.toonGather.cs.model.dto.QuestionFilesDTO;
@@ -117,6 +118,10 @@ public class CsController {
         List<QuestionFilesDTO> questionFiles = csService.getQuestionByQuestionId(question.getCsQNo());
         model.addAttribute("question", question);
         model.addAttribute("questionFiles", questionFiles);
+
+        List<AnswerDTO> answers = csService.getAnswerList(csQNo);
+        model.addAttribute("answers", answers);
+
         return "cs/questionDetail";
     }
 
@@ -170,6 +175,30 @@ public class CsController {
         model.addAttribute("questions", questions);
 
         return "/cs/csAdmin";
+    }
+
+    @PostMapping("/insertAnswer/{csQNo}")
+    public String insertAnswer(@PathVariable("csQNo") int csQNo, @RequestParam("answer") String answer) throws Exception{
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+            return "cs/csUser";
+        }
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        int userNo = userDetails.getMemNo();
+
+        AnswerDTO answerDTO = new AnswerDTO();
+        answerDTO.setCsQNo(csQNo);
+        answerDTO.setCsAContent(answer);
+        answerDTO.setCsAWriterNo(userNo);
+
+        boolean isSuccess = csService.insertAnswer(answerDTO);
+        if (isSuccess) {
+            return "redirect:/cs/questionDetail/" + csQNo;
+        } else {
+            return "/cs/csAdmin";
+        }
     }
 
 }
