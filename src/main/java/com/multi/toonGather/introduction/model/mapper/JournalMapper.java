@@ -41,16 +41,11 @@ public interface JournalMapper {
     List<JournalFileDTO> selectFilesByJournalNo(int journalNo);
 
 
-    @Select("SELECT * FROM in_journal ORDER BY posting_date DESC")
+    @Select("SELECT journal_no AS journalNo, title, content, posting_date AS postingDate FROM in_journal ORDER BY posting_date DESC")
     List<JournalDTO> selectAllJournals();
 
-
-
-
-
-
-
-
+    @Update("UPDATE in_journal SET title = #{title}, content = #{content}, posting_date = #{postingDate} WHERE journal_no = #{journalNo}")
+    void updateJournal(JournalDTO journalDTO);
 
 
     //    int insertJournal(JournalDTO journalDTO) throws Exception;

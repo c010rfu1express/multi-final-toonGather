@@ -28,4 +28,10 @@ public class PageServiceImpl implements PageService{
         int count = pageMapper.selectFreeCount();
         return count;
     }
+
+    @Override
+    public int selectReportCount(PageDTO pageDTO) throws Exception {
+        int count = pageMapper.selectReportCount();
+        return count;
+    }
 }
