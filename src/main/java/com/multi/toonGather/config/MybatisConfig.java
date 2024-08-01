@@ -45,6 +45,8 @@ public class MybatisConfig {
         configuration.getTypeAliasRegistry().registerAlias("applyDTO", com.multi.toonGather.recruit.model.dto.job.ApplyDTO.class);
         configuration.getTypeAliasRegistry().registerAlias("freeDTO", com.multi.toonGather.recruit.model.dto.free.FreeDTO.class);
         configuration.getTypeAliasRegistry().registerAlias("freeReviewDTO", com.multi.toonGather.recruit.model.dto.free.FreeReviewDTO.class);
+        configuration.getTypeAliasRegistry().registerAlias("freeAvgRatingsDTO", com.multi.toonGather.recruit.model.dto.free.FreeAvgRatingsDTO.class);
+        configuration.getTypeAliasRegistry().registerAlias("freeReviewReportDTO", com.multi.toonGather.recruit.model.dto.free.FreeReviewReportDTO.class);
         // 희철 cs
         configuration.getTypeAliasRegistry().registerAlias("QuestionDTO", com.multi.toonGather.cs.model.dto.QuestionDTO.class);
         configuration.getTypeAliasRegistry().registerAlias("CsCategoryDTO", com.multi.toonGather.cs.model.dto.CsCategoryDTO.class);

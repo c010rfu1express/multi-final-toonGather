@@ -4,8 +4,10 @@ import com.multi.toonGather.common.model.dto.PageDTO;
 import com.multi.toonGather.common.service.PageService;
 import com.multi.toonGather.recruit.model.dto.creator.CreatorDTO;
 import com.multi.toonGather.recruit.model.dto.creator.NaverDTO;
+import com.multi.toonGather.recruit.model.dto.free.FreeAvgRatingsDTO;
 import com.multi.toonGather.recruit.model.dto.free.FreeDTO;
 import com.multi.toonGather.recruit.model.dto.free.FreeReviewDTO;
+import com.multi.toonGather.recruit.model.dto.free.FreeReviewReportDTO;
 import com.multi.toonGather.recruit.model.dto.job.ApplyDTO;
 import com.multi.toonGather.recruit.model.dto.job.JobDTO;
 import com.multi.toonGather.recruit.service.creator.CreatorService;
@@ -141,7 +143,7 @@ public class RecruitController {
         pageDTO.setStartEnd(pageDTO.getPage());
         try {
             int count = pageService.selectJobCount(pageDTO);
-            int pages = (int) Math.ceil((double) count / 10);
+            int pages = count > 0 ? (int) Math.ceil((double) count / 10) : 1;
 
             List<JobDTO> jobs = jobService.selectBoardAll(pageDTO);
 
@@ -399,7 +401,7 @@ public class RecruitController {
         pageDTO.setStartEnd(pageDTO.getPage());
         try {
             int count = pageService.selectFreeCount(pageDTO);
-            int pages = (int) Math.ceil((double) count / 10);
+            int pages = count > 0 ? (int) Math.ceil((double) count / 10) : 1;
 
             List<FreeDTO> frees = freeService.selectBoardAll(pageDTO);
 
@@ -484,8 +486,10 @@ public class RecruitController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
             model.addAttribute("member_no", userDetails.getMemNo());
+            model.addAttribute("auth_code", String.valueOf(userDetails.getAuthCode()));
         } else {
             model.addAttribute("member_no", "");  // 인증되지 않은 사용자의 경우
+            model.addAttribute("auth_code", "");
         }
 
         try {
@@ -495,6 +499,8 @@ public class RecruitController {
             model.addAttribute("list", list);
             double avg = freeService.getAverage(no);
             model.addAttribute("avg", avg);
+            double writerAvg = freeService.getWriterAvg(freeDTO.getWriter());
+            model.addAttribute("writerAvg", writerAvg);
         } catch (Exception e) {
             model.addAttribute("msg", "게시글 조회 실패");
         }
@@ -564,7 +570,8 @@ public class RecruitController {
     }
 
     @PostMapping("/free/review/insert")
-    public String insert(@RequestParam("rating") int rating, @RequestParam("reply") String reply, @RequestParam("board_no") int board_no, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+    public String insert(@RequestParam("rating") int rating, @RequestParam("reply") String reply, @RequestParam("board_no") int board_no,
+                         @AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam("writer_no") int writer_no) throws Exception {
         // 작성자의 memberNo와 userName을 설정
         UserDTO writer = new UserDTO();
         FreeReviewDTO freeReviewDTO = new FreeReviewDTO();
@@ -577,7 +584,17 @@ public class RecruitController {
         freeReviewDTO.setStar_rating(rating);
         freeReviewDTO.setWriter(userDetails.getMemNo());
         freeReviewDTO.setBoard_no(board_no);
+
         freeService.insertReview(freeReviewDTO);
+
+        //사용자의 평균 별점
+        FreeAvgRatingsDTO freeAvgRatingsDTO = new FreeAvgRatingsDTO();
+        freeAvgRatingsDTO.setWriter(writer_no);
+        freeAvgRatingsDTO.setBoard_no(board_no);
+        freeAvgRatingsDTO.setStar_rating(rating);
+        freeAvgRatingsDTO.setReview_no(freeReviewDTO.getReview_no());
+
+        freeService.insertWriterAvg(freeAvgRatingsDTO);
 
         return "redirect:/recruit/free/view?no=" + freeReviewDTO.getBoard_no();
     }
@@ -591,13 +608,87 @@ public class RecruitController {
         // 리뷰 업데이트
         freeService.updateReview(dto);
 
+        FreeAvgRatingsDTO freeAvgRatingsDTO = new FreeAvgRatingsDTO();
+        freeAvgRatingsDTO.setReview_no(review_no);
+        freeAvgRatingsDTO.setStar_rating(rating);
+        freeService.updateWriterAvg(freeAvgRatingsDTO);
+
         return "redirect:/recruit/free/view?no=" + dto.getBoard_no();
     }
 
     @RequestMapping("/free/review/delete")
     public String deleteReview(@RequestParam("board_no") String board_no ,@RequestParam("review_no") int review_no) throws Exception {
         freeService.deleteReview(review_no);
+        freeService.deleteWriterAvg(review_no);
         return "redirect:/recruit/free/view?no=" + board_no;
+    }
+
+    @PostMapping("/free/review/report")
+    public String reportReview(@RequestParam("review_no") int review_no, @RequestParam("content") String content, @RequestParam("board_no") int board_no,
+                               @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+        FreeReviewReportDTO reportDTO = new FreeReviewReportDTO();
+
+        reportDTO.setContent(content);
+        reportDTO.setReview_no(review_no);
+        reportDTO.setReporter(userDetails.getMemNo());
+
+        // 리뷰 업데이트
+        freeService.reportReview(reportDTO);
+
+        return "redirect:/recruit/free/view?no=" + board_no;
+    }
+
+    @GetMapping("/free/report/list")
+    public String listReport(@RequestParam(value = "page", required = false, defaultValue = "1")  int page, Model model) {
+        PageDTO pageDTO = new PageDTO();
+        pageDTO.setPage(page);
+        pageDTO.setStartEnd(pageDTO.getPage());
+        try {
+            int count = pageService.selectReportCount(pageDTO);
+            int pages = count > 0 ? (int) Math.ceil((double) count / 10) : 1;
+
+            List<FreeReviewReportDTO> reports = freeService.selectReportAll(pageDTO);
+
+            model.addAttribute("count", count);
+            model.addAttribute("pages", pages);
+            model.addAttribute("reports", reports);
+            model.addAttribute("currentPage", page);
+
+            for (FreeReviewReportDTO report: reports) {
+                System.out.println(report);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("free list error : " + e);
+        }
+
+        return "recruit/free/report/list";
+    }
+
+    @GetMapping("/free/report/view")
+    public String findReport(@RequestParam("no") int no, Model model) throws Exception{
+
+        try {
+            FreeReviewReportDTO reportDTO = freeService.findReportByNo(no);
+            FreeReviewDTO reviewDTO = freeService.selectReview(reportDTO.getReview_no());
+            model.addAttribute("report", reportDTO);
+            model.addAttribute("board_no", reviewDTO.getBoard_no());
+
+        } catch (Exception e) {
+            model.addAttribute("msg", "게시글 조회 실패");
+        }
+        return "recruit/free/report/view";
+    }
+
+    @GetMapping("/free/report/delete")
+    public String deleteReport(@RequestParam("no") int no, Model model) throws Exception{
+        try {
+            freeService.deleteReport(no);
+            model.addAttribute("msg", "신고글 삭제 성공");
+        } catch (Exception e) {
+            model.addAttribute("msg", "신고글 삭제 실패");
+        }
+        return "redirect:/recruit/free/report/list";
     }
 
 }
