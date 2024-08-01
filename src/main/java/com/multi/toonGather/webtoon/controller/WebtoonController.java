@@ -14,15 +14,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 public class WebtoonController {
@@ -35,7 +42,19 @@ public class WebtoonController {
     }
 
     @GetMapping(value = {"/","webtoon/test"})
-    public String Webtoon(){
+    public String Webtoon( Model model){
+        LocalDate currentDate = LocalDate.now();
+
+        // 현재 날짜의 요일 가져오기
+        DayOfWeek dayOfWeek = currentDate.getDayOfWeek();
+
+        // 요일을 영어로 출력하기 (앞 3글자, 대문자)
+        String dayOfWeekShortString = dayOfWeek.getDisplayName(
+                TextStyle.SHORT_STANDALONE, // SHORT_STANDALONE을 사용하여 요일의 약어를 가져옵니다.
+                Locale.ENGLISH              // 영어 Locale을 사용합니다.
+        ).substring(0, 3).toUpperCase();
+        model.addAttribute("day",dayOfWeekShortString);
+
         return "webtoon/webtoonlist";
     }
 
@@ -69,12 +88,15 @@ public class WebtoonController {
 
                 webToonService.webToonInsert(webtoonDTO1);
                 resultDTO=webToonService.WebToonSelectOne(webtoonDTO1);
+
             }
         }catch (Exception e){
             e.printStackTrace();
         }
 
         webtoonDTO.setWebtoon_no(resultDTO.getWebtoon_no());
+        webtoonDTO.setGenre(resultDTO.getGenre());
+        webtoonDTO.setTags(resultDTO.getTags());
         try {
             List<CommentDTO>comments=webToonService.Commentlist(webtoonDTO);
             model.addAttribute("comments",comments);
@@ -90,6 +112,16 @@ public class WebtoonController {
 
         return "webtoon/one";
     }
+
+    @GetMapping("/webtoon/search")
+    public String searchWebtoon(@RequestParam("search") String search) {
+
+        System.out.println("검색어: " + search);
+
+
+        return "webtoon/search";
+    }
+
     @GetMapping("/webtoon/one/count")
     public ResponseEntity<Void> IncreaseCount(WebtoonDTO webtoonDTO,@AuthenticationPrincipal CustomUserDetails c) throws Exception {
 
