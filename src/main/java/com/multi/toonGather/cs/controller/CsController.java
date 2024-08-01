@@ -202,4 +202,39 @@ public class CsController {
         }
     }
 
+    @GetMapping("/insertFaq")
+    public String insertFaq(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            model.addAttribute("user", userDetails);
+        }
+        return "/cs/insertFaq";
+    }
+
+    @PostMapping("/insertFaq")
+    public String insertFaq(@RequestParam("title") String title,
+                            @RequestParam("content") String content) throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+            return "cs/csUser";
+        }
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        int userNo = userDetails.getMemNo();
+
+        FaqDTO faq = new FaqDTO();
+        faq.setCsFaqTitle(title);
+        faq.setCsFaqContent(content);
+        faq.setCsFaqWriterNo(userNo);
+
+        boolean isSuccess = csService.insertFaq(faq);
+        if (isSuccess) {
+            return "redirect:/cs/csAdmin";
+        } else {
+            return "redirect:/cs/insertFaq";
+        }
+    }
+
 }

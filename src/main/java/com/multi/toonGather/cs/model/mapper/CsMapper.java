@@ -33,4 +33,6 @@ public interface CsMapper {
     boolean insertAnswer(AnswerDTO answerDTO);
 
     List<FaqDTO> faqList();
+
+    boolean insertFaq(FaqDTO faq);
 }

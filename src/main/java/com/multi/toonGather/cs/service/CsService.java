@@ -28,4 +28,6 @@ public interface CsService {
     boolean insertAnswer(AnswerDTO answerDTO) throws Exception;
 
     List<FaqDTO> faqList() throws Exception;
+
+    boolean insertFaq(FaqDTO faq) throws Exception;
 }

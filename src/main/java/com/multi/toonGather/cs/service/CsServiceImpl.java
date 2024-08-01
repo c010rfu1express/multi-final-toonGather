@@ -188,4 +188,9 @@ public class CsServiceImpl implements CsService {
     public List<FaqDTO> faqList() throws Exception {
         return csMapper.faqList();
     }
+
+    @Override
+    public boolean insertFaq(FaqDTO faq) throws Exception {
+        return csMapper.insertFaq(faq);
+    }
 }

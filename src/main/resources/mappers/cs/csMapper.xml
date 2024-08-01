@@ -140,4 +140,9 @@
         FROM cs_faq f
         LEFT JOIN users u ON f.cs_faq_writer_no = u.user_no
     </select>
+
+    <insert id="insertFaq" parameterType="com.multi.toonGather.cs.model.dto.FaqDTO">
+        INSERT INTO cs_faq (cs_faq_title, cs_faq_content, cs_faq_writer_no)
+        VALUES (#{csFaqTitle}, #{csFaqContent}, #{csFaqWriterNo})
+    </insert>
 </mapper>
