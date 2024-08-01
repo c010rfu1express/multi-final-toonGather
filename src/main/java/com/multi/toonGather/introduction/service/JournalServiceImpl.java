@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,6 +41,7 @@ public class JournalServiceImpl implements JournalService {
         return journalMapper.selectJournalByTitle(title);
     }
 
+    @Override
     @Transactional
     public void insertJournal(String title, String content, MultipartFile file, HttpServletRequest request) throws Exception {
         JournalDTO journalDTO = new JournalDTO();
@@ -55,6 +57,7 @@ public class JournalServiceImpl implements JournalService {
         String root = request.getSession().getServletContext().getRealPath("/");
         System.out.println("root : " + root);
         String filePath = root + "/uploadFiles";
+
         File mkdir = new File(filePath);
         if (!mkdir.exists()) {
             mkdir.mkdirs();
@@ -120,5 +123,55 @@ public class JournalServiceImpl implements JournalService {
         }
 
         return journal;
+    }
+
+    @Override
+    @Transactional
+    public void updateJournal(String title, String content, MultipartFile file, HttpServletRequest request) throws Exception {
+        JournalDTO journalDTO = new JournalDTO();
+        journalDTO.setTitle(title);
+        journalDTO.setContent(content);
+        journalDTO.setPostingDate(new Date()); // 날짜 가져오기
+        // 저널 넘버 입력 하는거 추가 필요
+
+        // Update the journal and get the generated ID
+        journalMapper.updateJournal(journalDTO);
+
+        JournalFileDTO fileDTO = new JournalFileDTO();
+        // Now the journalDTO should have the generated journalNo
+        int journalNo = journalDTO.getJournalNo();
+
+        String root = request.getSession().getServletContext().getRealPath("/");
+        System.out.println("root : " + root);
+        String filePath = root + "/uploadFiles";
+
+        File mkdir = new File(filePath);
+        if (!mkdir.exists()) {
+            mkdir.mkdirs();
+        }
+
+        String originName = file.getOriginalFilename();
+        if (originName != null && !originName.isEmpty()) {
+            String ext = originName.substring(originName.lastIndexOf("."));
+            String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
+
+            // 파일 저장
+            try {
+                file.transferTo(new File(filePath + "/" + savedName));
+
+                fileDTO.setJournalNo(journalNo);
+                fileDTO.setFileName(savedName);
+            } catch (IOException e) {
+                System.out.println("File upload error : " + e);
+                new File(filePath + "/" + savedName).delete();
+                throw new Exception("File upload failed, rolling back transaction.", e); // 예외를 던져 트랜잭션을 롤백함
+            }
+        } // if origin not null
+
+        fileDTO.setFilePath(filePath);
+        fileDTO.setFileType(file.getContentType());
+        System.out.println("journalfiledto 수정페이지 서비스 :" + fileDTO.toString());
+
+//        journalMapper.updateJournalFile(fileDTO);
     }
 }
