@@ -237,4 +237,12 @@ public class CsController {
         }
     }
 
+    @GetMapping("/faqDetail/{csFaqNo}")
+    public String faqDetail(@PathVariable("csFaqNo") int csFaqNo, Model model) throws Exception {
+        FaqDTO faq = csService.getFaqById(csFaqNo);
+        model.addAttribute("faq", faq);
+
+        return "cs/faqDetail";
+    }
+
 }

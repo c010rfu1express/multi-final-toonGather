@@ -30,4 +30,6 @@ public interface CsService {
     List<FaqDTO> faqList() throws Exception;
 
     boolean insertFaq(FaqDTO faq) throws Exception;
+
+    FaqDTO getFaqById(int csFaqNo) throws Exception;
 }

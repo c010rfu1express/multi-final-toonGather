@@ -102,7 +102,7 @@
         </div>
         <div th:if="${faqList != null && !faqList.isEmpty()}">
             <div th:each="faq, iterStat : ${faqList}">
-                <a th:href="@{/cs/faqDetail(csFaqNo=${faq.csFaqNo})}">
+                <a th:href="@{/cs/faqDetail/{csFaqNo}(csFaqNo=${faq.csFaqNo})}">
                     <p th:text="'Q' + ${iterStat.index + 1} + '. ' + ${faq.csFaqTitle}"></p>
                 </a>
             </div>

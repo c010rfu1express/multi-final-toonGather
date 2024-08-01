@@ -35,4 +35,6 @@ public interface CsMapper {
     List<FaqDTO> faqList();
 
     boolean insertFaq(FaqDTO faq);
+
+    FaqDTO getFaqById(int csFaqNo);
 }

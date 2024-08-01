@@ -145,4 +145,11 @@
         INSERT INTO cs_faq (cs_faq_title, cs_faq_content, cs_faq_writer_no)
         VALUES (#{csFaqTitle}, #{csFaqContent}, #{csFaqWriterNo})
     </insert>
+
+    <select id="getFaqById" parameterType="int" resultMap="faqResultMap">
+        SELECT f.*, u.nickname
+        FROM cs_faq f
+        LEFT JOIN users u ON f.cs_faq_writer_no = u.user_no
+        WHERE cs_faq_no = #{csFaqNo}
+    </select>
 </mapper>
