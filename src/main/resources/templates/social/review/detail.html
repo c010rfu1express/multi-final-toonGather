@@ -126,11 +126,14 @@
             </span>
             <span class="views">조회수: <span th:text="${review.viewCnt}"></span></span>
         </div>
-        <div class="review-actions" th:if="${#authentication.principal.userDTO.userId == review.writer.userId}">
+        <div class="review-actions">
             <a th:href="@{/social/users/{userId}/reviews(userId=${profileUser.userId})}" class="btn btn-secondary">목록으로</a>
+            <th:block th:if="${#authentication.principal != null and #authentication.principal.userDTO.userId == review.writer.userId}">
             <a th:href="@{/social/reviews/{reviewNo}/edit(reviewNo=${review.reviewNo})}" class="btn btn-warning">수정</a>
-            <a th:href="@{/social/reviewDelete(reviewNo=${review.reviewNo})}" class="btn btn-danger"
-               onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</a>
+                <form th:action="@{/social/reviews/{reviewNo}/delete(reviewNo=${review.reviewNo})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</button>
+                </form>
+            </th:block>
         </div>
     </div>
     <div th:unless="${review != null}">
