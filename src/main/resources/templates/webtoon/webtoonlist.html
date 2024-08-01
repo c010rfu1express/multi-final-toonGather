@@ -78,14 +78,17 @@
 <script>
     let currentPage = 1; // 초기 페이지 번호
     const urlParams = new URLSearchParams(window.location.search);
-    let provider='KAKAO';//urlParams.get('webtoon_id');
+    let provider=urlParams.get('provider');
     let updateDay=urlParams.get('updateDay');
+    if (provider ===null) {
+    provider = 'KAKAO'; // 원하는 값으로 초기화
+    }
 
-    if (provider === null) {
+    if (provider ==='ALL') {
     provider = ''; // 원하는 값으로 초기화
     }
     if (updateDay === null) {
-    updateDay = ''; // 원하는 값으로 초기화
+    updateDay = '[[ ${day} ]]'; // 원하는 값으로 초기화
     }
 
     function fetchWebtoons(page) {
@@ -100,7 +103,7 @@
 
                   const webtoons = data.webtoons.filter(webtoon => {
                    if (updateDay === "COM") {
-                        return webtoon.isEnd;
+                        return webtoon.provider !== "KAKAO_PAGE" && webtoon.isEnd;
                     } else {
                       return webtoon.provider === "NAVER" || webtoon.provider === "KAKAO";
                         }
@@ -136,7 +139,7 @@
                     webtoonTitle.classList.add('webtoon-title');
                     webtoonTitle.addEventListener('click', (event) => {
                         event.preventDefault(); // 기본 동작 중단
-                        const queryString = `webtoon_id=${id}&webtoon_name=${encodeURIComponent(title)}&author=${encodeURIComponent(authors.join('/'))}`;
+                        const queryString = `webtoon_id=${id}&webtoon_name=${encodeURIComponent(title)}`;
                         window.location.href = `/webtoon/one?${queryString}`;
                     });
                     webtoonInfo.appendChild(webtoonTitle);
