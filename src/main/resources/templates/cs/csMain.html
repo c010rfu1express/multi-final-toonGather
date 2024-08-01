@@ -1,152 +1,28 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
-    <title>Title</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
+    <title>CS Main</title>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener("DOMContentLoaded", function() {
+            // 사용자 권한을 확인하고 적절히 리다이렉션합니다
+            let roleAdmin = /*[[${#authorization.expression('hasRole("ROLE_ADMIN")')}]]*/ false;
+            let roleUser = /*[[${#authorization.expression('hasRole("ROLE_USER")')}]]*/ false;
+            let roleCreator = /*[[${#authorization.expression('hasRole("ROLE_CREATOR")')}]]*/ false;
 
-        .content {
-            display: flex;
-            justify-content: space-between;
-            padding: 20px;
-            background-color: #f0f0f0;
-            width: 80%;
-            margin: auto;
-        }
-
-        .faq, .my-questions {
-            width: 48%;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-        .faq h2, .my-questions h2 {
-            margin-top: 0;
-        }
-
-        .faq ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .faq li {
-            padding: 5px 0;
-        }
-
-        .my-questions table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .my-questions th, .my-questions td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
-        }
-
-        .my-questions th {
-            background-color: #f9f9f9;
-        }
-
-        .pagination {
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        .pagination a {
-            text-decoration: none;
-            color: #000;
-            margin: 0 5px;
-            padding: 5px 10px;
-            border: 1px solid #ccc;
-        }
-
-        .pagination a:hover {
-            background-color: #e0e0e0;
-        }
-
-        .chatbot {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-        }
-
-        .chatbot button {
-            padding: 10px 20px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .chatbot button:hover {
-            background-color: #e0e0e0;
-        }
-    </style>
+            if (roleAdmin) {
+                window.location.replace(/*[[@{/cs/csAdmin}]]*/ "/cs/csAdmin");
+            } else {
+                // ROLE_USER, ROLE_CREATOR 또는 비로그인 상태일 경우
+                window.location.replace(/*[[@{/cs/csUser}]]*/ "/cs/csUser");
+            }
+        });
+        /*]]>*/
+    </script>
 </head>
 <body>
-    <div th:replace="common/menubar.html"></div>
-
-<main class="content">
-    <section class="faq">
-        <h2>자주 묻는 질문 (FAQ)</h2>
-        <ul>
-            <li>Q1. 리뷰 작성이 안됩니다.</li>
-            <li>Q2. 다이어리 작성이 안됩니다.</li>
-            <li>Q3. 창작자 등록이 안됩니다.</li>
-            <li>Q4. 오프라인 행사 위치가 안 보여요.</li>
-            <li>Q5. 구인구직 게시글 작성이 안됩니다.</li>
-        </ul>
-    </section>
-    <section class="my-questions">
-        <h2>내가 쓴 문의글</h2>
-        <div th:if="${questions != null && !questions.isEmpty()}">
-            <table>
-                <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>제목</th>
-                    <th>작성일</th>
-                    <th>상태</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="myQuestion : ${questions}">
-                    <td th:text="${myQuestion.csQNo}"></td>
-                    <td>
-                        <a th:href="@{/cs/questionDetail/{id}(id=${myQuestion.csQNo})}" th:text="${myQuestion.csQTitle}"></a>
-                    </td>
-                    <td th:text="${#dates.format(myQuestion.createdDate, 'yyyy-MM-dd')}"></td>
-                    <td th:text="${myQuestion.csQStatus.csStatusDesc}"></td>
-                </tr>
-                </tbody>
-            </table>
-            <div class="pagination">
-                <a href="#">&laquo;</a>
-                <a href="#">1</a>
-                <a href="#">2</a>
-                <a href="#">3</a>
-                <a href="#">4</a>
-                <a href="#">5</a>
-                <a href="#">&raquo;</a>
-            </div>
-        </div>
-        <div th:if="${questions == null || questions.isEmpty()}">
-            <p>No questions found.</p>
-        </div>
-        <div class="create-button-container">
-            <a href="/cs/insertQuestion" class="create-button">문의글 작성</a>
-        </div>
-    </section>
-</main>
-<div class="chatbot">
-    <button>챗봇</button>
-</div>
+<h1>Loading...</h1>
 </body>
 </html>
