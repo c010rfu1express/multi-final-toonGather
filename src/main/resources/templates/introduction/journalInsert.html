@@ -17,6 +17,7 @@
 <div class="container mt-4">
     <h2>소식 게시글 등록</h2>
     <form th:action="@{/introduction/journalInsert}" method="post" enctype="multipart/form-data">
+
         <div class="form-group">
             <label for="title">제목을 입력해주세요</label>
             <input type="text" class="form-control" id="title" name="title" maxlength="50" required>

@@ -1,9 +1,11 @@
 package com.multi.toonGather.introduction.service;
 
+import com.multi.toonGather.cs.model.dto.QuestionFilesDTO;
 import com.multi.toonGather.introduction.model.dto.JournalDTO;
 import com.multi.toonGather.introduction.model.dto.JournalFileDTO;
 import com.multi.toonGather.introduction.model.mapper.JournalMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -125,53 +127,90 @@ public class JournalServiceImpl implements JournalService {
         return journal;
     }
 
-    @Override
-    @Transactional
-    public void updateJournal(String title, String content, MultipartFile file, HttpServletRequest request) throws Exception {
-        JournalDTO journalDTO = new JournalDTO();
-        journalDTO.setTitle(title);
-        journalDTO.setContent(content);
-        journalDTO.setPostingDate(new Date()); // 날짜 가져오기
-        // 저널 넘버 입력 하는거 추가 필요
 
-        // Update the journal and get the generated ID
-        journalMapper.updateJournal(journalDTO);
+    public JournalDTO getJournalByNoWithFiles(int journalNo) {
+        // 번호로 소식 가져오기
+        JournalDTO journal = journalMapper.selectJournalByNo(journalNo);
+        System.out.println("getJournalByNoWithFiles 확인1 : " + journal.toString());
 
-        JournalFileDTO fileDTO = new JournalFileDTO();
-        // Now the journalDTO should have the generated journalNo
-        int journalNo = journalDTO.getJournalNo();
-
-        String root = request.getSession().getServletContext().getRealPath("/");
-        System.out.println("root : " + root);
-        String filePath = root + "/uploadFiles";
-
-        File mkdir = new File(filePath);
-        if (!mkdir.exists()) {
-            mkdir.mkdirs();
+        if (journal != null) {
+            // 소식에 첨부된 파일 리스트 가져오기
+            System.out.println("확인2 : " + journal.getJournalNo());
+            List<JournalFileDTO> journalFiles = journalMapper.selectFilesByJournalNo(journal.getJournalNo());
+            System.out.println("확인3 : " + journalFiles);
+            journal.setJournalFiles(journalFiles); // JournalDTO에 파일 리스트 설정
         }
 
-        String originName = file.getOriginalFilename();
-        if (originName != null && !originName.isEmpty()) {
-            String ext = originName.substring(originName.lastIndexOf("."));
-            String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
-
-            // 파일 저장
-            try {
-                file.transferTo(new File(filePath + "/" + savedName));
-
-                fileDTO.setJournalNo(journalNo);
-                fileDTO.setFileName(savedName);
-            } catch (IOException e) {
-                System.out.println("File upload error : " + e);
-                new File(filePath + "/" + savedName).delete();
-                throw new Exception("File upload failed, rolling back transaction.", e); // 예외를 던져 트랜잭션을 롤백함
-            }
-        } // if origin not null
-
-        fileDTO.setFilePath(filePath);
-        fileDTO.setFileType(file.getContentType());
-        System.out.println("journalfiledto 수정페이지 서비스 :" + fileDTO.toString());
-
-//        journalMapper.updateJournalFile(fileDTO);
+        return journal;
     }
+
+    @Transactional
+    public boolean updateJournal(JournalDTO journalDTO, MultipartFile file, HttpServletRequest request) throws Exception {
+
+
+        try {
+
+            journalMapper.updateJournal(journalDTO);
+
+            String root = request.getSession().getServletContext().getRealPath("/");
+            String filePath = root + "/uploadFiles";
+
+            System.out.println("updatejournalserviceimpl check file null : ");
+            System.out.println("Original Filename: " + file.getOriginalFilename());
+            System.out.println("File Name: " + file.getName());
+            System.out.println("File Size: " + file.getSize());
+            System.out.println("File Content Type: " + file.getContentType());
+            System.out.println("Is Empty: " + file.isEmpty());
+
+            // 새로운 이미지가 첨부된 경우
+            if (file != null && !file.isEmpty()) {
+                // 기존 이미지 삭제
+                List<JournalFileDTO> existingFiles = journalMapper.selectFilesByJournalNo(journalDTO.getJournalNo());
+
+                for (JournalFileDTO fileDTO : existingFiles) {
+                    File existingFile = new File(filePath + "/" + fileDTO.getFileName());
+                    if (existingFile.exists()) {
+                        existingFile.delete();
+                    }
+                }
+
+                // 기존 이미지 데이터베이스에서 삭제
+                journalMapper.deleteFiles(journalDTO.getJournalNo());
+
+                // 새로운 이미지 저장
+                JournalFileDTO fileDTO = new JournalFileDTO();
+                String originName = file.getOriginalFilename();
+
+                if (originName != null && !originName.isEmpty() && !file.isEmpty()) {
+                    String ext = originName.substring(originName.lastIndexOf("."));
+
+                    String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
+
+                    try {
+                        file.transferTo(new File(filePath + "/" + savedName));
+
+
+
+                        fileDTO.setJournalNo(journalDTO.getJournalNo());
+                        fileDTO.setFileName(savedName);
+
+                    } catch (IOException e) {
+                        new File(filePath + "/" + savedName).delete();
+                        throw new Exception("File upload error", e);
+                    }
+                }
+                fileDTO.setFilePath(filePath);
+                fileDTO.setFileType(file.getContentType());
+                System.out.println("journalfiledto 수정페이지 서비스 :" + fileDTO.toString());
+                journalMapper.insertJournalFile(fileDTO);
+            }
+            return true;
+        } catch (Exception e) {
+            throw new Exception("Update journal failed", e);
+        }
+
+
+    }
+
+
 }

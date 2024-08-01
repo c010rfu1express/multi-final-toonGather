@@ -60,17 +60,20 @@ public class journalController {
     }
 
     @PostMapping(value = {"introduction/journalUpdate"})
-    public String journalUpdate(@RequestParam("title") String title,
+    public String journalUpdate(@RequestParam("journalNo") int journalNo,
+                                @RequestParam("title") String title,
                                 @RequestParam("content") String content,
                                 @RequestParam("file") MultipartFile file,
-                                HttpServletRequest request) {
-        try {
-            journalService.updateJournal(title, content, file, request);
-            return "redirect:/introduction/journalList";
-        } catch (Exception e) {
-            // 에러 처리
-            return "error";
-        }
+                                HttpServletRequest request) throws Exception {
+
+        System.out.println("update post 확인 : " + journalNo);
+        JournalDTO journal = journalService.getJournalByNoWithFiles(journalNo);
+        journal.setTitle(title);
+        journal.setContent(content);
+
+        boolean isSuccess = journalService.updateJournal(journal, file, request);
+        if(isSuccess) return "redirect:/introduction/journalList";
+        else return "redirect:/introduction/journalUpdate";
     }
 
 
