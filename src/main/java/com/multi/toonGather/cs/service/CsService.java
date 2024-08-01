@@ -1,9 +1,6 @@
 package com.multi.toonGather.cs.service;
 
-import com.multi.toonGather.cs.model.dto.AnswerDTO;
-import com.multi.toonGather.cs.model.dto.CsCategoryDTO;
-import com.multi.toonGather.cs.model.dto.QuestionDTO;
-import com.multi.toonGather.cs.model.dto.QuestionFilesDTO;
+import com.multi.toonGather.cs.model.dto.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,4 +26,6 @@ public interface CsService {
     List<AnswerDTO> getAnswerList(int csQNo) throws Exception;
 
     boolean insertAnswer(AnswerDTO answerDTO) throws Exception;
+
+    List<FaqDTO> faqList() throws Exception;
 }

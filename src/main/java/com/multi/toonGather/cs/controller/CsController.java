@@ -1,9 +1,6 @@
 package com.multi.toonGather.cs.controller;
 
-import com.multi.toonGather.cs.model.dto.AnswerDTO;
-import com.multi.toonGather.cs.model.dto.CsCategoryDTO;
-import com.multi.toonGather.cs.model.dto.QuestionDTO;
-import com.multi.toonGather.cs.model.dto.QuestionFilesDTO;
+import com.multi.toonGather.cs.model.dto.*;
 import com.multi.toonGather.cs.service.CsService;
 import com.multi.toonGather.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,6 +41,8 @@ public class CsController {
     // csMain 페이지 호출 메소드
     @GetMapping("/csUser")
     public String csUser(Model model) throws Exception {
+        List<FaqDTO> faqList = csService.faqList();
+        model.addAttribute("faqList", faqList);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -61,6 +60,19 @@ public class CsController {
         model.addAttribute("questions", questions);
 
         return "cs/csUser";
+    }
+
+    @GetMapping("/csAdmin")
+    public String csAdmin(Model model) throws Exception {
+        List<QuestionDTO> questions = csService.questionList();
+        List<FaqDTO> faqList = csService.faqList();
+
+        System.out.println(questions);
+
+        model.addAttribute("questions", questions);
+        model.addAttribute("faqList", faqList);
+
+        return "/cs/csAdmin";
     }
 
     // 문의글 작성 페이지 호출 메소드
@@ -164,17 +176,6 @@ public class CsController {
         } else {
             return "redirect:/cs/questionDetail/" + csQNo;
         }
-    }
-
-    @GetMapping("/csAdmin")
-    public String csAdmin(Model model) throws Exception {
-        List<QuestionDTO> questions = csService.questionList();
-
-        System.out.println(questions);
-
-        model.addAttribute("questions", questions);
-
-        return "/cs/csAdmin";
     }
 
     @PostMapping("/insertAnswer/{csQNo}")
