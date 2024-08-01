@@ -268,4 +268,14 @@ public class CsController {
         }
     }
 
+    @GetMapping("/deleteFaq/{csFaqNo}")
+    public String deleteFaq(@PathVariable("csFaqNo") int csFaqNo) throws Exception {
+        boolean isDeleted = csService.deleteFaq(csFaqNo);
+        if (isDeleted) {
+            return "redirect:/cs/csMain";
+        } else {
+            return "redirect:/cs/faqDetail/" + csFaqNo;
+        }
+    }
+
 }

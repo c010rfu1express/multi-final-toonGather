@@ -203,4 +203,9 @@ public class CsServiceImpl implements CsService {
     public boolean updateFaq(FaqDTO faq) throws Exception {
         return csMapper.updateFaq(faq);
     }
+
+    @Override
+    public boolean deleteFaq(int csFaqNo) throws Exception {
+        return csMapper.deleteFaq(csFaqNo);
+    }
 }

@@ -160,4 +160,8 @@
         modified_date = NOW()
         WHERE cs_faq_no = #{csFaqNo}
     </update>
+
+    <delete id="deleteFaq" parameterType="int">
+        DELETE FROM cs_faq WHERE cs_faq_no = #{csFaqNo}
+    </delete>
 </mapper>
