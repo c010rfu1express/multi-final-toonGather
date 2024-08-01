@@ -81,28 +81,7 @@
 <div th:replace="common/menubar.html"></div>
 
 <div class="container mt-4">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="user-profile-info">
-                <img th:src="${profileUser.profileImagePath}" alt="프로필 사진" class="profile-image">
-                <div class="profile-text">
-                    <h2 th:text="${profileUser.nickname}">사용자 닉네임</h2>
-                    <p th:text="${profileUser.bio}">사용자 자기소개</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="social-user-profile-placeholder"></div>
-            <nav class="social-user-menu">
-                <ul>
-                    <li><a th:href="@{/social/users/{userId}/profile(userId=${profileUser.userId})}">홈</a></li>
-                    <li><a th:href="@{/social/users/{userId}/reviews(userId=${profileUser.userId})}">리뷰</a></li>
-                    <li><a th:href="@{/social/users/{userId}/diaries(userId=${profileUser.userId})}">다이어리</a></li>
-                </ul>
-            </nav>
-        </div>
-    </div>
+    <div th:replace="social/user/profile-menubar :: profile-menubar"></div>
 
     <div class="review-detail" th:if="${review != null}">
         <div class="webtoon-info">

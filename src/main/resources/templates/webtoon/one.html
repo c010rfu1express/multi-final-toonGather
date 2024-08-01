@@ -203,13 +203,13 @@
     </table>
     <div id="social"> <th:block th:if="${user.userNo > 0}">
         <!-- 리뷰 작성 폼 -->
-        <form id="ReviewForm" th:action="@{/social/review/insert/{webtoonNo}(webtoonNo=${one.webtoon_no})}" method="get">
+        <form id="ReviewForm" th:action="@{/social/reviews/insert/{webtoonNo}(webtoonNo=${one.webtoon_no})}" method="get">
 
 
             <button type="submit" class="btn btn-primary">리뷰 등록</button>
         </form>
 
-        <form id="DiaryForm" th:action="@{/social/diary/insert/{webtoonNo}(webtoonNo=${one.webtoon_no})}" method="get">
+        <form id="DiaryForm" th:action="@{/social/diaries/insert/{webtoonNo}(webtoonNo=${one.webtoon_no})}" method="get">
 
 
 
