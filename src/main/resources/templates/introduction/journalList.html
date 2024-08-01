@@ -50,15 +50,20 @@
             <div class="card">
 <!--                <img th:if="${#lists.size(journal.journalFiles) > 0}" th:src="@{'/path/to/images/' + ${journal.journalFiles[0].filePath}}" class="card-img-top" alt="썸네일 이미지">-->
                 <div class="card-body">
-                    <a href="/introduction/journalDetail?id=5" class="card-title" th:text="${journal.title}">제목</a>
+<!--                    <a href="/introduction/journalDetail?id=5" class="card-title" th:text="${journal.title}">제목</a>-->
 <!--                    <a th:href="@{/introduction/journalDetail(id=${journal.journalNo})}" class="card-title" th:text="${journal.title}">제목</a>-->
 <!--                    <a th:href="@{/journalDetail(id=${journal.id})}" class="card-title" th:text="${journal.title}">제목</a>-->
+                    <a th:href="@{/introduction/journalDetail(title=${journal.title})}" class="card-title" th:text="${journal.title}">제목</a>
+
                     <p class="card-text">
                         <small class="text-muted" th:text="${#temporals.format(journal.postingDate, 'yyyy-MM-dd')}">게시일시</small>
+<!--                        <small class="text-muted" th:text="${#temporals.format(journal.posting_date, 'yyyy-MM-dd')}">게시일시</small>-->
                     </p>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" th:value="${journal.journalNo}" th:id="'journalCheck' + ${journal.journalNo}">
                         <label class="form-check-label" th:for="'journalCheck' + ${journal.journalNo}">
+<!--                        <input class="form-check-input" type="checkbox" th:value="${journal.journal_no}" th:id="'journalCheck' + ${journal.journal_no}">-->
+<!--                        <label class="form-check-label" th:for="'journalCheck' + ${journal.journal_no}">-->
                             선택
                         </label>
 
