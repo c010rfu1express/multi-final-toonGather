@@ -27,5 +27,11 @@ public class Test {
 
         // 출력
         System.out.println("오늘은 " + dayOfWeekString + "입니다.");
+        String sp="삼각관계#";
+        String[]s =sp.split("#");
+
+        for (String tag : s) {
+            System.out.println(tag+s.length);
+        }
         }
     }
