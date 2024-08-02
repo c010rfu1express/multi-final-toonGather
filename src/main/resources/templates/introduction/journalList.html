@@ -84,20 +84,28 @@
         <!-- 각 소식 항목을 카드로 표시 -->
         <div class="col-md-4" th:each="journal : ${journals}">
             <div class="card">
+                <!-- 썸네일 이미지 없을때 : 기본 썸네일 이미지 -->
+                <img th:unless="${#lists.size(journal.journalFiles) > 0}" src="/images/introduction/default-thumbnail.png" class="card-img-top" alt="기본 썸네일 이미지">
 
+                <!-- 썸네일 이미지 있을때  -->
                 <img th:if="${#lists.size(journal.journalFiles) > 0}" th:src="@{/uploadFiles/{fileName}(fileName=${journal.journalFiles.get(0).fileName})}" class="card-img-top" alt="썸네일 이미지">
+
                 <div class="card-body">
-                    <a th:href="@{/introduction/journalDetail(title=${journal.title})}" class="card-title" th:text="${journal.title}">제목</a>
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="journalCheck" th:value="${journal.title}" th:id="'journalCheck' + ${journal.title}">
+                        </div>
+                        <div>
+                            <a th:href="@{/introduction/journalDetail(title=${journal.title})}" class="card-title" th:text="${journal.title}">제목</a>
+                        </div>
+                    </div>
 
                     <p class="card-text">
                         <small class="text-muted" th:text="${#dates.format(journal.postingDate, 'yyyy-MM-dd')}">게시일시</small>
                     </p>
 <!--                    <div class="form-check">-->
-<!--                        <input class="form-check-input" type="checkbox"  name="journalCheck" th:value="${journal.title}" th:id="'journalCheck' + ${journal.title}">-->
+<!--                        <input class="form-check-input" type="radio" name="journalCheck" th:value="${journal.title}" th:id="'journalCheck' + ${journal.title}">-->
 <!--                    </div>-->
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="journalCheck" th:value="${journal.title}" th:id="'journalCheck' + ${journal.title}">
-                    </div>
                 </div>
             </div>
         </div>
