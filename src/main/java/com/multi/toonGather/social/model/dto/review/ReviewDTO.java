@@ -27,7 +27,5 @@ public class ReviewDTO {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
     private int viewCnt;
-
     private int likeCount;
-    private boolean likedByCurrentUser;
 }

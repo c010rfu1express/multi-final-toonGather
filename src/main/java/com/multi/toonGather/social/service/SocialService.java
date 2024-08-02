@@ -32,6 +32,8 @@ public interface SocialService {
     ReviewDTO getReviewByNo(int reviewNo) throws Exception;
     void updateReview(ReviewDTO review) throws Exception;
     void deleteReview(int reviewNo) throws Exception;
+    boolean toggleReviewLike(int reviewNo, int userNo) throws Exception;
+    boolean isReviewLikedByUser(int reviewNo, int userNo) throws Exception;
 
     //리뷰, 다이어리 작성
     WebtoonDTO getWebtoonByNo(int webtoonNo) throws Exception;

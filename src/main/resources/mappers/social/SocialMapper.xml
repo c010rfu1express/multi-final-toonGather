@@ -12,6 +12,7 @@
         <result property="createdDate" column="created_date"/>
         <result property="modifiedDate" column="modified_date"/>
         <result property="viewCnt" column="view_cnt"/>
+        <result property="likeCount" column="like_count"/>
         <association property="writer" javaType="userDTO">
             <id property="userNo" column="user_no"/>
             <result property="userId" column="user_id"/>
@@ -24,6 +25,12 @@
             <result property="author" column="author"/>
             <result property="thumbnail_url" column="thumbnail_url"/>
         </association>
+    </resultMap>
+    <resultMap id="reviewLikeResultMap" type="reviewLikeDTO">
+        <id property="likeNo" column="like_no"/>
+        <result property="reviewNo" column="review_no"/>
+        <result property="likedUser" column="liked_user"/>
+        <result property="likedDate" column="liked_date"/>
     </resultMap>
 
     <resultMap id="diaryResultMap" type="diaryDTO">
@@ -98,7 +105,8 @@
     <!-- 리뷰 상세 조회 -->
     <select id="selectReviewByNo" resultMap="reviewResultMap">
         SELECT r.*, u.user_no, u.user_id, u.nickname, u.profile_image_path,
-        w.webtoon_no, w.webtoon_name, w.author, w.thumbnail_url
+        w.webtoon_no, w.webtoon_name, w.author, w.thumbnail_url,
+        (SELECT COUNT(*) FROM so_review_likes WHERE review_no = r.review_no) as like_count
         FROM so_review r
         JOIN users u ON r.writer_no = u.user_no
         JOIN webtoon w ON r.webtoon_no = w.webtoon_no
@@ -125,6 +133,21 @@
     <delete id="deleteReview" parameterType="int">
         DELETE FROM so_review
         WHERE review_no = #{reviewNo}
+    </delete>
+
+    <!-- 리뷰 좋아요 -->
+    <select id="selectReviewLike" resultMap="reviewLikeResultMap">
+        SELECT * FROM so_review_likes
+        WHERE review_no = #{reviewNo} AND liked_user = #{userNo}
+        LIMIT 1
+    </select>
+    <insert id="insertReviewLike">
+        INSERT INTO so_review_likes (review_no, liked_user)
+        VALUES (#{reviewNo}, #{userNo})
+    </insert>
+    <delete id="deleteReviewLike" parameterType="int">
+        DELETE FROM so_review_likes
+        WHERE review_no = #{reviewNo} AND liked_user = #{userNo}
     </delete>
 
     <!-- 리뷰/다이어리 작성 웹툰 정보 -->

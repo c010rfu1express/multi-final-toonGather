@@ -4,6 +4,7 @@ import com.multi.toonGather.common.exception.NotFoundException;
 import com.multi.toonGather.common.model.dto.PageDTO;
 import com.multi.toonGather.social.model.dto.diary.DiaryDTO;
 import com.multi.toonGather.social.model.dto.review.ReviewDTO;
+import com.multi.toonGather.social.model.dto.review.ReviewLikeDTO;
 import com.multi.toonGather.social.model.mapper.SocialMapper;
 import com.multi.toonGather.user.model.dto.UserDTO;
 import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
@@ -91,6 +92,26 @@ public class SocialServiceImpl implements SocialService {
         if (result == 0) {
             throw new NotFoundException("삭제할 리뷰를 찾을 수 없습니다.");
         }
+    }
+    @Override
+    @Transactional
+    public boolean toggleReviewLike(int reviewNo, int userNo) throws Exception {
+        ReviewLikeDTO like = socialMapper.selectReviewLike(reviewNo, userNo);
+        if (like == null) {
+            socialMapper.insertReviewLike(reviewNo, userNo);
+            return true;
+        } else {
+            socialMapper.deleteReviewLike(reviewNo, userNo);
+            return false;
+        }
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isReviewLikedByUser(int reviewNo, int userNo) throws Exception {
+        System.out.println("Checking if review {} is liked by user {}: "+ reviewNo+", "+ userNo);
+        ReviewLikeDTO like = socialMapper.selectReviewLike(reviewNo, userNo);
+        System.out.println("Result of selectReviewLike: "+ like);
+        return like != null;
     }
 
     @Override

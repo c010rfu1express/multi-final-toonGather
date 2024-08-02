@@ -3,6 +3,7 @@ package com.multi.toonGather.social.model.mapper;
 import com.multi.toonGather.common.model.dto.PageDTO;
 import com.multi.toonGather.social.model.dto.diary.DiaryDTO;
 import com.multi.toonGather.social.model.dto.review.ReviewDTO;
+import com.multi.toonGather.social.model.dto.review.ReviewLikeDTO;
 import com.multi.toonGather.user.model.dto.UserDTO;
 import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -35,6 +36,9 @@ public interface SocialMapper {
     ReviewDTO selectReviewByNo(int reviewNo) throws Exception;
     void updateReview(ReviewDTO review) throws Exception;
     int deleteReview(int reviewNo) throws Exception;
+    ReviewLikeDTO selectReviewLike(@Param("reviewNo") int reviewNo, @Param("userNo") int userNo);
+    void insertReviewLike(@Param("reviewNo") int reviewNo, @Param("userNo") int userNo);
+    void deleteReviewLike(@Param("reviewNo") int reviewNo, @Param("userNo") int userNo);
 
     WebtoonDTO selectWebtoonByNo(int webtoonNo) throws Exception;
     void createReview(ReviewDTO review) throws Exception;

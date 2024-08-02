@@ -9,13 +9,18 @@ import com.multi.toonGather.social.service.SocialService;
 import com.multi.toonGather.user.model.dto.UserDTO;
 import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 소셜 기능 관련 요청을 처리하는 컨트롤러
@@ -86,17 +91,30 @@ public class SocialController {
 
     // 리뷰 상세 페이지
     @GetMapping("/reviews/{reviewNo}")
-    public String reviewDetail(@PathVariable("reviewNo") int reviewNo, Model model) throws Exception {
+    public String reviewDetail(@PathVariable("reviewNo") int reviewNo,
+                               @AuthenticationPrincipal CustomUserDetails currentUser,
+                               Model model) throws Exception {
         // 조회수 증가
         socialService.incrementReviewViewCount(reviewNo);
 
         // 리뷰 정보 가져오기
         ReviewDTO review = socialService.getReviewByNo(reviewNo);
+
         // 리뷰 작성자의 프로필 정보 가져오기
         UserDTO profileUser = socialService.selectUserProfile(review.getWriter().getUserId());
 
         model.addAttribute("review", review);
         model.addAttribute("profileUser", profileUser);
+
+        // 현재 사용자 정보 및 좋아요 상태 추가
+        if (currentUser != null) {
+            model.addAttribute("currentUser", currentUser.getUserDTO());
+            boolean isLiked = socialService.isReviewLikedByUser(reviewNo, currentUser.getUserDTO().getUserNo());
+
+            model.addAttribute("isLiked", isLiked);
+        } else {
+            model.addAttribute("isLiked", false);
+        }
 
         return "social/review/detail";
     }
@@ -146,6 +164,39 @@ public class SocialController {
         socialService.deleteReview(reviewNo);
         redirectAttributes.addFlashAttribute("message", "리뷰가 성공적으로 삭제되었습니다.");
         return "redirect:/social/users/" + currentUser.getUserDTO().getUserId() + "/reviews";
+    }
+
+    // 리뷰 좋아요
+    @PostMapping("/reviews/{reviewNo}/like")
+    @ResponseBody
+    public ResponseEntity<?> toggleLike(@PathVariable("reviewNo") int reviewNo,
+                                        @AuthenticationPrincipal CustomUserDetails currentUser) {
+        try {
+            if (currentUser == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Collections.singletonMap("error", "로그인이 필요합니다."));
+            }
+
+            ReviewDTO review = socialService.getReviewByNo(reviewNo);
+            if (review.getWriter().getUserNo() == currentUser.getUserDTO().getUserNo()) {
+                return ResponseEntity.badRequest()
+                        .body(Collections.singletonMap("error", "자신의 리뷰에는 좋아요를 할 수 없습니다."));
+            }
+
+            boolean isLiked = socialService.toggleReviewLike(reviewNo, currentUser.getUserDTO().getUserNo());
+
+            // 좋아요 토글 후 리뷰 정보를 다시 조회하여 최신 좋아요 수를 가져옴
+            review = socialService.getReviewByNo(reviewNo);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("isLiked", isLiked);
+            response.put("likeCount", review.getLikeCount());
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "오류가 발생했습니다."));
+        }
     }
 
     // 리뷰 작성 페이지
