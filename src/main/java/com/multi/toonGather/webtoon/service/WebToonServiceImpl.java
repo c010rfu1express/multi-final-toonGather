@@ -78,5 +78,11 @@ public class WebToonServiceImpl implements WebToonService{
         return result;
     }
 
+    @Override
+    public List<WebtoonDTO> searchWebtoon(String tag) {
+        List<WebtoonDTO> webtoonDTOS=webToonMapper.searchWebtoon(tag);
+        return webtoonDTOS;
+    }
+
 
 }

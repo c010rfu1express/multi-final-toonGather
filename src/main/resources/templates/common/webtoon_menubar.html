@@ -74,9 +74,9 @@
                 </li>
             </ul>
             <form class="form-inline" th:action="@{/webtoon/search}" method="get">
-            <input class="Search mr-sm-2" type="search" placeholder="제목,작가로 검색" aria-label="Search" name="search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
-        </form>
+                <input class="Search mr-sm-2" type="search" placeholder="제목, 작가로 검색" aria-label="검색" name="search" minlength="2" required maxlength="50">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
+            </form>
         </nav>
 
     </div>
