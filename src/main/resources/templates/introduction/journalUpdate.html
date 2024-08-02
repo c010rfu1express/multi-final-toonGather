@@ -16,7 +16,8 @@
 
 <div class="container">
     <h2>소식 게시글 수정</h2>
-    <form th:action="@{/introduction/journalInsert}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/introduction/journalUpdate}" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="journalNo" th:value="${journal.journalNo}">
         <div class="form-group">
             <label for="title">제목을 입력해주세요</label>
             <input type="text" class="form-control" id="title" name="title" th:value="${journal.title}" maxlength="50" required>
@@ -30,7 +31,8 @@
             <textarea class="form-control" id="content" name="content" th:text="${journal.content}" rows="10" maxlength="1000" required></textarea>
         </div>
 <!--        <button type="submit" class="btn btn-primary">등록</button>-->
-        <button type="submit" class="btn btn-secondary" onclick="history.back()">수정</button>
+        <button type="submit" class="btn btn-warning">수정</button>
+<!--        <button type="submit" class="btn btn-secondary" onclick="history.back()">수정</button>-->
         <a href="/introduction/journalList" class="btn btn-secondary">취소</a>
     </form>
 </div>
