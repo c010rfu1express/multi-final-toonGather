@@ -5,15 +5,12 @@ import lombok.Data;
 import java.sql.Timestamp;
 
 @Data
-public class QuestionDTO {
+public class AnswerDTO {
+    private int csANo;
     private int csQNo;
-    private String csQTitle;
-    private String csQContent;
-    private int csQWriterNo;
+    private String csAContent;
+    private int csAWriterNo;
     private String nickname;
-    private CsCategoryDTO csQCategory;
-    private CsStatusDTO csQStatus;
-    private int csQViewCount;
     private Timestamp createdDate;
     private Timestamp modifiedDate;
 }

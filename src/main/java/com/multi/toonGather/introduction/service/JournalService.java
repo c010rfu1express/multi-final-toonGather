@@ -15,5 +15,7 @@ public interface JournalService {
     void insertJournal(String title, String content, MultipartFile file, HttpServletRequest request) throws Exception;
     List<JournalDTO> getAllJournalsWithFiles();
     JournalDTO getJournalByTitleWithFile(String title);
-    public void updateJournal(String title, String content, MultipartFile file, HttpServletRequest request) throws Exception;
+    public boolean updateJournal(JournalDTO journalDTO, MultipartFile file, HttpServletRequest request) throws Exception;
+    public JournalDTO getJournalByNoWithFiles(int journalNo);
+    public void deleteJournalByTitle(String title) throws Exception;
 }

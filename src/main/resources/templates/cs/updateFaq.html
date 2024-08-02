@@ -61,36 +61,22 @@
 <div th:replace="common/menubar.html"></div>
 <div class="container">
     <div class="header">
-        <h1>문의글 수정</h1>
+        <h1>FAQ 수정</h1>
     </div>
     <div class="form-box">
-        <form th:action="@{/cs/update}" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="csQNo" th:value="${question.csQNo}">
+        <form th:action="@{/cs/updateFaq}" method="post">
+            <input type="hidden" name="csFaqNo" th:value="${faq.csFaqNo}">
             <div class="form-group">
                 <label>작성자</label>
-                <input type="text" th:value="${question.csQWriterNo}" disabled>
+                <input type="text" th:value="${faq.csFaqWriterNo}" disabled>
             </div>
             <div class="form-group">
                 <label>제목</label>
-                <input type="text" name="csQTitle" th:value="${question.csQTitle}" required maxlength="50">
-            </div>
-            <div class="form-group">
-                <label>카테고리</label>
-                <select name="csQCategory" required>
-                    <option value="" th:if="${question.csQCategory == null}">카테고리 선택</option>
-                    <option th:each="category : ${categories}"
-                            th:value="${category.csCategoryCode}"
-                            th:text="${category.csCategoryDesc}"
-                            th:selected="${category.csCategoryCode == question.csQCategory.csCategoryCode}"></option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>이미지 첨부</label>
-                <input type="file" name="images" multiple>
+                <input type="text" name="csFaqTitle" th:value="${faq.csFaqTitle}" required maxlength="50">
             </div>
             <div class="form-group">
                 <label>내용</label>
-                <textarea name="csQContent" th:text="${question.csQContent}" required maxlength="1000"></textarea>
+                <textarea name="csFaqContent" th:text="${faq.csFaqContent}" required maxlength="1000"></textarea>
             </div>
             <div class="buttons">
                 <button type="submit">등록</button>

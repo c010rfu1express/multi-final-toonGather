@@ -1,9 +1,7 @@
 package com.multi.toonGather.cs.service;
 
-import com.multi.toonGather.cs.model.dto.CsCategoryDTO;
-import com.multi.toonGather.cs.model.dto.QuestionFilesDTO;
+import com.multi.toonGather.cs.model.dto.*;
 import com.multi.toonGather.cs.model.mapper.CsMapper;
-import com.multi.toonGather.cs.model.dto.QuestionDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -84,8 +82,8 @@ public class CsServiceImpl implements CsService {
 
     // 문의글 상세 조회
     @Override
-    public QuestionDTO getQuestionById(int id) throws Exception {
-        return csMapper.getQuestionById(id);
+    public QuestionDTO getQuestionById(int csQNo) throws Exception {
+        return csMapper.getQuestionById(csQNo);
     }
 
     // 문의글 상세 조회 이미지 조회
@@ -150,11 +148,11 @@ public class CsServiceImpl implements CsService {
     @Transactional
     public boolean deleteQuestion(int csQNo, HttpServletRequest request) throws Exception {
         try {
-            // 문의글 삭제 (ON DELETE CASCADE 적용)
-            csMapper.deleteQuestion(csQNo);
-
             // 파일 정보 가져오기
             List<QuestionFilesDTO> files = csMapper.getQuestionFilesByQuestionId(csQNo);
+
+            // 문의글 삭제 (ON DELETE CASCADE 적용)
+            csMapper.deleteQuestion(csQNo);
 
             // 파일 삭제
             for (QuestionFilesDTO file : files) {
@@ -169,5 +167,45 @@ public class CsServiceImpl implements CsService {
             e.printStackTrace();
             throw new RuntimeException("Failed to delete question");
         }
+    }
+
+    @Override
+    public List<QuestionDTO> questionList() throws Exception {
+        return csMapper.questionList();
+    }
+
+    @Override
+    public List<AnswerDTO> getAnswerList(int csQNo) throws Exception {
+        return csMapper.getAnswerList(csQNo);
+    }
+
+    @Override
+    public boolean insertAnswer(AnswerDTO answerDTO) throws Exception {
+        return csMapper.insertAnswer(answerDTO);
+    }
+
+    @Override
+    public List<FaqDTO> faqList() throws Exception {
+        return csMapper.faqList();
+    }
+
+    @Override
+    public boolean insertFaq(FaqDTO faq) throws Exception {
+        return csMapper.insertFaq(faq);
+    }
+
+    @Override
+    public FaqDTO getFaqById(int csFaqNo) throws Exception {
+        return csMapper.getFaqById(csFaqNo);
+    }
+
+    @Override
+    public boolean updateFaq(FaqDTO faq) throws Exception {
+        return csMapper.updateFaq(faq);
+    }
+
+    @Override
+    public boolean deleteFaq(int csFaqNo) throws Exception {
+        return csMapper.deleteFaq(csFaqNo);
     }
 }

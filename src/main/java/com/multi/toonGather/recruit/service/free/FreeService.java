@@ -48,4 +48,6 @@ public interface FreeService {
     FreeReviewReportDTO findReportByNo(int no) throws Exception;
 
     void deleteReport(int no) throws Exception;
+
+    int selectCountReview(int boardNo) throws Exception;
 }

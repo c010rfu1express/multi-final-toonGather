@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title><!DOCTYPE html>
         <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
         <html layout:decorate="~{layout}">
         <head>
@@ -14,6 +10,30 @@
           z-index: 1000;
         }
     </style>
+    <script>
+    // 폼 제출 전에 모든 필드를 검증하는 함수
+
+    //VALIDATION 3) 이메일
+        // 이메일 형식을 확인하는 함수
+        function validateEmail(email) {
+            // 이메일 형식을 검증하는 정규 표현식
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailPattern.test(email);
+        }
+
+        // 폼 제출 전 이메일 형식을 검증하는 함수
+        function validateForm(event) {
+        const emailInput = document.querySelector('input[name="email"]');
+        const email = emailInput.value;
+
+        // 이메일 검증
+        if (!validateEmail(email)) {
+            alert("이메일 형식이 올바르지 않습니다. 예: example@example.com");
+            event.preventDefault(); // 폼 제출을 막음
+            return;
+        }
+    }
+    </script>
 </head>
 <body>
 
@@ -25,8 +45,8 @@
     <a href="#">비밀번호 찾기</a><br>
 
 
-    <form th:action="@{/user/findpw}" th:object="${user}" method="post">
-        아이디 : <input type="text" th:field="*{userId}"/> (중복불가)<br>
+    <form th:action="@{/user/findpw}" th:object="${user}" method="post" onsubmit="validateForm(event)">
+        아이디 : <input type="text" th:field="*{userId}" maxlength="20" minlength="4"/> (중복불가)<br>
         이메일 : <input type="text" th:field="*{email}"/> (중복불가)<br>
 
         <input type="submit">비밀번호 찾기
@@ -49,10 +69,5 @@
     <!--        <input type="submit">가입하기-->
     <!--    </form>-->
 </div>
-</body>
-</html></title>
-</head>
-<body>
-
 </body>
 </html>
