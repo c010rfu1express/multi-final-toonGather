@@ -11,37 +11,7 @@
 <div th:replace="common/menubar.html"></div>
 
 <div class="container mt-4">
-    <div class="row">
-        <!-- 툰투게더 서비스 소개글 -->
-        <div class="col-md-6">
-            <h2>툰투게더</h2>
-            <p>웹툰 팬들을 위한 소셜 플랫폼, 툰투게더에 오신 것을 환영합니다.
-                다 읽은 작품의 리뷰와 지금 읽고 있는 작품 다이어리를 공유하며
-                웹툰에 대한 열정을 나눠보세요.</p>
-        </div>
-
-        <!-- 로그인 한 사용자 소셜 홈 링크 -->
-        <div class="col-md-6">
-            <div sec:authorize="isAnonymous()">
-                <p>로그인 하고 더 많은 기능을 이용해보세요!</p>
-            </div>
-            <div sec:authorize="isAuthenticated()">
-                <h3>나의 툰투게더</h3>
-                <div class="social-user-profile">
-                    <img th:src="${#authentication.principal.userDTO.profileImagePath}"
-                         alt="프로필 사진" class="social-profile-image">
-                    <span th:text="${#authentication.principal.userDTO.nickname}" class="social-user-nickname"></span>
-                </div>
-                <nav class="social-user-menu">
-                    <ul>
-                        <li><a th:href="@{/social/users/{userId}/profile(userId=${#authentication.principal.userDTO.userId})}">홈</a></li>
-                        <li><a th:href="@{/social/users/{userId}/reviews(userId=${#authentication.principal.userDTO.userId})}">리뷰</a></li>
-                        <li><a th:href="@{/social/users/{userId}/diaries(userId=${#authentication.principal.userDTO.userId})}">다이어리</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-    </div>
+    <div th:replace="social/main-menubar :: main-menubar"></div>
 
     <!-- 인기 리뷰 섹션 -->
     <div class="row mt-4">
