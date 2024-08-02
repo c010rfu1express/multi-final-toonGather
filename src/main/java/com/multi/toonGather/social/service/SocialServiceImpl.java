@@ -1,6 +1,7 @@
 package com.multi.toonGather.social.service;
 
 import com.multi.toonGather.common.exception.NotFoundException;
+import com.multi.toonGather.common.model.dto.PageDTO;
 import com.multi.toonGather.social.model.dto.DiaryDTO;
 import com.multi.toonGather.social.model.dto.ReviewDTO;
 import com.multi.toonGather.social.model.mapper.SocialMapper;
@@ -41,26 +42,42 @@ public class SocialServiceImpl implements SocialService {
     public UserDTO selectUserProfile(String userId) throws Exception {
         UserDTO user = socialMapper.selectUserProfile(userId);
         if (user == null) {
-            throw new NotFoundException("해당 페이지가 존재하지 않습니다.");
+            throw new NotFoundException("해당 사용자를 찾을 수 없습니다.");
         }
         return user;
     }
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewDTO> getReviewsByUserId(String userId) throws Exception {
-        return socialMapper.selectReviewsByUserId(userId);
+    public List<ReviewDTO> getReviewsByUserId(String userId, PageDTO pageDTO) throws Exception {
+        return socialMapper.selectReviewsByUserId(userId, pageDTO);
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public int getReviewCountByUserId(String userId) throws Exception {
+        return socialMapper.selectReviewCountByUserId(userId);
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public List<DiaryDTO> getDiariesByUserId(String userId, PageDTO pageDTO) throws Exception {
+        return socialMapper.selectDiariesByUserId(userId, pageDTO);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public int getDiaryCountByUserId(String userId) throws Exception {
+        return socialMapper.selectDiaryCountByUserId(userId);
     }
 
     // 리뷰
     @Override
-    @Transactional(readOnly = true)
-    public ReviewDTO getReviewByNo(int reviewNo) throws Exception {
-        return socialMapper.selectReviewByNo(reviewNo);
-    }
-    @Override
     @Transactional
     public void incrementReviewViewCount(int reviewNo) throws Exception {
         socialMapper.incrementReviewViewCount(reviewNo);
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public ReviewDTO getReviewByNo(int reviewNo) throws Exception {
+        return socialMapper.selectReviewByNo(reviewNo);
     }
     @Override
     @Transactional
@@ -77,28 +94,24 @@ public class SocialServiceImpl implements SocialService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public WebtoonDTO getWebtoonByNo(int webtoonNo) throws Exception {
         return socialMapper.selectWebtoonByNo(webtoonNo);
     }
     @Override
-    public void createReview(ReviewDTO review) throws Exception {
+    @Transactional
+    public int createReview(ReviewDTO review) throws Exception {
         socialMapper.createReview(review);
+        return review.getReviewNo();
     }
-//    @Override
-//    public void createReview(ReviewDTO review) {
-//        socialMapper.createReview(review);
-//    }
-//    @Override
-//    public void createDiary(DiaryDTO diary) {
-//        socialMapper.createDiary(diary);
-//    }
+    @Override
+    @Transactional
+    public int createDiary(DiaryDTO diary) throws Exception {
+        socialMapper.createDiary(diary);
+        return diary.getDiaryNo();
+    }
 
     // 다이어리
-    @Override
-    @Transactional(readOnly = true)
-    public List<DiaryDTO> getDiariesByUserId(String userId) throws Exception {
-        return socialMapper.selectDiariesByUserId(userId);
-    }
     @Override
     @Transactional
     public void incrementDiaryViewCount(int diaryNo) throws Exception {

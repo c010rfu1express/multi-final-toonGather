@@ -1,22 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>툰게더 toonGather | 리뷰 작성</title>
+    <link rel="stylesheet" th:href="@{/css/social-styles.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/starRating.css}">
     <style>
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .review-form {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 30px;
-        }
         .webtoon-info {
             background-color: #f8f9fa;
             border-radius: 4px;
@@ -44,49 +34,76 @@
             color: #666;
             margin: 5px 0;
         }
+        .review-form {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
         .form-group {
             margin-bottom: 20px;
         }
-        label {
-            font-weight: bold;
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input[type="text"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .form-group textarea {
+            height: 200px;
         }
     </style>
 </head>
 <body>
 <div th:replace="common/menubar.html"></div>
 
-<div class="container">
+<div class="container mt-4">
     <div class="review-form">
         <h1>리뷰 작성</h1>
-<!--        <div class="webtoon-info">-->
-<!--            <img class="webtoon-image" th:src="${review.webtoon.thumbnailUrl}" alt="웹툰 썸네일">-->
-<!--            <div class="webtoon-details">-->
-<!--                <h2>웹툰 정보</h2>-->
-<!--                <p><strong>제목:</strong> <span th:text="${review.webtoon.webtoon_name}"></span></p>-->
-<!--                <p><strong>작가:</strong> <span th:text="${review.webtoon.author}"></span></p>-->
-<!--            </div>-->
-<!--        </div>-->
-        <form th:action="@{/social/createReview}" th:object="${review}" method="post">
-            <input type="hidden" th:field="*{webtoon.webtoon_no}">
+        <div class="webtoon-info">
+            <img class="webtoon-image" th:src="${webtoon.thumbnail_url}" alt="웹툰 썸네일">
+            <div class="webtoon-details">
+                <h2>웹툰 정보</h2>
+                <p><strong>제목:</strong> <span th:text="${webtoon.webtoon_name}"></span></p>
+                <p><strong>작가:</strong> <span th:text="${webtoon.author}"></span></p>
+            </div>
+        </div>
+        <form th:action="@{/social/reviews/insert}" method="post">
+            <input type="hidden" name="webtoonNo" th:value="${webtoon.webtoon_no}">
+
             <div class="form-group">
                 <label for="title">리뷰 제목</label>
-                <input type="text" class="form-control" id="title" th:field="*{title}" required maxlength="50">
+                <input type="text" id="title" name="title"  required maxlength="50">
             </div>
+
             <div class="form-group">
                 <label for="content">내용</label>
-                <textarea class="form-control" id="content" th:field="*{content}" rows="5" required style="white-space: pre-wrap;" maxlength="1000"></textarea>
-                <small class="form-text text-muted">최대 1000자까지 입력 가능합니다. (<span id="charCount">0</span>/1000)</small>
+                <textarea id="content" name="content"  required maxlength="1000" style="white-space: pre-wrap;"></textarea>
+                <p class="small">최대 1000자까지 입력 가능합니다. (<span id="charCount">0</span>/1000)</p>
             </div>
+
             <div class="form-group">
-                <label for="starRating">별점</label>
-                <select class="form-control" id="starRating" th:field="*{starRating}" required>
-                    <option value="1">1점</option>
-                    <option value="2">2점</option>
-                    <option value="3">3점</option>
-                    <option value="4">4점</option>
-                    <option value="5">5점</option>
-                </select>
+                <label>별점</label>
+                <div class="star-rating">
+                    <input type="radio" id="5-stars" name="starRating" value="5">
+                    <label for="5-stars" class="star">&#9733;</label>
+                    <input type="radio" id="4-stars" name="starRating" value="4">
+                    <label for="4-stars" class="star">&#9733;</label>
+                    <input type="radio" id="3-stars" name="starRating" value="3">
+                    <label for="3-stars" class="star">&#9733;</label>
+                    <input type="radio" id="2-stars" name="starRating" value="2">
+                    <label for="2-stars" class="star">&#9733;</label>
+                    <input type="radio" id="1-star" name="starRating" value="1">
+                    <label for="1-star" class="star">&#9733;</label>
+                </div>
             </div>
+
             <button type="submit" class="btn btn-primary">작성</button>
         </form>
     </div>
@@ -94,18 +111,13 @@
 
 <script>
     document.getElementById('content').addEventListener('input', function() {
-        var maxLength = 1000;
-        var currentLength = this.value.length;
-        var charCountSpan = document.getElementById('charCount');
-
-        if (currentLength > maxLength) {
-            this.value = this.value.substring(0, maxLength);
-            currentLength = maxLength;
+        var charCount = this.value.length;
+        document.getElementById('charCount').textContent = charCount;
+        if (charCount > 1000) {
+            this.value = this.value.slice(0, 1000);
+            document.getElementById('charCount').textContent = 1000;
         }
-
-        charCountSpan.textContent = currentLength;
     });
 </script>
-
 </body>
 </html>

@@ -1,5 +1,6 @@
 package com.multi.toonGather.social.service;
 
+import com.multi.toonGather.common.model.dto.PageDTO;
 import com.multi.toonGather.social.model.dto.DiaryDTO;
 import com.multi.toonGather.social.model.dto.ReviewDTO;
 import com.multi.toonGather.user.model.dto.UserDTO;
@@ -21,20 +22,23 @@ public interface SocialService {
 
     // 사용자 메인 페이지
     UserDTO selectUserProfile(String userId) throws Exception;
-    List<ReviewDTO> getReviewsByUserId(String userId) throws Exception;
+    List<ReviewDTO> getReviewsByUserId(String userId, PageDTO pageDTO) throws Exception;
+    int getReviewCountByUserId(String userId) throws Exception;
+    List<DiaryDTO> getDiariesByUserId(String userId, PageDTO pageDTO) throws Exception;
+    int getDiaryCountByUserId(String userId) throws Exception;
 
     // 리뷰
-    ReviewDTO getReviewByNo(int reviewNo) throws Exception;
     void incrementReviewViewCount(int reviewNo) throws Exception;
+    ReviewDTO getReviewByNo(int reviewNo) throws Exception;
     void updateReview(ReviewDTO review) throws Exception;
     void deleteReview(int reviewNo) throws Exception;
 
+    //리뷰, 다이어리 작성
     WebtoonDTO getWebtoonByNo(int webtoonNo) throws Exception;
-    void createReview(ReviewDTO reviewDTO) throws Exception;
-//    void createDiary(DiaryDTO diary);
+    int createReview(ReviewDTO reviewDTO) throws Exception;
+    int createDiary(DiaryDTO diaryDTO) throws Exception;
 
     // 다이어리
-    List<DiaryDTO> getDiariesByUserId(String userId) throws Exception;
     void incrementDiaryViewCount(int diaryNo) throws Exception;
     DiaryDTO getDiaryByNo(int diaryNo) throws Exception;
     void updateDiary(DiaryDTO diaryDTO) throws Exception;
