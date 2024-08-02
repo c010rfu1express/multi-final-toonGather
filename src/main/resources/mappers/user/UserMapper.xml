@@ -92,9 +92,9 @@
         #{dateOfBirth},
         #{realName},
         #{termsAgreement},
-        #{termsAgreementDatetime},
-        #{registrationDatetime},
-        #{lastModifiedDatetime}
+        NOW(),
+        NOW(),
+        NOW()
         )
     </insert>
 
@@ -170,19 +170,23 @@
     <update id="updateUser" parameterType="map">
         UPDATE users
         SET
-            password = #{userDTO.password},
+            <if test="userDTO.authCode != '\0'">
+                auth_code = #{userDTO.authCode},
+            </if>
+            <if test="userDTO.password != null and userDTO.password != ''">
+                password = #{userDTO.password},
+            </if>
             nickname = #{userDTO.nickname},
             contact_number = #{userDTO.contactNumber},
             email = #{userDTO.email},
-            profile_image_path = #{userDTO.profileImagePath},
+            <if test="userDTO.profileImagePath != null and userDTO.profileImagePath != ''">
+                profile_image_path = #{userDTO.profileImagePath},
+            </if>
             bio = #{userDTO.bio},
             gender = #{userDTO.gender},
             date_of_birth = #{userDTO.dateOfBirth},
             real_name = #{userDTO.realName},
-            terms_agreement = #{userDTO.termsAgreement},
-            terms_agreement_datetime = #{userDTO.termsAgreementDatetime},
-            registration_datetime = #{userDTO.registrationDatetime},
-            last_modified_datetime = #{userDTO.lastModifiedDatetime}
+            last_modified_datetime = NOW()
         WHERE user_no = #{userNo}
     </update>
 

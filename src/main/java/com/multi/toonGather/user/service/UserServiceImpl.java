@@ -79,43 +79,113 @@ public class UserServiceImpl implements UserService {
     }
 
     public void updateProfile(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception {
-        System.out.println("userNo: " + userNo);
-        System.out.println("userDTO: " + userDTO);
 
-        // 비밀번호 암호화
-        String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
-        userDTO.setPassword(encodedPassword);
+        if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
+//            String currentPassword = userMapper.selectOneByUserNo(Integer.toString(userNo)).getPassword();
+//            userDTO.setPassword(currentPassword);
+            System.out.println("UserService.updateProfile(): 비밀번호를 변경하지 않았음.");
+        }
+        else {
+            System.out.println("userNo: " + userNo);
+            System.out.println("userDTO: " + userDTO);
 
-        // 파일 처리 추가!
-        String root = request.getSession().getServletContext().getRealPath("/");
-        System.out.println("root : " + root);
-        String filePath = root + "/uploadFiles";
+            //임시 설정... 널문자 처리할 방법 고민하기
+//        System.out.println("UserService.updateProfile에서 userDTO.getAuthCode(): "+userDTO.getAuthCode());
+//        if(userDTO.getAuthCode() == '\0'){
+//            System.out.println("널문자 맞음, 그리고 가져온거: "+userMapper.selectOneByUserNo(Integer.toString(userNo)).getAuthCode());
+//        }
 
-        File mkdir = new File(filePath);
-        if (!mkdir.exists()) {
-            mkdir.mkdirs();
+            // 비밀번호 암호화
+            String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
+            userDTO.setPassword(encodedPassword);
+
+            // 파일 처리 추가!
+            String root = request.getSession().getServletContext().getRealPath("/");
+            System.out.println("root : " + root);
+            String filePath = root + "/uploadFiles";
+
+            File mkdir = new File(filePath);
+            if (!mkdir.exists()) {
+                mkdir.mkdirs();
+            }
+
+            String originName = image.getOriginalFilename();
+            if (originName != null && !originName.isEmpty()) {
+                String ext = originName.substring(originName.lastIndexOf("."));
+                String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
+
+                // 파일 저장
+                try {
+                    image.transferTo(new File(filePath + "/" + savedName));
+//                userDTO.setOriginFileName(originName);
+                    userDTO.setProfileImagePath(savedName);
+                    System.out.println("[editProfileRequest] profileImagePath: " + userDTO.getProfileImagePath());
+                } catch (IOException e) {
+                    System.out.println("File upload error : " + e);
+                    new File(filePath + "/" + savedName).delete();
+                    throw new Exception("File upload failed, rolling back transaction.", e); // 예외를 던져 트랜잭션을 롤백함
+                }
+            } // if origin not null
+
+            int result = userMapper.updateUser(userNo, userDTO);
+            if(result == 0) new Exception("[ERROR] updateUser 실패. [userNo: " + userNo + "]");
         }
 
-        String originName = image.getOriginalFilename();
-        if (originName != null && !originName.isEmpty()) {
-            String ext = originName.substring(originName.lastIndexOf("."));
-            String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
+    }
 
-            // 파일 저장
-            try {
-                image.transferTo(new File(filePath + "/" + savedName));
-//                userDTO.setOriginFileName(originName);
-                userDTO.setProfileImagePath(savedName);
-                System.out.println("[editProfileRequest] profileImagePath: " + userDTO.getProfileImagePath());
-            } catch (IOException e) {
-                System.out.println("File upload error : " + e);
-                new File(filePath + "/" + savedName).delete();
-                throw new Exception("File upload failed, rolling back transaction.", e); // 예외를 던져 트랜잭션을 롤백함
+    public void updateProfileAdmin(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception {
+
+        if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
+            String currentPassword = userMapper.selectOneByUserNo(Integer.toString(userNo)).getPassword();
+            userDTO.setPassword(currentPassword);
+            System.out.println("UserService.updateProfileAdmin(): 비밀번호를 변경하지 않았음.");
+        }
+
+            System.out.println("userNo: " + userNo);
+            System.out.println("userDTO: " + userDTO);
+
+            //임시 설정... 널문자 처리할 방법 고민하기
+//        System.out.println("UserService.updateProfile에서 userDTO.getAuthCode(): "+userDTO.getAuthCode());
+//        if(userDTO.getAuthCode() == '\0'){
+//            System.out.println("널문자 맞음, 그리고 가져온거: "+userMapper.selectOneByUserNo(Integer.toString(userNo)).getAuthCode());
+//        }
+
+            // 비밀번호 암호화
+//            String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
+//            userDTO.setPassword(encodedPassword);
+
+
+            // 파일 처리 추가!
+            String root = request.getSession().getServletContext().getRealPath("/");
+            System.out.println("root : " + root);
+            String filePath = root + "/uploadFiles";
+
+            File mkdir = new File(filePath);
+            if (!mkdir.exists()) {
+                mkdir.mkdirs();
             }
-        } // if origin not null
 
-        int result = userMapper.updateUser(userNo, userDTO);
-        if(result == 0) new Exception("[ERROR] updateUser 실패. [userNo: " + userNo + "]");
+            String originName = image.getOriginalFilename();
+            if (originName != null && !originName.isEmpty()) {
+                String ext = originName.substring(originName.lastIndexOf("."));
+                String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
+
+                // 파일 저장
+                try {
+                    image.transferTo(new File(filePath + "/" + savedName));
+//                userDTO.setOriginFileName(originName);
+                    userDTO.setProfileImagePath(savedName);
+                    System.out.println("[editProfileRequest] profileImagePath: " + userDTO.getProfileImagePath());
+                } catch (IOException e) {
+                    System.out.println("File upload error : " + e);
+                    new File(filePath + "/" + savedName).delete();
+                    throw new Exception("File upload failed, rolling back transaction.", e); // 예외를 던져 트랜잭션을 롤백함
+                }
+            } // if origin not null
+
+            int result = userMapper.updateUser(userNo, userDTO);
+            if(result == 0) new Exception("[ERROR] updateUser 실패. [userNo: " + userNo + "]");
+
     }
 
     public void deleteProfile(int userNo) throws Exception{

@@ -13,6 +13,7 @@ public interface UserService {
     String findPw(UserDTO userDTO) throws Exception;
     UserDTO getProfile(int userNo) throws Exception;
     void updateProfile(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception;
+    void updateProfileAdmin(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception;
     void deleteProfile(int userNo) throws Exception;
     List<UserDTO> getUsers() throws Exception;
 }
