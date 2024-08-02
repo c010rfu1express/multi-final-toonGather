@@ -8,6 +8,7 @@ import com.multi.toonGather.recruit.model.dto.free.FreeReviewDTO;
 import com.multi.toonGather.recruit.model.dto.free.FreeReviewReportDTO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
@@ -61,4 +62,7 @@ public interface FreeMapper {
 
     @Delete("DELETE FROM rct_free_review_report WHERE report_no = #{no}")
     int deleteReport(int no) throws Exception;
+
+    @Select("SELECT COUNT(*) AS review_count FROM rct_free_review WHERE board_no = #{boardNo}")
+    int selectCountReview(int boardNo) throws Exception;
 }

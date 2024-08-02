@@ -139,4 +139,10 @@ public class FreeServiceImpl implements FreeService {
         int result = freeMapper.deleteReport(no);
         if (result > 0) new Exception("신고글 삭제 실패");
     }
+
+    @Override
+    public int selectCountReview(int boardNo) throws Exception {
+        int count = freeMapper.selectCountReview(boardNo);
+        return count;
+    }
 }

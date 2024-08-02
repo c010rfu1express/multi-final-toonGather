@@ -86,7 +86,9 @@
         <div id="result">
             <br> <br>
             <div class="centered-div">
-                <span>평균<span class="star-avg">&nbsp;&nbsp;★</span> [[${avg}]]</span>
+                <span>평균<span class="star-avg">&nbsp;&nbsp;★</span> [[${avg}]]&nbsp;&nbsp;
+                    <span style="font-size: 0.75em; color: gray;">리뷰 [[${review}]]건</span>
+                </span>
             </div>
             <div th:if="${member_no != null and member_no != ''}">
                 <form th:action="@{/recruit/free/review/insert}" id="form" method="post" >
