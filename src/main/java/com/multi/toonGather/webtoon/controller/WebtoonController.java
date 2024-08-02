@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.DayOfWeek;
@@ -114,12 +115,24 @@ public class WebtoonController {
     }
 
     @GetMapping("/webtoon/search")
-    public String searchWebtoon(@RequestParam("search") String search) {
+    public String searchWebtoon(@RequestParam("search") String search,Model model) throws UnsupportedEncodingException {
 
-        System.out.println("검색어: " + search);
+        String[]tags =search.split("#");
+        List<WebtoonDTO>webtoonDTOS=new ArrayList<>();
+        if(tags.length>1&&tags[1].length()>0){
+            webtoonDTOS=webToonService.searchWebtoon(tags[1]);
 
 
-        return "webtoon/search";
+        }
+
+
+        model.addAttribute("searchTags",webtoonDTOS);
+
+//        String encodedString = URLEncoder.encode(search, "UTF-8");
+        model.addAttribute("search",search);
+
+
+        return "webtoon/webtoonSearch";
     }
 
     @GetMapping("/webtoon/one/count")
