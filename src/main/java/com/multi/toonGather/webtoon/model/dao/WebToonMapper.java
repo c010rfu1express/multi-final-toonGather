@@ -28,4 +28,6 @@ public interface WebToonMapper {
     int updateLog(WtUserLogDTO wtUserLogDTO);
 
     int webToonInsert(WebtoonDTO webtoonDTO);
+
+    List<WebtoonDTO> searchWebtoon(String tag);
 }

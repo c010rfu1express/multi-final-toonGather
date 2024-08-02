@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-public class Main {
+public class Test {
 
     public static void main(String[] args) throws IOException {
         // 현재 날짜 가져오기
@@ -27,5 +27,11 @@ public class Main {
 
         // 출력
         System.out.println("오늘은 " + dayOfWeekString + "입니다.");
+        String sp="삼각관계#";
+        String[]s =sp.split("#");
+
+        for (String tag : s) {
+            System.out.println(tag+s.length);
+        }
         }
     }

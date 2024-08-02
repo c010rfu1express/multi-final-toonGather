@@ -73,10 +73,15 @@
 
     <update id="updateLog">
         UPDATE wt_user_log
-        set count =count + 1
+        set count =count + 1,
+        created_at = NOW()
         WHERE log_no = #{logNo}
     </update>
 
+    <select id="searchWebtoon" resultType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO">
+        SELECT * FROM webtoon
+        WHERE tags LIKE CONCAT('%', #{tags}, '%')
+    </select>
 
 
 
