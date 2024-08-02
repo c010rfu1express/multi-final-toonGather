@@ -27,4 +27,5 @@ public class DiaryDTO {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
     private int viewCnt;
+    private int commentCount;
 }

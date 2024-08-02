@@ -1,6 +1,7 @@
 package com.multi.toonGather.social.model.mapper;
 
 import com.multi.toonGather.common.model.dto.PageDTO;
+import com.multi.toonGather.social.model.dto.diary.DiaryCommentDTO;
 import com.multi.toonGather.social.model.dto.diary.DiaryDTO;
 import com.multi.toonGather.social.model.dto.review.ReviewDTO;
 import com.multi.toonGather.social.model.dto.review.ReviewLikeDTO;
@@ -49,4 +50,10 @@ public interface SocialMapper {
     DiaryDTO selectDiaryByNo(int diaryNo) throws Exception;
     void updateDiary(DiaryDTO diary) throws Exception;
     int deleteDiary(int diaryNo) throws Exception;
+
+    List<DiaryCommentDTO> selectDiaryComments(int diaryNo) throws Exception;
+    void insertDiaryComment(DiaryCommentDTO comment) throws Exception;
+    DiaryCommentDTO selectLastInsertedComment(@Param("diaryNo") int diaryNo, @Param("userNo") int userNo);
+    void deleteDiaryComment(int commentNo) throws Exception;
+    DiaryCommentDTO selectDiaryCommentByNo(int commentNo) throws Exception;
 }

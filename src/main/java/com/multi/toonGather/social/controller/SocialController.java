@@ -3,6 +3,7 @@ package com.multi.toonGather.social.controller;
 import com.multi.toonGather.common.exception.AccessDeniedException;
 import com.multi.toonGather.common.model.dto.PageDTO;
 import com.multi.toonGather.security.CustomUserDetails;
+import com.multi.toonGather.social.model.dto.diary.DiaryCommentDTO;
 import com.multi.toonGather.social.model.dto.diary.DiaryDTO;
 import com.multi.toonGather.social.model.dto.review.ReviewDTO;
 import com.multi.toonGather.social.service.SocialService;
@@ -295,11 +296,14 @@ public class SocialController {
 
         // 다이어리 정보 가져오기
         DiaryDTO diary = socialService.getDiaryByNo(diaryNo);
+        List<DiaryCommentDTO> comments = socialService.getDiaryComments(diaryNo);
         // 다이어리 작성자의 프로필 정보 가져오기
         UserDTO profileUser = socialService.selectUserProfile(diary.getWriter().getUserId());
 
         model.addAttribute("diary", diary);
         model.addAttribute("profileUser", profileUser);
+        model.addAttribute("diary", diary);
+        model.addAttribute("comments", comments);
 
         return "social/diary/detail";
     }
@@ -349,5 +353,48 @@ public class SocialController {
         socialService.deleteDiary(diaryNo);
         redirectAttributes.addFlashAttribute("message", "리뷰가 성공적으로 삭제되었습니다.");
         return "redirect:/social/users/" + currentUser.getUserDTO().getUserId() + "/diaries";
+    }
+
+    // 다이어리 댓글 조회
+    @GetMapping("/diaries/{diaryNo}/comments")
+    @ResponseBody
+    public ResponseEntity<List<DiaryCommentDTO>> getDiaryComments(@PathVariable int diaryNo) {
+        try {
+            List<DiaryCommentDTO> comments = socialService.getDiaryComments(diaryNo);
+            return ResponseEntity.ok(comments);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    // 다이어리 댓글 작성
+    @PostMapping("/diaries/{diaryNo}/comments")
+    @ResponseBody
+    public ResponseEntity<?> addComment(@PathVariable("diaryNo") int diaryNo,
+                                        @RequestBody Map<String, String> payload,
+                                        @AuthenticationPrincipal CustomUserDetails userDetails) {
+        try {
+            String content = payload.get("content");
+            DiaryCommentDTO comment = socialService.addDiaryComment(diaryNo, userDetails.getUserDTO().getUserNo(), content);
+            return ResponseEntity.ok().body(Map.of("success", true, "comment", comment));
+        } catch (Exception e) {
+            e.printStackTrace(); // 로그에 예외 스택 트레이스 출력
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", e.getMessage()));
+        }
+    }
+
+    // 다이어리 댓글 삭제
+    @DeleteMapping("/diaries/comments/{commentNo}")
+    @ResponseBody
+    public ResponseEntity<?> deleteComment(@PathVariable("commentNo") int commentNo,
+                                           @AuthenticationPrincipal CustomUserDetails userDetails) {
+        try {
+            socialService.deleteDiaryComment(commentNo, userDetails.getUserDTO().getUserNo());
+            return ResponseEntity.ok(Map.of("success", true));
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("success", false, "message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", e.getMessage()));
+        }
     }
 }

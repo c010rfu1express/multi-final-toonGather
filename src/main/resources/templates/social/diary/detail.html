@@ -77,6 +77,34 @@
             justify-content: flex-start;
             gap: 10px;
         }
+        .comments-section {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        .comment {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .comment-meta {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .comment-content {
+            font-size: 16px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+        }
     </style>
 </head>
 <body>
@@ -109,6 +137,7 @@
                 수정일: <span th:text="${#temporals.format(diary.modifiedDate, 'yyyy-MM-dd HH:mm')}"></span>
             </span>
             <span class="views">조회수: <span th:text="${diary.viewCnt}"></span></span>
+            <span class="comment-count">댓글: <span th:text="${diary.commentCount}"></span></span>
         </div>
         <div class="diary-actions">
             <a th:href="@{/social/users/{userId}/diaries(userId=${profileUser.userId})}" class="btn btn-secondary">목록으로</a>
@@ -123,6 +152,147 @@
     <div th:unless="${diary != null}">
         <p>해당 다이어리를 찾을 수 없습니다.</p>
     </div>
+    <div class="comments-section">
+        <h3>댓글</h3>
+        <!-- 댓글 목록 -->
+        <div class="comments-list" th:if="${not #lists.isEmpty(comments)}">
+            <div class="comment" th:each="comment : ${comments}">
+                <div class="comment-meta">
+                    <span class="comment-author" th:text="${comment.commenter.nickname}"></span>
+                    <span class="comment-date" th:text="${#temporals.format(comment.createdDate, 'yyyy-MM-dd a hh:mm:ss')}"></span>
+                </div>
+                <div class="comment-content" th:utext="${#strings.replace(#strings.escapeXml(comment.content), '&#10;', '<br/>')}"></div>
+                <!-- 댓글 삭제 버튼 (댓글 작성자만 볼 수 있음) -->
+                <button th:if="${#authentication.principal != null and #authentication.principal.userDTO.userNo == comment.commenter.userNo}"
+                        class="btn btn-sm btn-danger delete-comment"
+                        th:data-comment-id="${comment.commentNo}">삭제</button>
+            </div>
+        </div>
+        <div th:if="${#lists.isEmpty(comments)}" class="no-comments">
+            아직 댓글이 없습니다.
+        </div>
+        <!-- 댓글 작성 폼 (로그인한 사용자만 볼 수 있음) -->
+        <div class="comment-form mt-4" th:if="${#authorization.expression('isAuthenticated()')}">
+            <form id="commentForm" th:action="@{/social/diaries/{diaryNo}/comments(diaryNo=${diary.diaryNo})}" method="post">
+                <div class="form-group">
+                    <textarea class="form-control" id="commentContent" name="content" rows="3" required maxlength="140"></textarea>
+                    <p class="small">최대 140자까지 입력 가능합니다. (<span id="charCount">0</span>/140)</p>
+                </div>
+                <button type="submit" class="btn btn-primary">댓글 작성</button>
+            </form>
+        </div>
+    </div>
 </div>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const commentForm = document.getElementById('commentForm');
+        const commentsList = document.querySelector('.comments-list');
+        const commentContent = document.getElementById('commentContent');
+        const charCount = document.getElementById('charCount');
+
+        if (commentContent) {
+            commentContent.addEventListener('input', function() {
+                let count = this.value.length;
+                charCount.textContent = count;
+                if (count > 140) {
+                    this.value = this.value.slice(0, 140);
+                    charCount.textContent = 140;
+                }
+            });
+        }
+
+        if (commentForm) {
+            commentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const content = commentContent.value;
+                const diaryNo = [[${diary.diaryNo}]];
+
+                fetch(`/social/diaries/${diaryNo}/comments`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ content: content })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('서버 응답이 올바르지 않습니다.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        const newComment = createCommentElement(data.comment);
+                        commentsList.appendChild(newComment);
+                        commentForm.reset();
+                        charCount.textContent = '0';
+
+                        // 댓글 수 업데이트
+                        const commentCountSpan = document.querySelector('.comment-count span');
+                        if (commentCountSpan) {
+                            commentCountSpan.textContent = parseInt(commentCountSpan.textContent) + 1;
+                        }
+                    } else {
+                        alert('댓글 작성에 실패했습니다: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('오류가 발생했습니다: ' + error.message);
+                });
+            });
+        }
+
+        // 댓글 삭제 이벤트 리스너
+        commentsList.addEventListener('click', function(e) {
+            if (e.target.classList.contains('delete-comment')) {
+                const commentId = e.target.getAttribute('data-comment-id');
+                if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+                    deleteComment(commentId, e.target.closest('.comment'));
+                }
+            }
+        });
+
+        function createCommentElement(comment) {
+            const commentDiv = document.createElement('div');
+            commentDiv.className = 'comment';
+            commentDiv.innerHTML = `
+                <div class="comment-meta">
+                    <span class="comment-author">${comment.commenter.nickname}</span>
+                    <span class="comment-date">${new Date(comment.createdDate).toLocaleString()}</span>
+                </div>
+                <div class="comment-content">${comment.content.replace(/\n/g, '<br>')}</div>
+                <button class="btn btn-sm btn-danger delete-comment" data-comment-id="${comment.commentNo}">삭제</button>
+            `;
+            return commentDiv;
+        }
+
+        function deleteComment(commentId, commentElement) {
+            fetch(`/social/diaries/comments/${commentId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    commentElement.remove();
+
+                    // 댓글 수 업데이트
+                    const commentCountSpan = document.querySelector('.comment-count span');
+                    if (commentCountSpan) {
+                        commentCountSpan.textContent = parseInt(commentCountSpan.textContent) - 1;
+                    }
+                } else {
+                    alert('댓글 삭제에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('오류가 발생했습니다.');
+            });
+        }
+    });
+</script>
+
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.multi.toonGather.social.service;
 
 import com.multi.toonGather.common.model.dto.PageDTO;
+import com.multi.toonGather.social.model.dto.diary.DiaryCommentDTO;
 import com.multi.toonGather.social.model.dto.diary.DiaryDTO;
 import com.multi.toonGather.social.model.dto.review.ReviewDTO;
 import com.multi.toonGather.user.model.dto.UserDTO;
@@ -45,4 +46,7 @@ public interface SocialService {
     DiaryDTO getDiaryByNo(int diaryNo) throws Exception;
     void updateDiary(DiaryDTO diaryDTO) throws Exception;
     void deleteDiary(int diaryNo) throws Exception;
+    List<DiaryCommentDTO> getDiaryComments(int diaryNo) throws Exception;
+    DiaryCommentDTO addDiaryComment(int diaryNo, int userNo, String content) throws Exception;
+    void deleteDiaryComment(int commentNo, int userNo) throws Exception;
 }

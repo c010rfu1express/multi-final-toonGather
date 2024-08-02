@@ -2,6 +2,7 @@ package com.multi.toonGather.social.service;
 
 import com.multi.toonGather.common.exception.NotFoundException;
 import com.multi.toonGather.common.model.dto.PageDTO;
+import com.multi.toonGather.social.model.dto.diary.DiaryCommentDTO;
 import com.multi.toonGather.social.model.dto.diary.DiaryDTO;
 import com.multi.toonGather.social.model.dto.review.ReviewDTO;
 import com.multi.toonGather.social.model.dto.review.ReviewLikeDTO;
@@ -155,5 +156,37 @@ public class SocialServiceImpl implements SocialService {
         if (result == 0) {
             throw new NotFoundException("삭제할 리뷰를 찾을 수 없습니다.");
         }
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public List<DiaryCommentDTO> getDiaryComments(int diaryNo) throws Exception {
+        return socialMapper.selectDiaryComments(diaryNo);
+    }
+    @Override
+    @Transactional
+    public DiaryCommentDTO addDiaryComment(int diaryNo, int userNo, String content) throws Exception {
+        DiaryCommentDTO comment = new DiaryCommentDTO();
+        comment.setDiaryNo(diaryNo);
+        comment.setCommenter(new UserDTO());
+        comment.getCommenter().setUserNo(userNo);
+        comment.setContent(content);
+
+        socialMapper.insertDiaryComment(comment);
+
+        // 가장 최근에 삽입된 댓글을 조회
+        DiaryCommentDTO newComment = socialMapper.selectLastInsertedComment(diaryNo, userNo);
+        if (newComment == null) {
+            throw new RuntimeException("새로 작성된 댓글을 찾을 수 없습니다.");
+        }
+        return newComment;
+    }
+    @Override
+    @Transactional
+    public void deleteDiaryComment(int commentNo, int userNo) throws Exception {
+        DiaryCommentDTO comment = socialMapper.selectDiaryCommentByNo(commentNo);
+        if (comment == null || comment.getCommenter().getUserNo() != userNo) {
+            throw new Exception("댓글을 삭제할 권한이 없습니다.");
+        }
+        socialMapper.deleteDiaryComment(commentNo);
     }
 }
