@@ -39,6 +39,7 @@ public interface SocialService {
     //리뷰, 다이어리 작성
     WebtoonDTO getWebtoonByNo(int webtoonNo) throws Exception;
     int createReview(ReviewDTO reviewDTO) throws Exception;
+    ReviewDTO getReviewByUserAndWebtoon(int userNo, int webtoonNo) throws Exception;
     int createDiary(DiaryDTO diaryDTO) throws Exception;
 
     // 다이어리

@@ -203,10 +203,18 @@ public class SocialController {
     // 리뷰 작성 페이지
     @GetMapping("/reviews/insert/{webtoonNo}")
     public String showReviewInsertForm(@PathVariable("webtoonNo") int webtoonNo,
-                                @AuthenticationPrincipal CustomUserDetails currentUser,
-                                Model model) throws Exception {
+                                       @AuthenticationPrincipal CustomUserDetails currentUser,
+                                       Model model, RedirectAttributes redirectAttributes) throws Exception {
         WebtoonDTO webtoon = socialService.getWebtoonByNo(webtoonNo);
         UserDTO profileUser = socialService.selectUserProfile(currentUser.getUserDTO().getUserId());
+
+        // 이미 리뷰를 작성했는지 확인
+        ReviewDTO existingReview = socialService.getReviewByUserAndWebtoon(currentUser.getUserDTO().getUserNo(), webtoonNo);
+        if (existingReview != null) {
+            // 이미 리뷰를 작성한 경우 에러 메시지를 추가하고 해당 리뷰 페이지로 리다이렉트
+            redirectAttributes.addFlashAttribute("errorMessage", "이미 이 웹툰에 대한 리뷰를 작성하셨습니다.");
+            return "redirect:/social/reviews/" + existingReview.getReviewNo();
+        }
 
         ReviewDTO review = new ReviewDTO();
         review.setWebtoon(webtoon);
@@ -221,10 +229,11 @@ public class SocialController {
     // 리뷰 작성
     @PostMapping("/reviews/insert")
     public String createReview(@ModelAttribute ReviewDTO review,
-                              @RequestParam("webtoonNo") int webtoonNo,
-                              @AuthenticationPrincipal CustomUserDetails currentUser) throws Exception {
+                               @RequestParam("webtoonNo") int webtoonNo,
+                               @AuthenticationPrincipal CustomUserDetails currentUser) throws Exception {
+
         review.setWriter(currentUser.getUserDTO());
-        WebtoonDTO webtoon = socialService.getWebtoonByNo(webtoonNo);  // 웹툰 정보 가져오기
+        WebtoonDTO webtoon = socialService.getWebtoonByNo(webtoonNo);
         review.setWebtoon(webtoon);
 
         socialService.createReview(review);

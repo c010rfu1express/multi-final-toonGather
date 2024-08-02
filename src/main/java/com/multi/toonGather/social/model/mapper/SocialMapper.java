@@ -43,6 +43,7 @@ public interface SocialMapper {
 
     WebtoonDTO selectWebtoonByNo(int webtoonNo) throws Exception;
     void createReview(ReviewDTO review) throws Exception;
+    ReviewDTO selectReviewByUserAndWebtoon(@Param("userNo") int userNo, @Param("webtoonNo") int webtoonNo);
     void createDiary(DiaryDTO diary) throws Exception;
 
     // 다이어리

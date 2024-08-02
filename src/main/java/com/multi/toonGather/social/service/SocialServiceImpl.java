@@ -127,6 +127,11 @@ public class SocialServiceImpl implements SocialService {
         return review.getReviewNo();
     }
     @Override
+    @Transactional(readOnly = true)
+    public ReviewDTO getReviewByUserAndWebtoon(int userNo, int webtoonNo) throws Exception {
+        return socialMapper.selectReviewByUserAndWebtoon(userNo, webtoonNo);
+    }
+    @Override
     @Transactional
     public int createDiary(DiaryDTO diary) throws Exception {
         socialMapper.createDiary(diary);

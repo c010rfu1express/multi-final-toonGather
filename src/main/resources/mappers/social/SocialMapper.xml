@@ -173,6 +173,15 @@
         INSERT INTO so_review (writer_no, webtoon_no, title, content, star_rating)
         VALUES (#{writer.userNo}, #{webtoon.webtoon_no}, #{title}, #{content}, #{starRating})
     </insert>
+    <select id="selectReviewByUserAndWebtoon" resultMap="reviewResultMap">
+        SELECT r.*, u.user_no, u.user_id, u.nickname, u.profile_image_path,
+        w.webtoon_no, w.webtoon_name, w.author, w.thumbnail_url
+        FROM so_review r
+        JOIN users u ON r.writer_no = u.user_no
+        JOIN webtoon w ON r.webtoon_no = w.webtoon_no
+        WHERE r.writer_no = #{userNo} AND r.webtoon_no = #{webtoonNo}
+        LIMIT 1
+    </select>
 
     <!-- 다이어리 작성 -->
     <insert id="createDiary" parameterType="diaryDTO" useGeneratedKeys="true" keyProperty="diaryNo">
