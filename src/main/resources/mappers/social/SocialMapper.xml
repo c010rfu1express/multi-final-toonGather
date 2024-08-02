@@ -54,7 +54,25 @@
 
     <!-- 사용자 정보 조회 -->
     <select id="selectUserProfile" resultType="userDTO">
-        SELECT * FROM users WHERE user_id = #{userId}
+        SELECT
+        user_no AS userNo,
+        type_code AS typeCode,
+        auth_code AS authCode,
+        user_id AS userId,
+        password,
+        nickname,
+        contact_number AS contactNumber,
+        email,
+        profile_image_path AS profileImagePath,
+        bio,
+        gender,
+        date_of_birth AS dateOfBirth,
+        real_name AS realName,
+        terms_agreement AS termsAgreement,
+        terms_agreement_datetime AS termsAgreementDatetime,
+        registration_datetime AS registrationDatetime,
+        last_modified_datetime AS lastModifiedDatetime
+        FROM users WHERE user_id = #{userId}
     </select>
 
     <!-- 사용자별 리뷰 목록 조회 -->

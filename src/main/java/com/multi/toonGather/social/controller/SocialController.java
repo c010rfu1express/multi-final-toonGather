@@ -50,9 +50,12 @@ public class SocialController {
         System.out.println(profileUser.getUserId());
 
         model.addAttribute("profileUser", profileUser);
-        model.addAttribute("currentUser", currentUser.getUserDTO());
-        model.addAttribute("isOwnProfile", currentUser.getUserDTO().getUserId().equals(userId));
-
+        if (currentUser != null) {
+            model.addAttribute("currentUser", currentUser.getUserDTO());
+            model.addAttribute("isOwnProfile", currentUser.getUserDTO().getUserId().equals(userId));
+        } else {
+            model.addAttribute("isOwnProfile", false);
+        }
         return "social/user/profile";
     }
 

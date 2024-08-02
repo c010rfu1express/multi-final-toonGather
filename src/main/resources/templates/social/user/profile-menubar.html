@@ -24,11 +24,6 @@
                     <li><a th:href="@{'/social/users/' + ${profileUser.userId} + '/reviews'}">리뷰</a></li>
                     <li><a th:href="@{'/social/users/' + ${profileUser.userId} + '/diaries'}">다이어리</a></li>
                 </ul>
-                <p th:text="${'Debug: userNo = ' + profileUser.userNo}"></p>
-                <p th:text="${'Debug: nickname = ' + profileUser.nickname}"></p>
-                <p th:text="${'Debug: bio = ' + profileUser.bio}"></p>
-                <p th:text="${'Debug: userId = ' + profileUser.userId}"></p>
-                <p th:text="${'Debug: profileImagePath = ' + profileUser.profileImagePath}"></p>
             </nav>
         </div>
     </div>
