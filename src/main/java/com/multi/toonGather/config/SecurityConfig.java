@@ -68,7 +68,8 @@ public class SecurityConfig {
                         .requestMatchers("/social/reviews/*").permitAll()
                         //  social (최서윤): 인증이 필요한 소셜 파트 경로
                         .requestMatchers("/social/reviews/*/edit", "/social/reviews/*/delete").authenticated()
-                        // 마이페이지 관련 경로
+                        // 관리자/마이페이지 관련 경로
+                        .requestMatchers("/user/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/my/**").authenticated()
                         .requestMatchers("/user/**").permitAll()
                         // 그 외 모든 요청은 인증 필요
