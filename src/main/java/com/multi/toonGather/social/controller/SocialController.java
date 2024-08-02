@@ -1,6 +1,7 @@
 package com.multi.toonGather.social.controller;
 
 import com.multi.toonGather.common.exception.AccessDeniedException;
+import com.multi.toonGather.common.model.dto.PageDTO;
 import com.multi.toonGather.security.CustomUserDetails;
 import com.multi.toonGather.social.model.dto.DiaryDTO;
 import com.multi.toonGather.social.model.dto.ReviewDTO;
@@ -46,6 +47,7 @@ public class SocialController {
     public String userProfile(@PathVariable("userId") String userId, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) throws Exception {
         // 프로필 페이지의 주인 정보
         UserDTO profileUser = socialService.selectUserProfile(userId);
+        System.out.println(profileUser.getUserId());
 
         model.addAttribute("profileUser", profileUser);
         model.addAttribute("currentUser", currentUser.getUserDTO());
@@ -56,12 +58,25 @@ public class SocialController {
 
     // 사용자별 리뷰 목록 페이지
     @GetMapping("/users/{userId}/reviews")
-    public String userReviews(@PathVariable("userId") String userId, Model model) throws Exception {
+    public String userReviews(@PathVariable("userId") String userId,
+                              @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                              Model model) throws Exception {
         UserDTO profileUser = socialService.selectUserProfile(userId);
-        List<ReviewDTO> reviews = socialService.getReviewsByUserId(userId);
+
+        PageDTO pageDTO = new PageDTO();
+        pageDTO.setPage(page);
+        pageDTO.setStartEnd(page);
+
+        int count = socialService.getReviewCountByUserId(userId);
+        int pages = count > 0 ? (int) Math.ceil((double) count / 10) : 1;
+
+        List<ReviewDTO> reviews = socialService.getReviewsByUserId(userId, pageDTO);
 
         model.addAttribute("profileUser", profileUser);
         model.addAttribute("reviews", reviews);
+        model.addAttribute("count", count);
+        model.addAttribute("pages", pages);
+        model.addAttribute("currentPage", page);
 
         return "social/user/reviews";
     }
@@ -130,7 +145,7 @@ public class SocialController {
         return "redirect:/social/users/" + currentUser.getUserDTO().getUserId() + "/reviews";
     }
 
-    // 리뷰 작성 페이지 // 미완성
+    // 리뷰 작성 페이지
     @GetMapping("/reviews/insert/{webtoonNo}")
     public String showReviewInsertForm(@PathVariable("webtoonNo") int webtoonNo,
                                 @AuthenticationPrincipal CustomUserDetails currentUser,
@@ -138,83 +153,85 @@ public class SocialController {
         WebtoonDTO webtoon = socialService.getWebtoonByNo(webtoonNo);
         UserDTO profileUser = socialService.selectUserProfile(currentUser.getUserDTO().getUserId());
 
+        ReviewDTO review = new ReviewDTO();
+        review.setWebtoon(webtoon);
+
         model.addAttribute("webtoon", webtoon);
         model.addAttribute("profileUser", profileUser);
-        model.addAttribute("review", new ReviewDTO());
+        model.addAttribute("review", review);
 
         return "social/review/insert";
     }
 
-    // 리뷰 작성 // 미완성
+    // 리뷰 작성
     @PostMapping("/reviews/insert")
-    public String createReview(@ModelAttribute ReviewDTO reviewDTO,
+    public String createReview(@ModelAttribute ReviewDTO review,
                               @RequestParam("webtoonNo") int webtoonNo,
                               @AuthenticationPrincipal CustomUserDetails currentUser) throws Exception {
-        reviewDTO.setWriter(currentUser.getUserDTO());  // 현재 로그인한 사용자 정보 설정
-        reviewDTO.setWebtoon(new WebtoonDTO());
-        reviewDTO.getWebtoon().setWebtoon_no(webtoonNo);
+        review.setWriter(currentUser.getUserDTO());
+        WebtoonDTO webtoon = socialService.getWebtoonByNo(webtoonNo);  // 웹툰 정보 가져오기
+        review.setWebtoon(webtoon);
 
-        socialService.createReview(reviewDTO);
-        return "redirect:/webtoon/" + webtoonNo; // 웹툰 상세 페이지로 리다이렉트
+        socialService.createReview(review);
+        return "redirect:/social/reviews/" + review.getReviewNo();
     }
 
-//    @GetMapping("/review/insert")
-//    public String showReviewInsertForm(@RequestParam("webtoon.webtoon_no") int webtoonNo, Model model) {
-//        ReviewDTO review = new ReviewDTO();
-//        WebtoonDTO webtoon = new WebtoonDTO();
-//        webtoon.setWebtoon_no(webtoonNo);
-//        review.setWebtoon(webtoon);
-//
-//        model.addAttribute("review", review);
-//
-//        return "social/reviewInsertForm";
-//    }
-//
-//    @PostMapping("/createReview")
-//    public String createReview(@ModelAttribute ReviewDTO review) {
-//        // 현재 로그인한 사용자 정보 설정 (Spring Security 구현 후 수정 필요)
-//        UserDTO writer = new UserDTO();
-//        writer.setUserNo(1);  // 테스트용: userNo=1 하드코딩
-//        review.setWriter(writer);
-//
-//        socialService.createReview(review);
-//        return "redirect:/social/review/list";
-//    }
+    // 다이어리 작성 페이지
+    @GetMapping("/diaries/insert/{webtoonNo}")
+    public String showDiaryInsertForm(@PathVariable("webtoonNo") int webtoonNo,
+                                      @AuthenticationPrincipal CustomUserDetails currentUser,
+                                      Model model) throws Exception {
+        WebtoonDTO webtoon = socialService.getWebtoonByNo(webtoonNo);
+        UserDTO profileUser = socialService.selectUserProfile(currentUser.getUserDTO().getUserId());
 
-    // 다이어리
-//    @GetMapping("/diaryInsertForm")
-//    public String showDiaryInsertForm(@RequestParam("webtoon.webtoon_no") int webtoonNo, Model model) {
-//        DiaryDTO diary = new DiaryDTO();
-//        WebtoonDTO webtoon = new WebtoonDTO();
-//        webtoon.setWebtoon_no(webtoonNo);
-//        diary.setWebtoon(webtoon);
-//
-//        model.addAttribute("diary", diary);
-//        return "social/diaryInsertForm";
-//    }
-//
-//    @PostMapping("/createDiary")
-//    public String createDiary(@ModelAttribute DiaryDTO diary) {
-//        // 현재 로그인한 사용자 정보 설정 (Spring Security 구현 후 수정 필요)
-//        UserDTO writer = new UserDTO();
-//        writer.setUserNo(1);  // 테스트용: userNo=1 하드코딩
-//        diary.setWriter(writer);
-//
-//        socialService.createDiary(diary);
-//        return "redirect:/social/diary/detail?diaryNo=" + diary.getDiaryNo();
-//    }
+        DiaryDTO diary = new DiaryDTO();
+        diary.setWebtoon(webtoon);
+
+        model.addAttribute("webtoon", webtoon);
+        model.addAttribute("profileUser", profileUser);
+        model.addAttribute("diary", diary);
+
+        return "social/diary/insert";
+    }
+
+    // 다이어리 작성
+    @PostMapping("/diaries/insert")
+    public String createDiary(@ModelAttribute DiaryDTO diary,
+                              @RequestParam("webtoonNo") int webtoonNo,
+                              @AuthenticationPrincipal CustomUserDetails currentUser) throws Exception {
+        diary.setWriter(currentUser.getUserDTO());
+        WebtoonDTO webtoon = socialService.getWebtoonByNo(webtoonNo);
+        diary.setWebtoon(webtoon);
+
+        int diaryNo = socialService.createDiary(diary);
+        return "redirect:/social/diaries/" + diaryNo;
+    }
 
     // 사용자별 다이어리 목록 페이지
     @GetMapping("/users/{userId}/diaries")
-    public String userDiaries(@PathVariable("userId") String userId, Model model) throws Exception {
+    public String userDiaries(@PathVariable("userId") String userId,
+                              @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                              Model model) throws Exception {
         UserDTO profileUser = socialService.selectUserProfile(userId);
-        List<DiaryDTO> diaries = socialService.getDiariesByUserId(userId);
+
+        PageDTO pageDTO = new PageDTO();
+        pageDTO.setPage(page);
+        pageDTO.setStartEnd(page);
+
+        int count = socialService.getDiaryCountByUserId(userId);
+        int pages = count > 0 ? (int) Math.ceil((double) count / 10) : 1;
+
+        List<DiaryDTO> diaries = socialService.getDiariesByUserId(userId, pageDTO);
 
         model.addAttribute("profileUser", profileUser);
         model.addAttribute("diaries", diaries);
+        model.addAttribute("count", count);
+        model.addAttribute("pages", pages);
+        model.addAttribute("currentPage", page);
 
         return "social/user/diaries";
     }
+
 
     // 다이어리 상세 페이지
     @GetMapping("/diaries/{diaryNo}")
