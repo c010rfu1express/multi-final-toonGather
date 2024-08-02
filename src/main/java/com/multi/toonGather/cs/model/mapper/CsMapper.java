@@ -1,9 +1,6 @@
 package com.multi.toonGather.cs.model.mapper;
 
-import com.multi.toonGather.cs.model.dto.AnswerDTO;
-import com.multi.toonGather.cs.model.dto.CsCategoryDTO;
-import com.multi.toonGather.cs.model.dto.QuestionDTO;
-import com.multi.toonGather.cs.model.dto.QuestionFilesDTO;
+import com.multi.toonGather.cs.model.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -34,4 +31,14 @@ public interface CsMapper {
     List<AnswerDTO> getAnswerList(int csQNo);
 
     boolean insertAnswer(AnswerDTO answerDTO);
+
+    List<FaqDTO> faqList();
+
+    boolean insertFaq(FaqDTO faq);
+
+    FaqDTO getFaqById(int csFaqNo);
+
+    boolean updateFaq(FaqDTO faq);
+
+    boolean deleteFaq(int csFaqNo);
 }
