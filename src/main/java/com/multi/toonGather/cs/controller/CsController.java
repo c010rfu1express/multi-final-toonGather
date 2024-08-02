@@ -1,9 +1,6 @@
 package com.multi.toonGather.cs.controller;
 
-import com.multi.toonGather.cs.model.dto.AnswerDTO;
-import com.multi.toonGather.cs.model.dto.CsCategoryDTO;
-import com.multi.toonGather.cs.model.dto.QuestionDTO;
-import com.multi.toonGather.cs.model.dto.QuestionFilesDTO;
+import com.multi.toonGather.cs.model.dto.*;
 import com.multi.toonGather.cs.service.CsService;
 import com.multi.toonGather.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,6 +41,8 @@ public class CsController {
     // csMain 페이지 호출 메소드
     @GetMapping("/csUser")
     public String csUser(Model model) throws Exception {
+        List<FaqDTO> faqList = csService.faqList();
+        model.addAttribute("faqList", faqList);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -61,6 +60,19 @@ public class CsController {
         model.addAttribute("questions", questions);
 
         return "cs/csUser";
+    }
+
+    @GetMapping("/csAdmin")
+    public String csAdmin(Model model) throws Exception {
+        List<QuestionDTO> questions = csService.questionList();
+        List<FaqDTO> faqList = csService.faqList();
+
+        System.out.println(questions);
+
+        model.addAttribute("questions", questions);
+        model.addAttribute("faqList", faqList);
+
+        return "/cs/csAdmin";
     }
 
     // 문의글 작성 페이지 호출 메소드
@@ -166,17 +178,6 @@ public class CsController {
         }
     }
 
-    @GetMapping("/csAdmin")
-    public String csAdmin(Model model) throws Exception {
-        List<QuestionDTO> questions = csService.questionList();
-
-        System.out.println(questions);
-
-        model.addAttribute("questions", questions);
-
-        return "/cs/csAdmin";
-    }
-
     @PostMapping("/insertAnswer/{csQNo}")
     public String insertAnswer(@PathVariable("csQNo") int csQNo, @RequestParam("answer") String answer) throws Exception{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -198,6 +199,82 @@ public class CsController {
             return "redirect:/cs/questionDetail/" + csQNo;
         } else {
             return "/cs/csAdmin";
+        }
+    }
+
+    @GetMapping("/insertFaq")
+    public String insertFaq(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getPrincipal())) {
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            model.addAttribute("user", userDetails);
+        }
+        return "/cs/insertFaq";
+    }
+
+    @PostMapping("/insertFaq")
+    public String insertFaq(@RequestParam("title") String title,
+                            @RequestParam("content") String content) throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+            return "cs/csUser";
+        }
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        int userNo = userDetails.getMemNo();
+
+        FaqDTO faq = new FaqDTO();
+        faq.setCsFaqTitle(title);
+        faq.setCsFaqContent(content);
+        faq.setCsFaqWriterNo(userNo);
+
+        boolean isSuccess = csService.insertFaq(faq);
+        if (isSuccess) {
+            return "redirect:/cs/csAdmin";
+        } else {
+            return "redirect:/cs/insertFaq";
+        }
+    }
+
+    @GetMapping("/faqDetail/{csFaqNo}")
+    public String faqDetail(@PathVariable("csFaqNo") int csFaqNo, Model model) throws Exception {
+        FaqDTO faq = csService.getFaqById(csFaqNo);
+        model.addAttribute("faq", faq);
+
+        return "cs/faqDetail";
+    }
+
+    @GetMapping("/updateFaq/{csFaqNo}")
+    public String updateFaq(@PathVariable("csFaqNo") int csFaqNo, Model model) throws Exception {
+        FaqDTO faq = csService.getFaqById(csFaqNo);
+        model.addAttribute("faq", faq);
+        return "cs/updateFaq";
+    }
+
+    @PostMapping("/updateFaq")
+    public String updateQuestion(@RequestParam("csFaqNo") int csFaqNo,
+                                 @RequestParam("csFaqTitle") String title,
+                                 @RequestParam("csFaqContent") String content) throws Exception {
+        FaqDTO faq = csService.getFaqById(csFaqNo);
+        faq.setCsFaqTitle(title);
+        faq.setCsFaqContent(content);
+
+        boolean isSuccess = csService.updateFaq(faq);
+        if (isSuccess) {
+            return "redirect:/cs/faqDetail/" + faq.getCsFaqNo();
+        } else {
+            return "redirect:/cs/updateFaq/" + faq.getCsFaqNo();
+        }
+    }
+
+    @GetMapping("/deleteFaq/{csFaqNo}")
+    public String deleteFaq(@PathVariable("csFaqNo") int csFaqNo) throws Exception {
+        boolean isDeleted = csService.deleteFaq(csFaqNo);
+        if (isDeleted) {
+            return "redirect:/cs/csMain";
+        } else {
+            return "redirect:/cs/faqDetail/" + csFaqNo;
         }
     }
 

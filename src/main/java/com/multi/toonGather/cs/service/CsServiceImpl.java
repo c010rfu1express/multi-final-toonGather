@@ -1,10 +1,7 @@
 package com.multi.toonGather.cs.service;
 
-import com.multi.toonGather.cs.model.dto.AnswerDTO;
-import com.multi.toonGather.cs.model.dto.CsCategoryDTO;
-import com.multi.toonGather.cs.model.dto.QuestionFilesDTO;
+import com.multi.toonGather.cs.model.dto.*;
 import com.multi.toonGather.cs.model.mapper.CsMapper;
-import com.multi.toonGather.cs.model.dto.QuestionDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -185,5 +182,30 @@ public class CsServiceImpl implements CsService {
     @Override
     public boolean insertAnswer(AnswerDTO answerDTO) throws Exception {
         return csMapper.insertAnswer(answerDTO);
+    }
+
+    @Override
+    public List<FaqDTO> faqList() throws Exception {
+        return csMapper.faqList();
+    }
+
+    @Override
+    public boolean insertFaq(FaqDTO faq) throws Exception {
+        return csMapper.insertFaq(faq);
+    }
+
+    @Override
+    public FaqDTO getFaqById(int csFaqNo) throws Exception {
+        return csMapper.getFaqById(csFaqNo);
+    }
+
+    @Override
+    public boolean updateFaq(FaqDTO faq) throws Exception {
+        return csMapper.updateFaq(faq);
+    }
+
+    @Override
+    public boolean deleteFaq(int csFaqNo) throws Exception {
+        return csMapper.deleteFaq(csFaqNo);
     }
 }
