@@ -16,19 +16,13 @@ public interface JournalMapper {
     @Insert("INSERT INTO in_journal_files (journal_no, file_name, file_path, file_type) VALUES (#{journalNo}, #{fileName}, #{filePath}, #{fileType})")
     int insertJournalFile(JournalFileDTO journalFileDTO);
 
-    @Select("SELECT * FROM in_journal WHERE journal_no = #{journalNo}")
+    @Select("SELECT journal_no AS journalNo, title, content, posting_date AS postingDate FROM in_journal WHERE journal_no = #{journalNo}")
     JournalDTO selectJournalByNo(int journalNo);
 
-    //틀렸을 수 있음.
-//    @Select("SELECT * FROM in_journal WHERE title = #{title}")
-//    JournalDTO selectJournalByTitle(String title);
 
     @Select("SELECT journal_no AS journalNo, title, content, posting_date AS postingDate FROM in_journal WHERE title = #{title}")
     JournalDTO selectJournalByTitle(String title);
 
-
-//    @Select("SELECT * FROM in_journal_files WHERE journal_no = #{journalNo}")
-//    List<JournalFileDTO> selectFilesByJournalNo(int journalNo);
 
     @Select("SELECT journal_file_no AS journalFileNo, " +
             "journal_no AS journalNo, " +
@@ -47,9 +41,12 @@ public interface JournalMapper {
     @Update("UPDATE in_journal SET title = #{title}, content = #{content}, posting_date = #{postingDate} WHERE journal_no = #{journalNo}")
     void updateJournal(JournalDTO journalDTO);
 
+    void updateJournalFile(JournalFileDTO fileDTO);
 
-    //    int insertJournal(JournalDTO journalDTO) throws Exception;
-//
-//    @Update("UPDATE in_journal SET ")
-//    int updateJournal(JournalDTO journalDTO ) throws Exception;
+    @Delete("DELETE FROM in_journal_files WHERE journal_no = #{journalNo}")
+    void deleteFiles(int journalNo);
+
+    @Delete("DELETE FROM in_journal WHERE journal_no = #{journalNo}")
+    void deleteJournal(int journalNo);
+
 }
