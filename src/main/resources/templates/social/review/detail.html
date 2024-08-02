@@ -6,6 +6,7 @@
     <title>툰게더 toonGather | 리뷰 상세</title>
     <link rel="stylesheet" th:href="@{/css/social-styles.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/starRating.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/likeButton.css}">
     <style>
         .review-detail {
             background-color: #fff;
@@ -105,6 +106,12 @@
             </span>
             <span class="views">조회수: <span th:text="${review.viewCnt}"></span></span>
         </div>
+        <!-- 좋아요 버튼 -->
+        <div class="like-button" th:data-review-id="${review.reviewNo}">
+            <input type="checkbox" th:id="'like-' + ${review.reviewNo}" name="like" th:checked="${review.likedByCurrentUser}">
+            <label th:for="'like-' + ${review.reviewNo}"></label>
+            <span class="like-count" th:text="${review.likeCount}"></span>
+        </div>
         <div class="review-actions">
             <a th:href="@{/social/users/{userId}/reviews(userId=${profileUser.userId})}" class="btn btn-secondary">목록으로</a>
             <th:block th:if="${#authentication.principal != null and #authentication.principal.userDTO.userId == review.writer.userId}">
@@ -119,5 +126,34 @@
         <p>해당 리뷰를 찾을 수 없습니다.</p>
     </div>
 </div>
+
+<!-- 좋아요 버튼 -->
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const likeButton = document.querySelector('.like-button');
+        const likeCheckbox = likeButton.querySelector('input[type="checkbox"]');
+        const likeCount = likeButton.querySelector('.like-count');
+        const reviewId = likeButton.dataset.reviewId;
+
+        likeCheckbox.addEventListener('change', function() {
+            fetch(`/social/reviews/${reviewId}/like`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.liked) {
+                    likeCount.textContent = parseInt(likeCount.textContent) + 1;
+                } else {
+                    likeCount.textContent = parseInt(likeCount.textContent) - 1;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+</script>
+
 </body>
 </html>

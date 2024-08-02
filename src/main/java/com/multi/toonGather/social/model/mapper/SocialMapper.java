@@ -1,8 +1,8 @@
 package com.multi.toonGather.social.model.mapper;
 
 import com.multi.toonGather.common.model.dto.PageDTO;
-import com.multi.toonGather.social.model.dto.DiaryDTO;
-import com.multi.toonGather.social.model.dto.ReviewDTO;
+import com.multi.toonGather.social.model.dto.diary.DiaryDTO;
+import com.multi.toonGather.social.model.dto.review.ReviewDTO;
 import com.multi.toonGather.user.model.dto.UserDTO;
 import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
 import org.apache.ibatis.annotations.Mapper;
