@@ -5,6 +5,70 @@
     <meta charset="UTF-8">
     <title>툰게더 toonGather | 툰투게더<</title>
     <link rel="stylesheet" th:href="@{/css/social-styles.css}">
+    <style>
+        .webtoon-slider {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            padding: 20px 0;
+        }
+        .webtoon-card {
+            flex: 0 0 auto;
+            width: calc(16.666% - 20px);
+            margin: 0 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+            scroll-snap-align: start;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 320px; /* 카드의 전체 높이 설정 */
+        }
+        .webtoon-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .webtoon-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .webtoon-info {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; /* 남은 공간을 모두 차지하도록 설정 */
+        }
+        .webtoon-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .webtoon-author {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .webtoon-rating {
+            font-size: 12px;
+            margin-top: auto; /* 별점을 하단에 고정 */
+        }
+        .stars {
+            color: gold;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="common/menubar.html"></div>
@@ -12,37 +76,53 @@
 <div class="container mt-4">
     <div th:replace="social/user/profile-menubar :: profile-menubar"></div>
 
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <div class="profile-section favorite-webtoons">
-                <h3>최애 웹툰</h3>
-                <!-- 최애 웹툰 구현 예정 -->
+    <div class="profile-section favorite-webtoons">
+        <h3>최애 웹툰</h3>
+        <hr>
+        <div class="webtoon-slider">
+            <div th:each="review : ${favoriteWebtoons}" class="webtoon-card" th:onclick="'location.href=\'' + @{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})} + '\''">
+                <img th:src="${review.webtoon.thumbnail_url}" th:alt="${review.webtoon.webtoon_name}">
+                <div class="webtoon-info">
+                    <div class="webtoon-title" th:text="${review.webtoon.webtoon_name}"></div>
+                    <div class="webtoon-author" th:text="${review.webtoon.author}"></div>
+                    <div class="webtoon-rating">
+                        <span class="stars" th:text="${'★'.repeat(review.starRating)}"></span>
+                        <span th:text="${review.starRating + '점'}"></span>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="profile-section popular-reviews">
-                <h3>인기 리뷰</h3>
-                <!-- 인기 리뷰 구현 예정 -->
-            </div>
-        </div>
+    </div>
+    <div class="profile-section popular-reviews">
+        <h3>인기 리뷰</h3>
+        <hr>
+        <!-- 인기 리뷰 구현 예정 -->
+    </div>
+    <div class="profile-section recent-activities">
+        <h3>최근 활동</h3>
+        <hr>
+        <!-- 최근 활동 구현 예정 -->
+    </div>
+    <div class="profile-section following">
+        <h3>팔로잉</h3>
+        <hr>
+        <!-- 팔로잉 구현 예정 -->
     </div>
 
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <div class="profile-section recent-activities">
-                <h3>최근 활동</h3>
-                <!-- 최근 활동 구현 예정 -->
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="profile-section following">
-                <h3>팔로잉</h3>
-                <!-- 팔로잉 구현 예정 -->
-            </div>
-        </div>
-    </div>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.webtoon-slider').on('wheel', function(e){
+            if(e.originalEvent.deltaY !== 0){
+                e.preventDefault();
+                $(this).scrollLeft($(this).scrollLeft() + e.originalEvent.deltaY);
+            }
+        });
+    });
+</script>
+
 </body>
 </html>

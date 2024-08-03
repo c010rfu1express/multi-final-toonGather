@@ -53,9 +53,10 @@ public class SocialController {
     public String userProfile(@PathVariable("userId") String userId, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) throws Exception {
         // 프로필 페이지의 주인 정보
         UserDTO profileUser = socialService.selectUserProfile(userId);
-        System.out.println(profileUser.getUserId());
+        List<ReviewDTO> favoriteWebtoons = socialService.getFavoriteWebtoons(userId);
 
         model.addAttribute("profileUser", profileUser);
+        model.addAttribute("favoriteWebtoons", favoriteWebtoons);
         if (currentUser != null) {
             model.addAttribute("currentUser", currentUser.getUserDTO());
             model.addAttribute("isOwnProfile", currentUser.getUserDTO().getUserId().equals(userId));
