@@ -4,10 +4,7 @@ import com.multi.toonGather.common.model.dto.PageDTO;
 import com.multi.toonGather.common.service.PageService;
 import com.multi.toonGather.recruit.model.dto.creator.CreatorDTO;
 import com.multi.toonGather.recruit.model.dto.creator.NaverDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeAvgRatingsDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeReviewDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeReviewReportDTO;
+import com.multi.toonGather.recruit.model.dto.free.*;
 import com.multi.toonGather.recruit.model.dto.job.ApplyDTO;
 import com.multi.toonGather.recruit.model.dto.job.JobDTO;
 import com.multi.toonGather.recruit.service.creator.CreatorService;
@@ -696,6 +693,35 @@ public class RecruitController {
             model.addAttribute("msg", "신고글 삭제 실패");
         }
         return "redirect:/recruit/free/report/list";
+    }
+
+    @GetMapping("/free/pay/order")
+    public String order(@RequestParam("no") int no, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+        FreeDTO freeDTO = freeService.findBoardByNo(no);
+        String email = userDetails.getEmail();
+        String phone = userDetails.getPhone();
+        String name = userDetails.getRealName();
+
+        model.addAttribute("free", freeDTO);
+        model.addAttribute("email", email);
+        model.addAttribute("phone", phone);
+        model.addAttribute("name", name);
+        return "recruit/free/pay/order";
+    }
+
+    @PostMapping("/free/pay/order")
+    public String order(@RequestParam("board_no") int board_no, @RequestParam("quantity") int quantity, @RequestParam("price") int price,
+                         @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+        // 작성자의 memberNo와 userName을 설정
+        FreePayDTO payDTO = new FreePayDTO();
+        payDTO.setBoard_no(board_no);
+        payDTO.setMember_no(userDetails.getMemNo());
+        payDTO.setQuantity(quantity);
+        payDTO.setPrice(price);
+
+        freeService.order(payDTO);
+
+        return "redirect:/recruit/free/view?no=" + board_no;
     }
 
 }

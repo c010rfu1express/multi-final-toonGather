@@ -69,7 +69,7 @@
                 </div>
                 <div th:if="${member_no != null and member_no != '' and member_no != free.writer}">
                     <div style="margin-right:1px;" class="mt-4 text-center">
-                        <a th:href="@{/recruit/free/pay(no=${free.board_no})}" class="btn btn-success">구매하기</a>
+                        <a th:href="@{/recruit/free/pay/order(no=${free.board_no})}" class="btn btn-success">구매하기</a>
                     </div>
                 </div>
                 <br>

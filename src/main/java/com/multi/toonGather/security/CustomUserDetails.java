@@ -79,4 +79,12 @@ public class CustomUserDetails implements UserDetails {
         return userDTO.getUserNo();
     }
 
+    public String getEmail(){
+        return userDTO.getEmail();
+    }
+
+    public String getPhone(){
+        return userDTO.getContactNumber();
+    }
+
 }
