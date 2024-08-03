@@ -1,6 +1,7 @@
 package com.multi.toonGather.social.model.mapper;
 
 import com.multi.toonGather.common.model.dto.PageDTO;
+import com.multi.toonGather.social.model.dto.ActivityDTO;
 import com.multi.toonGather.social.model.dto.diary.DiaryCommentDTO;
 import com.multi.toonGather.social.model.dto.diary.DiaryDTO;
 import com.multi.toonGather.social.model.dto.review.ReviewDTO;
@@ -33,6 +34,7 @@ public interface SocialMapper {
     int selectReviewCountByUserId(String userId) throws Exception;
     List<DiaryDTO> selectDiariesByUserId(@Param("userId") String userId, @Param("pageDTO") PageDTO pageDTO) throws Exception;
     int selectDiaryCountByUserId(String userId) throws Exception;
+    List<ActivityDTO> selectRecentActivities(@Param("userId") String userId, @Param("limit") int limit);
 
     // 팔로잉
     void insertFollow(@Param("followerNo") int followerNo, @Param("followingNo") int followingNo);

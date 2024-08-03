@@ -3,6 +3,7 @@ package com.multi.toonGather.social.controller;
 import com.multi.toonGather.common.exception.AccessDeniedException;
 import com.multi.toonGather.common.model.dto.PageDTO;
 import com.multi.toonGather.security.CustomUserDetails;
+import com.multi.toonGather.social.model.dto.ActivityDTO;
 import com.multi.toonGather.social.model.dto.diary.DiaryCommentDTO;
 import com.multi.toonGather.social.model.dto.diary.DiaryDTO;
 import com.multi.toonGather.social.model.dto.review.ReviewDTO;
@@ -56,11 +57,13 @@ public class SocialController {
         List<ReviewDTO> favoriteWebtoons = socialService.getFavoriteWebtoons(userId);
         List<ReviewDTO> popularReviews = socialService.getPopularReviewsByUser(userId, 12);
         List<UserDTO> followingUsers = socialService.getFollowingUsers(profileUser.getUserNo());
+        List<ActivityDTO> recentActivities = socialService.getRecentActivities(userId, 5);
 
         model.addAttribute("profileUser", profileUser);
         model.addAttribute("favoriteWebtoons", favoriteWebtoons);
         model.addAttribute("popularReviews", popularReviews);
         model.addAttribute("followingUsers", followingUsers);
+        model.addAttribute("recentActivities", recentActivities);
 
         boolean isOwnProfile = false;
         boolean isFollowing = false;

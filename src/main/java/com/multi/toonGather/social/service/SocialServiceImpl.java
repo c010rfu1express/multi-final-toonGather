@@ -2,6 +2,7 @@ package com.multi.toonGather.social.service;
 
 import com.multi.toonGather.common.exception.NotFoundException;
 import com.multi.toonGather.common.model.dto.PageDTO;
+import com.multi.toonGather.social.model.dto.ActivityDTO;
 import com.multi.toonGather.social.model.dto.diary.DiaryCommentDTO;
 import com.multi.toonGather.social.model.dto.diary.DiaryDTO;
 import com.multi.toonGather.social.model.dto.review.ReviewDTO;
@@ -77,6 +78,11 @@ public class SocialServiceImpl implements SocialService {
     @Transactional(readOnly = true)
     public int getDiaryCountByUserId(String userId) throws Exception {
         return socialMapper.selectDiaryCountByUserId(userId);
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public List<ActivityDTO> getRecentActivities(String userId, int limit) throws Exception {
+        return socialMapper.selectRecentActivities(userId, limit);
     }
 
     // 팔로잉

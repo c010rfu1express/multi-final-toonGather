@@ -73,12 +73,33 @@
             color: #ff4136;
             margin-right: 5px;
         }
+        .activity-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .activity-item {
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        .activity-date {
+            margin-right: 10px;
+            color: #666;
+        }
+        .activity-content {
+            color: #333;
+        }
+        .user-link, .webtoon-link, .review-link, .diary-link {
+            color: #333;
+            text-decoration: none;
+        }
+        .user-link:hover, .webtoon-link:hover, .review-link:hover, .diary-link:hover {
+            color: #007bff;
+        }
         .following-list {
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
         }
-
         .following-user {
             display: flex;
             flex-direction: column;
@@ -86,7 +107,6 @@
             text-decoration: none;
             color: inherit;
         }
-
         .following-user-image {
             width: 60px;
             height: 60px;
@@ -94,7 +114,6 @@
             object-fit: cover;
             margin-bottom: 5px;
         }
-
         .following-user-nickname {
             font-size: 12px;
             text-align: center;
@@ -148,7 +167,29 @@
     <div class="profile-section recent-activities">
         <h3>최근 활동</h3>
         <hr>
-        <!-- 최근 활동 구현 예정 -->
+        <ul class="activity-list">
+            <li th:each="activity : ${recentActivities}" class="activity-item">
+                <span class="activity-date" th:text="${#temporals.format(activity.activityDate, 'yyyy/MM/dd HH:mm')}"></span>
+                <span class="activity-content" th:switch="${activity.activityType}">
+                    <span th:case="'REVIEW_LIKE'">
+                        [<a th:href="@{/social/users/{userId}/profile(userId=${activity.review.writer.userId})}" class="user-link" th:text="${activity.review.writer.nickname}"></a>]님의 리뷰
+                        [<a th:href="@{/social/reviews/{reviewNo}(reviewNo=${activity.review.reviewNo})}" class="review-link" th:text="${activity.review.title}"></a>]에 좋아요
+                    </span>
+                    <span th:case="'DIARY_COMMENT'" th:if="${activity.diary != null and activity.diary.writer != null}">
+                        [<a th:href="@{/social/users/{userId}/profile(userId=${activity.diary.writer.userId})}" class="user-link" th:text="${activity.diary.writer.nickname}"></a>]님의 다이어리
+                        [<a th:href="@{/social/diaries/{diaryNo}(diaryNo=${activity.diary.diaryNo})}" class="diary-link" th:text="${activity.diary.title}"></a>]에 댓글
+                    </span>
+                    <span th:case="'REVIEW_CREATE'">
+                        [<a th:href="@{/webtoon/{webtoonNo}(webtoonNo=${activity.webtoon.webtoon_no})}" class="webtoon-link" th:text="${activity.webtoon.webtoon_name}"></a>]의 리뷰
+                        [<a th:href="@{/social/reviews/{reviewNo}(reviewNo=${activity.review.reviewNo})}" class="review-link" th:text="${activity.review.title}"></a>] 작성
+                    </span>
+                    <span th:case="'DIARY_CREATE'" th:if="${activity.diary != null}">
+                        [<a th:href="@{/webtoon/{webtoonNo}(webtoonNo=${activity.webtoon.webtoon_no})}" class="webtoon-link" th:text="${activity.webtoon.webtoon_name}"></a>]의 다이어리
+                        [<a th:href="@{/social/diaries/{diaryNo}(diaryNo=${activity.diary.diaryNo})}" class="diary-link" th:text="${activity.diary.title}"></a>] 작성
+                    </span>
+                </span>
+            </li>
+        </ul>
     </div>
     <div class="profile-section following">
         <h3>팔로잉</h3>
@@ -160,8 +201,6 @@
             </a>
         </div>
     </div>
-
-
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

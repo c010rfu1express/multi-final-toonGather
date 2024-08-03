@@ -1,6 +1,7 @@
 package com.multi.toonGather.social.service;
 
 import com.multi.toonGather.common.model.dto.PageDTO;
+import com.multi.toonGather.social.model.dto.ActivityDTO;
 import com.multi.toonGather.social.model.dto.diary.DiaryCommentDTO;
 import com.multi.toonGather.social.model.dto.diary.DiaryDTO;
 import com.multi.toonGather.social.model.dto.review.ReviewDTO;
@@ -29,6 +30,7 @@ public interface SocialService {
     int getReviewCountByUserId(String userId) throws Exception;
     List<DiaryDTO> getDiariesByUserId(String userId, PageDTO pageDTO) throws Exception;
     int getDiaryCountByUserId(String userId) throws Exception;
+    List<ActivityDTO> getRecentActivities(String userId, int limit) throws Exception;
 
     // 팔로잉
     boolean toggleFollow(int followerNo, int followingNo) throws Exception;
