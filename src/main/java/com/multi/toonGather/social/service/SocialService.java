@@ -24,6 +24,7 @@ public interface SocialService {
     // 사용자 메인 페이지
     UserDTO selectUserProfile(String userId) throws Exception;
     List<ReviewDTO> getFavoriteWebtoons(String userId) throws Exception;
+    List<ReviewDTO> getPopularReviewsByUser(String userId, int limit) throws Exception;
     List<ReviewDTO> getReviewsByUserId(String userId, PageDTO pageDTO) throws Exception;
     int getReviewCountByUserId(String userId) throws Exception;
     List<DiaryDTO> getDiariesByUserId(String userId, PageDTO pageDTO) throws Exception;

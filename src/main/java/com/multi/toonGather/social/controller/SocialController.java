@@ -54,9 +54,11 @@ public class SocialController {
         // 프로필 페이지의 주인 정보
         UserDTO profileUser = socialService.selectUserProfile(userId);
         List<ReviewDTO> favoriteWebtoons = socialService.getFavoriteWebtoons(userId);
+        List<ReviewDTO> popularReviews = socialService.getPopularReviewsByUser(userId, 12);
 
         model.addAttribute("profileUser", profileUser);
         model.addAttribute("favoriteWebtoons", favoriteWebtoons);
+        model.addAttribute("popularReviews", popularReviews);
         if (currentUser != null) {
             model.addAttribute("currentUser", currentUser.getUserDTO());
             model.addAttribute("isOwnProfile", currentUser.getUserDTO().getUserId().equals(userId));

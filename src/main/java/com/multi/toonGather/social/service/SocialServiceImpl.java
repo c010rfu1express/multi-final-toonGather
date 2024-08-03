@@ -49,8 +49,14 @@ public class SocialServiceImpl implements SocialService {
         return user;
     }
     @Override
+    @Transactional(readOnly = true)
     public List<ReviewDTO> getFavoriteWebtoons(String userId) throws Exception {
         return socialMapper.selectFavoriteWebtoons(userId);
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReviewDTO> getPopularReviewsByUser(String userId, int limit) throws Exception {
+        return socialMapper.selectPopularReviewsByUser(userId, limit);
     }
     @Override
     @Transactional(readOnly = true)

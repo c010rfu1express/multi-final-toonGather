@@ -28,6 +28,7 @@ public interface SocialMapper {
     // 사용자 메인 페이지
     UserDTO selectUserProfile(String userId) throws Exception;
     List<ReviewDTO> selectFavoriteWebtoons(@Param("userId") String userId);
+    List<ReviewDTO> selectPopularReviewsByUser(@Param("userId") String userId, @Param("limit") int limit);
     List<ReviewDTO> selectReviewsByUserId(@Param("userId") String userId, @Param("pageDTO") PageDTO pageDTO) throws Exception;
     int selectReviewCountByUserId(String userId) throws Exception;
     List<DiaryDTO> selectDiariesByUserId(@Param("userId") String userId, @Param("pageDTO") PageDTO pageDTO) throws Exception;
