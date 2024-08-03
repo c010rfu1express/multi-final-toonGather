@@ -73,6 +73,36 @@
             color: #ff4136;
             margin-right: 5px;
         }
+        .following-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .following-user {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .following-user-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 5px;
+        }
+
+        .following-user-nickname {
+            font-size: 12px;
+            text-align: center;
+            max-width: 60px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     </style>
 </head>
 <body>
@@ -126,6 +156,7 @@
         <div class="following-list">
             <a th:each="user : ${followingUsers}" th:href="@{/social/users/{userId}/profile(userId=${user.userId})}" class="following-user">
                 <img th:src="${'/uploadFiles/' + user.profileImagePath}" th:alt="${user.nickname}" class="following-user-image">
+                <span class="following-user-nickname" th:text="${user.nickname}"></span>
             </a>
         </div>
     </div>
