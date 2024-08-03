@@ -60,10 +60,10 @@
             <br>
             <h3 class="font-bold">의뢰인 정보</h3>
             <span >연락처</span>
-            <input id="phone" name="phone" type="text" class="form-control" required th:value="${phone}">
+            <input id="phone" name="phone" type="text" class="form-control" required th:value="${phone}" maxlength="20">
             <br>
             <span >이메일</span>
-            <input id="email" name="email" type="text" class="form-control" required th:value="${email}">
+            <input id="email" name="email" type="text" class="form-control" required th:value="${email}" maxlength="100" >
             <input type="hidden" id="name" name="name" th:value="${name}">
           </div>
           <div class="form-group">
