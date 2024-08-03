@@ -55,23 +55,51 @@ public class SocialController {
         UserDTO profileUser = socialService.selectUserProfile(userId);
         List<ReviewDTO> favoriteWebtoons = socialService.getFavoriteWebtoons(userId);
         List<ReviewDTO> popularReviews = socialService.getPopularReviewsByUser(userId, 12);
+        List<UserDTO> followingUsers = socialService.getFollowingUsers(profileUser.getUserNo());
 
         model.addAttribute("profileUser", profileUser);
         model.addAttribute("favoriteWebtoons", favoriteWebtoons);
         model.addAttribute("popularReviews", popularReviews);
+        model.addAttribute("followingUsers", followingUsers);
+
+        boolean isOwnProfile = false;
+        boolean isFollowing = false;
+
         if (currentUser != null) {
-            model.addAttribute("currentUser", currentUser.getUserDTO());
-            model.addAttribute("isOwnProfile", currentUser.getUserDTO().getUserId().equals(userId));
-        } else {
-            model.addAttribute("isOwnProfile", false);
+            UserDTO currentUserDTO = currentUser.getUserDTO();
+            model.addAttribute("currentUser", currentUserDTO);
+            isOwnProfile = currentUserDTO.getUserId().equals(userId);
+
+            if (!isOwnProfile) {
+                isFollowing = socialService.isFollowing(currentUserDTO.getUserNo(), profileUser.getUserNo());
+            }
         }
+
+        model.addAttribute("isOwnProfile", isOwnProfile);
+        model.addAttribute("isFollowing", isFollowing);
+
         return "social/user/profile";
     }
+    // 팔로우
+    @PostMapping("/users/{userId}/follow")
+    @ResponseBody
+    public ResponseEntity<?> toggleFollow(@PathVariable("userId") String userId,
+                                          @AuthenticationPrincipal CustomUserDetails currentUser) {
+        try {
+            UserDTO targetUser = socialService.selectUserProfile(userId);
+            boolean isNowFollowing = socialService.toggleFollow(currentUser.getUserDTO().getUserNo(), targetUser.getUserNo());
+            return ResponseEntity.ok(Map.of("success", true, "isFollowing", isNowFollowing));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("success", false, "message", e.getMessage()));
+        }
+    }
+
 
     // 사용자별 리뷰 목록 페이지
     @GetMapping("/users/{userId}/reviews")
     public String userReviews(@PathVariable("userId") String userId,
                               @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                              @AuthenticationPrincipal CustomUserDetails currentUser,
                               Model model) throws Exception {
         UserDTO profileUser = socialService.selectUserProfile(userId);
 
@@ -90,6 +118,22 @@ public class SocialController {
         model.addAttribute("pages", pages);
         model.addAttribute("currentPage", page);
 
+        boolean isOwnProfile = false;
+        boolean isFollowing = false;
+
+        if (currentUser != null) {
+            UserDTO currentUserDTO = currentUser.getUserDTO();
+            model.addAttribute("currentUser", currentUserDTO);
+            isOwnProfile = currentUserDTO.getUserId().equals(userId);
+
+            if (!isOwnProfile) {
+                isFollowing = socialService.isFollowing(currentUserDTO.getUserNo(), profileUser.getUserNo());
+            }
+        }
+
+        model.addAttribute("isOwnProfile", isOwnProfile);
+        model.addAttribute("isFollowing", isFollowing);
+
         return "social/user/reviews";
     }
 
@@ -98,27 +142,32 @@ public class SocialController {
     public String reviewDetail(@PathVariable("reviewNo") int reviewNo,
                                @AuthenticationPrincipal CustomUserDetails currentUser,
                                Model model) throws Exception {
-        // 조회수 증가
         socialService.incrementReviewViewCount(reviewNo);
 
-        // 리뷰 정보 가져오기
         ReviewDTO review = socialService.getReviewByNo(reviewNo);
-
-        // 리뷰 작성자의 프로필 정보 가져오기
         UserDTO profileUser = socialService.selectUserProfile(review.getWriter().getUserId());
 
         model.addAttribute("review", review);
         model.addAttribute("profileUser", profileUser);
 
-        // 현재 사용자 정보 및 좋아요 상태 추가
-        if (currentUser != null) {
-            model.addAttribute("currentUser", currentUser.getUserDTO());
-            boolean isLiked = socialService.isReviewLikedByUser(reviewNo, currentUser.getUserDTO().getUserNo());
+        boolean isOwnReview = false;
+        boolean isFollowing = false;
+        boolean isLiked = false;
 
-            model.addAttribute("isLiked", isLiked);
-        } else {
-            model.addAttribute("isLiked", false);
+        if (currentUser != null) {
+            UserDTO currentUserDTO = currentUser.getUserDTO();
+            model.addAttribute("currentUser", currentUserDTO);
+            isOwnReview = currentUserDTO.getUserNo() == review.getWriter().getUserNo();
+
+            if (!isOwnReview) {
+                isFollowing = socialService.isFollowing(currentUserDTO.getUserNo(), review.getWriter().getUserNo());
+                isLiked = socialService.isReviewLikedByUser(reviewNo, currentUserDTO.getUserNo());
+            }
         }
+
+        model.addAttribute("isOwnReview", isOwnReview);
+        model.addAttribute("isFollowing", isFollowing);
+        model.addAttribute("isLiked", isLiked);
 
         return "social/review/detail";
     }
@@ -278,6 +327,7 @@ public class SocialController {
     @GetMapping("/users/{userId}/diaries")
     public String userDiaries(@PathVariable("userId") String userId,
                               @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                              @AuthenticationPrincipal CustomUserDetails currentUser,
                               Model model) throws Exception {
         UserDTO profileUser = socialService.selectUserProfile(userId);
 
@@ -296,26 +346,56 @@ public class SocialController {
         model.addAttribute("pages", pages);
         model.addAttribute("currentPage", page);
 
+        boolean isOwnProfile = false;
+        boolean isFollowing = false;
+
+        if (currentUser != null) {
+            UserDTO currentUserDTO = currentUser.getUserDTO();
+            model.addAttribute("currentUser", currentUserDTO);
+            isOwnProfile = currentUserDTO.getUserId().equals(userId);
+
+            if (!isOwnProfile) {
+                isFollowing = socialService.isFollowing(currentUserDTO.getUserNo(), profileUser.getUserNo());
+            }
+        }
+
+        model.addAttribute("isOwnProfile", isOwnProfile);
+        model.addAttribute("isFollowing", isFollowing);
+
         return "social/user/diaries";
     }
 
 
     // 다이어리 상세 페이지
     @GetMapping("/diaries/{diaryNo}")
-    public String diaryDetail(@PathVariable("diaryNo") int diaryNo, Model model) throws Exception {
-        // 조회수 증가
+    public String diaryDetail(@PathVariable("diaryNo") int diaryNo,
+                              @AuthenticationPrincipal CustomUserDetails currentUser,
+                              Model model) throws Exception {
         socialService.incrementDiaryViewCount(diaryNo);
 
-        // 다이어리 정보 가져오기
         DiaryDTO diary = socialService.getDiaryByNo(diaryNo);
         List<DiaryCommentDTO> comments = socialService.getDiaryComments(diaryNo);
-        // 다이어리 작성자의 프로필 정보 가져오기
         UserDTO profileUser = socialService.selectUserProfile(diary.getWriter().getUserId());
 
         model.addAttribute("diary", diary);
         model.addAttribute("profileUser", profileUser);
-        model.addAttribute("diary", diary);
         model.addAttribute("comments", comments);
+
+        boolean isOwnDiary = false;
+        boolean isFollowing = false;
+
+        if (currentUser != null) {
+            UserDTO currentUserDTO = currentUser.getUserDTO();
+            model.addAttribute("currentUser", currentUserDTO);
+            isOwnDiary = currentUserDTO.getUserNo() == diary.getWriter().getUserNo();
+
+            if (!isOwnDiary) {
+                isFollowing = socialService.isFollowing(currentUserDTO.getUserNo(), diary.getWriter().getUserNo());
+            }
+        }
+
+        model.addAttribute("isOwnDiary", isOwnDiary);
+        model.addAttribute("isFollowing", isFollowing);
 
         return "social/diary/detail";
     }

@@ -131,6 +131,8 @@
         <p>해당 리뷰를 찾을 수 없습니다.</p>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
         const likeButton = document.querySelector('.like-button input');
@@ -161,6 +163,33 @@
                 });
             });
         }
+    });
+</script>
+<script th:inline="javascript">
+    $(document).ready(function() {
+        $('.follow-btn').click(function() {
+            var userId = $(this).data('user-id');
+            var btn = $(this);
+
+            $.ajax({
+                url: '/social/users/' + userId + '/follow',
+                type: 'POST',
+                success: function(response) {
+                    if (response.success) {
+                        if (response.isFollowing) {
+                            btn.text('팔로잉').removeClass('btn-primary').addClass('btn-secondary');
+                        } else {
+                            btn.text('팔로우').removeClass('btn-secondary').addClass('btn-primary');
+                        }
+                    } else {
+                        alert('팔로우 상태를 변경하는데 실패했습니다.');
+                    }
+                },
+                error: function() {
+                    alert('서버와의 통신에 실패했습니다.');
+                }
+            });
+        });
     });
 </script>
 </script>

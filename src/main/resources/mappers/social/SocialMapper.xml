@@ -92,7 +92,8 @@
         terms_agreement_datetime AS termsAgreementDatetime,
         registration_datetime AS registrationDatetime,
         last_modified_datetime AS lastModifiedDatetime
-        FROM users WHERE user_id = #{userId}
+        FROM users
+        WHERE user_id = #{userId}
     </select>
 
     <!-- 사용자별 최애 웹툰 조회 -->
@@ -117,6 +118,44 @@
         WHERE u.user_id = #{userId}
         ORDER BY like_count DESC
         LIMIT #{limit}
+    </select>
+
+    <!-- 팔로우 -->
+    <insert id="insertFollow">
+        INSERT INTO so_follow (follower_no, following_no)
+        VALUES (#{followerNo}, #{followingNo})
+    </insert>
+    <delete id="deleteFollow">
+        DELETE FROM so_follow
+        WHERE follower_no = #{followerNo} AND following_no = #{followingNo}
+    </delete>
+    <select id="isFollowing" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM so_follow
+        WHERE follower_no = #{followerNo} AND following_no = #{followingNo}
+    </select>
+    <select id="selectFollowingUsers" resultType="userDTO">
+        SELECT
+        user_no AS userNo,
+        type_code AS typeCode,
+        auth_code AS authCode,
+        user_id AS userId,
+        password,
+        nickname,
+        contact_number AS contactNumber,
+        email,
+        profile_image_path AS profileImagePath,
+        bio,
+        gender,
+        date_of_birth AS dateOfBirth,
+        real_name AS realName,
+        terms_agreement AS termsAgreement,
+        terms_agreement_datetime AS termsAgreementDatetime,
+        registration_datetime AS registrationDatetime,
+        last_modified_datetime AS lastModifiedDatetime
+        FROM users u
+        JOIN so_follow f ON u.user_no = f.following_no
+        WHERE f.follower_no = #{userNo}
     </select>
 
     <!-- 사용자별 리뷰 목록 조회 -->

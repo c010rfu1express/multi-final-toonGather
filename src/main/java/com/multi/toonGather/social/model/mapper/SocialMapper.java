@@ -34,6 +34,12 @@ public interface SocialMapper {
     List<DiaryDTO> selectDiariesByUserId(@Param("userId") String userId, @Param("pageDTO") PageDTO pageDTO) throws Exception;
     int selectDiaryCountByUserId(String userId) throws Exception;
 
+    // 팔로잉
+    void insertFollow(@Param("followerNo") int followerNo, @Param("followingNo") int followingNo);
+    void deleteFollow(@Param("followerNo") int followerNo, @Param("followingNo") int followingNo);
+    boolean isFollowing(@Param("followerNo") int followerNo, @Param("followingNo") int followingNo);
+    List<UserDTO> selectFollowingUsers(int userNo);
+
     // 리뷰
     void incrementReviewViewCount(int reviewNo) throws Exception;
     ReviewDTO selectReviewByNo(int reviewNo) throws Exception;

@@ -73,11 +73,33 @@ public class SocialServiceImpl implements SocialService {
     public List<DiaryDTO> getDiariesByUserId(String userId, PageDTO pageDTO) throws Exception {
         return socialMapper.selectDiariesByUserId(userId, pageDTO);
     }
-
     @Override
     @Transactional(readOnly = true)
     public int getDiaryCountByUserId(String userId) throws Exception {
         return socialMapper.selectDiaryCountByUserId(userId);
+    }
+
+    // 팔로잉
+    @Override
+    @Transactional
+    public boolean toggleFollow(int followerNo, int followingNo) throws Exception {
+        if (socialMapper.isFollowing(followerNo, followingNo)) {
+            socialMapper.deleteFollow(followerNo, followingNo);
+            return false;
+        } else {
+            socialMapper.insertFollow(followerNo, followingNo);
+            return true;
+        }
+    }
+    @Override
+    @Transactional
+    public boolean isFollowing(int followerNo, int followingNo) throws Exception {
+        return socialMapper.isFollowing(followerNo, followingNo);
+    }
+    @Override
+    @Transactional
+    public List<UserDTO> getFollowingUsers(int userNo) throws Exception {
+        return socialMapper.selectFollowingUsers(userNo);
     }
 
     // 리뷰

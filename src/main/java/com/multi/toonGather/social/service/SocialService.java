@@ -30,6 +30,11 @@ public interface SocialService {
     List<DiaryDTO> getDiariesByUserId(String userId, PageDTO pageDTO) throws Exception;
     int getDiaryCountByUserId(String userId) throws Exception;
 
+    // 팔로잉
+    boolean toggleFollow(int followerNo, int followingNo) throws Exception;
+    boolean isFollowing(int followerNo, int followingNo) throws Exception;
+    List<UserDTO> getFollowingUsers(int userNo) throws Exception;
+
     // 리뷰
     void incrementReviewViewCount(int reviewNo) throws Exception;
     ReviewDTO getReviewByNo(int reviewNo) throws Exception;

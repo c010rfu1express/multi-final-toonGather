@@ -128,5 +128,33 @@
         });
     });
 </script>
+<script th:inline="javascript">
+    $(document).ready(function() {
+        $('.follow-btn').click(function() {
+            var userId = $(this).data('user-id');
+            var btn = $(this);
+
+            $.ajax({
+                url: '/social/users/' + userId + '/follow',
+                type: 'POST',
+                success: function(response) {
+                    if (response.success) {
+                        if (response.isFollowing) {
+                            btn.text('팔로잉').removeClass('btn-primary').addClass('btn-secondary');
+                        } else {
+                            btn.text('팔로우').removeClass('btn-secondary').addClass('btn-primary');
+                        }
+                    } else {
+                        alert('팔로우 상태를 변경하는데 실패했습니다.');
+                    }
+                },
+                error: function() {
+                    alert('서버와의 통신에 실패했습니다.');
+                }
+            });
+        });
+    });
+</script>
+</script>
 </body>
 </html>
