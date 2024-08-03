@@ -86,7 +86,7 @@
                         <span class="font-weight-bold" style="font-size : 15pt;">상세 요강</span>
                         <hr>[[${job.content}]] <br>
                         <div th:if="${job.img != null}">
-                            <img th:src="@{'/uploadFiles/' + ${job.img}}" width="250" height="250" alt="게시글 이미지">
+                            <img th:src="@{'/uploadFiles/job/' + ${job.img}}" width="250" height="250" alt="게시글 이미지">
                         </div>
                         <br>
                         <div th:if="${member_no != null and member_no != '' and member_no != job.writer}">

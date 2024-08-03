@@ -36,7 +36,7 @@
             <h3 class="font-bold">주문 상품</h3>
             <div style="display: flex; align-items: center;">
               <div th:if="${free.img != null}">
-                <img th:src="@{'/uploadFiles/' + ${free.img}}" width="80" height="80" alt="프리랜서 글 이미지" style="border: 1px solid #aaa; border-radius: 5px;">
+                <img th:src="@{'/uploadFiles/free/' + ${free.img}}" width="80" height="80" alt="프리랜서 글 이미지" style="border: 1px solid #aaa; border-radius: 5px;">
               </div>
               <div style="margin-left: 10px;">
                 <span class="font-weight-bold" th:text="${free.title}"></span>
