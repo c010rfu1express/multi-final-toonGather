@@ -132,7 +132,7 @@
     IMP.request_pay({
       pg: "kakaopay.TC0ONETIME", // PG사명 또는 PG사명.CID
       pay_method: "card", // 결제 방법
-      merchant_uid: "test" + + new Date().getTime(), // 가맹점 주문번호
+      merchant_uid: "test" + new Date().getTime(), // 가맹점 주문번호
       name: "[[${free.title}]]", // 결제창에 노출될 상품명
       amount: hiddenPriceInput.value, // 가격
       buyer_email: document.getElementById('email').value,
@@ -153,7 +153,7 @@
     IMP.init('imp86587478'); // 아임포트 관리자 콘솔에서 확인한 '가맹점 식별코드' 입력
     IMP.request_pay({
       pg: "html5_inicis.INIpayTest", // PG사명 또는 PG사명.CID (테스트 환경)
-      pay_method: "trans", // 결제 방법
+    pay_method: "card", // 결제 방법
       merchant_uid: "kgini_" + new Date().getTime(), // 고유한 주문번호 생성
       name: "[[${free.title}]]", // 결제창에 노출될 상품명
       amount: hiddenPriceInput.value, // 가격
