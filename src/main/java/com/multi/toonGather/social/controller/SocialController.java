@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 소셜 기능 관련 요청을 처리하는 컨트롤러
@@ -51,13 +52,31 @@ public class SocialController {
 
     // 사용자별 메인 페이지
     @GetMapping("/users/{userId}/profile")
-    public String userProfile(@PathVariable("userId") String userId, @AuthenticationPrincipal CustomUserDetails currentUser, Model model) throws Exception {
-        // 프로필 페이지의 주인 정보
+    public String userProfile(@PathVariable("userId") String userId,
+                              @AuthenticationPrincipal CustomUserDetails currentUser,
+                              Model model) throws Exception {
         UserDTO profileUser = socialService.selectUserProfile(userId);
         List<ReviewDTO> favoriteWebtoons = socialService.getFavoriteWebtoons(userId);
         List<ReviewDTO> popularReviews = socialService.getPopularReviewsByUser(userId, 12);
         List<UserDTO> followingUsers = socialService.getFollowingUsers(profileUser.getUserNo());
+
+        // 최근 활동 가져오기 및 필터링
         List<ActivityDTO> recentActivities = socialService.getRecentActivities(userId, 5);
+        recentActivities = recentActivities.stream()
+                .filter(activity -> {
+                    switch (activity.getActivityType()) {
+                        case "REVIEW_LIKE":
+                        case "REVIEW_CREATE":
+                            return activity.getReview() != null;
+                        case "DIARY_COMMENT":
+                        case "DIARY_CREATE":
+                            return activity.getDiary() != null;
+                        default:
+                            return false;
+                    }
+                })
+                .limit(5)
+                .collect(Collectors.toList());
 
         model.addAttribute("profileUser", profileUser);
         model.addAttribute("favoriteWebtoons", favoriteWebtoons);

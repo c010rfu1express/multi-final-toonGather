@@ -21,9 +21,13 @@
         </association>
         <association property="webtoon" javaType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO">
             <id property="webtoon_no" column="webtoon_no"/>
+            <result property="webtoon_id" column="webtoon_id"/>
+            <result property="platform" column="platform"/>
             <result property="webtoon_name" column="webtoon_name"/>
             <result property="author" column="author"/>
             <result property="thumbnail_url" column="thumbnail_url"/>
+            <result property="genre" column="genre"/>
+            <result property="tags" column="tags"/>
         </association>
     </resultMap>
     <resultMap id="reviewLikeResultMap" type="reviewLikeDTO">
@@ -50,9 +54,13 @@
         </association>
         <association property="webtoon" javaType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO">
             <id property="webtoon_no" column="webtoon_no"/>
+            <result property="webtoon_id" column="webtoon_id"/>
+            <result property="platform" column="platform"/>
             <result property="webtoon_name" column="webtoon_name"/>
             <result property="author" column="author"/>
             <result property="thumbnail_url" column="thumbnail_url"/>
+            <result property="genre" column="genre"/>
+            <result property="tags" column="tags"/>
         </association>
     </resultMap>
     <resultMap id="diaryCommentResultMap" type="diaryCommentDTO">
@@ -71,8 +79,9 @@
     <resultMap id="activityResultMap" type="activityDTO">
         <result property="activityType" column="activity_type"/>
         <result property="activityDate" column="activity_date"/>
-        <association property="user" javaType="userDTO">
+        <association property="writer" javaType="userDTO">
             <id property="userNo" column="user_no"/>
+            <result property="userId" column="user_id"/>
             <result property="nickname" column="nickname"/>
         </association>
         <association property="review" javaType="reviewDTO">
@@ -85,7 +94,13 @@
         </association>
         <association property="webtoon" javaType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO">
             <id property="webtoon_no" column="webtoon_no"/>
+            <result property="webtoon_id" column="webtoon_id"/>
+            <result property="platform" column="platform"/>
             <result property="webtoon_name" column="webtoon_name"/>
+            <result property="author" column="author"/>
+            <result property="thumbnail_url" column="thumbnail_url"/>
+            <result property="genre" column="genre"/>
+            <result property="tags" column="tags"/>
         </association>
     </resultMap>
 
@@ -120,7 +135,7 @@
     <!-- 사용자별 최애 웹툰 조회 -->
     <select id="selectFavoriteWebtoons" resultMap="reviewResultMap">
         SELECT r.*, u.user_no, u.user_id, u.nickname, u.profile_image_path,
-        w.webtoon_no, w.webtoon_name, w.author, w.thumbnail_url
+        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags
         FROM so_review r
         JOIN users u ON r.writer_no = u.user_no
         JOIN webtoon w ON r.webtoon_no = w.webtoon_no
@@ -131,7 +146,7 @@
     <!-- 사용자별 인기 리뷰 조회 -->
     <select id="selectPopularReviewsByUser" resultMap="reviewResultMap">
         SELECT r.*, u.user_no, u.user_id, u.nickname, u.profile_image_path,
-        w.webtoon_no, w.webtoon_name, w.author, w.thumbnail_url,
+        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags,
         (SELECT COUNT(*) FROM so_review_likes WHERE review_no = r.review_no) as like_count
         FROM so_review r
         JOIN users u ON r.writer_no = u.user_no
@@ -146,7 +161,7 @@
         SELECT * FROM (
         SELECT 'REVIEW_LIKE' as activity_type, rl.liked_date as activity_date,
         r.review_no, r.title as review_title, u.user_no, u.nickname,
-        w.webtoon_no, w.webtoon_name
+        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags
         FROM so_review_likes rl
         JOIN so_review r ON rl.review_no = r.review_no
         JOIN users u ON r.writer_no = u.user_no
@@ -155,7 +170,7 @@
         UNION ALL
         SELECT 'DIARY_COMMENT' as activity_type, dc.created_date as activity_date,
         d.diary_no, d.title as diary_title, u.user_no, u.nickname,
-        w.webtoon_no, w.webtoon_name
+        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags
         FROM so_diary_comments dc
         JOIN so_diary d ON dc.diary_no = d.diary_no
         JOIN users u ON d.writer_no = u.user_no
@@ -164,7 +179,7 @@
         UNION ALL
         SELECT 'REVIEW_CREATE' as activity_type, r.created_date as activity_date,
         r.review_no, r.title as review_title, u.user_no, u.nickname,
-        w.webtoon_no, w.webtoon_name
+        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags
         FROM so_review r
         JOIN users u ON r.writer_no = u.user_no
         JOIN webtoon w ON r.webtoon_no = w.webtoon_no
@@ -172,7 +187,7 @@
         UNION ALL
         SELECT 'DIARY_CREATE' as activity_type, d.created_date as activity_date,
         d.diary_no, d.title as diary_title, u.user_no, u.nickname,
-        w.webtoon_no, w.webtoon_name
+        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags
         FROM so_diary d
         JOIN users u ON d.writer_no = u.user_no
         JOIN webtoon w ON d.webtoon_no = w.webtoon_no
@@ -223,7 +238,7 @@
     <!-- 사용자별 리뷰 목록 조회 -->
     <select id="selectReviewsByUserId" parameterType="map" resultMap="reviewResultMap">
         SELECT r.*, u.user_no, u.user_id, u.nickname, u.profile_image_path,
-        w.webtoon_no, w.webtoon_name, w.author, w.thumbnail_url
+        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags
         FROM so_review r
         JOIN users u ON r.writer_no = u.user_no
         JOIN webtoon w ON r.webtoon_no = w.webtoon_no
@@ -243,7 +258,7 @@
     <!-- 리뷰 상세 조회 -->
     <select id="selectReviewByNo" resultMap="reviewResultMap">
         SELECT r.*, u.user_no, u.user_id, u.nickname, u.profile_image_path,
-        w.webtoon_no, w.webtoon_name, w.author, w.thumbnail_url,
+        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags,
         (SELECT COUNT(*) FROM so_review_likes WHERE review_no = r.review_no) as like_count
         FROM so_review r
         JOIN users u ON r.writer_no = u.user_no
@@ -300,7 +315,7 @@
     </insert>
     <select id="selectReviewByUserAndWebtoon" resultMap="reviewResultMap">
         SELECT r.*, u.user_no, u.user_id, u.nickname, u.profile_image_path,
-        w.webtoon_no, w.webtoon_name, w.author, w.thumbnail_url
+        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags
         FROM so_review r
         JOIN users u ON r.writer_no = u.user_no
         JOIN webtoon w ON r.webtoon_no = w.webtoon_no
@@ -317,7 +332,7 @@
     <!-- 사용자별 다이어리 목록 조회 -->
     <select id="selectDiariesByUserId" parameterType="map" resultMap="diaryResultMap">
         SELECT d.*, u.user_no, u.user_id, u.nickname, u.profile_image_path,
-        w.webtoon_no, w.webtoon_name, w.author, w.thumbnail_url
+        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags
         FROM so_diary d
         JOIN users u ON d.writer_no = u.user_no
         JOIN webtoon w ON d.webtoon_no = w.webtoon_no
@@ -337,7 +352,7 @@
     <!-- 다이어리 상세 조회 -->
     <select id="selectDiaryByNo" resultMap="diaryResultMap">
         SELECT d.*, u.user_no, u.user_id, u.nickname, u.profile_image_path,
-        w.webtoon_no, w.webtoon_name, w.author, w.thumbnail_url,
+        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags,
         (SELECT COUNT(*) FROM so_diary_comments WHERE diary_no = d.diary_no) as comment_count
         FROM so_diary d
         JOIN users u ON d.writer_no = u.user_no

@@ -22,7 +22,7 @@ public class ActivityDTO {
     private String activityType; // "REVIEW_LIKE", "DIARY_COMMENT", "REVIEW_CREATE", "DIARY_CREATE"
     private LocalDateTime activityDate;
     @Nullable
-    private UserDTO user;
+    private UserDTO writer;
     @Nullable
     private ReviewDTO review;
     @Nullable
