@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,10 +35,27 @@ public class SocialServiceImpl implements SocialService {
     }
 
     // 메인 페이지
-//    @Override
-//    public List<ReviewDTO> getPopularReviews() {
-//        return socialMapper.selectPopularReviews();
-//    }
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReviewDTO> getPopularReviews(int limit) {
+        List<ReviewDTO> popularReviews = socialMapper.selectPopularReviews(limit);
+        return popularReviews;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Object> search(String keyword, String category) {
+        switch (category) {
+            case "review":
+                return Collections.singletonList(socialMapper.searchReviews(keyword));
+            case "diary":
+                return Collections.singletonList(socialMapper.searchDiaries(keyword));
+            case "user":
+                return Collections.singletonList(socialMapper.searchUsers(keyword));
+            default:
+                throw new IllegalArgumentException("Invalid search category");
+        }
+    }
 
     // 사용자 메인 페이지
     @Override

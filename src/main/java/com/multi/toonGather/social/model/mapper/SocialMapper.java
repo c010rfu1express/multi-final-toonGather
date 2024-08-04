@@ -24,7 +24,10 @@ import java.util.List;
 public interface SocialMapper {
 
     // 메인 페이지
-    //List<ReviewDTO> selectPopularReviews();
+    List<ReviewDTO> selectPopularReviews(@Param("limit") int limit);
+    List<ReviewDTO> searchReviews(@Param("keyword") String keyword);
+    List<DiaryDTO> searchDiaries(@Param("keyword") String keyword);
+    List<UserDTO> searchUsers(@Param("keyword") String keyword);
 
     // 사용자 메인 페이지
     UserDTO selectUserProfile(String userId) throws Exception;

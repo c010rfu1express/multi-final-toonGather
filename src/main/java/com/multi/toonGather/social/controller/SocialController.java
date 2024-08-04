@@ -46,8 +46,21 @@ public class SocialController {
     // 메인 페이지
     @GetMapping("/main")
     public String main(Model model) {
-        //model.addAttribute("popularReviews", socialService.getPopularReviews());
+        List<ReviewDTO> popularReviews = socialService.getPopularReviews(10); // 상위 10개의 인기 리뷰 가져오기
+        model.addAttribute("popularReviews", popularReviews);
         return "social/main";
+    }
+
+    // 메인 페이지: 검색
+    @GetMapping("/search")
+    public String search(@RequestParam("keyword") String keyword,
+                         @RequestParam("category") String category,
+                         Model model) {
+        List<Object> searchResults = socialService.search(keyword, category);
+        model.addAttribute("searchResults", searchResults);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("category", category);
+        return "social/search";
     }
 
     // 사용자별 메인 페이지
