@@ -52,16 +52,7 @@ public class SocialController {
     }
 
     // 메인 페이지: 검색
-    @GetMapping("/search")
-    public String search(@RequestParam("keyword") String keyword,
-                         @RequestParam("category") String category,
-                         Model model) {
-        List<Object> searchResults = socialService.search(keyword, category);
-        model.addAttribute("searchResults", searchResults);
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("category", category);
-        return "social/search";
-    }
+
 
     // 사용자별 메인 페이지
     @GetMapping("/users/{userId}/profile")

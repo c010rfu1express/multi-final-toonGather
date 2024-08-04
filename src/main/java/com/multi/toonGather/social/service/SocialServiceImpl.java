@@ -42,21 +42,6 @@ public class SocialServiceImpl implements SocialService {
         return popularReviews;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Object> search(String keyword, String category) {
-        switch (category) {
-            case "review":
-                return Collections.singletonList(socialMapper.searchReviews(keyword));
-            case "diary":
-                return Collections.singletonList(socialMapper.searchDiaries(keyword));
-            case "user":
-                return Collections.singletonList(socialMapper.searchUsers(keyword));
-            default:
-                throw new IllegalArgumentException("Invalid search category");
-        }
-    }
-
     // 사용자 메인 페이지
     @Override
     @Transactional(readOnly = true)

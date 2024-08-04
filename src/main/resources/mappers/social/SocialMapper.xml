@@ -127,29 +127,6 @@
     </select>
 
     <!-- 검색 -->
-    <select id="searchReviews" resultMap="reviewResultMap">
-        SELECT r.*, u.user_no, u.user_id, u.nickname, u.profile_image_path,
-        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags
-        FROM so_review r
-        JOIN users u ON r.writer_no = u.user_no
-        JOIN webtoon w ON r.webtoon_no = w.webtoon_no
-        WHERE r.title LIKE CONCAT('%', #{keyword}, '%') OR r.content LIKE CONCAT('%', #{keyword}, '%')
-        ORDER BY r.created_date DESC
-    </select>
-    <select id="searchDiaries" resultMap="diaryResultMap">
-        SELECT d.*, u.user_no, u.user_id, u.nickname, u.profile_image_path,
-        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags
-        FROM so_diary d
-        JOIN users u ON d.writer_no = u.user_no
-        JOIN webtoon w ON d.webtoon_no = w.webtoon_no
-        WHERE d.title LIKE CONCAT('%', #{keyword}, '%') OR d.content LIKE CONCAT('%', #{keyword}, '%')
-        ORDER BY d.created_date DESC
-    </select>
-    <select id="searchUsers" resultType="userDTO">
-        SELECT user_no AS userNo, user_id AS userId, nickname, profile_image_path AS profileImagePath
-        FROM users
-        WHERE nickname LIKE CONCAT('%', #{keyword}, '%') OR user_id LIKE CONCAT('%', #{keyword}, '%')
-    </select>
 
     <!-- 사용자 정보 조회 -->
     <select id="selectUserProfile" resultType="userDTO">

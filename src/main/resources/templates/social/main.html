@@ -5,60 +5,6 @@
     <meta charset="UTF-8">
     <title>툰게더 toonGather | 툰투게더</title>
     <link rel="stylesheet" th:href="@{/css/social-styles.css}">
-    <style>
-        .hot-review-slider {
-            display: flex;
-            overflow-x: auto;
-            padding: 20px 0;
-        }
-        .review-card {
-            flex: 0 0 auto;
-            width: 250px;
-            margin-right: 20px;
-            border: 1px solid #e0e0e0;
-            border-radius: 5px;
-            padding: 15px;
-            cursor: pointer;
-            transition: box-shadow 0.3s;
-        }
-        .review-card:hover {
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .review-title {
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .review-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-        .review-content {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 10px;
-        }
-        .review-likes {
-            display: flex;
-            align-items: center;
-            color: #ff4081;
-            font-weight: bold;
-        }
-        .heart {
-            margin-right: 5px;
-        }
-        .review-webtoon {
-            font-size: 12px;
-            color: #888;
-            margin-top: 10px;
-        }
-        .review-author {
-            font-size: 12px;
-            color: #888;
-            margin-top: 5px;
-            font-weight: bold;
-        }
-    </style>
 </head>
 <body>
 
@@ -75,18 +21,22 @@
                 <div class="review-card" th:each="review : ${popularReviews}" th:onclick="'location.href=\'' + @{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})} + '\''">
                     <img th:src="${review.webtoon.thumbnail_url}" th:alt="${review.webtoon.webtoon_name}">
                     <div class="review-info">
-                        <div class="review-webtoon">
-                            <strong><span th:text="${review.webtoon.webtoon_name}"></span></strong>
-                            <span th:text="${review.webtoon.author}"></span>
+                        <div>
+                            <div class="review-webtoon">
+                                <strong><span th:text="${review.webtoon.webtoon_name}"></span></strong>
+                                <span th:text="${review.webtoon.author}"></span>
+                            </div>
+                            <div class="review-title" th:text="${review.title}"></div>
+                            <div class="review-content" th:text="${#strings.abbreviate(review.content, 50)}"></div>
                         </div>
-                        <div class="review-title" th:text="${review.title}"></div>
-                        <div class="review-content" th:text="${#strings.abbreviate(review.content, 50)}"></div>
-                        <div class="review-author">
-                            <span th:text="${review.writer.nickname}"></span>
-                        </div>
-                        <div class="review-likes">
-                            <span class="heart">❤</span>
-                            <span th:text="${review.likeCount}"></span>
+                        <div>
+                            <div class="review-author">
+                                <span th:text="${review.writer.nickname}"></span>
+                            </div>
+                            <div class="review-likes">
+                                <span class="heart">❤</span>
+                                <span th:text="${review.likeCount}"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -97,17 +47,18 @@
         <div class="col-12">
             <h2>발견하기🔍</h2>
             <hr>
-            <form th:action="@{/social/search}" method="get">
+            <form id="searchForm">
                 <div class="input-group mb-3">
-                    <select class="form-select" name="category">
+                    <select class="form-select" name="category" id="searchCategory">
                         <option value="review">리뷰</option>
                         <option value="diary">다이어리</option>
                         <option value="user">작성자</option>
                     </select>
-                    <input type="text" class="form-control" placeholder="검색어를 입력하세요" name="keyword">
+                    <input type="text" class="form-control" placeholder="검색어를 입력하세요" name="keyword" id="searchKeyword">
                     <button class="btn btn-primary" type="submit">검색</button>
                 </div>
             </form>
+            <div id="searchResults" class="mt-4"></div>
         </div>
     </div>
 </div>
@@ -116,7 +67,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function(){
-        $('.review-slider').on('wheel', function(e){
+        $('.hot-review-slider').on('wheel', function(e){
             if(e.originalEvent.deltaY !== 0){
                 e.preventDefault();
                 $(this).scrollLeft($(this).scrollLeft() + e.originalEvent.deltaY);
