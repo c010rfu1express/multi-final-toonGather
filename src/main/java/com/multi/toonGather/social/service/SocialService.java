@@ -20,7 +20,8 @@ import java.util.List;
 public interface SocialService {
 
     // 메인 페이지
-    List<ReviewDTO> getPopularReviews(int limit);
+    List<ReviewDTO> getPopularReviews(int limit) throws Exception;
+    List<?> search(String category, String keyword, int page, int size) throws Exception;
 
     // 사용자 메인 페이지
     UserDTO selectUserProfile(String userId) throws Exception;

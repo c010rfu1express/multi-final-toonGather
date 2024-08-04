@@ -45,13 +45,37 @@ public class SocialController {
 
     // 메인 페이지
     @GetMapping("/main")
-    public String main(Model model) {
+    public String main(Model model) throws Exception {
         List<ReviewDTO> popularReviews = socialService.getPopularReviews(10); // 상위 10개의 인기 리뷰 가져오기
         model.addAttribute("popularReviews", popularReviews);
         return "social/main";
     }
 
     // 메인 페이지: 검색
+    @GetMapping("/search")
+    @ResponseBody
+    public ResponseEntity<?> search(@RequestParam("category") String category,
+                                    @RequestParam("keyword") String keyword,
+                                    @RequestParam(name = "page", defaultValue = "0") int page,
+                                    @RequestParam(name = "size", defaultValue = "6") int size) {
+        try {
+            List<?> searchResults = socialService.search(category, keyword, page, size);
+            boolean hasMore = searchResults.size() == size + 1;
+            if (hasMore) {
+                searchResults.remove(searchResults.size() - 1);
+            }
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("results", searchResults);
+            response.put("hasMore", hasMore);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "An error occurred during the search. Please try again later.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
 
 
     // 사용자별 메인 페이지

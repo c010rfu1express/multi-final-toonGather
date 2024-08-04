@@ -24,36 +24,39 @@ import java.util.List;
 public interface SocialMapper {
 
     // 메인 페이지
-    List<ReviewDTO> selectPopularReviews(@Param("limit") int limit);
+    List<ReviewDTO> selectPopularReviews(@Param("limit") int limit) throws Exception;
+    List<ReviewDTO> searchReviews(@Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit) throws Exception;
+    List<DiaryDTO> searchDiaries(@Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit) throws Exception;
+    List<?> searchUserContent(@Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit) throws Exception;
 
     // 사용자 메인 페이지
     UserDTO selectUserProfile(String userId) throws Exception;
-    List<ReviewDTO> selectFavoriteWebtoons(@Param("userId") String userId);
-    List<ReviewDTO> selectPopularReviewsByUser(@Param("userId") String userId, @Param("limit") int limit);
+    List<ReviewDTO> selectFavoriteWebtoons(@Param("userId") String userId) throws Exception;
+    List<ReviewDTO> selectPopularReviewsByUser(@Param("userId") String userId, @Param("limit") int limit) throws Exception;
     List<ReviewDTO> selectReviewsByUserId(@Param("userId") String userId, @Param("pageDTO") PageDTO pageDTO) throws Exception;
     int selectReviewCountByUserId(String userId) throws Exception;
     List<DiaryDTO> selectDiariesByUserId(@Param("userId") String userId, @Param("pageDTO") PageDTO pageDTO) throws Exception;
     int selectDiaryCountByUserId(String userId) throws Exception;
-    List<ActivityDTO> selectRecentActivities(@Param("userId") String userId, @Param("limit") int limit);
+    List<ActivityDTO> selectRecentActivities(@Param("userId") String userId, @Param("limit") int limit) throws Exception;
 
     // 팔로잉
-    void insertFollow(@Param("followerNo") int followerNo, @Param("followingNo") int followingNo);
-    void deleteFollow(@Param("followerNo") int followerNo, @Param("followingNo") int followingNo);
-    boolean isFollowing(@Param("followerNo") int followerNo, @Param("followingNo") int followingNo);
-    List<UserDTO> selectFollowingUsers(int userNo);
+    void insertFollow(@Param("followerNo") int followerNo, @Param("followingNo") int followingNo) throws Exception;
+    void deleteFollow(@Param("followerNo") int followerNo, @Param("followingNo") int followingNo) throws Exception;
+    boolean isFollowing(@Param("followerNo") int followerNo, @Param("followingNo") int followingNo) throws Exception;
+    List<UserDTO> selectFollowingUsers(int userNo) throws Exception;
 
     // 리뷰
     void incrementReviewViewCount(int reviewNo) throws Exception;
     ReviewDTO selectReviewByNo(int reviewNo) throws Exception;
     void updateReview(ReviewDTO review) throws Exception;
     int deleteReview(int reviewNo) throws Exception;
-    ReviewLikeDTO selectReviewLike(@Param("reviewNo") int reviewNo, @Param("userNo") int userNo);
-    void insertReviewLike(@Param("reviewNo") int reviewNo, @Param("userNo") int userNo);
-    void deleteReviewLike(@Param("reviewNo") int reviewNo, @Param("userNo") int userNo);
+    ReviewLikeDTO selectReviewLike(@Param("reviewNo") int reviewNo, @Param("userNo") int userNo) throws Exception;
+    void insertReviewLike(@Param("reviewNo") int reviewNo, @Param("userNo") int userNo) throws Exception;
+    void deleteReviewLike(@Param("reviewNo") int reviewNo, @Param("userNo") int userNo) throws Exception;
 
     WebtoonDTO selectWebtoonByNo(int webtoonNo) throws Exception;
     void createReview(ReviewDTO review) throws Exception;
-    ReviewDTO selectReviewByUserAndWebtoon(@Param("userNo") int userNo, @Param("webtoonNo") int webtoonNo);
+    ReviewDTO selectReviewByUserAndWebtoon(@Param("userNo") int userNo, @Param("webtoonNo") int webtoonNo) throws Exception;
     void createDiary(DiaryDTO diary) throws Exception;
 
     // 다이어리
@@ -64,7 +67,7 @@ public interface SocialMapper {
 
     List<DiaryCommentDTO> selectDiaryComments(int diaryNo) throws Exception;
     void insertDiaryComment(DiaryCommentDTO comment) throws Exception;
-    DiaryCommentDTO selectLastInsertedComment(@Param("diaryNo") int diaryNo, @Param("userNo") int userNo);
+    DiaryCommentDTO selectLastInsertedComment(@Param("diaryNo") int diaryNo, @Param("userNo") int userNo) throws Exception;
     void deleteDiaryComment(int commentNo) throws Exception;
     DiaryCommentDTO selectDiaryCommentByNo(int commentNo) throws Exception;
 }

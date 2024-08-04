@@ -75,6 +75,138 @@
         });
     });
 </script>
+<script>
+    $(document).ready(function(){
+        let currentPage = 0;
+        let hasMore = true;
+        let currentCategory = '';
+        let currentKeyword = '';
 
+        $('#searchForm').on('submit', function(e) {
+            e.preventDefault();
+            currentPage = 0;
+            hasMore = true;
+            currentCategory = $('#searchCategory').val();
+            currentKeyword = $('#searchKeyword').val();
+            $('#searchResults').empty();
+            loadSearchResults(true);
+        });
+
+        function loadSearchResults(isNewSearch = false) {
+            if (!hasMore) return;
+
+            $.ajax({
+                url: '/social/search',
+                method: 'GET',
+                data: {
+                    category: currentCategory,
+                    keyword: currentKeyword,
+                    page: currentPage,
+                    size: 6
+                },
+                success: function(response) {
+                    console.log('Server response:', response);
+                    if (response && response.results) {
+                        console.log('Search results:', response.results);
+                        displaySearchResults(response.results, currentCategory, isNewSearch);
+                        hasMore = response.hasMore;
+                        currentPage++;
+
+                        updateLoadMoreButton();
+                    } else {
+                        console.error('Invalid response format:', response);
+                        $('#searchResults').append('<p>검색 결과가 없습니다.</p>');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error occurred while searching:', error);
+                    $('#searchResults').append('<p>검색 중 오류가 발생했습니다.</p>');
+                }
+            });
+        }
+
+        function updateLoadMoreButton() {
+            if (hasMore) {
+                if ($('#loadMoreBtn').length === 0) {
+                    $('#searchResults').after('<button id="loadMoreBtn" class="btn btn-secondary mt-3">더보기</button>');
+                }
+            } else {
+                $('#loadMoreBtn').remove();
+            }
+        }
+
+        $(document).on('click', '#loadMoreBtn', function() {
+            loadSearchResults();
+        });
+
+        function displaySearchResults(results, category, isNewSearch) {
+            const $searchResults = $('#searchResults');
+
+            if (isNewSearch) {
+                $searchResults.empty();
+            }
+
+            if (!Array.isArray(results) || results.length === 0) {
+                if (isNewSearch) {
+                    $searchResults.html('<p>검색 결과가 없습니다.</p>');
+                }
+                return;
+            }
+
+            results.forEach(function(item) {
+                let html = '';
+                if (category === 'user') {
+                    // 작성자 카테고리 처리 로직
+                    if (item.activityType === 'REVIEW') {
+                        html = createReviewHTML(item);
+                    } else if (item.activityType === 'DIARY') {
+                        html = createDiaryHTML(item);
+                    }
+                } else if (category === 'review') {
+                    html = createReviewHTML(item);
+                } else if (category === 'diary') {
+                    html = createDiaryHTML(item);
+                }
+                $searchResults.append(html);
+            });
+        }
+
+        function createReviewHTML(item) {
+            return `
+                <div class="search-item" onclick="location.href='/social/reviews/${item.reviewNo}'">
+                    <strong>[${item.webtoon ? item.webtoon.webtoon_name : ''}]</strong>
+                    <span class="fw-bold">${item.title || ''}</span>
+                    <span>${truncateText(item.content, 50)}</span>
+                    <span class="text-warning">★${item.starRating || ''}</span>
+                    <span>${item.writer ? item.writer.nickname : ''}</span>
+                    <span>${formatDate(item.createdDate)}</span>
+                </div>
+            `;
+        }
+
+        function createDiaryHTML(item) {
+            return `
+                <div class="search-item" onclick="location.href='/social/diaries/${item.diaryNo}'">
+                    <strong>[${item.webtoon ? item.webtoon.webtoon_name : ''}]</strong>
+                    <span class="fw-bold">${item.title || ''}</span>
+                    <span>${truncateText(item.content, 50)}</span>
+                    <span>${item.statusCode === 'C' ? '정주행중' : '재탕중'}</span>
+                    <span>${item.writer ? item.writer.nickname : ''}</span>
+                    <span>${formatDate(item.createdDate)}</span>
+                </div>
+            `;
+        }
+
+        function truncateText(text, maxLength) {
+            if (text == null) return '';
+            return text.Length > maxLength ? text.substring(0, maxLength) + '...' : text;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+    });
+</script>
 </body>
 </html>
