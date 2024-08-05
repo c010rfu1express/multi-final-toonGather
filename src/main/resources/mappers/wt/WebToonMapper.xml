@@ -23,6 +23,14 @@
         <result property="count" column="count"/>
     </resultMap>
 
+    <resultMap id="wtUserSavetMap" type="com.multi.toonGather.webtoon.model.dto.WtUserSaveDTO">
+
+        <id property="saveNo" column="save_no"/>
+        <result property="webtoonNo" column="webtoon_no"/>
+        <result property="userNo" column="user_no"/>
+
+    </resultMap>
+
 <select id="WebToonSelectOne" parameterType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO" resultType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO">
         select * from webtoon where platform=#{platform} and webtoon_id=#{webtoon_id}
     </select>
@@ -81,8 +89,26 @@
     <select id="searchWebtoon" resultType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO">
         SELECT * FROM webtoon
         WHERE tags LIKE CONCAT('%', #{tags}, '%')
+        <if test="platform != 0">
+            AND platform = #{platform}
+        </if>
     </select>
 
+    <select id="WebToonSelectSave" resultMap="wtUserSavetMap">
+        SELECT *
+        FROM wt_user_save
+        WHERE webtoon_no = #{webtoonNo}
+        AND user_no = #{userNo}
+    </select>
+
+    <insert id="insertSave">
+        INSERT INTO wt_user_save (webtoon_no, user_no)
+        VALUES (#{webtoonNo}, #{userNo})
+    </insert>
+
+    <delete id="deleteSave">
+        DELETE FROM wt_user_save WHERE save_no = #{saveNo}
+    </delete>
 
 
 </mapper>
