@@ -3,6 +3,7 @@ package com.multi.toonGather.webtoon.service;
 import com.multi.toonGather.webtoon.model.dto.CommentDTO;
 import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
 import com.multi.toonGather.webtoon.model.dto.WtUserLogDTO;
+import com.multi.toonGather.webtoon.model.dto.WtUserSaveDTO;
 
 import java.util.List;
 
@@ -27,5 +28,11 @@ public interface WebToonService {
 
     int webToonInsert(WebtoonDTO webtoonDTO);
 
-    List<WebtoonDTO> searchWebtoon(String tag);
+    List<WebtoonDTO> searchWebtoon(WebtoonDTO webtoonDTO);
+
+    WtUserSaveDTO WebToonSelectSave(WtUserSaveDTO wtUserSaveDTO)throws Exception;
+
+    int insertSave(WtUserSaveDTO wtUserSaveDTO)throws Exception;
+
+    int deleteSave(WtUserSaveDTO wtUserSaveDTO)throws Exception;
 }
