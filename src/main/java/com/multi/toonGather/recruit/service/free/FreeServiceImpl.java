@@ -2,10 +2,7 @@ package com.multi.toonGather.recruit.service.free;
 
 
 import com.multi.toonGather.common.model.dto.PageDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeAvgRatingsDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeReviewDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeReviewReportDTO;
+import com.multi.toonGather.recruit.model.dto.free.*;
 import com.multi.toonGather.recruit.model.mapper.FreeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -144,5 +141,11 @@ public class FreeServiceImpl implements FreeService {
     public int selectCountReview(int boardNo) throws Exception {
         int count = freeMapper.selectCountReview(boardNo);
         return count;
+    }
+
+    @Override
+    public void order(FreePayDTO payDTO) throws Exception {
+        int result = freeMapper.order(payDTO);
+        if (result == 0) new Exception("주문 등록 실");
     }
 }

@@ -4,7 +4,7 @@
 <html layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>지원글 조회</title>
+    <title>지원서 조회</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -25,22 +25,26 @@
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <h2 class="text-center mb-4" th:text="${apply.title}">지원글 제목</h2>
+                <h2 class="text-center mb-4">지원서</h2>
             </div>
-            <hr color="grey">
             <div class="card-body">
-                <div class="row" >
-                    <div class="form-group col-md-6">
-                        <label class="form-control">작성자: [[${apply.member.nickname}]]</label>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label class="form-control">작성일: [[${apply.created_date}]]</label>
-                    </div>
+                <div>
+                    <h3 class="font-bold">[[${apply.title}]]</h3>
                 </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; color: #6B7280;">
+                    <div style="display: flex; align-items: center;">
+                        <span th:text="${#dates.format(apply.created_date, 'yyyy-MM-dd HH:mm')}"></span>
+                    </div>
+                    <span style="text-align: right;">[[${apply.member.nickname}]]</span>
+                </div>
+                <hr>
                 <div class="mb-3 form-group">
-                    <label class="form-control" style="height:auto; padding: 10px;">내용: <br> [[${apply.content}]] <br> <br>
+                    <label class="form-control" style="height:auto; border: none;">
+                        <br>
+                        <span class="font-weight-bold" style="font-size : 15pt;">지원 내용</span>
+                        <br> [[${apply.content}]] <br>
                         <div th:if="${apply.img != null}">
-                            <img th:src="@{'/uploadFiles/' + ${apply.img}}" width="250" height="250" alt="지원글 이미지">
+                            <img th:src="@{'/uploadFiles/job/apply' + ${apply.img}}" width="250" height="250" alt="지원글 이미지">
                         </div>
                     </label>
                 </div>

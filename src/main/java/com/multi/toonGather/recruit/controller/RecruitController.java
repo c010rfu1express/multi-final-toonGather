@@ -4,10 +4,7 @@ import com.multi.toonGather.common.model.dto.PageDTO;
 import com.multi.toonGather.common.service.PageService;
 import com.multi.toonGather.recruit.model.dto.creator.CreatorDTO;
 import com.multi.toonGather.recruit.model.dto.creator.NaverDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeAvgRatingsDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeReviewDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeReviewReportDTO;
+import com.multi.toonGather.recruit.model.dto.free.*;
 import com.multi.toonGather.recruit.model.dto.job.ApplyDTO;
 import com.multi.toonGather.recruit.model.dto.job.JobDTO;
 import com.multi.toonGather.recruit.service.creator.CreatorService;
@@ -87,7 +84,7 @@ public class RecruitController {
         String ext = originFileName.substring(originFileName.lastIndexOf("."));
         String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
         String resources = request.getSession().getServletContext().getRealPath("/");
-        String savePath = resources + "\\uploadFiles\\";
+        String savePath = resources + "uploadFiles/creator/";
 
         //2. File객체(폴더/디렉토리 + 파일명)를 생성 ==> 파일을 인식(램에 저장)
         File target = new File(savePath + savedName);
@@ -183,7 +180,7 @@ public class RecruitController {
         /* 파일을 저장할 경로 설정 */
         String root = request.getSession().getServletContext().getRealPath("/");
         System.out.println("root : " + root);
-        String filePath = root + "\\uploadFiles";
+        String filePath = root + "uploadFiles/job/";
 
         File mkdir = new File(filePath);
         if (!mkdir.exists()) {
@@ -198,14 +195,14 @@ public class RecruitController {
 
             /* 파일을 저장한다. */
             try {
-                singleFile.transferTo(new File(filePath + "\\" + savedName));
+                singleFile.transferTo(new File(filePath + savedName));
                 model.addAttribute("savedName", savedName);
                 jobDTO.setImg(savedName);
                 jobService.insertBoard(jobDTO);
             } catch (Exception e) {
                 System.out.println("job insert error : " + e);
                 /* 실패시 파일 삭제 */
-                new File(filePath + "\\" + savedName).delete();
+                new File(filePath + savedName).delete();
                 model.addAttribute("message", "파일 업로드 실패!!");
             }
         }
@@ -252,7 +249,7 @@ public class RecruitController {
     public String updateBoard(JobDTO jobDTO, @RequestParam("board_no") int board_no, HttpServletRequest request, Model model, @RequestParam("existingImage") String existingImage, @RequestPart("singleFile") MultipartFile singleFile) throws Exception {
         String root = request.getSession().getServletContext().getRealPath("/");
         System.out.println("root : " + root);
-        String filePath = root + "\\uploadFiles";
+        String filePath = root + "uploadFiles/job/";
 
         File mkdir = new File(filePath);
         if (!mkdir.exists()) {
@@ -269,14 +266,14 @@ public class RecruitController {
 
             /* 파일을 저장한다. */
             try {
-                singleFile.transferTo(new File(filePath + "\\" + savedName));
+                singleFile.transferTo(new File(filePath + savedName));
                 model.addAttribute("savedName", savedName);
                 jobDTO.setImg(savedName);
                 jobService.updateBoard(jobDTO);
             } catch (Exception e) {
                 System.out.println("job update error : " + e);
                 /* 실패시 파일 삭제 */
-                new File(filePath + "\\" + savedName).delete();
+                new File(filePath + savedName).delete();
                 model.addAttribute("message", "파일 업로드 실패!!");
             }
         }
@@ -294,9 +291,16 @@ public class RecruitController {
     }
 
     @GetMapping("/job/delete")
-    public String deleteBoard(@RequestParam("no") int no, Model model) throws Exception{
+    public String deleteBoard(@RequestParam("no") int no, Model model, HttpServletRequest request) throws Exception{
         try {
+            JobDTO jobDTO = jobService.findBoardByNo(no);
             jobService.deleteBoard(no);
+
+            String root = request.getSession().getServletContext().getRealPath("/");
+            String filePath = root + "uploadFiles/job/";
+            String savedName = jobDTO.getImg();
+            new File(filePath + savedName).delete();
+
             model.addAttribute("msg", "게시글 삭제 성공");
         } catch (Exception e) {
             model.addAttribute("msg", "게시글 삭제 실패");
@@ -328,7 +332,7 @@ public class RecruitController {
         /* 파일을 저장할 경로 설정 */
         String root = request.getSession().getServletContext().getRealPath("/");
         System.out.println("root : " + root);
-        String filePath = root + "\\uploadFiles";
+        String filePath = root + "uploadFiles/job/apply/";
 
         File mkdir = new File(filePath);
         if (!mkdir.exists()) {
@@ -343,14 +347,14 @@ public class RecruitController {
 
             /* 파일을 저장한다. */
             try {
-                singleFile.transferTo(new File(filePath + "\\" + savedName));
+                singleFile.transferTo(new File(filePath + savedName));
                 model.addAttribute("savedName", savedName);
                 applyDTO.setImg(savedName);
                 jobService.insertApply(applyDTO);
             } catch (Exception e) {
                 System.out.println("apply insert error : " + e);
                 /* 실패시 파일 삭제 */
-                new File(filePath + "\\" + savedName).delete();
+                new File(filePath + savedName).delete();
                 model.addAttribute("message", "파일 업로드 실패!!");
             }
         }
@@ -444,7 +448,7 @@ public class RecruitController {
         /* 파일을 저장할 경로 설정 */
         String root = request.getSession().getServletContext().getRealPath("/");
         System.out.println("root : " + root);
-        String filePath = root + "\\uploadFiles";
+        String filePath = root + "uploadFiles/free/";
 
         File mkdir = new File(filePath);
         if (!mkdir.exists()) {
@@ -459,14 +463,14 @@ public class RecruitController {
 
             /* 파일을 저장한다. */
             try {
-                singleFile.transferTo(new File(filePath + "\\" + savedName));
+                singleFile.transferTo(new File(filePath + savedName));
                 model.addAttribute("savedName", savedName);
                 freeDTO.setImg(savedName);
                 freeService.insertBoard(freeDTO);
             } catch (Exception e) {
                 System.out.println("free insert error : " + e);
                 /* 실패시 파일 삭제 */
-                new File(filePath + "\\" + savedName).delete();
+                new File(filePath + savedName).delete();
                 model.addAttribute("message", "파일 업로드 실패!!");
             }
         }
@@ -524,7 +528,7 @@ public class RecruitController {
     public String updateFree(FreeDTO freeDTO, @RequestParam("board_no") int board_no, HttpServletRequest request, Model model, @RequestParam("existingImage") String existingImage, @RequestPart("singleFile") MultipartFile singleFile) throws Exception {
         String root = request.getSession().getServletContext().getRealPath("/");
         System.out.println("root : " + root);
-        String filePath = root + "\\uploadFiles";
+        String filePath = root + "uploadFiles/free/";
 
         File mkdir = new File(filePath);
         if (!mkdir.exists()) {
@@ -541,14 +545,14 @@ public class RecruitController {
 
             /* 파일을 저장한다. */
             try {
-                singleFile.transferTo(new File(filePath + "\\" + savedName));
+                singleFile.transferTo(new File(filePath + savedName));
                 model.addAttribute("savedName", savedName);
                 freeDTO.setImg(savedName);
                 freeService.updateBoard(freeDTO);
             } catch (Exception e) {
                 System.out.println("free update error : " + e);
                 /* 실패시 파일 삭제 */
-                new File(filePath + "\\" + savedName).delete();
+                new File(filePath + savedName).delete();
                 model.addAttribute("message", "파일 업로드 실패!!");
             }
         }
@@ -566,9 +570,16 @@ public class RecruitController {
     }
 
     @GetMapping("/free/delete")
-    public String deleteFree(@RequestParam("no") int no, Model model) throws Exception{
+    public String deleteFree(@RequestParam("no") int no, Model model, HttpServletRequest request) throws Exception{
         try {
+            FreeDTO freeDTO =  freeService.findBoardByNo(no);
             freeService.deleteBoard(no);
+
+            String root = request.getSession().getServletContext().getRealPath("/");
+            String filePath = root + "uploadFiles/free/";
+            String savedName = freeDTO.getImg();
+            new File(filePath + savedName).delete();
+
             model.addAttribute("msg", "게시글 삭제 성공");
         } catch (Exception e) {
             model.addAttribute("msg", "게시글 삭제 실패");
@@ -696,6 +707,35 @@ public class RecruitController {
             model.addAttribute("msg", "신고글 삭제 실패");
         }
         return "redirect:/recruit/free/report/list";
+    }
+
+    @GetMapping("/free/pay/order")
+    public String order(@RequestParam("no") int no, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+        FreeDTO freeDTO = freeService.findBoardByNo(no);
+        String email = userDetails.getEmail();
+        String phone = userDetails.getPhone();
+        String name = userDetails.getRealName();
+
+        model.addAttribute("free", freeDTO);
+        model.addAttribute("email", email);
+        model.addAttribute("phone", phone);
+        model.addAttribute("name", name);
+        return "recruit/free/pay/order";
+    }
+
+    @PostMapping("/free/pay/order")
+    public String order(@RequestParam("board_no") int board_no, @RequestParam("quantity") int quantity, @RequestParam("price") int price,
+                         @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+        // 작성자의 memberNo와 userName을 설정
+        FreePayDTO payDTO = new FreePayDTO();
+        payDTO.setBoard_no(board_no);
+        payDTO.setMember_no(userDetails.getMemNo());
+        payDTO.setQuantity(quantity);
+        payDTO.setPrice(price);
+
+        freeService.order(payDTO);
+
+        return "redirect:/recruit/free/view?no=" + board_no;
     }
 
 }

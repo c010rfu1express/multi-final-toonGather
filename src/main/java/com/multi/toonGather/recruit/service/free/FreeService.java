@@ -2,10 +2,7 @@ package com.multi.toonGather.recruit.service.free;
 
 
 import com.multi.toonGather.common.model.dto.PageDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeAvgRatingsDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeReviewDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeReviewReportDTO;
+import com.multi.toonGather.recruit.model.dto.free.*;
 
 import java.util.List;
 
@@ -50,4 +47,6 @@ public interface FreeService {
     void deleteReport(int no) throws Exception;
 
     int selectCountReview(int boardNo) throws Exception;
+
+    void order(FreePayDTO payDTO) throws Exception;
 }
