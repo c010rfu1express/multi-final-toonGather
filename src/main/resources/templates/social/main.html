@@ -143,13 +143,18 @@
         function displayReviewResults(reviews) {
             return reviews.map(function(review) {
                 return `
-                    <div class="search-result-item" onclick="location.href='/social/review/${review.reviewNo}'">
-                        <strong>${review.webtoon.webtoon_name}</strong>
-                        <span>"${review.title}"</span>
-                        <span>${truncateText(review.content, 50)}</span>
-                        <span>${displayStarRating(review.starRating)}</span>
-                        <span>${review.writer.nickname}</span>
-                        <span>${formatDate(review.createdDate)}</span>
+                    <div class="search-result-item" onclick="location.href='/social/reviews/${review.reviewNo}'">
+                        <div>
+                            <span class="webtoon-title">${review.webtoon.webtoon_name}</span>
+                            <span class="result-title">"${review.title}"</span>
+                            <span class="result-content">${truncateText(review.content, 50)}</span>
+                        </div>
+                        <div class="result-info">
+                            <span class="star-rating">${displayStarRating(review.starRating)}</span>
+                            <span class="author-label">작성자:</span>
+                            <span class="author-name">${review.writer.nickname}</span>
+                            <span class="created-date">${formatDate(review.createdDate)}</span>
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -158,15 +163,20 @@
         function displayDiaryResults(diaries) {
             return diaries.map(function(diary) {
                 return `
-                    <div class="search-result-item" onclick="location.href='/social/diary/${diary.diaryNo}'">
-                        <strong>${diary.webtoon.webtoon_name}</strong>
-                        <span>"${diary.title}"</span>
-                        <span>${truncateText(diary.content, 50)}</span>
-                        <span class="${diary.statusCode === 'C' ? 'status-ongoing' : 'status-repeat'}">
-                            ${diary.statusCode === 'C' ? '정주행중' : '재탕중'}
-                        </span>
-                        <span>${diary.writer.nickname}</span>
-                        <span>${formatDate(diary.createdDate)}</span>
+                    <div class="search-result-item" onclick="location.href='/social/diaries/${diary.diaryNo}'">
+                        <div>
+                            <span class="webtoon-title">${diary.webtoon.webtoon_name}</span>
+                            <span class="result-title">"${diary.title}"</span>
+                            <span class="result-content">${truncateText(diary.content, 50)}</span>
+                        </div>
+                        <div class="result-info">
+                            <span class="${diary.statusCode === 'C' ? 'status-ongoing' : 'status-repeat'}">
+                                ${diary.statusCode === 'C' ? '정주행중' : '재탕중'}
+                            </span>
+                            <span class="author-label">작성자:</span>
+                            <span class="author-name">${diary.writer.nickname}</span>
+                            <span class="created-date">${formatDate(diary.createdDate)}</span>
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -177,10 +187,8 @@
                 return `
                     <div class="search-result-item user-result" onclick="location.href='/social/users/${user.userId}/profile'">
                         <img src="/uploadFiles/${user.profileImagePath}" alt="${user.nickname}" class="profile-image">
-                        <div>
-                            <span class="user-nickname">${user.nickname}</span>
-                            <span class="user-bio">${user.bio || ''}</span>
-                        </div>
+                        <span class="user-nickname">${user.nickname}</span>
+                        <span class="user-bio">${user.bio || ''}</span>
                     </div>
                 `;
             }).join('');
@@ -207,8 +215,12 @@
         }
 
         function formatDate(dateString) {
-                    var date = new Date(dateString);
-                    return date.toLocaleDateString();
+            var date = new Date(dateString);
+            return date.getFullYear() + '-' +
+                   String(date.getMonth() + 1).padStart(2, '0') + '-' +
+                   String(date.getDate()).padStart(2, '0') + ' ' +
+                   String(date.getHours()).padStart(2, '0') + ':' +
+                   String(date.getMinutes()).padStart(2, '0');
         }
     });
 </script>
