@@ -31,11 +31,11 @@
                 </div>
                 <div class="form-group">
                     <td class="t1">게시글 내용 :</td>
-                    <td><input name="content" th:value="${job.content}" class="form-control" style="height:300px;" required></td>
+                    <td><input name="content" th:value="${job.content}" class="form-control" style="height:300px;" required maxlength="1000"></td>
                 </div>
                 <div class="form-group">
                     <td class="t1">근무지 :</td>
-                    <td><input name="location" th:value="${job.location}" class="form-control"></td>
+                    <td><input name="location" th:value="${job.location}" class="form-control" maxlength="50"></td>
                 </div>
                 <div class="form-group">
                     <td class="t1">마감일자 :</td>
