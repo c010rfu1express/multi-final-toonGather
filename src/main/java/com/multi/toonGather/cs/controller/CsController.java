@@ -71,15 +71,27 @@ public class CsController {
     }
 
     @GetMapping("/csAdmin")
-    public String csAdmin(Model model, @RequestParam(value = "page", defaultValue = "0") int page) throws Exception {
+    public String csAdmin(Model model,
+                          @RequestParam(value = "page", defaultValue = "0") int page,
+                          @RequestParam(value = "searchType", required = false) String searchType,
+                          @RequestParam(value = "keyword", required = false) String keyword) throws Exception {
 
         int pageSize = 10;
         int offset = page * pageSize;
 
-        int totalRows = csService.getTotalCount();
+        int totalRows;
+        List<QuestionDTO> questions;
+
+        if (keyword != null && !keyword.isEmpty()) {
+            totalRows = csService.countSearchQuestions(searchType, keyword);
+            questions = csService.searchQuestions(searchType, keyword, offset, pageSize);
+        } else {
+            totalRows = csService.getTotalCount();
+            questions = csService.questionList(offset, pageSize);
+        }
+
         int totalPages = (totalRows % pageSize == 0) ? totalRows / pageSize : (totalRows / pageSize) + 1;
 
-        List<QuestionDTO> questions = csService.questionList(offset, pageSize);
         List<FaqDTO> faqList = csService.faqList();
 
         System.out.println(questions);
@@ -88,6 +100,8 @@ public class CsController {
         model.addAttribute("faqList", faqList);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("currentPage", page);
+        model.addAttribute("searchType", searchType);
+        model.addAttribute("keyword", keyword);
 
         return "/cs/csAdmin";
     }

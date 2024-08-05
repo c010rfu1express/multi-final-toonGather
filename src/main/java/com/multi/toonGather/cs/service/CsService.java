@@ -40,4 +40,8 @@ public interface CsService {
     int getTotalCount() throws Exception;
 
     int getTotalCountById(int userNo) throws Exception;
+
+    int countSearchQuestions(String searchType, String keyword) throws Exception;
+
+    List<QuestionDTO> searchQuestions(String searchType, String keyword, int offset, int pageSize) throws Exception;
 }

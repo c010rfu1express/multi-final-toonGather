@@ -173,8 +173,42 @@
         SELECT COUNT(*) FROM cs_question
     </select>
 
+    <select id="countSearchQuestions" resultType="int">
+        SELECT COUNT(*)
+        FROM cs_question q
+        LEFT JOIN users u ON q.cs_q_writer_no = u.user_no
+        WHERE
+        <choose>
+            <when test="searchType == 'title'">
+                q.cs_q_title LIKE CONCAT('%', #{keyword}, '%')
+            </when>
+            <when test="searchType == 'author'">
+                u.nickname LIKE CONCAT('%', #{keyword}, '%')
+            </when>
+        </choose>
+    </select>
+
     <select id="getTotalCountById" parameterType="int" resultType="int">
         SELECT COUNT(*) FROM cs_question
         WHERE cs_q_writer_no = #{userNo}
+    </select>
+
+    <select id="searchQuestions" resultMap="questionResultMap">
+        SELECT q.*, c.cs_category_desc, s.cs_status_desc, u.nickname
+        FROM cs_question q
+        LEFT JOIN cs_category c ON q.cs_q_category_code = c.cs_category_code
+        LEFT JOIN cs_status s ON q.cs_q_status_code = s.cs_status_code
+        LEFT JOIN users u ON q.cs_q_writer_no = u.user_no
+        WHERE
+        <choose>
+            <when test="searchType == 'title'">
+                q.cs_q_title LIKE CONCAT('%', #{keyword}, '%')
+            </when>
+            <when test="searchType == 'author'">
+                u.nickname LIKE CONCAT('%', #{keyword}, '%')
+            </when>
+        </choose>
+        ORDER BY cs_q_no DESC
+        LIMIT #{limit} OFFSET #{offset}
     </select>
 </mapper>

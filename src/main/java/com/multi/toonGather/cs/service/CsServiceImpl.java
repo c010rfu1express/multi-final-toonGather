@@ -218,4 +218,14 @@ public class CsServiceImpl implements CsService {
     public int getTotalCountById(int userNo) throws Exception {
         return csMapper.getTotalCountById(userNo);
     }
+
+    @Override
+    public int countSearchQuestions(String searchType, String keyword) throws Exception {
+        return csMapper.countSearchQuestions(searchType, keyword);
+    }
+
+    @Override
+    public List<QuestionDTO> searchQuestions(String searchType, String keyword, int offset, int pageSize) throws Exception {
+        return csMapper.searchQuestions(searchType, keyword, offset, pageSize);
+    }
 }

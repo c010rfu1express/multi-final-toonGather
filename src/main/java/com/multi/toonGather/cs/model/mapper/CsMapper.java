@@ -9,7 +9,9 @@ import java.util.List;
 @Mapper
 public interface CsMapper {
 
-    List<QuestionDTO> myQuestionList(@Param("userNo") int userNo, @Param("offset") int offset, @Param("limit") int limit);
+    List<QuestionDTO> myQuestionList(@Param("userNo") int userNo,
+                                     @Param("offset") int offset,
+                                     @Param("limit") int limit);
 
     List<CsCategoryDTO> getCategories();
 
@@ -27,7 +29,8 @@ public interface CsMapper {
 
     void deleteQuestion(int csQNo);
 
-    List<QuestionDTO> questionList(@Param("offset") int offset, @Param("limit") int limit);
+    List<QuestionDTO> questionList(@Param("offset") int offset,
+                                   @Param("limit") int limit);
 
     List<AnswerDTO> getAnswerList(int csQNo);
 
@@ -46,4 +49,12 @@ public interface CsMapper {
     int getTotalCount();
 
     int getTotalCountById(int userNo);
+
+    int countSearchQuestions(@Param("searchType") String searchType,
+                             @Param("keyword") String keyword);
+
+    List<QuestionDTO> searchQuestions(@Param("searchType") String searchType,
+                                      @Param("keyword") String keyword,
+                                      @Param("offset") int offset,
+                                      @Param("limit") int limit);
 }
