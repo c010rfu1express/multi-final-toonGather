@@ -9,18 +9,13 @@
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
             padding: 20px;
-
-            justify-content: center;
         }
         #webtoonOne {
             width: 100%;
             max-width: 80%;
-
             margin: auto;
         }
         #webtoonDetail {
-            width: 100%;
-            max-width: 100%;
             background-color: #ffffff;
             padding: 20px;
             border-radius: 8px;
@@ -33,7 +28,7 @@
             margin-bottom: 20px;
         }
         th, td {
-            padding: 5px; /* 패딩을 줄임 */
+            padding: 10px; /* 패딩을 늘림 */
             text-align: left;
             border-bottom: 1px solid #ddd;
             vertical-align: top; /* 셀 내용을 상단 정렬 */
@@ -64,33 +59,29 @@
             font-weight: bold;
         }
         #comments {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-#comments h2 {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-}
-
-.comment {
-    margin-bottom: 15px;
-    padding: 10px;
-    background-color: #f2f2f2;
-    border-radius: 8px;
-}
-
-.comment p {
-    margin-bottom: 5px;
-}
-
-.comment .author {
-    font-weight: bold;
-    color: #333;
-}
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #comments h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        .comment {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f2f2f2;
+            border-radius: 8px;
+        }
+        .comment p {
+            margin-bottom: 5px;
+        }
+        .comment .author {
+            font-weight: bold;
+            color: #333;
+        }
         .comments-footer {
             display: flex;
             justify-content: flex-end;
@@ -100,12 +91,16 @@
         .comments-footer button {
             margin-left: 10px;
         }
-        .btn-edit {
-            background-color: #007bff;
-            color: #fff;
+        .btn-edit, .btn-delete {
             border: none;
             padding: 5px 10px;
             border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .btn-edit {
+            background-color: #007bff;
+            color: #fff;
         }
         .btn-edit:hover {
             background-color: #0056b3;
@@ -113,9 +108,6 @@
         .btn-delete {
             background-color: #dc3545;
             color: #fff;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
         }
         .btn-delete:hover {
             background-color: #c82333;
@@ -123,7 +115,7 @@
         #social {
             margin-top: 20px;
             display: flex;
-            justify-content: flex-end; /* Align social to the right */
+            justify-content: flex-end;
             align-items: center;
             flex-wrap: wrap;
         }
@@ -138,11 +130,31 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            margin-left: 10px; /* Adjust margin between buttons */
+            margin-left: 10px;
         }
         #social button:hover {
             background-color: #0056b3;
         }
+
+        .btn-star {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+            color: gold;
+            border: 2px solid gold;
+            padding: 5px 10px;
+             font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            text-align: center;
+        }
+        .btn-star:hover {
+            background-color: gold;
+            color: white;
+        }
+    </style>
     </style>
 </head>
 <body>
@@ -154,11 +166,32 @@
 <h1>웹툰 정보</h1>
 
 <div id="webtoonDetail">
+    <th:block th:if="${user.userNo > 0}">
+        <form th:action="@{/webtoon/save/inset}" method="post">
+            <input type="hidden"  name="webtoon_no" th:value="${one.webtoon_no}">
+            <input type="hidden"  name="webtoon_id" th:value="${one.webtoon_id}">
+            <input type="hidden"  name="webtoon_name" th:value="${one.webtoon_name}">
+
+
+            <button th:if="${save == null}" type="submit" class="btn-star">☆</button>
+
+        </form>
+        <form th:action="@{/webtoon/save/delete}" method="post">
+            <input th:if="${save != null}" type="hidden"  name="saveNo" th:value="${save.saveNo}">
+            <input type="hidden"  name="webtoon_id" th:value="${one.webtoon_id}">
+            <input type="hidden"  name="webtoon_name" th:value="${one.webtoon_name}">
+
+           \
+            <button th:if="${save != null}" type="submit" class="btn-star">★</button>
+        </form>
+    </th:block>
+    <div id="webtoon">
     <table>
         <tr>
             <td id="webtoonThumbnail" rowspan='11'></td>
             <th>제목</th>
             <td id="webtoonTitle"></td>
+
         </tr>
         <tr>
             <th>제공자</th>
@@ -200,7 +233,11 @@
             <th>무료 대기 시간(시간)</th>
             <td id="webtoonFreeWaitHour"></td>
         </tr>
+
     </table>
+</div>
+
+
     <div id="social"> <th:block th:if="${user.userNo > 0}">
         <!-- 리뷰 작성 폼 -->
         <form id="ReviewForm" th:action="@{/social/reviews/insert/{webtoonNo}(webtoonNo=${one.webtoon_no})}" method="get">
@@ -228,7 +265,7 @@
             <label for="content">댓글</label>
             <textarea class="form-control" id="content" name="content" rows="5" required maxlength="200"></textarea>
             <!-- hidden 필드로 웹툰 번호 전송 -->
-            <input type="hidden" id="userNo" name="userNo" th:value="${user.userNo}">
+
             <input type="hidden" id="webtoonNo" name="webtoon_no" th:value="${one.webtoon_no}">
             <input type="hidden" id="webtoonId" name="webtoon_id" th:value="${one.webtoon_id}">
             <input type="hidden" id="webtoonName" name="webtoon_name" th:value="${one.webtoon_name}">
