@@ -58,7 +58,7 @@
                     <label class="form-control" style="height:auto; border: none;">
                         <br>
                         <div th:if="${free.img != null}">
-                            <img th:src="@{'/uploadFiles/' + ${free.img}}" width="500" height="500" alt="프리랜서 글 이미지">
+                            <img th:src="@{'/uploadFiles/free/' + ${free.img}}" width="500" height="500" alt="프리랜서 글 이미지">
                         </div>
                         <br> <br>
                         <span class="font-weight-bold" style="font-size : 15pt;">서비스 설명</span>
@@ -69,7 +69,7 @@
                 </div>
                 <div th:if="${member_no != null and member_no != '' and member_no != free.writer}">
                     <div style="margin-right:1px;" class="mt-4 text-center">
-                        <a th:href="@{/recruit/free/pay(no=${free.board_no})}" class="btn btn-success">구매하기</a>
+                        <a th:href="@{/recruit/free/pay/order(no=${free.board_no})}" class="btn btn-success">구매하기</a>
                     </div>
                 </div>
                 <br>
