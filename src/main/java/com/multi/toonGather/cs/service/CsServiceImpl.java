@@ -25,8 +25,8 @@ public class CsServiceImpl implements CsService {
 
     // 내 문의글 목록 조회
     @Override
-    public List<QuestionDTO> myQuestionList(int userNo) throws Exception {
-        return csMapper.myQuestionList(userNo);
+    public List<QuestionDTO> myQuestionList(int userNo, int offset, int pageSize) throws Exception {
+        return csMapper.myQuestionList(userNo, offset, pageSize);
     }
 
     // 카테고리 목록 조회
@@ -170,8 +170,8 @@ public class CsServiceImpl implements CsService {
     }
 
     @Override
-    public List<QuestionDTO> questionList() throws Exception {
-        return csMapper.questionList();
+    public List<QuestionDTO> questionList(int offset, int limit) throws Exception {
+        return csMapper.questionList(offset, limit);
     }
 
     @Override
@@ -207,5 +207,15 @@ public class CsServiceImpl implements CsService {
     @Override
     public boolean deleteFaq(int csFaqNo) throws Exception {
         return csMapper.deleteFaq(csFaqNo);
+    }
+
+    @Override
+    public int getTotalCount() throws Exception {
+        return csMapper.getTotalCount();
+    }
+
+    @Override
+    public int getTotalCountById(int userNo) throws Exception {
+        return csMapper.getTotalCountById(userNo);
     }
 }

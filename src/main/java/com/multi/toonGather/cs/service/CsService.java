@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface CsService {
-    List<QuestionDTO> myQuestionList(int userNo) throws Exception;
+    List<QuestionDTO> myQuestionList(int userNo, int offset, int pageSize) throws Exception;
 
     List<CsCategoryDTO> getCategories() throws Exception;
 
@@ -21,7 +21,7 @@ public interface CsService {
 
     boolean deleteQuestion(int csQNo, HttpServletRequest request) throws Exception;
 
-    List<QuestionDTO> questionList() throws Exception;
+    List<QuestionDTO> questionList(int offset, int limit) throws Exception;
 
     List<AnswerDTO> getAnswerList(int csQNo) throws Exception;
 
@@ -36,4 +36,8 @@ public interface CsService {
     boolean updateFaq(FaqDTO faq) throws Exception;
 
     boolean deleteFaq(int csFaqNo) throws Exception;
+
+    int getTotalCount() throws Exception;
+
+    int getTotalCountById(int userNo) throws Exception;
 }

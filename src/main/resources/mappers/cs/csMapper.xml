@@ -62,13 +62,15 @@
         <result property="modifiedDate" column="modified_date"/>
     </resultMap>
 
-    <select id="myQuestionList" parameterType="int" resultMap="questionResultMap">
+    <select id="myQuestionList" resultMap="questionResultMap">
         SELECT q.*, c.cs_category_desc, s.cs_status_desc, u.nickname
         FROM cs_question q
         LEFT JOIN cs_category c ON q.cs_q_category_code = c.cs_category_code
         LEFT JOIN cs_status s ON q.cs_q_status_code = s.cs_status_code
         LEFT JOIN users u ON q.cs_q_writer_no = u.user_no
         WHERE q.cs_q_writer_no = #{userNo}
+        ORDER BY cs_q_no DESC
+        LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <select id="getCategories" resultMap="categoryResultMap">
@@ -121,6 +123,8 @@
         LEFT JOIN cs_category c ON q.cs_q_category_code = c.cs_category_code
         LEFT JOIN cs_status s ON q.cs_q_status_code = s.cs_status_code
         LEFT JOIN users u ON q.cs_q_writer_no = u.user_no
+        ORDER BY cs_q_no DESC
+        LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <select id="getAnswerList" parameterType="int" resultMap="answerResultMap">
@@ -164,4 +168,13 @@
     <delete id="deleteFaq" parameterType="int">
         DELETE FROM cs_faq WHERE cs_faq_no = #{csFaqNo}
     </delete>
+
+    <select id="getTotalCount" resultType="int">
+        SELECT COUNT(*) FROM cs_question
+    </select>
+
+    <select id="getTotalCountById" parameterType="int" resultType="int">
+        SELECT COUNT(*) FROM cs_question
+        WHERE cs_q_writer_no = #{userNo}
+    </select>
 </mapper>
