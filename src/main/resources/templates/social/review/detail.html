@@ -6,6 +6,7 @@
     <title>툰게더 toonGather | 리뷰 상세</title>
     <link rel="stylesheet" th:href="@{/css/social-styles.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/starRating.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/likeButton.css}">
     <style>
         .review-detail {
             background-color: #fff;
@@ -105,10 +106,21 @@
             </span>
             <span class="views">조회수: <span th:text="${review.viewCnt}"></span></span>
         </div>
+        <!-- 좋아요 버튼 -->
+        <div class="like-button-container" th:if="${currentUser != null and currentUser.userNo != review.writer.userNo}">
+            <span class="like-button">
+                <input type="checkbox" th:id="'like-' + ${review.reviewNo}" th:checked="${isLiked}">
+                <label th:for="'like-' + ${review.reviewNo}"></label>
+            </span>
+            <span class="like-count" th:text="${review.likeCount}">0</span>
+        </div>
+        <div class="like-count-only" th:if="${currentUser == null or currentUser.userNo == review.writer.userNo}">
+            좋아요 수: <span th:text="${review.likeCount}">0</span>
+        </div>
         <div class="review-actions">
             <a th:href="@{/social/users/{userId}/reviews(userId=${profileUser.userId})}" class="btn btn-secondary">목록으로</a>
             <th:block th:if="${#authentication.principal != null and #authentication.principal.userDTO.userId == review.writer.userId}">
-            <a th:href="@{/social/reviews/{reviewNo}/edit(reviewNo=${review.reviewNo})}" class="btn btn-warning">수정</a>
+                <a th:href="@{/social/reviews/{reviewNo}/edit(reviewNo=${review.reviewNo})}" class="btn btn-warning">수정</a>
                 <form th:action="@{/social/reviews/{reviewNo}/delete(reviewNo=${review.reviewNo})}" method="post" style="display:inline;">
                     <button type="submit" class="btn btn-danger" onclick="return confirm('정말로 삭제하시겠습니까?')">삭제</button>
                 </form>
@@ -119,5 +131,67 @@
         <p>해당 리뷰를 찾을 수 없습니다.</p>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const likeButton = document.querySelector('.like-button input');
+        const likeCount = document.querySelector('.like-count');
+
+        if (likeButton) {
+            likeButton.addEventListener('change', function() {
+                const reviewNo = [[${review.reviewNo}]];
+                fetch(`/social/reviews/${reviewNo}/like`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        likeButton.checked = !likeButton.checked;
+                    } else {
+                        likeCount.textContent = data.likeCount;
+                        likeButton.checked = data.isLiked;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    likeButton.checked = !likeButton.checked;
+                });
+            });
+        }
+    });
+</script>
+<script th:inline="javascript">
+    $(document).ready(function() {
+        $('.follow-btn').click(function() {
+            var userId = $(this).data('user-id');
+            var btn = $(this);
+
+            $.ajax({
+                url: '/social/users/' + userId + '/follow',
+                type: 'POST',
+                success: function(response) {
+                    if (response.success) {
+                        if (response.isFollowing) {
+                            btn.text('팔로잉').removeClass('btn-primary').addClass('btn-secondary');
+                        } else {
+                            btn.text('팔로우').removeClass('btn-secondary').addClass('btn-primary');
+                        }
+                    } else {
+                        alert('팔로우 상태를 변경하는데 실패했습니다.');
+                    }
+                },
+                error: function() {
+                    alert('서버와의 통신에 실패했습니다.');
+                }
+            });
+        });
+    });
+</script>
+</script>
 </body>
 </html>
