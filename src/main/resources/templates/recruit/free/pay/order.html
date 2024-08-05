@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html layout:decorate="~{layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>주문 하기</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+  <!-- jQuery -->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
+  <!-- iamport.payment.js -->
+  <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+</head>
+<body>
+<div th:replace="~{common/menubar}"></div>
+<div layout:fragment="content">
+  <nav class="navbar navbar-expand-md">
+    <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+      <li><a th:href="@{/recruit/creator/choice}" class="nav-link px-2">창작자 등록</a></li>
+      <li><a th:href="@{/recruit/job/list}" class="nav-link px-2">구인/구직</a></li>
+      <li><a th:href="@{/recruit/free/list}" class="nav-link px-2">프리랜서</a></li>
+      <li><a th:href="@{/recruit/ask/list}" class="nav-link px-2">문의 내역</a></li>
+    </ul>
+  </nav>
+  <div class="container mt-5">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="mb-0">주문</h2>
+      </div>
+      <div class="card-body">
+        <form action="#" th:action="@{/recruit/free/pay/order}" id="form" method="post">
+          <input type="hidden" id="board_no" name="board_no" th:value="${free.board_no}">
+          <div class="form-group">
+            <h3 class="font-bold">주문 상품</h3>
+            <div style="display: flex; align-items: center;">
+              <div th:if="${free.img != null}">
+                <img th:src="@{'/uploadFiles/free/' + ${free.img}}" width="80" height="80" alt="프리랜서 글 이미지" style="border: 1px solid #aaa; border-radius: 5px;">
+              </div>
+              <div style="margin-left: 10px;">
+                <span class="font-weight-bold" th:text="${free.title}"></span>
+                <div class="form-group" style="margin-top: 5px;">
+                  <!-- 개수를 입력받는 number 타입 필드 -->
+                  <div style="display: flex; align-items: center;">
+                    <label for="quantity" style="margin-right: 10px;">수량</label>
+                    <input class="form-control" type="number" id="quantity" name="quantity" value="1" min="1" style="width: 60px;">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <br>
+              <h3 class="font-bold">결제 금액 </h3>
+              <span id="view_price">0원</span>
+              <input type="hidden" id="price" name="price" value="0">
+            </div>
+          </div>
+          <div class="form-group">
+            <br>
+            <h3 class="font-bold">의뢰인 정보</h3>
+            <span >연락처</span>
+            <input id="phone" name="phone" type="text" class="form-control" required th:value="${phone}" maxlength="20">
+            <br>
+            <span >이메일</span>
+            <input id="email" name="email" type="text" class="form-control" required th:value="${email}" maxlength="100" >
+            <input type="hidden" id="name" name="name" th:value="${name}">
+          </div>
+          <div class="form-group">
+            <br>
+            <h3 class="font-bold">결제 수단</h3>
+            <br>
+            <input type="radio" id="kakaopay" name="payment-method" value="kakaopay" checked="checked">
+            <label for="kakaopay">카카오페이</label><br>
+            <input type="radio" id="kgini" name="payment-method" value="kgini">
+            <label for="kgini">KG이니시스</label><br>
+            <input type="radio" id="bank" name="payment-method" value="bank">
+            <label for="bank">무통장 입금</label><br>
+          </div>
+          <div class="form-group text-right">
+            <button type="button" onclick="handlePayment()" class="btn btn-primary">결제하기</button>
+            <a href="#" th:href="@{/recruit/free/list}" class="btn btn-secondary">취소</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const unitPrice = [[${free.price}]];
+
+    const quantityInput = document.getElementById('quantity');
+    const priceSpan = document.getElementById('view_price');
+    const hiddenPriceInput = document.getElementById('price');
+
+    function updatePrice() {
+      const quantity = quantityInput.value;
+      const totalPrice = unitPrice * quantity;
+      priceSpan.textContent = ` ${totalPrice}원`;
+      hiddenPriceInput.value = totalPrice;
+    }
+
+    // 이벤트 리스너 추가
+    quantityInput.addEventListener('input', updatePrice);
+
+    // 페이지 로드 시 초기 가격 설정
+    updatePrice();
+
+  function handlePayment() {
+    const paymentMethods = document.querySelectorAll('input[name="payment-method"]:checked');
+
+    if (paymentMethods.length === 0) {
+      alert('결제 수단을 선택해 주세요.');
+      return;
+    }
+
+    paymentMethods.forEach(function (checkbox) {
+      const paymentMethod = checkbox.value;
+      if (paymentMethod === 'kakaopay') {
+        payment();
+      } else if (paymentMethod === 'kgini') {
+        paymentKgini();
+      } else {
+        alert(paymentMethod + ' 결제 수단은 현재 지원되지 않습니다.');
+      }
+    });
+  }
+
+  function payment() {
+    IMP.init('imp86587478'); // 아임포트 관리자 콘솔에서 확인한 '가맹점 식별코드' 입력
+    IMP.request_pay({
+      pg: "kakaopay.TC0ONETIME", // PG사명 또는 PG사명.CID
+      pay_method: "card", // 결제 방법
+      merchant_uid: "test" + new Date().getTime(), // 가맹점 주문번호
+      name: "[[${free.title}]]", // 결제창에 노출될 상품명
+      amount: hiddenPriceInput.value, // 가격
+      buyer_email: document.getElementById('email').value,
+      buyer_name: document.getElementById('name').value,
+      buyer_tel: document.getElementById('phone').value
+    }, function (rsp) { // 콜백 함수
+      if (rsp.success) {
+        alert("완료 -> imp_uid : " + rsp.imp_uid + " / merchant_uid(orderKey) : " + rsp.merchant_uid);
+        // 결제 성공 후 폼 제출
+        document.getElementById('form').submit();
+      } else {
+        alert("실패 : 코드(" + rsp.error_code + ") / 메세지(" + rsp.error_msg + ")");
+      }
+    });
+  }
+
+   function paymentKgini() {
+    IMP.init('imp86587478'); // 아임포트 관리자 콘솔에서 확인한 '가맹점 식별코드' 입력
+    IMP.request_pay({
+      pg: "html5_inicis.INIpayTest", // PG사명 또는 PG사명.CID (테스트 환경)
+    pay_method: "card", // 결제 방법
+      merchant_uid: "kgini_" + new Date().getTime(), // 고유한 주문번호 생성
+      name: "[[${free.title}]]", // 결제창에 노출될 상품명
+      amount: hiddenPriceInput.value, // 가격
+      buyer_email: document.getElementById('email').value,
+      buyer_name: document.getElementById('name').value,
+      buyer_tel: document.getElementById('phone').value
+    }, function (rsp) { // 콜백 함수
+      if (rsp.success) {
+        alert("완료 -> imp_uid : " + rsp.imp_uid + " / merchant_uid(orderKey) : " + rsp.merchant_uid);
+        // 결제 성공 후 폼 제출
+        document.getElementById('form').submit();
+      } else {
+        alert("실패 : 코드(" + rsp.error_code + ") / 메세지(" + rsp.error_msg + ")");
+      }
+    });
+  }
+</script>
+</body>
+</html>

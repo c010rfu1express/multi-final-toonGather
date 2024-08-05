@@ -198,4 +198,21 @@
 		WHERE r.report_no = #{no}
 	</select>
 
+	<insert id="order" parameterType="freePayDTO">
+		INSERT INTO rct_free_pay
+		(
+		member_no
+		, board_no
+		, quantity
+		, price
+		)
+		VALUES
+		(
+		#{ member_no }
+		, #{ board_no }
+		, #{ quantity }
+		, #{ price }
+		)
+	</insert>
+
 </mapper>

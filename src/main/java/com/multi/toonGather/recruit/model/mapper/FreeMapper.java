@@ -2,10 +2,7 @@ package com.multi.toonGather.recruit.model.mapper;
 
 
 import com.multi.toonGather.common.model.dto.PageDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeAvgRatingsDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeReviewDTO;
-import com.multi.toonGather.recruit.model.dto.free.FreeReviewReportDTO;
+import com.multi.toonGather.recruit.model.dto.free.*;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -65,4 +62,6 @@ public interface FreeMapper {
 
     @Select("SELECT COUNT(*) AS review_count FROM rct_free_review WHERE board_no = #{boardNo}")
     int selectCountReview(int boardNo) throws Exception;
+
+    int order(FreePayDTO payDTO) throws Exception;
 }
