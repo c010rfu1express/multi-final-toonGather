@@ -45,7 +45,7 @@ public class CsServiceImpl implements CsService {
 
             String root = request.getSession().getServletContext().getRealPath("/");
             System.out.println("root : " + root);
-            String filePath = root + "/uploadFiles";
+            String filePath = root + "/uploadFiles/cs";
 
             File mkdir = new File(filePath);
             if (!mkdir.exists()) {
@@ -100,7 +100,7 @@ public class CsServiceImpl implements CsService {
             csMapper.updateQuestion(question);
 
             String root = request.getSession().getServletContext().getRealPath("/");
-            String filePath = root + "/uploadFiles";
+            String filePath = root + "/uploadFiles/cs";
 
             // 새로운 이미지가 첨부된 경우
             if (images != null && images.length > 0 && !images[0].isEmpty()) {
@@ -156,7 +156,7 @@ public class CsServiceImpl implements CsService {
 
             // 파일 삭제
             for (QuestionFilesDTO file : files) {
-                File delFile = new File(request.getSession().getServletContext().getRealPath("/") + "/uploadFiles/" + file.getSavedName());
+                File delFile = new File(request.getSession().getServletContext().getRealPath("/") + "/uploadFiles/cs/" + file.getSavedName());
                 if (delFile.exists()) {
                     delFile.delete();
                 }

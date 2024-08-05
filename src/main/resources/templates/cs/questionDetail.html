@@ -71,7 +71,7 @@
         </div>
         <div class="images">
             <div th:each="file : ${questionFiles}">
-                <img th:src="@{/uploadFiles/{fileName}(fileName=${file.savedName})}" th:alt="${file.originName}" style="max-width: 100%; height: auto;"/>
+                <img th:src="@{/uploadFiles/cs/{fileName}(fileName=${file.savedName})}" th:alt="${file.originName}" style="max-width: 100%; height: auto;"/>
             </div>
         </div>
     </div>
