@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Question Detail</title>
+    <link rel="stylesheet" th:href="@{/css/social-styles.css}">
     <style>
         .detail-container {
             width: 80%;
@@ -69,8 +70,8 @@
         </div>
     </div>
     <div sec:authorize="hasRole('ROLE_ADMIN')" class="detail-footer">
-        <button th:onclick="'location.href=\'/cs/updateFaq/' + ${faq.csFaqNo} + '\';'">수정</button>
-        <button th:onclick="'location.href=\'/cs/deleteFaq/' + ${faq.csFaqNo} + '\';'">삭제</button>
+        <button th:onclick="'location.href=\'/cs/updateFaq/' + ${faq.csFaqNo} + '\';'" class="btn btn-warning">수정</button>
+        <button th:onclick="'location.href=\'/cs/deleteFaq/' + ${faq.csFaqNo} + '\';'" class="btn btn-danger">삭제</button>
     </div>
     <div class="spacer"></div>
 </div>
