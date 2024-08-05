@@ -16,6 +16,9 @@ server:
   servlet:
     session:
       timeout: 1800
+    encoding:
+      charset: UTF-8
+      enabled: true
 
 logging:
   level:
