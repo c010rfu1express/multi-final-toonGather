@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -88,7 +89,7 @@
            background-color: #0056b3;
            font-weight: bold;
        }
-        .Search {
+       .Search {
             border-radius: 20px; /* 둥근 모서리를 위한 경계 반경 설정 */
             padding-left: 15px; /* 왼쪽 내부 여백 */
             padding-right: 15px; /* 오른쪽 내부 여백 */
@@ -101,6 +102,10 @@
        .btn-search {
             border-radius: 20px; /* 둥근 모서리를 위한 경계 반경 설정 */
         }
+        .form-inline > * {
+            margin-right: 10px;
+            margin-bottom: 10px; /* 선택 옵션 및 입력 필드 사이의 간격 설정 */
+        }
     </style>
 </head>
 <body>
@@ -108,50 +113,70 @@
 <div th:replace="common/webtoon_menubar.html"></div>
 <br>
 
-<br>
 <div id="webtoonList">
-
     <form class="form-inline" th:action="@{/webtoon/search}" method="get">
-        <input id="searchInput"  class="Search mr-sm-2" type="search" placeholder="제목, 작가로 검색" aria-label="검색"
-               name="search" minlength="2" required maxlength="50" > <!-- 너비를 조정하는 style 속성 추가 -->
+        <select name="Method">
+            <option  value="name" th:selected="${Method == 'name'}">이름, 작가</option>
+            <option value="tags" th:selected="${Method == 'tags'}">태그</option>
+        </select>
+        <select name="platform">
+            <option value="ALL" th:selected="${platform == 'ALL'}">ALL</option>
+            <option value="NAVER" th:selected="${platform == 'NAVER'}">네이버</option>
+            <option value="KAKAO"th:selected="${platform == 'KAKAO'}">카카오</option>
+        </select>
+        <input id="searchInput" class="Search mr-sm-2" type="search" placeholder="제목, 작가로 검색" aria-label="검색"
+               name="search" minlength="2" required maxlength="50"> <!-- 너비를 조정하는 style 속성 추가 -->
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
     </form>
     <br>
 
-    <div id="webtoonContainer">
-
+    <div th:if="${Method=='name'}" id="webtoonContainer">
     </div>
-    <div id="webtoonTag">
-    <div th:each="webtoon : ${searchTags}" class="webtoon-card">
-        <img th:src="${webtoon.thumbnail_url}"  class="webtoon-thumbnail">
-        <div class="webtoon-info">
-            <a th:text="${webtoon.webtoon_name}"
-               th:href="@{'/webtoon/one?webtoon_id=' + (${webtoon.platform} == 1 ? 'naver_' + ${webtoon.webtoon_id} : 'kakao_'+${webtoon.webtoon_id}) + '&amp;webtoon_name=' + ${webtoon.webtoon_name}}"
-               class="webtoon-title"></a>
-            <div th:text="'작가: ' + ${webtoon.author}" class="webtoon-authors"></div>
-            <div th:text="'플랫폼: ' + (${webtoon.platform} == 1 ? 'NAVER' : 'KAKAO')" class="webtoon-provider"></div>
+        <div id="pageButtons"></div>
 
+
+    <div th:if="${Method=='tags'}" id="webtoonTag">
+
+        <div th:if="${searchTags.size == 0 or #lists.isEmpty(searchTags)}">
+            <div style="text-align: center; margin-top: 20px; font-size: 18px;">
+                검색 결과가 없습니다. 새로운 작품을 탐색해 보세요!
+            </div>
+        </div>
+
+        <div th:each="webtoon : ${searchTags}" class="webtoon-card">
+            <img th:src="${webtoon.thumbnail_url}" class="webtoon-thumbnail">
+            <div class="webtoon-info">
+                <a th:text="${webtoon.webtoon_name}"
+                   th:href="@{'/webtoon/one?webtoon_id=' + (${webtoon.platform} == 1 ? 'naver_' + ${webtoon.webtoon_id} : 'kakao_'+${webtoon.webtoon_id}) + '&amp;webtoon_name=' + ${webtoon.webtoon_name}}"
+                   class="webtoon-title"></a>
+                <div th:text="'작가: ' + ${webtoon.author}" class="webtoon-authors"></div>
+                <div th:text="'플랫폼: ' + (${webtoon.platform} == 1 ? 'NAVER' : 'KAKAO')" class="webtoon-provider"></div>
+
+            </div>
         </div>
     </div>
-    </div>
-    <div id="pageButtons"></div>
-    </div>
+
+
+</div>
 
 
 <script>
     let currentPage = 1; // 초기 페이지 번호
     const search = '[[${search}]]';
+    const method = '[[${Method}]]';
+    let platform = '[[${platform}]]';
+    if(platform=="ALL"){
+    platform="";
+    }
     const keyword = encodeURIComponent(search);
-    const tags = [[${searchTags.size()}]];
-    console.log(tags);
-     document.addEventListener('DOMContentLoaded', function() {
 
+    document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('searchInput').value = search;
     });
 
     function fetchWebtoons(page) {
-        let apiUrl = `https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/webtoons?keyword=${keyword}&page=${page}&perPage=100&sort=ASC`;
-
+        let apiUrl = `https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/webtoons?keyword=${keyword}&provider=${platform}&page=${page}&perPage=100&sort=ASC`;
+        if(method==="name"){
         fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
@@ -162,14 +187,14 @@
                 const webtoonContainer = document.getElementById('webtoonContainer');
                 webtoonContainer.innerHTML = ''; // 기존 웹툰 카드 초기화
 
-                if (webtoons.length === 0&&tags<1) {
-                const noResultMessage = document.createElement('div');
-                noResultMessage.textContent = "검색 결과가 없습니다. 새로운 작품을 탐색해 보세요!";
-                noResultMessage.style.textAlign = 'center';
-                noResultMessage.style.marginTop = '20px';
-                noResultMessage.style.fontSize = '18px';
-                webtoonContainer.appendChild(noResultMessage);
-            }
+                if (webtoons.length === 0) {
+                    const noResultMessage = document.createElement('div');
+                    noResultMessage.textContent = "검색 결과가 없습니다. 새로운 작품을 탐색해 보세요!";
+                    noResultMessage.style.textAlign = 'center';
+                    noResultMessage.style.marginTop = '20px';
+                    noResultMessage.style.fontSize = '18px';
+                    webtoonContainer.appendChild(noResultMessage);
+                }
 
                 webtoons.forEach(webtoon => {
                     const { id, title, thumbnail, authors, provider, updateDays } = webtoon;
@@ -247,7 +272,7 @@
             .catch(error => {
                 console.error('웹툰을 불러오는 중 오류가 발생했습니다:', error);
             });
-        window.scrollTo(0, 0);
+        window.scrollTo(0, 0);}
     }
 
     // 페이지 로드 시 첫 번째 페이지의 웹툰을 불러옴
