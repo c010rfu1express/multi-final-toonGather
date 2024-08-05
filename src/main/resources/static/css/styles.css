@@ -190,6 +190,7 @@ p { font-size: 16px; }
 
 .footer-logo img {
     width: 150px;
+    margin-left: 20px;
 }
 
 .footer-content {
