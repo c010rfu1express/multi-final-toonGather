@@ -41,9 +41,41 @@
           </div>
           <div class="form-group">
             <label for="price">가격</label>
-            <input id="price" name="price" th:field="*{price}" type="number" class="form-control" required value="1" min="1">
+            <input id="price" name="price" type="number" class="form-control" required value="1" min="1">
+          </div>
+          <div class="form-group">
+            <label for="kakao">카카오페이 (선택)</label>
+            <input id="kakao" name="kakao" type="text" class="form-control" placeholder="포트원 PG사명.CID 형식으로 입력해주세요">
+          </div>
+          <div class="form-group">
+            <label for="inicis">KG이니시스 (선택)</label>
+            <input id="inicis" name="inicis" type="text" class="form-control" placeholder="포트원 PG사명.CID 형식으로 입력해주세요">
+          </div>
+          <div class="form-group">
+            <label for="bank">무통장 입금 (필수)</label>
+            <div style="display: flex; align-items: center;">
+              <select id="bank_name" name="bank_name" class="form-control" style="width: 200px;" required>
+                <option value="" disabled selected>은행을 선택하세요</option>
+                <option value="국민은행">국민은행</option>
+                <option value="신한은행">신한은행</option>
+                <option value="우리은행">우리은행</option>
+                <option value="하나은행">하나은행</option>
+                <option value="기업은행">기업은행</option>
+                <option value="농협은행">농협은행</option>
+                <option value="대구은행">대구은행</option>
+                <option value="부산은행">부산은행</option>
+                <option value="광주은행">광주은행</option>
+                <option value="전북은행">전북은행</option>
+                <option value="제주은행">제주은행</option>
+                <option value="카카오뱅크">카카오뱅크</option>
+                <option value="토스뱅크">토스뱅크</option>
+                <option value="SC제일은행">SC제일은행</option>
+              </select>
+              <input id="account" name="account" type="text" class="form-control" required placeholder="계좌번호를 입력해주세요">
+              <br>
           </div>
           <div class="form-group text-right">
+            <br>
             <button type="submit" class="btn btn-primary">등록</button>
             <a href="#" th:href="@{/recruit/free/list}" class="btn btn-secondary">취소</a>
           </div>

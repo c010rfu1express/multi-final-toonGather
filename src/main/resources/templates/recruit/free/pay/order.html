@@ -59,22 +59,52 @@
           <div class="form-group">
             <br>
             <h3 class="font-bold">의뢰인 정보</h3>
+            <span >이름</span>
+            <input id="name" name="name" type="text" class="form-control" required th:value="${name}" maxlength="20">
+            <br>
             <span >연락처</span>
             <input id="phone" name="phone" type="text" class="form-control" required th:value="${phone}" maxlength="20">
             <br>
             <span >이메일</span>
             <input id="email" name="email" type="text" class="form-control" required th:value="${email}" maxlength="100" >
-            <input type="hidden" id="name" name="name" th:value="${name}">
+            <br>
+            <span >환불 계좌</span>
+            <label for="bank">은행 선택</label>
+            <div style="display: flex; align-items: center;">
+              <select id="bank_name" name="bank_name" class="form-control" style="width: 200px;" required>
+                <option value="" disabled selected>은행을 선택하세요</option>
+                <option value="국민은행">국민은행</option>
+                <option value="신한은행">신한은행</option>
+                <option value="우리은행">우리은행</option>
+                <option value="하나은행">하나은행</option>
+                <option value="기업은행">기업은행</option>
+                <option value="농협은행">농협은행</option>
+                <option value="대구은행">대구은행</option>
+                <option value="부산은행">부산은행</option>
+                <option value="광주은행">광주은행</option>
+                <option value="전북은행">전북은행</option>
+                <option value="제주은행">제주은행</option>
+                <option value="카카오뱅크">카카오뱅크</option>
+                <option value="토스뱅크">토스뱅크</option>
+                <option value="SC제일은행">SC제일은행</option>
+              </select>
+              <input id="account" name="account" type="text" class="form-control" required  maxlength="20" >
+            </div>
+
           </div>
           <div class="form-group">
             <br>
             <h3 class="font-bold">결제 수단</h3>
             <br>
-            <input type="radio" id="kakaopay" name="payment-method" value="kakaopay" checked="checked">
-            <label for="kakaopay">카카오페이</label><br>
-            <input type="radio" id="kgini" name="payment-method" value="kgini">
-            <label for="kgini">KG이니시스</label><br>
-            <input type="radio" id="bank" name="payment-method" value="bank">
+            <div th:if="${free.kakao_pg != null and free.kakao_pg != ''}">
+              <input type="radio" id="kakaopay" name="payment-method" value="kakaopay">
+              <label for="kakaopay">카카오페이</label><br>
+            </div>
+            <div th:if="${free.inicis_pg != null and free.inicis_pg != ''}">
+              <input type="radio" id="kgini" name="payment-method" value="kgini">
+              <label for="kgini">KG이니시스</label><br>
+            </div>
+            <input type="radio" id="bank" name="payment-method" value="bank" checked="checked">
             <label for="bank">무통장 입금</label><br>
           </div>
           <div class="form-group text-right">
@@ -89,6 +119,7 @@
 
 <script>
   const unitPrice = [[${free.price}]];
+  var boardNo = [[${free.board_no}]];
 
     const quantityInput = document.getElementById('quantity');
     const priceSpan = document.getElementById('view_price');
@@ -121,6 +152,21 @@
         payment();
       } else if (paymentMethod === 'kgini') {
         paymentKgini();
+      } else if (paymentMethod === 'bank') {
+        $.ajax({
+        url: '/recruit/free/pay/order', // 폼 데이터를 제출할 URL
+        type: 'POST',
+        data: new FormData(document.getElementById('form')),
+        contentType: false,
+        processData: false,
+        success: function () {
+          // 폼 제출 성공 후 페이지 이동
+          window.location.href = "/recruit/free/pay/bank?no=" + boardNo;
+        },
+        error: function () {
+          alert("폼 제출에 실패했습니다.");
+        }
+      });
       } else {
         alert(paymentMethod + ' 결제 수단은 현재 지원되지 않습니다.');
       }
@@ -130,7 +176,7 @@
   function payment() {
     IMP.init('imp86587478'); // 아임포트 관리자 콘솔에서 확인한 '가맹점 식별코드' 입력
     IMP.request_pay({
-      pg: "kakaopay.TC0ONETIME", // PG사명 또는 PG사명.CID
+      pg: "[[${free.kakao_pg}]]", // PG사명 또는 PG사명.CID
       pay_method: "card", // 결제 방법
       merchant_uid: "test" + new Date().getTime(), // 가맹점 주문번호
       name: "[[${free.title}]]", // 결제창에 노출될 상품명
@@ -152,8 +198,8 @@
    function paymentKgini() {
     IMP.init('imp86587478'); // 아임포트 관리자 콘솔에서 확인한 '가맹점 식별코드' 입력
     IMP.request_pay({
-      pg: "html5_inicis.INIpayTest", // PG사명 또는 PG사명.CID (테스트 환경)
-    pay_method: "card", // 결제 방법
+      pg: "[[${free.inicis_pg}]]", // PG사명 또는 PG사명.CID (테스트 환경)
+      pay_method: "card", // 결제 방법
       merchant_uid: "kgini_" + new Date().getTime(), // 고유한 주문번호 생성
       name: "[[${free.title}]]", // 결제창에 노출될 상품명
       amount: hiddenPriceInput.value, // 가격

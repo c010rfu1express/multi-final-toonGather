@@ -17,6 +17,10 @@
 		<result property="content" column="content" />
 		<result property="img" column="img" />
 		<result property="price" column="price" />
+		<result property="kakao_pg" column="kakao_pg" />
+		<result property="inicis_pg" column="inicis_pg" />
+		<result property="bank_name" column="bank_name" />
+		<result property="account" column="account" />
 		<result property="created_date" column="created_date" />
 		<result property="modified_date" column="modified_date" />
 		<result property="type_code" column="type_code" />
@@ -68,6 +72,10 @@
 		, content
 		, img
 		, price
+		, kakao_pg
+		, inicis_pg
+		, bank_name
+		, account
 		)
 		VALUES
 		(
@@ -76,6 +84,10 @@
 		, #{ content }
 		, #{ img }
 		, #{ price }
+		, #{ kakao_pg }
+		, #{ inicis_pg }
+		, #{ bank_name }
+		, #{ account }
 		)
 	</insert>
 
@@ -205,6 +217,11 @@
 		, board_no
 		, quantity
 		, price
+		, bank_name
+		, account
+		, buyer_name
+		, email
+		, phone
 		)
 		VALUES
 		(
@@ -212,6 +229,11 @@
 		, #{ board_no }
 		, #{ quantity }
 		, #{ price }
+		, #{ bank_name }
+		, #{ account }
+		, #{ buyer_name }
+		, #{ email }
+		, #{ phone }
 		)
 	</insert>
 
