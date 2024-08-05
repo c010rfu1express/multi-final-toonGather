@@ -56,6 +56,52 @@
         WHERE user_id = #{userId}
     </select>
 
+    <select id="selectOneByNickname" parameterType="string" resultType="userDTO">
+        SELECT
+        user_no AS userNo,
+        type_code AS typeCode,
+        auth_code AS authCode,
+        user_id AS userId,
+        password,
+        nickname,
+        contact_number AS contactNumber,
+        email,
+        profile_image_path AS profileImagePath,
+        bio,
+        gender,
+        date_of_birth AS dateOfBirth,
+        real_name AS realName,
+        terms_agreement AS termsAgreement,
+        terms_agreement_datetime AS termsAgreementDatetime,
+        registration_datetime AS registrationDatetime,
+        last_modified_datetime AS lastModifiedDatetime
+        FROM users
+        WHERE nickname = #{nickname}
+    </select>
+
+    <select id="selectOneByEmail" parameterType="string" resultType="userDTO">
+        SELECT
+        user_no AS userNo,
+        type_code AS typeCode,
+        auth_code AS authCode,
+        user_id AS userId,
+        password,
+        nickname,
+        contact_number AS contactNumber,
+        email,
+        profile_image_path AS profileImagePath,
+        bio,
+        gender,
+        date_of_birth AS dateOfBirth,
+        real_name AS realName,
+        terms_agreement AS termsAgreement,
+        terms_agreement_datetime AS termsAgreementDatetime,
+        registration_datetime AS registrationDatetime,
+        last_modified_datetime AS lastModifiedDatetime
+        FROM users
+        WHERE email = #{email}
+    </select>
+
     <insert id="insertUser">
         INSERT INTO users (
         type_code,
@@ -78,7 +124,7 @@
         )
 
         VALUES (
-        'G',
+        #{typeCode},
         'B',
         #{userId},
         #{password},
@@ -195,7 +241,7 @@
         WHERE user_no = #{userNo}
     </delete>
 
-    <select id="selectList" resultType="userDTO">
+    <select id="selectList" parameterType="pageDTO" resultType="userDTO">
         SELECT
         user_no AS userNo,
         type_code AS typeCode,
@@ -214,6 +260,10 @@
         registration_datetime AS registrationDatetime,
         last_modified_datetime AS lastModifiedDatetime
         FROM users
+        <if test="page != null">
+            ORDER BY user_no DESC
+            LIMIT #{start}, 10
+        </if>
     </select>
 
 </mapper>
