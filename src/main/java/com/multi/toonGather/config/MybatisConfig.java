@@ -53,8 +53,12 @@ public class MybatisConfig {
         configuration.getTypeAliasRegistry().registerAlias("CsCategoryDTO", com.multi.toonGather.cs.model.dto.CsCategoryDTO.class);
         configuration.getTypeAliasRegistry().registerAlias("CsStatusDTO", com.multi.toonGather.cs.model.dto.CsStatusDTO.class);
         // 서윤 social
-        configuration.getTypeAliasRegistry().registerAlias("reviewDTO", com.multi.toonGather.social.model.dto.ReviewDTO.class);
-        configuration.getTypeAliasRegistry().registerAlias("diaryDTO", com.multi.toonGather.social.model.dto.DiaryDTO.class);
+        configuration.getTypeAliasRegistry().registerAlias("followDTO", com.multi.toonGather.social.model.dto.FollowDTO.class);
+        configuration.getTypeAliasRegistry().registerAlias("activityDTO", com.multi.toonGather.social.model.dto.ActivityDTO.class);
+        configuration.getTypeAliasRegistry().registerAlias("reviewDTO", com.multi.toonGather.social.model.dto.review.ReviewDTO.class);
+        configuration.getTypeAliasRegistry().registerAlias("reviewLikeDTO", com.multi.toonGather.social.model.dto.review.ReviewLikeDTO.class);
+        configuration.getTypeAliasRegistry().registerAlias("diaryDTO", com.multi.toonGather.social.model.dto.diary.DiaryDTO.class);
+        configuration.getTypeAliasRegistry().registerAlias("diaryCommentDTO", com.multi.toonGather.social.model.dto.diary.DiaryCommentDTO.class);
         // 현구 user
         configuration.getTypeAliasRegistry().registerAlias("userDTO", com.multi.toonGather.user.model.dto.UserDTO.class);
         configuration.getTypeAliasRegistry().registerAlias("MyCsQuestionDTO", com.multi.toonGather.user.model.dto.MyCsQuestionDTO.class);

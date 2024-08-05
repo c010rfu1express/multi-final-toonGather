@@ -63,9 +63,9 @@ public class SecurityConfig {
                         // 공개 접근 가능한 경로
                         .requestMatchers("/", "/webtoon/**", "/recruit/**", "/introduction/**", "/cs/**", "/common/error/**").permitAll()
                         // social (최서윤): 소셜 파트 관련 경로
-                        .requestMatchers("/social/main").permitAll()
+                        .requestMatchers("/social/main", "/social/search").permitAll()
                         .requestMatchers("/social/users/*/profile", "/social/users/*/reviews", "/social/users/*/diaries").permitAll()
-                        .requestMatchers("/social/reviews/*").permitAll()
+                        .requestMatchers("/social/reviews/*", "/social/diaries/*").permitAll()
                         //  social (최서윤): 인증이 필요한 소셜 파트 경로
                         .requestMatchers("/social/reviews/*/edit", "/social/reviews/*/delete").authenticated()
                         // 관리자/마이페이지 관련 경로
