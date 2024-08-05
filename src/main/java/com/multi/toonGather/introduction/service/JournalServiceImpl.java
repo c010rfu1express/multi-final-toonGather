@@ -1,11 +1,10 @@
 package com.multi.toonGather.introduction.service;
 
-import com.multi.toonGather.cs.model.dto.QuestionFilesDTO;
 import com.multi.toonGather.introduction.model.dto.JournalDTO;
 import com.multi.toonGather.introduction.model.dto.JournalFileDTO;
+import com.multi.toonGather.introduction.model.dto.JournalLikeDTO;
 import com.multi.toonGather.introduction.model.mapper.JournalMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -235,6 +233,25 @@ public class JournalServiceImpl implements JournalService {
         } catch (Exception e) {
             e.printStackTrace();
             throw new Exception("Failed to delete journal", e);
+        }
+    }
+
+    //아래는 좋아요 관련 service
+    public int countLikesByJournalNo(int journalNo) {
+        return journalMapper.countLikesByJournalNo(journalNo);
+    }
+
+    public boolean toggleLike(int journalNo, int userNo) {
+        boolean exists = journalMapper.existsByJournalNoAndUserNo(journalNo, userNo);
+        if (exists) {
+            journalMapper.deleteLike(journalNo, userNo);
+            return false; // 좋아요 취소
+        } else {
+            JournalLikeDTO like = new JournalLikeDTO();
+            like.setJournalNo(journalNo);
+            like.setUserNo(userNo);
+            journalMapper.insertLike(like);
+            return true; // 좋아요 추가
         }
     }
 }
