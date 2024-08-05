@@ -1,8 +1,11 @@
 package com.multi.toonGather.social.model.mapper;
 
 import com.multi.toonGather.common.model.dto.PageDTO;
-import com.multi.toonGather.social.model.dto.DiaryDTO;
-import com.multi.toonGather.social.model.dto.ReviewDTO;
+import com.multi.toonGather.social.model.dto.ActivityDTO;
+import com.multi.toonGather.social.model.dto.diary.DiaryCommentDTO;
+import com.multi.toonGather.social.model.dto.diary.DiaryDTO;
+import com.multi.toonGather.social.model.dto.review.ReviewDTO;
+import com.multi.toonGather.social.model.dto.review.ReviewLikeDTO;
 import com.multi.toonGather.user.model.dto.UserDTO;
 import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
 import org.apache.ibatis.annotations.Mapper;
@@ -21,23 +24,39 @@ import java.util.List;
 public interface SocialMapper {
 
     // 메인 페이지
-    //List<ReviewDTO> selectPopularReviews();
+    List<ReviewDTO> selectPopularReviews(@Param("limit") int limit) throws Exception;
+    List<ReviewDTO> searchReviews(@Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit) throws Exception;
+    List<DiaryDTO> searchDiaries(@Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit) throws Exception;
+    List<?> searchUserContent(@Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit) throws Exception;
 
     // 사용자 메인 페이지
     UserDTO selectUserProfile(String userId) throws Exception;
+    List<ReviewDTO> selectFavoriteWebtoons(@Param("userId") String userId) throws Exception;
+    List<ReviewDTO> selectPopularReviewsByUser(@Param("userId") String userId, @Param("limit") int limit) throws Exception;
     List<ReviewDTO> selectReviewsByUserId(@Param("userId") String userId, @Param("pageDTO") PageDTO pageDTO) throws Exception;
     int selectReviewCountByUserId(String userId) throws Exception;
     List<DiaryDTO> selectDiariesByUserId(@Param("userId") String userId, @Param("pageDTO") PageDTO pageDTO) throws Exception;
     int selectDiaryCountByUserId(String userId) throws Exception;
+    List<ActivityDTO> selectRecentActivities(@Param("userId") String userId, @Param("limit") int limit) throws Exception;
+
+    // 팔로잉
+    void insertFollow(@Param("followerNo") int followerNo, @Param("followingNo") int followingNo) throws Exception;
+    void deleteFollow(@Param("followerNo") int followerNo, @Param("followingNo") int followingNo) throws Exception;
+    boolean isFollowing(@Param("followerNo") int followerNo, @Param("followingNo") int followingNo) throws Exception;
+    List<UserDTO> selectFollowingUsers(int userNo) throws Exception;
 
     // 리뷰
     void incrementReviewViewCount(int reviewNo) throws Exception;
     ReviewDTO selectReviewByNo(int reviewNo) throws Exception;
     void updateReview(ReviewDTO review) throws Exception;
     int deleteReview(int reviewNo) throws Exception;
+    ReviewLikeDTO selectReviewLike(@Param("reviewNo") int reviewNo, @Param("userNo") int userNo) throws Exception;
+    void insertReviewLike(@Param("reviewNo") int reviewNo, @Param("userNo") int userNo) throws Exception;
+    void deleteReviewLike(@Param("reviewNo") int reviewNo, @Param("userNo") int userNo) throws Exception;
 
     WebtoonDTO selectWebtoonByNo(int webtoonNo) throws Exception;
     void createReview(ReviewDTO review) throws Exception;
+    ReviewDTO selectReviewByUserAndWebtoon(@Param("userNo") int userNo, @Param("webtoonNo") int webtoonNo) throws Exception;
     void createDiary(DiaryDTO diary) throws Exception;
 
     // 다이어리
@@ -45,4 +64,10 @@ public interface SocialMapper {
     DiaryDTO selectDiaryByNo(int diaryNo) throws Exception;
     void updateDiary(DiaryDTO diary) throws Exception;
     int deleteDiary(int diaryNo) throws Exception;
+
+    List<DiaryCommentDTO> selectDiaryComments(int diaryNo) throws Exception;
+    void insertDiaryComment(DiaryCommentDTO comment) throws Exception;
+    DiaryCommentDTO selectLastInsertedComment(@Param("diaryNo") int diaryNo, @Param("userNo") int userNo) throws Exception;
+    void deleteDiaryComment(int commentNo) throws Exception;
+    DiaryCommentDTO selectDiaryCommentByNo(int commentNo) throws Exception;
 }

@@ -11,6 +11,7 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             padding: 30px;
+            margin-top: 20px;
         }
         table {
             width: 100%;
@@ -99,16 +100,16 @@
         <th:block th:if="${pages != null}">
             <div class="d-flex justify-content-center">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-sm previous" th:onclick="location.href='@{/users/${userId}/diaries(page=${currentPage - 1})}'" (userId=${profileUser.userId})}" th:disabled="${currentPage == 1}">
+                    <button type="button" class="btn btn-sm previous" th:onclick="|location.href='@{/social/users/__${userId}__/diaries(page=${currentPage - 1})}'|" th:disabled="${currentPage == 1}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
                         </svg>
                     </button>
                     <th:block th:each="p : ${#numbers.sequence(1, pages)}">
                         <button type="button" class="btn btn-sm me-2 pages"
-                                th:text="${p}" th:onclick="|location.href='@{/users/${profileUser.userId}/diaries(page=${p})}'|"></button>
+                                th:text="${p}" th:onclick="|location.href='@{/social/users/__${userId}__/diaries(page=${p})}'|"></button>
                     </th:block>
-                    <button type="button" class="btn btn-sm next" th:onclick="|location.href='@{/users/${profileUser.userId}/diaries(page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">
+                    <button type="button" class="btn btn-sm next" th:onclick="|location.href='@{/social/users/__${userId}__/diaries(page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
                         </svg>
@@ -126,6 +127,34 @@
             window.location = $(this).data("href");
         });
     });
+</script>
+<script th:inline="javascript">
+    $(document).ready(function() {
+        $('.follow-btn').click(function() {
+            var userId = $(this).data('user-id');
+            var btn = $(this);
+
+            $.ajax({
+                url: '/social/users/' + userId + '/follow',
+                type: 'POST',
+                success: function(response) {
+                    if (response.success) {
+                        if (response.isFollowing) {
+                            btn.text('팔로잉').removeClass('btn-primary').addClass('btn-secondary');
+                        } else {
+                            btn.text('팔로우').removeClass('btn-secondary').addClass('btn-primary');
+                        }
+                    } else {
+                        alert('팔로우 상태를 변경하는데 실패했습니다.');
+                    }
+                },
+                error: function() {
+                    alert('서버와의 통신에 실패했습니다.');
+                }
+            });
+        });
+    });
+</script>
 </script>
 </body>
 </html>
