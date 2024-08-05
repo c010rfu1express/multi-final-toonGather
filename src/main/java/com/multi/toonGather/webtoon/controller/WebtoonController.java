@@ -5,6 +5,7 @@ import com.multi.toonGather.user.model.dto.UserDTO;
 import com.multi.toonGather.webtoon.model.dto.CommentDTO;
 import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
 import com.multi.toonGather.webtoon.model.dto.WtUserLogDTO;
+import com.multi.toonGather.webtoon.model.dto.WtUserSaveDTO;
 import com.multi.toonGather.webtoon.service.WebToonService;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,6 +26,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
@@ -66,6 +68,7 @@ public class WebtoonController {
         UserDTO userDTO=new UserDTO();
         WebtoonDTO webtoonDTO1=new WebtoonDTO();
         WebtoonDTO resultDTO=new WebtoonDTO();
+        WtUserSaveDTO wtUserSaveDTO=new WtUserSaveDTO();
         String id=webtoonDTO.getWebtoon_id();
         String[] words1=id.split("_");
         System.out.println(words1[0]);
@@ -78,7 +81,11 @@ public class WebtoonController {
         webtoonDTO1.setWebtoon_id(words1[1]);
         webtoonDTO1.setWebtoon_name(webtoonDTO.getWebtoon_name());
         webtoonDTO1.setAuthor(webtoonDTO.getAuthor());
+
+
         try {
+
+
             resultDTO=webToonService.WebToonSelectOne(webtoonDTO1);
             if(resultDTO==null){
                 if(webtoonDTO1.getPlatform()==1){
@@ -106,7 +113,16 @@ public class WebtoonController {
         }
         if(c!=null){
         userDTO.setUserNo(c.getUserDTO().getUserNo());
+        wtUserSaveDTO.setWebtoonNo(webtoonDTO.getWebtoon_no());
+        wtUserSaveDTO.setUserNo(c.getUserDTO().getUserNo());
+            try {
+        wtUserSaveDTO=webToonService.WebToonSelectSave(wtUserSaveDTO);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
+        System.out.println(wtUserSaveDTO);
+        model.addAttribute("save",wtUserSaveDTO);
         model.addAttribute("user",userDTO);
         model.addAttribute("one",webtoonDTO);
 
@@ -115,16 +131,28 @@ public class WebtoonController {
     }
 
     @GetMapping("/webtoon/search")
-    public String searchWebtoon(@RequestParam("search") String search,Model model) throws UnsupportedEncodingException {
+    public String searchWebtoon(@RequestParam("search") String search,
+                                @RequestParam("Method") String Method,
+                                @RequestParam("platform") String platform,Model model) throws UnsupportedEncodingException {
 
-        String[]tags =search.split("#");
+
+
         List<WebtoonDTO>webtoonDTOS=new ArrayList<>();
-        if(tags.length>1&&tags[1].length()>0){
-            webtoonDTOS=webToonService.searchWebtoon(tags[1]);
+        if(Method.equals("tags")){
+            WebtoonDTO webtoonDTO=new WebtoonDTO();
+            webtoonDTO.setTags(search);
+            if(platform.equals("NAVER")){
+                webtoonDTO.setPlatform(1);
+            }else if(platform.equals("KAKAO")){
+                webtoonDTO.setPlatform(2);
+            }
+            webtoonDTOS=webToonService.searchWebtoon(webtoonDTO);
 
 
         }
+        model.addAttribute("Method",Method);
 
+        model.addAttribute("platform",platform);
 
         model.addAttribute("searchTags",webtoonDTOS);
 
@@ -175,8 +203,9 @@ public class WebtoonController {
         System.out.println(webtoonDTO);
         webToonService.insertComment(commentDTO);
             System.out.println("증가");
+        String encodedString = URLEncoder.encode(webtoonDTO.getWebtoon_name(), "UTF-8");
             return "redirect:/webtoon/one?webtoon_id=" + webtoonDTO.getWebtoon_id()
-                    +"&webtoon_name="+webtoonDTO.getWebtoon_name();
+                    +"&webtoon_name="+encodedString;
 
     }
     @PostMapping("/webtoon/one/update")
@@ -203,8 +232,41 @@ public class WebtoonController {
         System.out.println(webtoonDTO);
         webToonService.deleteComment(commentDTO);
         System.out.println("삭제");
+        String encodedString = URLEncoder.encode(webtoonDTO.getWebtoon_name(), "UTF-8");
         return "redirect:/webtoon/one?webtoon_id=" + webtoonDTO.getWebtoon_id()
-                +"&webtoon_name="+webtoonDTO.getWebtoon_name();
+                +"&webtoon_name="+encodedString;
+
+    }
+
+    @PostMapping("/webtoon/save/inset")
+    public String insertSave(WebtoonDTO webtoonDTO,@AuthenticationPrincipal CustomUserDetails c) throws Exception {
+       WtUserSaveDTO wtUserSaveDTO=new WtUserSaveDTO();
+        wtUserSaveDTO.setUserNo(c.getUserDTO().getUserNo());
+        wtUserSaveDTO.setWebtoonNo(webtoonDTO.getWebtoon_no());
+        System.out.println(webtoonDTO);
+       int result= webToonService.insertSave(wtUserSaveDTO);
+        System.out.println("삭제"+result);
+        System.out.println(webtoonDTO);
+        String encodedString = URLEncoder.encode(webtoonDTO.getWebtoon_name(), "UTF-8");
+        return "redirect:/webtoon/one?webtoon_id=" + webtoonDTO.getWebtoon_id()
+                +"&webtoon_name="+encodedString;
+
+    }
+
+    @PostMapping("/webtoon/save/delete")
+    public String deleteSave(WebtoonDTO webtoonDTO, @RequestParam("saveNo") int saveNo) throws Exception {
+
+        WtUserSaveDTO wtUserSaveDTO=new WtUserSaveDTO();
+
+
+        wtUserSaveDTO.setSaveNo(saveNo);
+
+        int result= webToonService.deleteSave(wtUserSaveDTO);
+        System.out.println("삭제");
+        String encodedString = URLEncoder.encode(webtoonDTO.getWebtoon_name(), "UTF-8");
+        System.out.println(encodedString);
+        return "redirect:/webtoon/one?webtoon_id=" + webtoonDTO.getWebtoon_id()
+                +"&webtoon_name="+encodedString;
 
     }
 
