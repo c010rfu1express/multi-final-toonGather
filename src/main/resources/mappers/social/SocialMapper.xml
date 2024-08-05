@@ -91,6 +91,8 @@
         <association property="diary" javaType="diaryDTO">
             <id property="diaryNo" column="diary_no"/>
             <result property="title" column="diary_title"/>
+            <result property="content" column="diary_content"/>
+            <result property="statusCode" column="diary_status_code"/>
         </association>
         <association property="webtoon" javaType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO">
             <id property="webtoon_no" column="webtoon_no"/>
@@ -224,7 +226,8 @@
         SELECT * FROM (
         SELECT 'REVIEW_LIKE' as activity_type, rl.liked_date as activity_date,
         r.review_no, r.title as review_title, u.user_no, u.nickname,
-        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags
+        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags,
+        NULL as diary_no, NULL as diary_title, NULL as diary_content, NULL as diary_status_code
         FROM so_review_likes rl
         JOIN so_review r ON rl.review_no = r.review_no
         JOIN users u ON r.writer_no = u.user_no
@@ -232,8 +235,9 @@
         WHERE rl.liked_user = (SELECT user_no FROM users WHERE user_id = #{userId})
         UNION ALL
         SELECT 'DIARY_COMMENT' as activity_type, dc.created_date as activity_date,
-        d.diary_no, d.title as diary_title, u.user_no, u.nickname,
-        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags
+        NULL as review_no, NULL as review_title, u.user_no, u.nickname,
+        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags,
+        d.diary_no, d.title as diary_title, d.content as diary_content, d.status_code as diary_status_code
         FROM so_diary_comments dc
         JOIN so_diary d ON dc.diary_no = d.diary_no
         JOIN users u ON d.writer_no = u.user_no
@@ -242,15 +246,17 @@
         UNION ALL
         SELECT 'REVIEW_CREATE' as activity_type, r.created_date as activity_date,
         r.review_no, r.title as review_title, u.user_no, u.nickname,
-        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags
+        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags,
+        NULL as diary_no, NULL as diary_title, NULL as diary_content, NULL as diary_status_code
         FROM so_review r
         JOIN users u ON r.writer_no = u.user_no
         JOIN webtoon w ON r.webtoon_no = w.webtoon_no
         WHERE r.writer_no = (SELECT user_no FROM users WHERE user_id = #{userId})
         UNION ALL
         SELECT 'DIARY_CREATE' as activity_type, d.created_date as activity_date,
-        d.diary_no, d.title as diary_title, u.user_no, u.nickname,
-        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags
+        NULL as review_no, NULL as review_title, u.user_no, u.nickname,
+        w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags,
+        d.diary_no, d.title as diary_title, d.content as diary_content, d.status_code as diary_status_code
         FROM so_diary d
         JOIN users u ON d.writer_no = u.user_no
         JOIN webtoon w ON d.webtoon_no = w.webtoon_no

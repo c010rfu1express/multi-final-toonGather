@@ -18,22 +18,24 @@
             <h2>지금 핫한 리뷰🔥</h2>
             <hr>
             <div class="hot-review-slider">
-                <div class="review-card" th:each="review : ${popularReviews}" th:onclick="'location.href=\'' + @{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})} + '\''">
+                <div class="hot-review-card" th:each="review : ${popularReviews}" th:onclick="'location.href=\'' + @{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})} + '\''">
                     <img th:src="${review.webtoon.thumbnail_url}" th:alt="${review.webtoon.webtoon_name}">
-                    <div class="review-info">
-                        <div>
-                            <div class="review-webtoon">
-                                <strong><span th:text="${review.webtoon.webtoon_name}"></span></strong>
-                                <span th:text="${review.webtoon.author}"></span>
-                            </div>
-                            <div class="review-title" th:text="${review.title}"></div>
-                            <div class="review-content" th:text="${#strings.abbreviate(review.content, 50)}"></div>
+                    <div class="hot-review-info">
+                        <div class="hot-review-webtoon">
+                            <strong><span th:text="${review.webtoon.webtoon_name}"></span></strong>
+                            <span th:text="${review.webtoon.author}"></span>
                         </div>
-                        <div>
-                            <div class="review-author">
-                                <span th:text="${review.writer.nickname}"></span>
+                        <div class="hot-review-title" th:text="${review.title}"></div>
+                        <div class="hot-review-content" th:text="${#strings.abbreviate(review.content, 50)}"></div>
+                        <div class="hot-review-author">
+                            <span th:text="${review.writer.nickname}"></span>
+                        </div>
+                        <div class="hot-review-footer">
+                            <div class="hot-review-rating">
+                                <span class="stars" th:text="${'★'.repeat(review.starRating)}"></span>
+                                <span class="rating-text" th:text="${review.starRating + '점'}"></span>
                             </div>
-                            <div class="review-likes">
+                            <div class="hot-review-likes">
                                 <span class="heart">❤</span>
                                 <span th:text="${review.likeCount}"></span>
                             </div>
