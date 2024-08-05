@@ -172,23 +172,23 @@
                 <li th:each="activity : ${recentActivities}" class="activity-item">
                     <span class="activity-date" th:text="${#temporals.format(activity.activityDate, 'yyyy/MM/dd HH:mm')}"></span>
                     <span class="activity-content" th:switch="${activity.activityType}">
-                        <span th:case="'REVIEW_LIKE'" th:if="${activity.review != null}">
-                            [<a th:href="@{/social/users/{userId}/profile(userId=${activity.writer.userId})}" class="user-link" th:text="${activity.writer.nickname}"></a>]님의 리뷰
-                            [<a th:href="@{/social/reviews/{reviewNo}(reviewNo=${activity.review.reviewNo})}" class="review-link" th:text="${activity.review.title}"></a>]에 좋아요
-                        </span>
-                        <span th:case="'DIARY_COMMENT'" th:if="${activity.diary != null}">
-                            [<a th:href="@{/social/users/{userId}/profile(userId=${activity.writer.userId})}" class="user-link" th:text="${activity.writer.nickname}"></a>]님의 다이어리
-                            [<a th:href="@{/social/diaries/{diaryNo}(diaryNo=${activity.diary.diaryNo})}" class="diary-link" th:text="${activity.diary.title}"></a>]에 댓글
-                        </span>
-                        <span th:case="'REVIEW_CREATE'" th:if="${activity.review != null and activity.webtoon != null}">
-                            [<a th:href="@{/webtoon/one(webtoon_id=${activity.webtoon.platform + '_' + activity.webtoon.webtoon_id}, webtoon_name=${activity.webtoon.webtoon_name})}" class="webtoon-link" th:text="${activity.webtoon.webtoon_name}"></a>]의 리뷰
-                            [<a th:href="@{/social/reviews/{reviewNo}(reviewNo=${activity.review.reviewNo})}" class="review-link" th:text="${activity.review.title}"></a>] 작성
-                        </span>
-                        <span th:case="'DIARY_CREATE'" th:if="${activity.diary != null and activity.webtoon != null}">
-                            [<a th:href="@{/webtoon/one(webtoon_id=${activity.webtoon.platform + '_' + activity.webtoon.webtoon_id}, webtoon_name=${activity.webtoon.webtoon_name})}" class="webtoon-link" th:text="${activity.webtoon.webtoon_name}"></a>]의 다이어리
-                            [<a th:href="@{/social/diaries/{diaryNo}(diaryNo=${activity.diary.diaryNo})}" class="diary-link" th:text="${activity.diary.title}"></a>] 작성
-                        </span>
+                    <span th:case="'REVIEW_LIKE'" th:if="${activity.review != null}">
+                        [<a th:href="@{/social/users/{userId}/profile(userId=${activity.writer.userId})}" class="user-link" th:text="${activity.writer.nickname}"></a>]님의 리뷰
+                        [<a th:href="@{/social/reviews/{reviewNo}(reviewNo=${activity.review.reviewNo})}" class="review-link" th:text="${activity.review.title}"></a>]에 좋아요
                     </span>
+                    <span th:case="'DIARY_COMMENT'" th:if="${activity.diary != null}">
+                        [<a th:href="@{/social/users/{userId}/profile(userId=${activity.writer.userId})}" class="user-link" th:text="${activity.writer.nickname}"></a>]님의 다이어리
+                        [<a th:href="@{/social/diaries/{diaryNo}(diaryNo=${activity.diary.diaryNo})}" class="diary-link" th:text="${activity.diary.title}"></a>]에 댓글
+                    </span>
+                    <span th:case="'REVIEW_CREATE'" th:if="${activity.review != null and activity.webtoon != null}">
+                        [<a th:href="@{/webtoon/one(webtoon_id=${(activity.webtoon.platform == 1 ? 'naver' : 'kakao') + '_' + activity.webtoon.webtoon_id}, webtoon_name=${activity.webtoon.webtoon_name})}" class="webtoon-link" th:text="${activity.webtoon.webtoon_name}"></a>]의 리뷰
+                        [<a th:href="@{/social/reviews/{reviewNo}(reviewNo=${activity.review.reviewNo})}" class="review-link" th:text="${activity.review.title}"></a>] 작성
+                    </span>
+                    <span th:case="'DIARY_CREATE'" th:if="${activity.diary != null and activity.webtoon != null}">
+                        [<a th:href="@{/webtoon/one(webtoon_id=${(activity.webtoon.platform == 1 ? 'naver' : 'kakao') + '_' + activity.webtoon.webtoon_id}, webtoon_name=${activity.webtoon.webtoon_name})}" class="webtoon-link" th:text="${activity.webtoon.webtoon_name}"></a>]의 다이어리
+                        [<a th:href="@{/social/diaries/{diaryNo}(diaryNo=${activity.diary.diaryNo})}" class="diary-link" th:text="${activity.diary.title}"></a>] 작성
+                    </span>
+                </span>
                 </li>
             </ul>
         </div>
