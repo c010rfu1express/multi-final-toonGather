@@ -223,7 +223,7 @@
     <select id="selectRecentActivities" resultMap="activityResultMap">
         SELECT * FROM (
         SELECT 'REVIEW_LIKE' as activity_type, rl.liked_date as activity_date,
-        r.review_no, r.title as review_title, u.user_no, u.nickname,
+        r.review_no, r.title as review_title, u.user_no, u.user_id, u.nickname,
         w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags,
         NULL as diary_no, NULL as diary_title, NULL as diary_content, NULL as diary_status_code
         FROM so_review_likes rl
@@ -233,7 +233,7 @@
         WHERE rl.liked_user = (SELECT user_no FROM users WHERE user_id = #{userId})
         UNION ALL
         SELECT 'DIARY_COMMENT' as activity_type, dc.created_date as activity_date,
-        NULL as review_no, NULL as review_title, u.user_no, u.nickname,
+        NULL as review_no, NULL as review_title, u.user_no, u.user_id, u.nickname,
         w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags,
         d.diary_no, d.title as diary_title, d.content as diary_content, d.status_code as diary_status_code
         FROM so_diary_comments dc
@@ -243,7 +243,7 @@
         WHERE dc.commenter_no = (SELECT user_no FROM users WHERE user_id = #{userId})
         UNION ALL
         SELECT 'REVIEW_CREATE' as activity_type, r.created_date as activity_date,
-        r.review_no, r.title as review_title, u.user_no, u.nickname,
+        r.review_no, r.title as review_title, u.user_no, u.user_id, u.nickname,
         w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags,
         NULL as diary_no, NULL as diary_title, NULL as diary_content, NULL as diary_status_code
         FROM so_review r
@@ -252,7 +252,7 @@
         WHERE r.writer_no = (SELECT user_no FROM users WHERE user_id = #{userId})
         UNION ALL
         SELECT 'DIARY_CREATE' as activity_type, d.created_date as activity_date,
-        NULL as review_no, NULL as review_title, u.user_no, u.nickname,
+        NULL as review_no, NULL as review_title, u.user_no, u.user_id, u.nickname,
         w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags,
         d.diary_no, d.title as diary_title, d.content as diary_content, d.status_code as diary_status_code
         FROM so_diary d
