@@ -27,7 +27,7 @@ public interface SocialMapper {
     List<ReviewDTO> selectPopularReviews(@Param("limit") int limit) throws Exception;
     List<ReviewDTO> searchReviews(@Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit) throws Exception;
     List<DiaryDTO> searchDiaries(@Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit) throws Exception;
-    List<?> searchUserContent(@Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit) throws Exception;
+    List<UserDTO> searchUsers(@Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit) throws Exception;
 
     // 사용자 메인 페이지
     UserDTO selectUserProfile(String userId) throws Exception;
