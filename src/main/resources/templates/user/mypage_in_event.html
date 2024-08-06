@@ -4,6 +4,20 @@
 <head>
     <title>KHG51: 마이페이지-나의소식-좋아요한행사</title>
     <meta charset="UTF-8">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- 폰트: 'Noto Sans KR' 사용 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+    <!-- 프로젝트 툰게더 전용 css 스타일 시트 -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function($) {
@@ -71,70 +85,133 @@
 <body>
 
 <div th:replace="~{common/menubar}"></div>
-<div layout:fragment="content">
-    <nav class="navbar navbar-expand-md">
-        <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-            <li><a th:href="@{/user/my}" class="nav-link px-2">나의 웹툰</a></li>
-            <li><a th:href="@{/user/my/so/review}" class="nav-link px-2">나의 소셜</a></li>
-            <li><a th:href="@{/user/my/rct/job}" class="nav-link px-2">나의 채용</a></li>
-            <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">나의 소식</a></li>
-            <li><a th:href="@{/user/my/editprofile}" class="nav-link px-2">프로필 수정</a></li>
-            <li><a th:href="@{/user/my/cs}" class="nav-link px-2">나의 문의</a></li>
-        </ul>
-    </nav>
+<style>
+    .jumbotron {
+    position : relative;
+    }
+    .jumbotron .row {
+    position : absolute;
+    width : 100%;
+    bottom: 0%;
+    }
+</style>
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-3">
+            <h3>나의 소식</h3>
+        </div>
+        <div class="col-md-9">
+            <nav class="navbar navbar-expand-md">
+                <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+                    <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">좋아요한 웹툰소식</a></li>
+                    <li><a th:href="@{/user/my/in/event}" class="nav-link px-2">좋아요한 행사</a></li>
+                    <li><a th:href="@{/user/my/in/merchan}" class="nav-link px-2">좋아요한 굿즈</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
 </div>
-<div layout:fragment="content">
-    <nav class="navbar navbar-expand-md">
-        <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-            <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">좋아요한 웹툰소식</a></li>
-            <li><a th:href="@{/user/my/in/event}" class="nav-link px-2">좋아요한 행사</a></li>
-        </ul>
-    </nav>
-</div>
-<div class="container">
-    <div class="review-list">
-        <h2>좋아요한 행사</h2>
-        <table>
-            <thead>
-            <tr>
-                <th>좋아요 번호</th>
-                <th>행사 게시글 번호</th>
-                <th>회원번호</th>
-                <th>좋아요 날짜</th>
-                <th>행사 제목</th>
-                <th>행사 카테고리 코드</th>
-                <th>행사 시작일</th>
-                <th>행사 종료일</th>
-                <th>행사 비용</th>
-                <th>관련사이트URL</th>
-                <th>장소명</th>
-                <th>주소명</th>
-                <th>좌표</th>
-                <th>행사 내용</th>
-                <th>게시 일시</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="myInEvent : ${myInEvents}" class="clickable-row" th:attr="data-href=@{/introduction/eventDetail(id=${myInEvent.eventNo})}">
-                <td th:text="${myInEvent.likedNo}">좋아요 번호</td>
-                <td th:text="${myInEvent.eventNo}">행사 게시글 번호</td>
-                <td th:text="${myInEvent.userNo}">회원번호</td>
-                <td th:text="${myInEvent.likedDate}">좋아요 날짜</td>
-                <td th:text="${myInEvent.title}">행사 제목</td>
-                <td th:text="${myInEvent.eventCategoryCode}">행사 카테고리 코드</td>
-                <td th:text="${myInEvent.startDate}">행사 시작일</td>
-                <td th:text="${myInEvent.endDate}">행사 종료일</td>
-                <td th:text="${myInEvent.cost}">행사 비용</td>
-                <td th:text="${myInEvent.site}">관련사이트URL</td>
-                <td th:text="${myInEvent.place}">장소명</td>
-                <td th:text="${myInEvent.address}">주소명</td>
-                <td th:text="${myInEvent.coordinates}">좌표</td>
-                <td th:text="${myInEvent.content}">행사 내용</td>
-                <td th:text="${myInEvent.postingDate}">게시 일시</td>
-            </tr>
-            </tbody>
-        </table>
+<div class="row">
+    <aside class="col-md-3">
+        <div class="panel">
+            <ul class="list-group">
+                <li><a th:href="@{/user/my}" class="nav-link px-2">나의 웹툰</a></li>
+                <li><a th:href="@{/user/my/so/review}" class="nav-link px-2">나의 소셜</a></li>
+                <li><a th:href="@{/user/my/rct/job}" class="nav-link px-2">나의 채용</a></li>
+                <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">나의 소식</a></li>
+                <li><a th:href="@{/user/my/editprofile}" class="nav-link px-2">프로필 수정</a></li>
+                <li><a th:href="@{/user/my/cs}" class="nav-link px-2">나의 문의</a></li>
+            </ul>
+        </div>
+    </aside>
+<!--    <script>-->
+<!--        function toggleCheckboxValue() {-->
+<!--            const checkbox = document.getElementById('isToggledCheckbox');-->
+<!--            if(!checkbox.checked) checkbox.value = 'N';-->
+<!--            else checkbox.value = 'Y';-->
+<!--            document.getElementById('filter-form').submit();-->
+<!--        }-->
+<!--    </script>-->
+    <script> // toggle + sorting
+        function updateCheckboxValueAndSubmit() {
+            const checkbox = document.getElementById('isToggledCheckbox');
+            const form = document.getElementById('filter-and-sort-form');
+            // 체크박스가 체크된 상태를 확인
+            checkbox.value = checkbox.checked ? 'Y' : 'N';
+            // 폼 제출
+            form.submit();
+        }
 
+        function submitForm() {
+            document.getElementById('filter-and-sort-form').submit();
+        }
+    </script>
+    <div class="col-md-9">
+        <div class="review-list">
+            <h2>좋아요한 행사</h2>
+            <form id="filter-and-sort-form" th:action="@{/user/my/in/event}" method="get">
+                <label>
+                    <input type="checkbox" name="isToggled" id="isToggledCheckbox" value="Y" th:checked="${isToggled == 'Y'}" onchange="updateCheckboxValueAndSubmit()">진행중인 행사
+                </label>
+
+                <label>
+                    <select name="orderBy" onchange="submitForm()">
+                        <option value="recentliked" th:selected="${orderBy == 'recentliked'}">최근좋아요순</option>
+                        <option value="oldestliked" th:selected="${orderBy == 'oldestliked'}">오래된순</option>
+
+                        <option value="recent" th:selected="${orderBy == 'recent'}">최신행사순</option>
+                        <option value="oldest" th:selected="${orderBy == 'oldest'}">오래된행사순</option>
+
+                        <option value="title" th:selected="${orderBy == 'title'}">제목가나다순</option>
+                    </select>
+                </label>
+            </form>
+<!--            <form id="filter-form" th:action="@{/user/my/in/event}" method="get">-->
+<!--                <label>-->
+<!--                    <input type="checkbox" name="isToggled" id="isToggledCheckbox" value="Y" th:checked="${isToggled == 'Y'}" onchange="toggleCheckboxValue()">진행중인 행사-->
+<!--                </label>-->
+<!--            </form>-->
+            <table>
+                <thead>
+                <tr>
+                    <th>좋아요 번호</th>
+                    <th>행사 게시글 번호</th>
+                    <th>회원번호</th>
+                    <th>좋아요 날짜</th>
+                    <th>행사 제목</th>
+                    <th>행사 카테고리 코드</th>
+                    <th>행사 시작일</th>
+                    <th>행사 종료일</th>
+                    <th>행사 비용</th>
+                    <th>관련사이트URL</th>
+                    <th>장소명</th>
+                    <th>주소명</th>
+                    <th>좌표</th>
+                    <th>행사 내용</th>
+                    <th>게시 일시</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="myInEvent : ${myInEvents}" class="clickable-row" th:attr="data-href=@{/introduction/eventDetail(id=${myInEvent.eventNo})}">
+                    <td th:text="${myInEvent.likedNo}">좋아요 번호</td>
+                    <td th:text="${myInEvent.eventNo}">행사 게시글 번호</td>
+                    <td th:text="${myInEvent.userNo}">회원번호</td>
+                    <td th:text="${myInEvent.likedDate}">좋아요 날짜</td>
+                    <td th:text="${myInEvent.title}">행사 제목</td>
+                    <td th:text="${myInEvent.eventCategoryCode}">행사 카테고리 코드</td>
+                    <td th:text="${myInEvent.startDate}">행사 시작일</td>
+                    <td th:text="${myInEvent.endDate}">행사 종료일</td>
+                    <td th:text="${myInEvent.cost}">행사 비용</td>
+                    <td th:text="${myInEvent.site}">관련사이트URL</td>
+                    <td th:text="${myInEvent.place}">장소명</td>
+                    <td th:text="${myInEvent.address}">주소명</td>
+                    <td th:text="${myInEvent.coordinates}">좌표</td>
+                    <td th:text="${myInEvent.content}">행사 내용</td>
+                    <td th:text="${myInEvent.postingDate}">게시 일시</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 </body>

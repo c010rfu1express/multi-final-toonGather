@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
 <html layout:decorate="~{layout}">
 <head>
-    <title>KHG20: 마이페이지-나의웹툰-북마크한웹툰</title>
+    <title>KHG52: 마이페이지-나의소식-좋아요한굿즈</title>
     <meta charset="UTF-8">
 
     <!-- Latest compiled and minified CSS -->
@@ -17,7 +17,6 @@
 
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -82,31 +81,31 @@
           z-index: 1000;
         }
     </style>
-
 </head>
 <body>
 
 <div th:replace="~{common/menubar}"></div>
 <style>
-        .jumbotron {
-        position : relative;
-        }
-        .jumbotron .row {
-        position : absolute;
-        width : 100%;
-        bottom: 0%;
-        }
+    .jumbotron {
+    position : relative;
+    }
+    .jumbotron .row {
+    position : absolute;
+    width : 100%;
+    bottom: 0%;
+    }
 </style>
 <div class="jumbotron">
     <div class="row">
         <div class="col-md-3">
-            <h3>나의 웹툰</h3>
+            <h3>나의 소식</h3>
         </div>
         <div class="col-md-9">
             <nav class="navbar navbar-expand-md">
                 <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-                    <li><a th:href="@{/user/my}" class="nav-link px-2">북마크한 웹툰</a></li>
-                    <li><a th:href="@{/user/my/wt/comment}" class="nav-link px-2">내가 남긴 코멘트</a></li>
+                    <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">좋아요한 웹툰소식</a></li>
+                    <li><a th:href="@{/user/my/in/event}" class="nav-link px-2">좋아요한 행사</a></li>
+                    <li><a th:href="@{/user/my/in/merchan}" class="nav-link px-2">좋아요한 굿즈</a></li>
                 </ul>
             </nav>
         </div>
@@ -125,60 +124,76 @@
             </ul>
         </div>
     </aside>
+    <script> // toggle + sorting
+        function updateCheckboxValueAndSubmit() {
+            const checkbox = document.getElementById('isToggledCheckbox');
+            const form = document.getElementById('filter-and-sort-form');
+            // 체크박스가 체크된 상태를 확인
+            checkbox.value = checkbox.checked ? 'Y' : 'N';
+            // 폼 제출
+            form.submit();
+        }
+
+        function submitForm() {
+            document.getElementById('filter-and-sort-form').submit();
+        }
+    </script>
     <div class="col-md-9">
         <div class="review-list">
-            <h2>북마크한 웹툰</h2>
-            <form id="sort-form" th:action="@{/user/my/wt/webtoon}" method="get">
+            <h2>좋아요한 굿즈</h2>
+            <form id="filter-and-sort-form" th:action="@{/user/my/in/merchan}" method="get">
                 <label>
-                    <select name="orderBy" onchange="this.form.submit()">
-                        <option value="recent" th:selected="${orderBy == 'recent'}">최근저장순</option>
-                        <option value="oldest" th:selected="${orderBy == 'oldest'}">오래된순</option>
-                        <option value="views" th:selected="${orderBy == 'views'}">조회수높은순</option>
+                    <input type="checkbox" name="isToggled" id="isToggledCheckbox" value="Y" th:checked="${isToggled == 'Y'}" onchange="updateCheckboxValueAndSubmit()">품절됨
+                </label>
+                <label>
+                    <select name="orderBy" onchange="submitForm()">
+                        <option value="recentliked" th:selected="${orderBy == 'recentliked'}">최근좋아요순</option>
+                        <option value="oldestliked" th:selected="${orderBy == 'oldestliked'}">오래된순</option>
+
+                        <option value="recent" th:selected="${orderBy == 'recent'}">최신상품순</option>
+                        <option value="oldest" th:selected="${orderBy == 'oldest'}">오래된상품순</option>
+
+                        <option value="expensive" th:selected="${orderBy == 'expensive'}">금액높은순</option>
+                        <option value="cheap" th:selected="${orderBy == 'cheap'}">금액낮은순</option>
+
                         <option value="title" th:selected="${orderBy == 'title'}">제목가나다순</option>
                     </select>
                 </label>
             </form>
-
             <table>
                 <thead>
                 <tr>
-                    <th>저장번호</th>
-                    <th>웹툰 번호</th>
-                    <th>유저넘버</th>
-                    <th>웹툰아이디</th>
-                    <th>플렛폼</th>
-                    <th>제목</th>
-                    <th>작가</th>
-                    <th>이미지URL</th>
-                    <th>장르</th>
-                    <th>태그</th>
-                    <th>조회수</th>
+                    <th>좋아요 번호</th>
+                    <th>상품 게시글 번호</th>
+                    <th>회원번호</th>
+                    <th>좋아요 날짜</th>
+                    <th>상품 제목</th>
+                    <th>정가</th>
+                    <th>할인가</th>
+                    <th>배송비</th>
+                    <th>상품 정보</th>
+                    <th>상품내용</th>
+                    <th>게시 일시</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="myWtWebtoon : ${myWtWebtoons}" class="clickable-row"
-                    th:attr="data-href=@{/webtoon/one(
-                webtoon_id=${(myWtWebtoon.platform == 1 ? 'naver_' : myWtWebtoon.platform == 2 ? 'kakao_' : '') + myWtWebtoon.webtoonId},
-                webtoon_name=${myWtWebtoon.webtoonName},
-                author=${myWtWebtoon.author}
-                )}">
-                    <td th:text="${myWtWebtoon.saveNo}">저장번호</td>
-                    <td th:text="${myWtWebtoon.webtoonNo}">웹툰 번호</td>
-                    <td th:text="${myWtWebtoon.userNo}">유저넘버</td>
-                    <td th:text="${myWtWebtoon.webtoonId}">웹툰아이디</td>
-                    <td th:text="${myWtWebtoon.platform}">플렛폼</td>
-                    <td th:text="${myWtWebtoon.webtoonName}">제목</td>
-                    <td th:text="${myWtWebtoon.author}">작가</td>
-                    <td th:text="${myWtWebtoon.thumbnailUrl}">이미지URL</td>
-                    <td th:text="${myWtWebtoon.genre}">장르</td>
-                    <td th:text="${myWtWebtoon.tags}">태그</td>
-                    <td th:text="${myWtWebtoon.count}">조회수</td>
+                <tr th:each="myInMerchan : ${myInMerchans}" class="clickable-row" th:attr="data-href=@{/introduction/merchanDetail(no=${myInMerchan.merchanNo})}">
+                    <td th:text="${myInMerchan.likedNo}">좋아요 번호</td>
+                    <td th:text="${myInMerchan.merchanNo}">상품 게시글 번호</td>
+                    <td th:text="${myInMerchan.userNo}">회원번호</td>
+                    <td th:text="${myInMerchan.likedDate}">좋아요 날짜</td>
+                    <td th:text="${myInMerchan.title}">상품 제목</td>
+                    <td th:text="${myInMerchan.regularPrice}">정가</td>
+                    <td th:text="${myInMerchan.discountPrice}">할인가</td>
+                    <td th:text="${myInMerchan.shippingCost}">배송비</td>
+                    <td th:text="${myInMerchan.merchanInfo}">상품 정보</td>
+                    <td th:text="${myInMerchan.content}">상품내용</td>
+                    <td th:text="${myInMerchan.postingDate}">게시 일시</td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-
 </body>
 </html>
