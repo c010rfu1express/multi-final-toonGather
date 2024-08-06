@@ -48,42 +48,62 @@ public class JournalServiceImpl implements JournalService {
 
         // Insert the journal and get the generated ID
         journalMapper.insertJournal(journalDTO);
-        JournalFileDTO fileDTO = new JournalFileDTO();
-        // Now the journalDTO should have the generated journalNo
         int journalNo = journalDTO.getJournalNo();
 
-        String root = request.getSession().getServletContext().getRealPath("/");
-        System.out.println("root : " + root);
-        String filePath = root + "/uploadFiles";
 
-        File mkdir = new File(filePath);
-        if (!mkdir.exists()) {
-            mkdir.mkdirs();
+
+        // Only proceed with file handling if a file is provided
+        if (file != null && !file.isEmpty()){
+
+            System.out.println("File object is not null.");
+            System.out.println("File name: " + file.getOriginalFilename());
+            System.out.println("File size: " + file.getSize());
+            System.out.println("File content type: " + file.getContentType());
+
+
+            JournalFileDTO fileDTO = new JournalFileDTO();
+            String root = request.getSession().getServletContext().getRealPath("/");
+            System.out.println("root : " + root);
+            String filePath = root + "/uploadFiles";
+
+            File mkdir = new File(filePath);
+            if (!mkdir.exists()) {
+                mkdir.mkdirs();
+            }
+
+            String originName = file.getOriginalFilename();
+            if (originName != null && !originName.isEmpty()) {
+                String ext = originName.substring(originName.lastIndexOf("."));
+                String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
+
+                // 파일 저장
+                try {
+                    file.transferTo(new File(filePath + "/" + savedName));
+
+                    fileDTO.setJournalNo(journalNo);
+                    fileDTO.setFileName(savedName);
+                    fileDTO.setFilePath(filePath);
+                    fileDTO.setFileType(file.getContentType());
+                    System.out.println("journalfiledto 테스트 :" + fileDTO.toString());
+
+                    // Insert the file information into the database
+                    journalMapper.insertJournalFile(fileDTO);
+                } catch (IOException e) {
+                    System.out.println("File upload error : " + e);
+                    // Clean up the uploaded file if an error occurs
+                    new File(filePath + "/" + savedName).delete();
+                    throw new Exception("File upload failed, rolling back transaction.", e); // 예외를 던져 트랜잭션을 롤백함
+                }
+            } // if origin not null
+
+
+
+
+
+        }else{
+            System.out.println("File object is null");
         }
 
-        String originName = file.getOriginalFilename();
-        if (originName != null && !originName.isEmpty()) {
-            String ext = originName.substring(originName.lastIndexOf("."));
-            String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
-
-            // 파일 저장
-            try {
-                file.transferTo(new File(filePath + "/" + savedName));
-
-                fileDTO.setJournalNo(journalNo);
-                fileDTO.setFileName(savedName);
-            } catch (IOException e) {
-                System.out.println("File upload error : " + e);
-                new File(filePath + "/" + savedName).delete();
-                throw new Exception("File upload failed, rolling back transaction.", e); // 예외를 던져 트랜잭션을 롤백함
-            }
-        } // if origin not null
-
-        fileDTO.setFilePath(filePath);
-        fileDTO.setFileType(file.getContentType());
-        System.out.println("journalfiledto 테스트 :" + fileDTO.toString());
-
-        journalMapper.insertJournalFile(fileDTO);
 
     }
 
