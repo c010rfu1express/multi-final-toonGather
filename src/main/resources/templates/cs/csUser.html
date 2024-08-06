@@ -5,6 +5,7 @@
     <title>Title</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/social-styles.css}">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -132,13 +133,12 @@
                 </tbody>
             </table>
             <div class="pagination">
-                <a href="#">&laquo;</a>
-                <a href="#">1</a>
-                <a href="#">2</a>
-                <a href="#">3</a>
-                <a href="#">4</a>
-                <a href="#">5</a>
-                <a href="#">&raquo;</a>
+                <a th:if="${currentPage > 0}" th:href="@{/cs/csUser(page=${currentPage - 1})}">&laquo;</a>
+                <a th:each="i : ${#numbers.sequence(1, totalPages)}"
+                   th:href="@{/cs/csUser(page=${i - 1})}"
+                   th:text="${i}"
+                   th:classappend="${currentPage + 1 == i} ? 'active' : ''"></a>
+                <a th:if="${currentPage < totalPages - 1}" th:href="@{/cs/csUser(page=${currentPage + 1})}">&raquo;</a>
             </div>
         </div>
         <div th:if="${questions == null || questions.isEmpty()}">
@@ -157,5 +157,6 @@
 <div class="chatbot">
     <button>챗봇</button>
 </div>
+    <div th:replace="common/footer.html"></div>
 </body>
 </html>
