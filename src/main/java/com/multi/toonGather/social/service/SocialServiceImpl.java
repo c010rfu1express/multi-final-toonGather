@@ -52,7 +52,7 @@ public class SocialServiceImpl implements SocialService {
             case "diary":
                 return socialMapper.searchDiaries(keyword, offset, limit);
             case "user":
-                return socialMapper.searchUserContent(keyword, offset, limit);
+                return socialMapper.searchUsers(keyword, offset, limit);
             default:
                 throw new IllegalArgumentException("Invalid category: " + category);
         }

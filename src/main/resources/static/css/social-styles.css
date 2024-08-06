@@ -169,135 +169,74 @@
     padding: 0 20px;
 }
 
-/* main.html: hot-review-slider 스타일 */
-.hot-review-slider {
-    display: flex;
-    overflow-x: auto;
-    padding: 20px 0;
-}
-
-.review-card {
-    flex: 0 0 auto;
-    width: 250px;
-    margin-right: 20px;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    padding: 15px;
-    cursor: pointer;
-    transition: box-shadow 0.3s;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* 상하단 간격을 자동으로 조정 */
-}
-
-.review-card:hover {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.review-card img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    margin-bottom: 10px;
-}
-
-.review-info {
-    flex: 1; /* 여분의 공간을 채우기 위해 flex-grow 설정 */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* 하단 고정용 */
-}
-
-.review-webtoon {
-    font-size: 12px;
-    color: #888;
-    margin-top: 10px;
-}
-
-.review-title {
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.review-content {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 10px;
-}
-
-.review-author,
-.review-likes {
-    font-size: 12px;
-    color: #888;
-    margin-top: 5px;
-    font-weight: bold;
-}
-
-.review-likes {
-    display: flex;
-    align-items: center;
-    color: #ff4081;
-    font-weight: bold;
-}
-
-.heart {
-    margin-right: 5px;
-}
 /* 검색 결과 스타일 */
-.search-item {
-    border-bottom: 1px solid #e0e0e0;
-    padding: 10px 0;
+.search-result-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-size: 0.9em;
 }
-
-.search-item:hover {
+.search-result-item:hover {
     background-color: #f5f5f5;
 }
-
-.search-item > * {
-    margin-right: 10px;
-}
-
-.search-item .fw-bold {
+.search-result-item .webtoon-title {
     font-weight: bold;
 }
-
-.search-item .text-warning {
-    color: #ffc107;
+.search-result-item .result-title {
+    margin-left: 5px;
 }
-
-.search-item .webtoon-title {
-    font-weight: bold;
-    color: #333;
-}
-
-.search-item .content {
-    color: #666;
-}
-
-.search-item .author {
+.search-result-item .result-content {
     font-style: italic;
+    color: #555;
+    margin-left: 5px;
+}
+.search-result-item .result-info {
+    margin-top: 5px;
     color: #888;
 }
-
-.search-item .date {
-    font-size: 0.9em;
-    color: #999;
+.search-result-item .star-rating {
+    color: gold;
 }
-
-#loadMoreBtn {
+.search-result-item .status-ongoing {
+    color: blue;
+}
+.search-result-item .status-repeat {
+    color: green;
+}
+.search-result-item .author-name {
+    color: #000;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.search-result-item.user-result {
+    display: flex;
+    align-items: center;
+}
+.search-result-item .profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+.search-result-item .user-nickname {
+    font-weight: bold;
+    margin-right: 10px;
+}
+.search-result-item .user-bio {
+    color: #666;
+}
+.load-more-btn {
     display: block;
     width: 100%;
     padding: 10px;
     background-color: #f0f0f0;
     border: none;
-    border-radius: 5px;
+    text-align: center;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    margin-top: 10px;
 }
-
-#loadMoreBtn:hover {
+.load-more-btn:hover {
     background-color: #e0e0e0;
 }
 
@@ -321,4 +260,381 @@
 
 #searchForm .btn-primary:hover {
     background-color: #0056b3;
+}
+
+/* 슬라이더 스타일 */
+.webtoon-slider,
+.hot-review-slider,
+.user-review-slider {
+    display: flex;
+    overflow-x: auto;
+    padding: 20px 0;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* 스크롤바 스타일 */
+.webtoon-slider::-webkit-scrollbar,
+.hot-review-slider::-webkit-scrollbar,
+.user-review-slider::-webkit-scrollbar {
+    height: 6px;  /* 스크롤바의 높이를 조금 줄임 */
+}
+
+.webtoon-slider::-webkit-scrollbar-track,
+.hot-review-slider::-webkit-scrollbar-track,
+.user-review-slider::-webkit-scrollbar-track {
+    background: #f8f8f8;  /* 트랙 색상을 더 연하게 */
+}
+
+.webtoon-slider::-webkit-scrollbar-thumb,
+.hot-review-slider::-webkit-scrollbar-thumb,
+.user-review-slider::-webkit-scrollbar-thumb {
+    background: #e8e8e8;  /* 스크롤바 색상을 더 연하게 */
+    border-radius: 3px;  /* 모서리를 조금 더 둥글게 */
+}
+
+.webtoon-slider::-webkit-scrollbar-thumb:hover,
+.hot-review-slider::-webkit-scrollbar-thumb:hover,
+.user-review-slider::-webkit-scrollbar-thumb:hover {
+    background: #dadada;  /* 호버 시 색상도 더 연하게 */
+}
+
+/* 지금 핫한 리뷰 카드 스타일 */
+.hot-review-card {
+    flex: 0 0 auto;
+    width: 200px;
+    height: 350px;
+    margin-right: 15px;
+    border: 1px solid #ff4081;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: box-shadow 0.3s, transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff0f5;
+    overflow: hidden;
+}
+
+.hot-review-card:hover {
+    box-shadow: 0 4px 8px rgba(255, 64, 129, 0.2);
+    transform: translateY(-5px);
+}
+
+.hot-review-card img {
+    width: 100%;
+    height: 180px; /* 썸네일 높이 조정 */
+    object-fit: cover;
+}
+
+.hot-review-info {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: space-between; /* 내용을 균등하게 분배 */
+}
+
+.hot-review-webtoon {
+    margin-bottom: 5px;
+}
+
+.hot-review-webtoon strong,
+.hot-review-webtoon span {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+.hot-review-webtoon strong {
+    font-size: 0.85em;
+    color: #ff4081;
+    margin-bottom: 2px;
+}
+
+.hot-review-webtoon span {
+    font-size: 0.7em;
+    color: #666;
+}
+
+.hot-review-title {
+    font-weight: bold;
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hot-review-content {
+    font-size: 0.8em;
+    color: #666;
+    margin-bottom: 5px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.hot-review-author {
+    font-size: 0.7em;
+    color: #888;
+    margin-top: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hot-review-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.hot-review-rating,
+.hot-review-likes {
+    display: flex;
+    align-items: center;
+    font-size: 0.7em;
+}
+
+.hot-review-rating .stars {
+    color: #ffd700;
+    margin-right: 3px;
+}
+
+.hot-review-likes {
+    color: #ff4081;
+    font-weight: bold;
+}
+
+.hot-review-likes .heart {
+    color: #ff4081;
+    margin-right: 3px;
+}
+
+/* 사용자별 인기 리뷰 카드 스타일 */
+.review-card {
+    flex: 0 0 auto;
+    width: 200px;
+    height: 350px;
+    margin-right: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: box-shadow 0.3s, transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    overflow: hidden;
+}
+
+.review-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px);
+}
+
+.review-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.review-info {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: space-between;
+}
+
+.review-webtoon strong,
+.review-webtoon span {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+.review-webtoon strong {
+    font-size: 0.85em;
+    color: #333;
+    margin-bottom: 2px;
+}
+
+.review-webtoon span {
+    font-size: 0.7em;
+    color: #666;
+}
+
+.review-title {
+    font-weight: bold;
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.review-content {
+    font-size: 0.8em;
+    color: #666;
+    margin-bottom: 5px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.review-author {
+    font-size: 0.7em;
+    color: #888;
+    margin-top: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.review-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.review-rating,
+.review-likes {
+    display: flex;
+    align-items: center;
+    font-size: 0.7em;
+}
+
+.review-rating .stars {
+    color: #ffd700;
+    margin-right: 3px;
+}
+
+.review-likes {
+    color: #ff4081;
+    font-weight: bold;
+}
+
+.review-likes .heart {
+    color: #ff4081;
+    margin-right: 3px;
+}
+
+/* 최애 웹툰 슬라이더 스타일 */
+.user-webtoon-slider {
+    display: flex;
+    overflow-x: auto;
+    padding: 20px 0;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* 웹툰 카드 스타일 */
+.webtoon-card {
+    flex: 0 0 auto;
+    width: 200px;
+    height: 350px;
+    margin-right: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: box-shadow 0.3s, transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    overflow: hidden;
+}
+
+.webtoon-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px);
+}
+
+.webtoon-card img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+}
+
+.webtoon-info {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: space-between;
+}
+
+.webtoon-title {
+    font-weight: bold;
+    font-size: 0.9em;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+}
+
+.webtoon-author {
+    font-size: 0.8em;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 5px;
+}
+
+.webtoon-rating {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;  /* 별점 영역의 높이 설정 */
+}
+
+.webtoon-rating .stars {
+    font-size: 1.2em;  /* 별 크기 증가 */
+    color: #ffd700;
+    line-height: 1;  /* 줄 간격 조정 */
+}
+
+/* 최근 활동 스타일 */
+.activity-list {
+    list-style-type: none;
+    padding: 0;
+    font-size: 0.9em;
+}
+
+.activity-item {
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.activity-date {
+    margin-right: 10px;
+    color: #666;
+    font-size: 0.85em;
+}
+
+.activity-content {
+    color: #333;
+}
+
+.webtoon-link, .user-link, .review-link, .diary-link {
+    color: #333;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.user-link:hover, .review-link:hover, .diary-link:hover, .webtoon-link:hover {
+    text-decoration: underline;
 }
