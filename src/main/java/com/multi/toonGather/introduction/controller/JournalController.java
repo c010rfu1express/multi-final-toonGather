@@ -166,4 +166,12 @@ public class JournalController {
         return response;
     }
 
+    @GetMapping("/introduction/searchJournals")
+    public String searchJournals(@RequestParam("keyword") String keyword, Model model) {
+        List<JournalDTO> journals = journalService.searchJournalsByTitle(keyword);
+        model.addAttribute("journals", journals);
+        model.addAttribute("keyword", keyword); // 검색어를 모델에 추가하여 검색 창에 유지
+        return "introduction/journalList"; // 소식 목록 페이지로 이동
+    }
+
 }

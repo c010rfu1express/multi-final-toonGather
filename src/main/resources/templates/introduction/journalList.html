@@ -71,9 +71,9 @@
     <div class="d-flex justify-content-between mb-3">
         <h2>소식</h2>
         <div class="input-group" style="width: 300px;">
-            <input type="text" class="form-control" placeholder="검색어 입력" aria-label="검색어 입력">
+            <input type="text" class="form-control" placeholder="검색어 입력"  name="keyword" aria-label="검색어 입력" value="[[${keyword}]]">
             <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button">검색</button>
+                <button class="btn btn-outline-secondary" type="submit">검색</button>
             </div>
         </div>
         <div sec:authorize="hasRole('ROLE_ADMIN')">

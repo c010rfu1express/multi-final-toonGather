@@ -65,4 +65,5 @@ public interface JournalMapper {
     @Delete("DELETE FROM in_journal_like WHERE journal_no = #{journalNo} AND user_no = #{userNo}")
     void deleteLike(@Param("journalNo") int journalNo, @Param("userNo") int userNo);
 
+    List<JournalDTO> findByTitleContaining(String keyword);
 }

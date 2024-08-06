@@ -254,4 +254,8 @@ public class JournalServiceImpl implements JournalService {
             return true; // 좋아요 추가
         }
     }
+
+    public List<JournalDTO> searchJournalsByTitle(String keyword) {
+        return journalMapper.findByTitleContaining(keyword);
+    }
 }
