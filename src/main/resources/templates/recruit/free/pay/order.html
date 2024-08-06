@@ -59,7 +59,7 @@
           <div class="form-group">
             <br>
             <h3 class="font-bold">의뢰인 정보</h3>
-            <span >이름</span>
+            <span >입금자 명</span>
             <input id="name" name="name" type="text" class="form-control" required th:value="${name}" maxlength="20">
             <br>
             <span >연락처</span>
@@ -186,11 +186,11 @@
       buyer_tel: document.getElementById('phone').value
     }, function (rsp) { // 콜백 함수
       if (rsp.success) {
-        alert("완료 -> imp_uid : " + rsp.imp_uid + " / merchant_uid(orderKey) : " + rsp.merchant_uid);
+        alert("결제 성공");
         // 결제 성공 후 폼 제출
         document.getElementById('form').submit();
       } else {
-        alert("실패 : 코드(" + rsp.error_code + ") / 메세지(" + rsp.error_msg + ")");
+        alert("결제 실패 : " + rsp.error_msg);
       }
     });
   }
@@ -208,11 +208,11 @@
       buyer_tel: document.getElementById('phone').value
     }, function (rsp) { // 콜백 함수
       if (rsp.success) {
-        alert("완료 -> imp_uid : " + rsp.imp_uid + " / merchant_uid(orderKey) : " + rsp.merchant_uid);
+        alert("결제 성공");
         // 결제 성공 후 폼 제출
         document.getElementById('form').submit();
       } else {
-        alert("실패 : 코드(" + rsp.error_code + ") / 메세지(" + rsp.error_msg + ")");
+        alert("결제 실패 : " + rsp.error_msg);
       }
     });
   }

@@ -40,6 +40,10 @@
             <label for="singleFile">이미지</label>
             <input type="file" name="singleFile" class="form-control">
           </div>
+          <div class="form-group">
+            <label for="contact">연락처</label>
+            <input id="contact" name="contact" th:field="*{contact}" class="form-control" required maxlength="100"></input>
+          </div>
           <div class="form-group text-right">
             <button type="submit" class="btn btn-primary">등록</button>
             <a href="#" th:href="@{/recruit/job/view(no=${no})}" class="btn btn-secondary">취소</a>

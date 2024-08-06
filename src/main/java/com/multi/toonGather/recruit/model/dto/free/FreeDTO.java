@@ -17,6 +17,7 @@ public class FreeDTO {
     private String inicis_pg;
     private String bank_name;
     private String account;
+    private String contact;
     private Date created_date;
     private Date modified_date;
     private UserDTO member;

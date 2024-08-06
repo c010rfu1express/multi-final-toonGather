@@ -88,7 +88,9 @@
                         <div th:if="${job.img != null}">
                             <img th:src="@{'/uploadFiles/job/' + ${job.img}}" width="250" height="250" alt="게시글 이미지">
                         </div>
-                        <br>
+                        <br> <br>
+                        <span class="font-weight-bold" style="font-size : 15pt;">채용담당자 연락처</span>
+                        <br> [[${job.contact}]] <br>
                         <div th:if="${member_no != null and member_no != '' and member_no != job.writer}">
                             <div style="margin-right:1px;" class="mt-4 text-center">
                                 <a th:if="${hasApplied == false}" th:href="@{/recruit/job/apply(no=${job.board_no})}" class="btn btn-success">지원하기</a>
@@ -110,5 +112,6 @@
 
     </div>
 </div>
+<div th:replace="common/footer.html"></div>
 </body>
 </html>

@@ -21,6 +21,7 @@
 		<result property="inicis_pg" column="inicis_pg" />
 		<result property="bank_name" column="bank_name" />
 		<result property="account" column="account" />
+		<result property="contact" column="contact" />
 		<result property="created_date" column="created_date" />
 		<result property="modified_date" column="modified_date" />
 		<result property="type_code" column="type_code" />
@@ -76,6 +77,7 @@
 		, inicis_pg
 		, bank_name
 		, account
+		, contact
 		)
 		VALUES
 		(
@@ -88,6 +90,7 @@
 		, #{ inicis_pg }
 		, #{ bank_name }
 		, #{ account }
+		, #{ contact }
 		)
 	</insert>
 

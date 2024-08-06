@@ -13,6 +13,7 @@ public class ApplyDTO {
     private String title;
     private String content;
     private String img;
+    private String contact;
     private Date created_date;
     private UserDTO member;
 }
