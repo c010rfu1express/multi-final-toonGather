@@ -115,11 +115,15 @@
 
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-2">
+
                         <div class="form-check" sec:authorize="hasRole('ROLE_ADMIN')">
                             <input class="form-check-input" type="radio" name="journalCheck" th:value="${journal.title}" th:id="'journalCheck' + ${journal.title}">
                         </div>
                         <div>
-                            <a th:href="@{/introduction/journal/journalDetail(title=${journal.title})}" class="card-title" th:text="${journal.title}">제목</a>
+                            <!--title로 검색해서 상세페이지 넘겨주기-->
+<!--                            <a th:href="@{/introduction/journal/journalDetail(title=${journal.title})}" class="card-title" th:text="${journal.title}">제목</a>-->
+                            <!--journalNo로 검색해서 상세페이지 넘겨주기-->
+                            <a th:href="@{/introduction/journal/journalDetail(journalNo=${journal.journalNo})}" class="card-title" th:text="${journal.title}">제목</a>
                         </div>
                     </div>
 
@@ -135,15 +139,6 @@
     </div>
 
 
-<!--    <div class="pagination">-->
-<!--        <a th:if="${currentPage > 0}" th:href="@{/introduction/journalList(page=${currentPage - 1})}">&laquo;</a>-->
-<!--        <a th:each="i : ${#numbers.sequence(1, totalPages)}"-->
-<!--           th:href="@{/introduction/journalList(page=${i - 1})}"-->
-<!--           th:text="${i}"-->
-<!--           th:classappend="${currentPage + 1 == i} ? 'active' : ''"></a>-->
-<!--        <a th:if="${currentPage < totalPages - 1}" th:href="@{/introduction/journalList(page=${currentPage + 1})}">&raquo;</a>-->
-<!--    </div>-->
-
 
     <div class="pagination">
         <a th:if="${currentPage > 0}" th:href="@{/introduction/journalList(page=${currentPage - 1}, searchType=${searchType}, keyword=${keyword})}">&laquo;</a>
@@ -153,41 +148,6 @@
            th:classappend="${currentPage + 1 == i} ? 'active' : ''"></a>
         <a th:if="${currentPage < totalPages - 1}" th:href="@{/introduction/journalList(page=${currentPage + 1}, keyword=${keyword})}">&raquo;</a>
     </div>
-
-
-
-
-
-<!--    <nav aria-label="Page navigation">-->
-<!--        <ul class="pagination justify-content-center">-->
-<!--            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">-->
-<!--                <a class="page-link" th:href="@{/introduction/journalList(page=${currentPage - 1}, keyword=${keyword})}">이전</a>-->
-<!--            </li>-->
-<!--            <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${currentPage + 1 == i} ? 'active'">-->
-<!--                <a class="page-link" th:href="@{/introduction/journalList(page=${i - 1}, keyword=${keyword})}" th:text="${i}"></a>-->
-<!--            </li>-->
-<!--            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">-->
-<!--                <a class="page-link" th:href="@{/introduction/journalList(page=${currentPage + 1}, keyword=${keyword})}">다음</a>-->
-<!--            </li>-->
-<!--        </ul>-->
-<!--    </nav>-->
-
-
-
-
-
-
-<!--    <nav aria-label="Page navigation">-->
-<!--        <ul class="pagination justify-content-center">-->
-<!--            <li class="page-item"><a class="page-link" href="#">이전</a></li>-->
-<!--            <li class="page-item"><a class="page-link" href="#">1</a></li>-->
-<!--            <li class="page-item"><a class="page-link" href="#">2</a></li>-->
-<!--            <li class="page-item"><a class="page-link" href="#">3</a></li>-->
-<!--            <li class="page-item"><a class="page-link" href="#">다음</a></li>-->
-<!--        </ul>-->
-<!--    </nav>-->
-
-
 
 
 </div>

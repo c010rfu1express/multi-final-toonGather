@@ -148,11 +148,13 @@ public class JournalController {
 
 
     @GetMapping(value = {"introduction/journal/journalDetail"})
-    public String journalDetailUser(@RequestParam(value = "title", required = true) String title,
+    public String journalDetailUser(@RequestParam(value = "title", required = false) String title,
+                                    @RequestParam(value = "journalNo", required = false) int journalNo,
                                     HttpSession session,
                                     Model model){
 
-        JournalDTO journalDTO = journalService.getJournalByTitleWithFile(title);
+//        JournalDTO journalDTO = journalService.getJournalByTitleWithFile(title);
+        JournalDTO journalDTO = journalService.getJournalByNoWithFiles(journalNo);
 
         System.out.println("Retrieved journal 상세페이지 : " + journalDTO);
         model.addAttribute("journal", journalDTO);
