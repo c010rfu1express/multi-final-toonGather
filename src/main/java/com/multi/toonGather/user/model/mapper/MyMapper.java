@@ -9,7 +9,7 @@ import java.util.List;
 @Mapper
 public interface MyMapper {
 
-    List<MyCsQuestionDTO> selectListMyCsQuestion(@Param("userNo") int userNo, @Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy) throws Exception;
+    List<MyCsQuestionDTO> selectListMyCsQuestion(@Param("userNo") int userNo, @Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy, @Param("searchBy") String searchBy, @Param("searchTerm") String searchTerm) throws Exception;
     List<MyInJournalDTO> selectListMyInJournal(@Param("userNo") int userNo, @Param("orderBy") String orderBy, @Param("searchBy") String searchBy, @Param("searchTerm") String searchTerm) throws Exception;
     List<MyRctJobDTO> selectListMyRctJob(@Param("userNo") int userNo, @Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy, @Param("searchBy") String searchBy, @Param("searchTerm") String searchTerm) throws Exception;
     List<MySoReviewDTO> selectListMySoReview(@Param("userNo") int userNo, @Param("orderBy") String orderBy, @Param("searchBy") String searchBy, @Param("searchTerm") String searchTerm) throws Exception;

@@ -12,10 +12,10 @@ import java.util.List;
 public class MyServiceImpl implements MyService {
     private final MyMapper myMapper;
 
-    public List<MyCsQuestionDTO> getMyCsQuestions(int userNo, String toggle, String orderBy) throws Exception {
+    public List<MyCsQuestionDTO> getMyCsQuestions(int userNo, String toggle, String orderBy, String searchBy, String searchTerm) throws Exception {
         char toggleValue = toggle.charAt(0);
         System.out.println("[MyService.getMyCsQuestions] toggleValue: "+ toggleValue);
-        List<MyCsQuestionDTO> response = myMapper.selectListMyCsQuestion(userNo, toggleValue, orderBy);
+        List<MyCsQuestionDTO> response = myMapper.selectListMyCsQuestion(userNo, toggleValue, orderBy, searchBy, searchTerm);
         return response;
     }
     public List<MyInJournalDTO> getMyInJournals(int userNo, String orderBy, String searchBy, String searchTerm) throws Exception {

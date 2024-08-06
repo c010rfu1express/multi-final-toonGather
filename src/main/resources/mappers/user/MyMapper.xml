@@ -30,6 +30,16 @@
         cs_question
         WHERE
         cs_q_writer_no = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND cs_q_title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'content'">
+                    AND cs_q_content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <if test="toggleValue == 'Y'">
             AND cs_q_status_code = 'S'
         </if>

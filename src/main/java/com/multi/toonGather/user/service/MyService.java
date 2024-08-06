@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface MyService {
 
-    List<MyCsQuestionDTO> getMyCsQuestions(int userNo, String toggle, String orderBy) throws Exception;
+    List<MyCsQuestionDTO> getMyCsQuestions(int userNo, String toggle, String orderBy, String searchBy, String searchTerm) throws Exception;
     List<MyInJournalDTO> getMyInJournals(int userNo, String orderBy, String searchBy, String searchTerm) throws Exception;
     List<MyRctJobDTO> getMyRctJobs(int userNo, String toggle, String orderBy, String searchBy, String searchTerm) throws Exception;
     List<MySoReviewDTO> getMySoReviews(int userNo, String orderBy, String searchBy, String searchTerm) throws Exception;

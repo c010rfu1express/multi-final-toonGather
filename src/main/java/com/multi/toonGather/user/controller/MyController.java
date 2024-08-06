@@ -242,13 +242,16 @@ public class MyController {
 
     //KHG60
     @GetMapping("/cs")
-    public String myCs(@RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
+    public String myCs(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm, @RequestParam(value = "searchBy", defaultValue = "title") String searchBy, @RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
         int userNo = c.getUserDTO().getUserNo();
-        List<MyCsQuestionDTO> myCsQuestions = myService.getMyCsQuestions(userNo, toggle, orderBy);
+        List<MyCsQuestionDTO> myCsQuestions = myService.getMyCsQuestions(userNo, toggle, orderBy, searchBy, searchTerm);
 
         model.addAttribute("myCsQuestions", myCsQuestions);
         model.addAttribute("isToggled", toggle);
         model.addAttribute("orderBy", orderBy);
+
+        model.addAttribute("searchBy", searchBy);
+        model.addAttribute("searchTerm", searchTerm);
         return "/user/mypage_cs";
     }
 }
