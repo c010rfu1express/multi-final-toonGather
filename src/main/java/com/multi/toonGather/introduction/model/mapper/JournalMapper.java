@@ -65,5 +65,6 @@ public interface JournalMapper {
     @Delete("DELETE FROM in_journal_like WHERE journal_no = #{journalNo} AND user_no = #{userNo}")
     void deleteLike(@Param("journalNo") int journalNo, @Param("userNo") int userNo);
 
+    @Select("SELECT journal_no AS journalNo, title, content, posting_date AS postingDate FROM in_journal WHERE title LIKE CONCAT('%', #{keyword}, '%')")
     List<JournalDTO> findByTitleContaining(String keyword);
 }

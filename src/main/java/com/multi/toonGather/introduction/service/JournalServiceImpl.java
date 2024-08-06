@@ -256,6 +256,13 @@ public class JournalServiceImpl implements JournalService {
     }
 
     public List<JournalDTO> searchJournalsByTitle(String keyword) {
-        return journalMapper.findByTitleContaining(keyword);
+        List<JournalDTO> journals = journalMapper.findByTitleContaining(keyword);
+
+        // 각 소식에 대한 첨부파일 가져오기
+        for (JournalDTO journal : journals) {
+            List<JournalFileDTO> journalFiles = journalMapper.selectFilesByJournalNo(journal.getJournalNo());
+            journal.setJournalFiles(journalFiles); // JournalDTO에 파일 리스트 설정
+        }
+        return journals;
     }
 }

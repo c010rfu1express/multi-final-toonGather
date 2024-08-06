@@ -168,7 +168,11 @@ public class JournalController {
 
     @GetMapping("/introduction/searchJournals")
     public String searchJournals(@RequestParam("keyword") String keyword, Model model) {
+        System.out.println("searchJournals 메서드 호출됨");
         List<JournalDTO> journals = journalService.searchJournalsByTitle(keyword);
+        System.out.println("searchJournals 메서드 DTO잘 받아옴");
+        System.out.println("Retrieved journals: " + journals);  // 로그 출력 : 실제로 데이터가 반환되고 있는지 확인하기 위해, 컨트롤러에서 로그를 출력
+
         model.addAttribute("journals", journals);
         model.addAttribute("keyword", keyword); // 검색어를 모델에 추가하여 검색 창에 유지
         return "introduction/journalList"; // 소식 목록 페이지로 이동
