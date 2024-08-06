@@ -150,6 +150,21 @@
         <div class="review-list">
             <h2>좋아요한 행사</h2>
             <form id="filter-and-sort-form" th:action="@{/user/my/in/event}" method="get">
+                <!-- 검색 조건 -->
+                <label>
+                    <select name="searchBy">
+                        <option value="title" th:selected="${searchBy == 'title'}">제목</option>
+                        <option value="content" th:selected="${searchBy == 'content'}">내용</option>
+                        <option value="place" th:selected="${searchBy == 'place'}">행사장소</option>
+                        <option value="address" th:selected="${searchBy == 'address'}">행사주소</option>
+                    </select>
+                </label>
+                <input type="text" name="searchTerm" placeholder="검색어를 입력하세요" th:value="${searchTerm}" />
+
+                <!-- 검색 버튼 -->
+                <button type="submit">검색</button>
+
+                <!-- 정렬 또는 토글 -->
                 <label>
                     <input type="checkbox" name="isToggled" id="isToggledCheckbox" value="Y" th:checked="${isToggled == 'Y'}" onchange="updateCheckboxValueAndSubmit()">진행중인 행사
                 </label>

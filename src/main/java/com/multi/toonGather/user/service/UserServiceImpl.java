@@ -222,12 +222,6 @@ public class UserServiceImpl implements UserService {
         if(result == 0) new Exception("[ERROR] deleteUser 실패. [userNo: " + userNo + "]");
     }
 
-    public List<UserDTO> getUsers(PageDTO pageDTO) throws Exception {
-        List<UserDTO> response = userMapper.selectList(pageDTO);
-        if(response == null) new Exception("[관리자-회원목록] 리스트 조회 실패");
-        return response;
-    }
-
     public int checkUserIdExists(String userId)  {
         int result = 0;
         try{
@@ -262,10 +256,32 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
     //pagination 관련(추후 옮겨야)
-    public int selectUserCount(PageDTO pageDTO) throws Exception {
-        int count = userMapper.selectUserCount();
+    public List<UserDTO> getUsers(String toggle, String orderBy, PageDTO pageDTO) throws Exception {
+        char toggleValue = toggle.charAt(0);
+        List<UserDTO> response = userMapper.selectList(toggleValue, orderBy, pageDTO);
+        if(response == null) new Exception("[관리자-회원목록] 리스트 조회 실패");
+        return response;
+    }
+
+//    //pagination 관련(추후 옮겨야)
+//    public List<UserDTO> getUsers(String toggle, String orderBy) throws Exception {
+//        char toggleValue = toggle.charAt(0);
+//        List<UserDTO> response = userMapper.selectList(toggleValue, orderBy);
+////        List<UserDTO> response = userMapper.selectList(pageDTO);
+//        if(response == null) new Exception("[관리자-회원목록] 리스트 조회 실패");
+//        return response;
+//    }
+
+//    public List<UserDTO> getUsers(PageDTO pageDTO) throws Exception {
+//        List<UserDTO> response = userMapper.selectList(pageDTO);
+//        if(response == null) new Exception("[관리자-회원목록] 리스트 조회 실패");
+//        return response;
+//    }
+
+    public int selectUserCount(String toggle, String orderBy) throws Exception {
+        char toggleValue = toggle.charAt(0);
+        int count = userMapper.selectUserCount(toggleValue, orderBy);
         return count;
     }
 }

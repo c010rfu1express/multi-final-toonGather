@@ -86,6 +86,16 @@
         ij.journal_no = ijl.journal_no
         WHERE
         ijl.user_no = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND ij.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'content'">
+                    AND ij.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <choose>
             <when test="orderBy == 'recentliked'">
                 ORDER BY ijl.liked_no DESC
@@ -136,6 +146,19 @@
         rct_job
         WHERE
         writer = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'content'">
+                    AND content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'location'">
+                    AND location LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <if test="toggleValue == 'Y'">
             AND dead_line &lt; NOW()
         </if>
@@ -199,6 +222,16 @@
         sr.review_no = srl.review_no
         WHERE
         srl.liked_user = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'rTitle'">
+                    AND sr.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'rContent'">
+                    AND sr.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <choose>
             <when test="orderBy == 'recentliked'">
                 ORDER BY srl.like_no DESC
@@ -272,6 +305,19 @@
         sd.diary_no = sdc.diary_no
         WHERE
         sdc.commenter_no = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'comment'">
+                    AND sdc.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'dTitle'">
+                    AND sd.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'dContent'">
+                    AND sd.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <choose>
             <when test="orderBy == 'recentposted'">
                 ORDER BY sdc.comment_no DESC
@@ -342,6 +388,22 @@
         in_event_like iel ON ie.event_no = iel.event_no
         WHERE
         iel.user_no = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND ie.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'content'">
+                    AND ie.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'place'">
+                    AND ie.place LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'address'">
+                    AND ie.address LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <if test="toggleValue == 'Y'">
             AND end_date &gt; NOW()
         </if>
@@ -405,6 +467,22 @@
         w.webtoon_no = wu.webtoon_no
         WHERE
         wu.user_no = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND w.webtoon_name LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'author'">
+                    AND w.author LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'genre'">
+                    AND w.genre LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'tag'">
+                    AND w.tags LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <choose>
             <when test="orderBy == 'recent'">
                 ORDER BY wu.save_no DESC
@@ -423,6 +501,7 @@
             </otherwise>
         </choose>
     </select>
+
 
     <resultMap type="MyWtCommentDTO" id="MyWtCommentResultMap">
         <id property="commentNo" column="comment_no"/>
@@ -466,6 +545,25 @@
         w.webtoon_no = c.webtoon_no
         WHERE
         c.user_no = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'comment'">
+                    AND c.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'title'">
+                    AND w.webtoon_name LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'author'">
+                    AND w.author LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'genre'">
+                    AND w.genre LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'tag'">
+                    AND w.tags LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <choose>
             <when test="orderBy == 'recent'">
                 ORDER BY c.comment_no DESC
@@ -533,6 +631,25 @@
         rj.board_no = rja.board_no
         WHERE
         rja.writer = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND rja.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'content'">
+                    AND rja.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'jTitle'">
+                    AND rj.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'jContent'">
+                    AND rj.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'jLocation'">
+                    AND rj.location LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <if test="toggleValue == 'Y'">
             AND rj.dead_line &lt; NOW()
         </if>
@@ -592,6 +709,16 @@
         rj.board_no = rja.board_no
         WHERE
         rja.board_no = #{boardNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND rja.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'content'">
+                    AND rja.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <if test="toggleValue == 'Y'">
             AND rja.check_status = false
         </if>
@@ -644,6 +771,16 @@
         rf.board_no = rfr.board_no
         WHERE
         rf.writer = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND rf.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'content'">
+                    AND rf.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         GROUP BY
         rf.board_no, rf.writer, rf.title, rf.content, rf.img, rf.price, rf.created_date, rf.modified_date
         <choose>
@@ -723,6 +860,13 @@
         rct_free_pay
         WHERE
         member_no = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'boardNo'">
+                    AND board_no LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <if test="toggleValue == 'Y'">
             AND status = 'C'
         </if>
@@ -782,6 +926,19 @@
         im.merchan_no = iml.merchan_no
         WHERE
         iml.user_no = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND im.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'info'">
+                    AND im.merchan_info LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'content'">
+                    AND im.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <if test="toggleValue == 'Y'">
             AND im.discount_price > 1000
         </if>

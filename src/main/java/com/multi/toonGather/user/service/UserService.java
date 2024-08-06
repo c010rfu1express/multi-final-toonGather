@@ -16,7 +16,6 @@ public interface UserService {
     void updateProfile(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception;
     void updateProfileAdmin(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception;
     void deleteProfile(int userNo) throws Exception;
-    List<UserDTO> getUsers(PageDTO pageDTO) throws Exception;
 
     int checkUserIdExists(String userId) throws Exception;
     int checkNicknameExists(String nickname) throws Exception;
@@ -25,5 +24,7 @@ public interface UserService {
 
 
     //pagination 관련(추후 옮겨야)
-    int selectUserCount(PageDTO pageDTO) throws Exception;
+    List<UserDTO> getUsers(String toggle, String orderBy, PageDTO pageDTO) throws Exception;
+//    List<UserDTO> getUsers(PageDTO pageDTO) throws Exception;
+    int selectUserCount(String toggle, String orderBy) throws Exception;
 }

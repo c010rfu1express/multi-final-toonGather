@@ -154,6 +154,20 @@
             <h2>내가 올린 공고-지원서목록</h2>
             <h3><a th:href="@{/recruit/job/view(no=${boardNo})}">공고 확인</a></h3>
             <form id="filter-and-sort-form" th:action="@{/user/my/rct/job/apply(boardNo=${boardNo})}" method="get">
+                <!-- 검색 조건 -->
+                <label>
+                    <select name="searchBy">
+                        <option value="title" th:selected="${searchBy == 'title'}">지원서제목</option>
+                        <option value="content" th:selected="${searchBy == 'content'}">지원서내용</option>
+<!--                        <option value="realname" th:selected="${searchBy == 'realname'}">지원자성명</option>-->
+                    </select>
+                </label>
+                <input type="text" name="searchTerm" placeholder="검색어를 입력하세요" th:value="${searchTerm}" />
+
+                <!-- 검색 버튼 -->
+                <button type="submit">검색</button>
+
+                <!-- 정렬 또는 토글 -->
                 <label>
                     <input type="checkbox" name="isToggled" id="isToggledCheckbox" value="Y" th:checked="${isToggled == 'Y'}" onchange="updateCheckboxValueAndSubmit()">미열람
                 </label>

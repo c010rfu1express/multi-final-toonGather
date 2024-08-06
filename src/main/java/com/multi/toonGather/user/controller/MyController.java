@@ -38,72 +38,90 @@ public class MyController {
 
     //KHG20
     @GetMapping("/wt/webtoon")
-    public String myWtWebtoon(@RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception {
+    public String myWtWebtoon(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm, @RequestParam(value = "searchBy", defaultValue = "title") String searchBy, @RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception {
         int userNo = c.getUserDTO().getUserNo();
-        List<MyWtWebtoonDTO> myWtWebtoons = myService.getMyWtWebtoons(userNo, orderBy);
+        List<MyWtWebtoonDTO> myWtWebtoons = myService.getMyWtWebtoons(userNo, orderBy, searchBy, searchTerm);
 
         model.addAttribute("myWtWebtoons", myWtWebtoons);
         model.addAttribute("orderBy", orderBy);
+
+        model.addAttribute("searchBy", searchBy);
+        model.addAttribute("searchTerm", searchTerm);
         return "/user/mypage_wt_webtoon";
     }
 
     //KHG20
     @GetMapping("/wt/comment")
-    public String myWtComment(@RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception {
+    public String myWtComment(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm, @RequestParam(value = "searchBy", defaultValue = "comment") String searchBy, @RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception {
         int userNo = c.getUserDTO().getUserNo();
-        List<MyWtCommentDTO> myWtComments = myService.getMyWtComments(userNo, orderBy);
+        List<MyWtCommentDTO> myWtComments = myService.getMyWtComments(userNo, orderBy, searchBy, searchTerm);
 
         model.addAttribute("myWtComments", myWtComments);
         model.addAttribute("orderBy", orderBy);
+
+        model.addAttribute("searchBy", searchBy);
+        model.addAttribute("searchTerm", searchTerm);
         return "/user/mypage_wt_comment";
     }
 
 
     //KHG30
     @GetMapping("/so/review")
-    public String mySoReview(@RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
+    public String mySoReview(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm, @RequestParam(value = "searchBy", defaultValue = "rTitle") String searchBy, @RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
         int userNo = c.getUserDTO().getUserNo();
-        List<MySoReviewDTO> mySoReviews = myService.getMySoReviews(userNo, orderBy);
+        List<MySoReviewDTO> mySoReviews = myService.getMySoReviews(userNo, orderBy, searchBy, searchTerm);
 
         model.addAttribute("mySoReviews", mySoReviews);
         model.addAttribute("orderBy", orderBy);
+
+        model.addAttribute("searchBy", searchBy);
+        model.addAttribute("searchTerm", searchTerm);
         return "/user/mypage_so_review";
     }
 
     //KHG31
     @GetMapping("/so/diary")
-    public String mySoDiary(@RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
+    public String mySoDiary(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm, @RequestParam(value = "searchBy", defaultValue = "comment") String searchBy, @RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
         int userNo = c.getUserDTO().getUserNo();
-        List<MySoDiaryDTO> mySoDiaries = myService.getMySoDiaries(userNo, orderBy);
+        List<MySoDiaryDTO> mySoDiaries = myService.getMySoDiaries(userNo, orderBy, searchBy, searchTerm);
 
         model.addAttribute("mySoDiaries", mySoDiaries);
         model.addAttribute("orderBy", orderBy);
+
+        model.addAttribute("searchBy", searchBy);
+        model.addAttribute("searchTerm", searchTerm);
         return "/user/mypage_so_diary";
     }
 
     //KHG40
     @GetMapping("/rct/job")
-    public String myRctJob(@RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
+    public String myRctJob(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm, @RequestParam(value = "searchBy", defaultValue = "title") String searchBy, @RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
         int userNo = c.getUserDTO().getUserNo();
-        List<MyRctJobDTO> myRctJobs = myService.getMyRctJobs(userNo, toggle, orderBy);
+        List<MyRctJobDTO> myRctJobs = myService.getMyRctJobs(userNo, toggle, orderBy, searchBy, searchTerm);
 
         model.addAttribute("myRctJobs", myRctJobs);
         model.addAttribute("isToggled", toggle);
         model.addAttribute("orderBy", orderBy);
+
+        model.addAttribute("searchBy", searchBy);
+        model.addAttribute("searchTerm", searchTerm);
 
         return "/user/mypage_rct_job";
     }
 
     //KHG41
     @GetMapping("/rct/job/apply")
-    public String myRctJobApplication(@RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, @RequestParam("boardNo") int boardNo, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
-            List<MyRctApplicationDTO> myRctApplications = myService.getMyRctJobApplications(boardNo, toggle, orderBy);
+    public String myRctJobApplication(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm, @RequestParam(value = "searchBy", defaultValue = "title") String searchBy, @RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, @RequestParam("boardNo") int boardNo, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
+            List<MyRctApplicationDTO> myRctApplications = myService.getMyRctJobApplications(boardNo, toggle, orderBy, searchBy, searchTerm);
 //        int userNo = c.getUserDTO().getUserNo();
 
         model.addAttribute("myRctJobApplications", myRctApplications);
         model.addAttribute("boardNo", boardNo);
         model.addAttribute("isToggled", toggle);
         model.addAttribute("orderBy", orderBy);
+
+        model.addAttribute("searchBy", searchBy);
+        model.addAttribute("searchTerm", searchTerm);
 
         return "/user/mypage_rct_job_applicationlist";
     }
@@ -133,74 +151,92 @@ public class MyController {
 
     //KHG44
     @GetMapping("/rct/apply")
-    public String myRctApplication(@RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
+    public String myRctApplication(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm, @RequestParam(value = "searchBy", defaultValue = "title") String searchBy, @RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
         int userNo = c.getUserDTO().getUserNo();
-        List<MyRctApplicationDTO> myRctApplications = myService.getMyRctApplications(userNo, toggle, orderBy);
+        List<MyRctApplicationDTO> myRctApplications = myService.getMyRctApplications(userNo, toggle, orderBy, searchBy, searchTerm);
 
         model.addAttribute("myRctApplications", myRctApplications);
         model.addAttribute("isToggled", toggle);
         model.addAttribute("orderBy", orderBy);
+
+        model.addAttribute("searchBy", searchBy);
+        model.addAttribute("searchTerm", searchTerm);
 
         return "/user/mypage_rct_application";
     }
 
     //KHG45
     @GetMapping("/rct/free")
-    public String myRctFree(@RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
+    public String myRctFree(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm, @RequestParam(value = "searchBy", defaultValue = "title") String searchBy, @RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
         int userNo = c.getUserDTO().getUserNo();
-        List<MyRctFreeDTO> myRctFrees = myService.getMyRctFrees(userNo, orderBy);
+        List<MyRctFreeDTO> myRctFrees = myService.getMyRctFrees(userNo, orderBy, searchBy, searchTerm);
 
         model.addAttribute("myRctFrees", myRctFrees);
         model.addAttribute("orderBy", orderBy);
+
+        model.addAttribute("searchBy", searchBy);
+        model.addAttribute("searchTerm", searchTerm);
         return "/user/mypage_rct_free";
     }
 
     //KHG46
     @GetMapping("/rct/order")
-    public String myRctOrder(@RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
+    public String myRctOrder(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm, @RequestParam(value = "searchBy", defaultValue = "boardNo") String searchBy, @RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
         int userNo = c.getUserDTO().getUserNo();
-        List<MyRctOrderDTO> myRctOrders = myService.getMyRctOrders(userNo, toggle, orderBy);
+        List<MyRctOrderDTO> myRctOrders = myService.getMyRctOrders(userNo, toggle, orderBy, searchBy, searchTerm);
 
         model.addAttribute("myRctOrders", myRctOrders);
         model.addAttribute("isToggled", toggle);
         model.addAttribute("orderBy", orderBy);
+
+        model.addAttribute("searchBy", searchBy);
+        model.addAttribute("searchTerm", searchTerm);
 
         return "/user/mypage_rct_order";
     }
 
     //KHG50
     @GetMapping("/in/journal")
-    public String myInJournal(@RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
+    public String myInJournal(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm, @RequestParam(value = "searchBy", defaultValue = "title") String searchBy, @RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
         int userNo = c.getUserDTO().getUserNo();
-        List<MyInJournalDTO> myInJournals = myService.getMyInJournals(userNo, orderBy);
+        List<MyInJournalDTO> myInJournals = myService.getMyInJournals(userNo, orderBy, searchBy, searchTerm);
 
         model.addAttribute("myInJournals", myInJournals);
         model.addAttribute("orderBy", orderBy);
+
+        model.addAttribute("searchBy", searchBy);
+        model.addAttribute("searchTerm", searchTerm);
         return "/user/mypage_in_journal";
     }
 
     //KHG51
     @GetMapping("/in/event")
-    public String myInEvent(@RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
+    public String myInEvent(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm, @RequestParam(value = "searchBy", defaultValue = "title") String searchBy, @RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
         int userNo = c.getUserDTO().getUserNo();
-        List<MyInEventDTO> myInEvents = myService.getMyInEvents(userNo, toggle, orderBy);
+        List<MyInEventDTO> myInEvents = myService.getMyInEvents(userNo, toggle, orderBy, searchBy, searchTerm);
 
         model.addAttribute("myInEvents", myInEvents);
         model.addAttribute("isToggled", toggle);
         model.addAttribute("orderBy", orderBy);
+
+        model.addAttribute("searchBy", searchBy);
+        model.addAttribute("searchTerm", searchTerm);
 
         return "/user/mypage_in_event";
     }
 
     //KHG52
     @GetMapping("/in/merchan")
-    public String myInMerchan(@RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
+    public String myInMerchan(@RequestParam(value = "searchTerm", defaultValue = "") String searchTerm, @RequestParam(value = "searchBy", defaultValue = "title") String searchBy, @RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
         int userNo = c.getUserDTO().getUserNo();
-        List<MyInMerchanDTO> myInMerchans = myService.getMyInMerchans(userNo, toggle, orderBy);
+        List<MyInMerchanDTO> myInMerchans = myService.getMyInMerchans(userNo, toggle, orderBy, searchBy, searchTerm);
 
         model.addAttribute("myInMerchans", myInMerchans);
         model.addAttribute("isToggled", toggle);
         model.addAttribute("orderBy", orderBy);
+
+        model.addAttribute("searchBy", searchBy);
+        model.addAttribute("searchTerm", searchTerm);
         return "/user/mypage_in_merchan";
     }
 

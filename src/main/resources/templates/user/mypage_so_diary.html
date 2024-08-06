@@ -128,6 +128,24 @@
         <div class="review-list">
             <h2>내가 남긴 다이어리 댓글</h2>
             <form id="sort-form" th:action="@{/user/my/so/diary}" method="get">
+                <!-- 검색 조건 -->
+                <label>
+                    <select name="searchBy">
+                        <option value="comment" th:selected="${searchBy == 'comment'}">댓글내용</option>
+                        <option value="rTitle" th:selected="${searchBy == 'dTitle'}">다이어리제목</option>
+                        <option value="rTitle" th:selected="${searchBy == 'dContent'}">다이어리내용</option>
+                        <!--                        <option value="title" th:selected="${searchBy == 'title'}">웹툰제목</option>-->
+                        <!--                        <option value="author" th:selected="${searchBy == 'author'}">작가</option>-->
+                        <!--                        <option value="genre" th:selected="${searchBy == 'genre'}">장르</option>-->
+                        <!--                        <option value="tag" th:selected="${searchBy == 'tag'}">태그</option>-->
+                    </select>
+                </label>
+                <input type="text" name="searchTerm" placeholder="검색어를 입력하세요" th:value="${searchTerm}" />
+
+                <!-- 검색 버튼 -->
+                <button type="submit">검색</button>
+
+                <!-- 정렬 조건 -->
                 <label>
                     <select name="orderBy" onchange="this.form.submit()">
                         <option value="recentposted" th:selected="${orderBy == 'recentposted'}">최근남긴순</option>

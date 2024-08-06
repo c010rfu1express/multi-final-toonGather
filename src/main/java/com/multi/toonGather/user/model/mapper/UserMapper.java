@@ -4,7 +4,6 @@ import com.multi.toonGather.common.model.dto.PageDTO;
 import com.multi.toonGather.user.model.dto.UserDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -25,10 +24,14 @@ public interface UserMapper {
     int updateUser(@Param("userNo") int userNo, @Param("userDTO") UserDTO userDTO) throws Exception;
 
     int deleteUser(@Param("userNo") int userNo) throws Exception;
-    List<UserDTO> selectList(PageDTO pageDTO) throws Exception;
 
-    //pagination 관련(XML 제외) (추후 옮겨야)
-    @Select("SELECT COUNT(*) FROM users")
-    int selectUserCount() throws Exception;
+    //pagination 관련
+    List<UserDTO> selectList(@Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy, @Param("pageDTO") PageDTO pageDTO) throws Exception;
+//    //pagination 관련
+//    List<UserDTO> selectList(@Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy) throws Exception;
+//    List<UserDTO> selectList(@Param("pageDTO")PageDTO pageDTO) throws Exception;
+
+    //pagination 관련(토글과 소팅으로 나오는 총 갯수 리턴)
+    int selectUserCount(@Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy) throws Exception;
 
 }
