@@ -1,17 +1,22 @@
 package com.multi.toonGather.user.controller;
 
+import com.multi.toonGather.common.model.dto.PageDTO;
+import com.multi.toonGather.common.service.PageService;
 import com.multi.toonGather.security.CustomUserDetails;
 import com.multi.toonGather.user.model.dto.UserDTO;
 import com.multi.toonGather.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -20,6 +25,7 @@ public class UserController {
 
     //@RequiredArgsConstructor를 쓰는 이유.. Spring의 의존성 자동 주입을 위함
     private final UserService userService;
+    private final PageService pageService;
 
     ///////////////////////////////////
     //요청시작
@@ -42,9 +48,37 @@ public class UserController {
         return "/user/signup";
     }
 
+    @GetMapping("/checkIdDuplicate")
+    public ResponseEntity<Map<String, Object>> checkIdDuplicate(@RequestParam("userId") String userId) throws Exception {
+        boolean isDuplicate = (userService.checkUserIdExists(userId) == 1) ? true : false;
+        Map<String, Object> response = new HashMap<>();
+        response.put("isDuplicate", isDuplicate);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/checkNicknameDuplicate")
+    public ResponseEntity<Map<String, Object>> checkNicknameDuplicate(@RequestParam("nickname") String nickname) throws Exception {
+        boolean isDuplicate = (userService.checkNicknameExists(nickname) == 1) ? true : false;
+        Map<String, Object> response = new HashMap<>();
+        response.put("isDuplicate", isDuplicate);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/checkEmailDuplicate")
+    public ResponseEntity<Map<String, Object>> checkEmailDuplicate(@RequestParam("email") String email) throws Exception {
+        boolean isDuplicate = (userService.checkEmailExists(email) == 1) ? true : false;
+        Map<String, Object> response = new HashMap<>();
+        response.put("isDuplicate", isDuplicate);
+
+        return ResponseEntity.ok(response);
+    }
+
     //KHG01-(2)POST
     @PostMapping("/signup")
     public String insertUser(@ModelAttribute UserDTO userDTO, HttpServletRequest request, Model model) throws Exception {
+
         //이동전에 할것들
         //step 0) 인증여부? 필요없음
         try{
@@ -55,18 +89,9 @@ public class UserController {
         } catch (Exception e) {
             return "redireect:/user/signup";
         }
-
-        //step N+2) 문제! TypeCode와 AuthCode가 설정이 안돼서 걍 Mapper 수동으로 처리함..나중에 로그인때문이라도 수정해야함
-//        userDTO.setTypeCode('G');
-//        userDTO.setAuthCode('B');
-
-//        System.out.println(userDTO.getAuthCode());
-
-//        System.out.println(userDTO);
-
         // 남은것들 : typecode, authcode 제약조건 바꾸기, 빈칸으로 두면 ""으로 제출됨(심지어 타임스탬프도 안찍힘)
 
-        return "redirect:/user/login"; //여기로이동해
+        return "/user/insert";
     }
 
     //KHG10-(1)GET
@@ -161,10 +186,34 @@ public class UserController {
 
     //KHG80
     @GetMapping("/admin/userlist")
-    public String adminUserList(Model model) throws Exception {
+    public String adminUserList(@RequestParam(value = "page", required = false, defaultValue = "1")  int page, Model model) throws Exception {
 
-        List<UserDTO> users = userService.getUsers();
-        model.addAttribute("users", users);
+//        List<UserDTO> users = userService.getUsers();
+//        model.addAttribute("users", users);
+
+        //pagination 추가( ref by RecruitController)
+        PageDTO pageDTO = new PageDTO();
+        pageDTO.setPage(page);
+        pageDTO.setStartEnd(pageDTO.getPage());
+        try {
+            //추후 재구현해야함(공용 허락받은 후)
+            int count = userService.selectUserCount(pageDTO);
+            int pages = count > 0 ? (int) Math.ceil((double) count / 10) : 1;
+
+            List<UserDTO> users = userService.getUsers(pageDTO);
+
+            model.addAttribute("count", count);
+            model.addAttribute("pages", pages);
+            model.addAttribute("users", users);
+            model.addAttribute("currentPage", page);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("user list error : " + e);
+        }
+
+
+
         return "/user/admin/userlist";
     }
 
