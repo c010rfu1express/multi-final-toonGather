@@ -5,6 +5,7 @@
     <title>Title</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/social-styles.css}">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -111,6 +112,14 @@
     </section>
     <section class="my-questions">
         <h2>문의글 전체 조회</h2>
+        <form th:action="@{/cs/csAdmin}" method="get">
+            <select name="searchType">
+                <option value="title" th:selected="${searchType == 'title'}">제목</option>
+                <option value="author" th:selected="${searchType == 'author'}">작성자</option>
+            </select>
+            <input type="text" name="keyword" placeholder="검색어 입력" th:value="${keyword}" />
+            <button type="submit">검색</button>
+        </form>
         <div th:if="${questions != null && !questions.isEmpty()}">
             <table>
                 <thead>
@@ -135,13 +144,12 @@
                 </tbody>
             </table>
             <div class="pagination">
-                <a href="#">&laquo;</a>
-                <a href="#">1</a>
-                <a href="#">2</a>
-                <a href="#">3</a>
-                <a href="#">4</a>
-                <a href="#">5</a>
-                <a href="#">&raquo;</a>
+                <a th:if="${currentPage > 0}" th:href="@{/cs/csAdmin(page=${currentPage - 1}, searchType=${searchType}, keyword=${keyword})}">&laquo;</a>
+                <a th:each="i : ${#numbers.sequence(1, totalPages)}"
+                   th:href="@{/cs/csAdmin(page=${i - 1}, searchType=${searchType}, keyword=${keyword})}"
+                   th:text="${i}"
+                   th:classappend="${currentPage + 1 == i} ? 'active' : ''"></a>
+                <a th:if="${currentPage < totalPages - 1}" th:href="@{/cs/csAdmin(page=${currentPage + 1}, searchType=${searchType}, keyword=${keyword})}">&raquo;</a>
             </div>
         </div>
         <div th:if="${questions == null || questions.isEmpty()}">
@@ -152,5 +160,6 @@
 <div class="chatbot">
     <button>챗봇</button>
 </div>
+    <div th:replace="common/footer.html"></div>
 </body>
 </html>

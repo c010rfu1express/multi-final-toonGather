@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Question Detail</title>
+    <link rel="stylesheet" th:href="@{/css/social-styles.css}">
     <style>
         .detail-container {
             width: 80%;
@@ -71,13 +72,13 @@
         </div>
         <div class="images">
             <div th:each="file : ${questionFiles}">
-                <img th:src="@{/uploadFiles/{fileName}(fileName=${file.savedName})}" th:alt="${file.originName}" style="max-width: 100%; height: auto;"/>
+                <img th:src="@{/uploadFiles/cs/{fileName}(fileName=${file.savedName})}" th:alt="${file.originName}" style="max-width: 100%; height: auto;"/>
             </div>
         </div>
     </div>
     <div class="detail-footer">
-        <button th:onclick="'location.href=\'/cs/updateQuestion/' + ${question.csQNo} + '\';'">수정</button>
-        <button th:onclick="'location.href=\'/cs/deleteQuestion/' + ${question.csQNo} + '\';'">삭제</button>
+        <button th:onclick="'location.href=\'/cs/updateQuestion/' + ${question.csQNo} + '\';'" class="btn btn-warning">수정</button>
+        <button th:onclick="'location.href=\'/cs/deleteQuestion/' + ${question.csQNo} + '\';'" class="btn btn-danger">삭제</button>
     </div>
     <div class="admin-reply">
         <div class="admin-reply">
@@ -85,7 +86,7 @@
                 <h3 style="margin: 0; padding-right: 10px; white-space: nowrap;">관리자 답변</h3>
                 <div sec:authorize="hasRole('ROLE_ADMIN')" style="display: flex; align-items: center; width: 100%;">
                     <form th:action="@{'/cs/insertAnswer/' + ${question.csQNo}}" method="post" style="display: flex; align-items: center; width: 100%;">
-                        <textarea name="answer" th:placeholder="'답변을 입력하세요'" style="flex-grow: 1; resize: vertical; height: 30px; margin-right: 10px;"></textarea>
+                        <textarea name="answer" th:placeholder="'답변을 입력하세요'" style="flex-grow: 1; resize: vertical; height: 30px; margin-right: 10px;" maxlength="1000"></textarea>
                         <button type="submit" style="height: 30px; width: 50px;">등록</button>
                     </form>
                 </div>
@@ -101,5 +102,6 @@
 
     <div class="spacer"></div>
 </div>
+<div th:replace="common/footer.html"></div>
 </body>
 </html>

@@ -40,7 +40,7 @@ public class CsController {
 
     // csMain 페이지 호출 메소드
     @GetMapping("/csUser")
-    public String csUser(Model model) throws Exception {
+    public String csUser(Model model, @RequestParam(value = "page", defaultValue = "0") int page) throws Exception {
         List<FaqDTO> faqList = csService.faqList();
         model.addAttribute("faqList", faqList);
 
@@ -53,24 +53,55 @@ public class CsController {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         int userNo = userDetails.getMemNo();
 
-        List<QuestionDTO> questions = csService.myQuestionList(userNo);
+        int pageSize = 10;
+        int offset = page * pageSize;
+
+        int totalRows = csService.getTotalCountById(userNo);
+        int totalPages = (totalRows % pageSize == 0) ? totalRows / pageSize : (totalRows / pageSize) + 1;
+
+        List<QuestionDTO> questions = csService.myQuestionList(userNo, offset, pageSize);
 
         System.out.println(questions);
 
         model.addAttribute("questions", questions);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("currentPage", page);
 
         return "cs/csUser";
     }
 
     @GetMapping("/csAdmin")
-    public String csAdmin(Model model) throws Exception {
-        List<QuestionDTO> questions = csService.questionList();
+    public String csAdmin(Model model,
+                          @RequestParam(value = "page", defaultValue = "0") int page,
+                          @RequestParam(value = "searchType", required = false) String searchType,
+                          @RequestParam(value = "keyword", required = false) String keyword) throws Exception {
+
+        int pageSize = 10;
+        int offset = page * pageSize;
+
+        int totalRows;
+        List<QuestionDTO> questions;
+
+        if (keyword != null && !keyword.isEmpty()) {
+            totalRows = csService.countSearchQuestions(searchType, keyword);
+            questions = csService.searchQuestions(searchType, keyword, offset, pageSize);
+        } else {
+            totalRows = csService.getTotalCount();
+            questions = csService.questionList(offset, pageSize);
+        }
+
+        int totalPages = (totalRows % pageSize == 0) ? totalRows / pageSize : (totalRows / pageSize) + 1;
+
         List<FaqDTO> faqList = csService.faqList();
 
         System.out.println(questions);
 
         model.addAttribute("questions", questions);
         model.addAttribute("faqList", faqList);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("searchType", searchType);
+        model.addAttribute("keyword", keyword);
 
         return "/cs/csAdmin";
     }
