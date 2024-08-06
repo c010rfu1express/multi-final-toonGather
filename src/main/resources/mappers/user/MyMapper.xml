@@ -196,7 +196,7 @@
         INNER JOIN
         so_review_likes srl
         ON
-        sr.writer_no = srl.liked_user
+        sr.review_no = srl.review_no
         WHERE
         srl.liked_user = #{userNo}
         <choose>
