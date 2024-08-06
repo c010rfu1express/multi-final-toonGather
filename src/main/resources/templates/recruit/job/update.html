@@ -10,14 +10,8 @@
 <body>
 <div th:replace="~{common/menubar}"></div>
 <div layout:fragment="content">
-    <nav class="navbar navbar-expand-md">
-        <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-            <li><a th:href="@{/recruit/creator/choice}" class="nav-link px-2">창작자 등록</a></li>
-            <li><a th:href="@{/recruit/job/list}" class="nav-link px-2">구인/구직</a></li>
-            <li><a th:href="@{/recruit/free/list}" class="nav-link px-2">프리랜서</a></li>
-            <li><a th:href="@{/recruit/ask/list}" class="nav-link px-2">문의 내역</a></li>
-        </ul>
-    </nav>
+    <div th:replace="~{recruit/menubar}"></div>
+    <br>
     <div class="container">
         <h3>게시글 수정 페이지</h3>
         <hr>
@@ -54,9 +48,7 @@
                 <input type="text" id="contact" name="contact" th:value="${job.contact}" class="form-control" required>
             </div>
             <div class="form-group text-right">
-                <a th:href="@{/recruit/job/list}">
-                    <button id="b1" class="btn btn-outline-primary">첫페이지로</button>
-                </a>
+                <a href="/recruit/job/list" class="btn btn-outline-primary">첫페이지로</a>
                 <button id="b2" type="submit" class="btn btn-primary">수정</button>
             </div>
         </form>

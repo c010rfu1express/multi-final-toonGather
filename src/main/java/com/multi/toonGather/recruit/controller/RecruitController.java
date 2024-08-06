@@ -38,13 +38,24 @@ public class RecruitController {
     private final FreeService freeService;
 
     @RequestMapping("/main")
-    public String main(){
+    public String main(Model model) throws Exception {
+        PageDTO pageDTO = new PageDTO();
+        List<JobDTO> jobs = jobService.selectBoardAll(pageDTO);
+        List<FreeDTO> frees = freeService.selectBoardAll(pageDTO);
+        model.addAttribute("jobs", jobs);
+        model.addAttribute("frees", frees);
+
         return "recruit/main";
     }
 
     @RequestMapping("/creator/choice")
     public String choice(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
-        model.addAttribute("auth_code", String.valueOf(userDetails.getAuthCode()));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
+            model.addAttribute("auth_code", String.valueOf(userDetails.getAuthCode()));
+        } else {
+            model.addAttribute("auth_code", "");  // 인증되지 않은 사용자의 경우
+        }
         return "recruit/creator/choice";
     }
 

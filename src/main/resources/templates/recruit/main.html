@@ -4,25 +4,168 @@
 <head>
     <title>채용 페이지</title>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
     <style>
         .navbar {
           position: fixed;
           z-index: 1000;
+        }
+        .post-slider{
+          width:60%;
+          margin:0px auto;
+          position:relative;
+        }
+        .post-slider .slider-title{
+          text-align: left;
+          margin:30px auto;
+        }
+        .post-slider .next{
+          position: absolute;
+          top: 50%;
+          width: 40px;
+          height: 40px;
+          right: 30px;
+          background-color: white;
+          border-radius: 50%;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          color: dimgrey;
+          font-size: 1.5em;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+        }
+        .post-slider .prev{
+          position: absolute;
+          top: 50%;
+          width: 40px;
+          height: 40px;
+          left: 30px;
+          background-color: white;
+          border-radius: 50%;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          color: dimgrey;
+          font-size: 1.5em;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+        }
+        .post-slider .post-wrapper{
+
+          width:84%;
+          height:270px;
+          margin:0px auto;
+          overflow: hidden;
+          padding:10px 0px 10px 0px;
+        }
+        .post-slider .post-wrapper .post{
+          width:300px;
+          height:270px;
+          margin:0px 10px;
+          display:inline-block;
+          background:white;
+          border-radius: 5px;
+        }
+        .post-slider .post-wrapper .post .post-info{
+          flex: 0 0 auto;
+            width: 180px;
+            height: 250px;
+            padding-left: 15px;
+            padding-right: 15px;
+            margin-right: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-top: 5px solid #87CEFA;
+        }
+        .post-slider .post-wrapper .post .post-info .slider-image {
+            width: 100%;
+            height: 50%;
+            object-fit: contain;
+            object-position: center;
+            border-radius: 5px 5px 0 0;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
 <div th:replace="~{common/menubar}"></div>
 <div layout:fragment="content">
-    <nav class="navbar navbar-expand-md">
-        <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-            <li><a th:href="@{/recruit/creator/choice}" class="nav-link px-2">창작자 등록</a></li>
-            <li><a th:href="@{/recruit/job/list}" class="nav-link px-2">구인/구직</a></li>
-            <li><a th:href="@{/recruit/free/list}" class="nav-link px-2">프리랜서</a></li>
-            <li><a th:href="@{/recruit/ask/list}" class="nav-link px-2">문의 내역</a></li>
-        </ul>
-    </nav>
+    <div th:replace="~{recruit/menubar}"></div>
 </div>
+<div class="page-wrapper" style="position:relative;">
+    <!--page slider -->
+    <div class="post-slider">
+        <h1 class="slider-title">구인/구직</h1>
+        <hr>
+        <i class="fas fa-chevron-left prev"></i>
+        <i class="fas fa-chevron-right next" ></i>
+        <div class="post-wrapper">
+            <div class="post" th:each="job : ${jobs}">
+                <div class="post-info" th:attr="data-href=@{/recruit/job/view(no=${job.board_no})}" onclick="window.location.href=this.getAttribute('data-href')">
+                    <img th:if="${job.img != null}" th:src="@{'/uploadFiles/job/' + ${job.img}}" alt="게시글 이미지" class="slider-image">
+                    <img th:if="${job.img == null}" th:src="@{/images/toonGather_logo.png}" alt="툰게더 로고" class="slider-image">
+                    <br>
+                    <h5 class="post-subject" th:text="${#strings.abbreviate(job.title, 10)}"></h5>
+                    <br>
+                    <div style="display: inline-flex; align-items: center;">
+                        <i class="far fa-user"></i>&nbsp;
+                        <span th:text="${job.member.nickname}" style="margin-right: 5px;"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--post slider-->
+</div>
+<div class="page-wrapper" style="position:relative;">
+    <!--page slider -->
+    <div class="post-slider">
+        <br>
+        <h1 class="slider-title">프리랜서</h1>
+        <hr>
+        <i class="fas fa-chevron-left prev"></i>
+        <i class="fas fa-chevron-right next" ></i>
+        <div class="post-wrapper">
+            <div class="post" th:each="free : ${frees}">
+                <div class="post-info" th:attr="data-href=@{/recruit/free/view(no=${free.board_no})}" onclick="window.location.href=this.getAttribute('data-href')">
+                    <img th:if="${free.img != null}" th:src="@{'/uploadFiles/free/' + ${free.img}}" alt="게시글 이미지" class="slider-image">
+                    <img th:if="${free.img == null}" th:src="@{/images/toonGather_logo.png}" alt="툰게더 로고" class="slider-image">
+                    <br>
+                    <h5 class="post-subject" th:text="${#strings.abbreviate(free.title, 10)}"></h5>
+                    <br>
+                    <div style="display: inline-flex; align-items: center;">
+                        <div style="display: inline-flex; align-items: center;">
+                            <i class="far fa-user"></i>&nbsp;
+                            <span th:text="${free.member.nickname}" style="margin-right: 5px;"></span>
+                            <span th:if="${free.type_code == 'C'}" style="line-height: 1; vertical-align: middle;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#1E90FF" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script>
+    $('.post-wrapper').slick({
+      slidesToShow: 4,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 5000,
+      nextArrow:$('.next'),
+      prevArrow:$('.prev'),
+    });
+</script>
 </body>
 <div th:replace="common/footer.html"></div>
 </html>
