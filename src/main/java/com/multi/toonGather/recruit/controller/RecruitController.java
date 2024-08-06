@@ -437,7 +437,10 @@ public class RecruitController {
     }
 
     @PostMapping("/free/insert")
-    public String insertFree(@ModelAttribute FreeDTO freeDTO, HttpServletRequest request, @RequestPart("singleFile") MultipartFile singleFile, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public String insertFree(@ModelAttribute FreeDTO freeDTO, @RequestParam("price") int price,
+                             @RequestParam("kakao") String kakao, @RequestParam("inicis") String inicis,
+                             @RequestParam("bank_name") String bank_name, @RequestParam("account") String account,
+                             HttpServletRequest request, @RequestPart("singleFile") MultipartFile singleFile, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         // 작성자의 memberNo와 userName을 설정
         UserDTO writer = new UserDTO();
@@ -466,6 +469,11 @@ public class RecruitController {
                 singleFile.transferTo(new File(filePath + savedName));
                 model.addAttribute("savedName", savedName);
                 freeDTO.setImg(savedName);
+                freeDTO.setPrice(price);
+                freeDTO.setKakao_pg(kakao);
+                freeDTO.setInicis_pg(inicis);
+                freeDTO.setBank_name(bank_name);
+                freeDTO.setAccount(account);
                 freeService.insertBoard(freeDTO);
             } catch (Exception e) {
                 System.out.println("free insert error : " + e);
@@ -725,17 +733,31 @@ public class RecruitController {
 
     @PostMapping("/free/pay/order")
     public String order(@RequestParam("board_no") int board_no, @RequestParam("quantity") int quantity, @RequestParam("price") int price,
-                         @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+                        @RequestParam("account") String account, @RequestParam("bank_name") String bank_name,
+                        @RequestParam("name") String name, @RequestParam("email") String email, @RequestParam("phone") String phone,
+                        @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
         // 작성자의 memberNo와 userName을 설정
         FreePayDTO payDTO = new FreePayDTO();
         payDTO.setBoard_no(board_no);
         payDTO.setMember_no(userDetails.getMemNo());
         payDTO.setQuantity(quantity);
         payDTO.setPrice(price);
+        payDTO.setBank_name(bank_name);
+        payDTO.setAccount(account);
+        payDTO.setBuyer_name(name);
+        payDTO.setEmail(email);
+        payDTO.setPhone(phone);
 
         freeService.order(payDTO);
 
         return "redirect:/recruit/free/view?no=" + board_no;
+    }
+
+    @GetMapping("/free/pay/bank")
+    public String bank(@RequestParam("no") int no, Model model) throws Exception {
+        FreeDTO freeDTO = freeService.findBoardByNo(no);
+        model.addAttribute("free", freeDTO);
+        return "recruit/free/pay/bank";
     }
 
 }
