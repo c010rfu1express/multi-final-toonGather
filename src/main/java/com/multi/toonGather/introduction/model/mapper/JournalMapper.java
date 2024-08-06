@@ -2,6 +2,7 @@ package com.multi.toonGather.introduction.model.mapper;
 
 import com.multi.toonGather.introduction.model.dto.JournalDTO;
 import com.multi.toonGather.introduction.model.dto.JournalFileDTO;
+import com.multi.toonGather.introduction.model.dto.JournalLikeDTO;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -49,4 +50,20 @@ public interface JournalMapper {
     @Delete("DELETE FROM in_journal WHERE journal_no = #{journalNo}")
     void deleteJournal(int journalNo);
 
+
+    //아래는 좋아요 관련 mapper
+
+    @Select("SELECT COUNT(*) FROM in_journal_like WHERE journal_no = #{journalNo}")
+    int countLikesByJournalNo(int journalNo);
+
+    @Select("SELECT EXISTS(SELECT 1 FROM in_journal_like WHERE journal_no = #{journalNo} AND user_no = #{userNo})")
+    boolean existsByJournalNoAndUserNo(@Param("journalNo") int journalNo, @Param("userNo") int userNo);
+
+    @Insert("INSERT INTO in_journal_like (journal_no, user_no) VALUES (#{journalNo}, #{userNo})")
+    void insertLike(JournalLikeDTO journalLikeDTO);
+
+    @Delete("DELETE FROM in_journal_like WHERE journal_no = #{journalNo} AND user_no = #{userNo}")
+    void deleteLike(@Param("journalNo") int journalNo, @Param("userNo") int userNo);
+
+    List<JournalDTO> findByTitleContaining(String keyword);
 }
