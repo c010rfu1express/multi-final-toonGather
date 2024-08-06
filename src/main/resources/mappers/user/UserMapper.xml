@@ -260,8 +260,43 @@
         registration_datetime AS registrationDatetime,
         last_modified_datetime AS lastModifiedDatetime
         FROM users
+        WHERE 1=1
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'id'">
+                    AND user_id LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'type'">
+                    AND type_code LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'auth'">
+                    AND auth_code LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'nickname'">
+                    AND nickname LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'contactNo'">
+                    AND contact_number LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'email'">
+                    AND email LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'bio'">
+                    AND bio LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'gender'">
+                    AND gender LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'dateOfBirth'">
+                    AND date_of_birth LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'realName'">
+                    AND real_name LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <if test="toggleValue == 'Y'">
-            WHERE auth_code = 'C'
+            AND auth_code = 'C'
         </if>
         <choose>
             <when test="orderBy == 'recent'">
@@ -285,8 +320,43 @@
     <select id="selectUserCount" resultType="int">
         SELECT COUNT(*)
         FROM users
+        WHERE 1=1
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'id'">
+                    AND user_id LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'type'">
+                    AND type_code LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'auth'">
+                    AND auth_code LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'nickname'">
+                    AND nickname LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'contactNo'">
+                    AND contact_number LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'email'">
+                    AND email LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'bio'">
+                    AND bio LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'gender'">
+                    AND gender LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'dateOfBirth'">
+                    AND date_of_birth LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'realName'">
+                    AND real_name LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <if test="toggleValue == 'Y'">
-            WHERE auth_code = 'C'
+            AND auth_code = 'C'
         </if>
         <choose>
             <when test="orderBy == 'recent'">

@@ -257,9 +257,9 @@ public class UserServiceImpl implements UserService {
     }
 
     //pagination 관련(추후 옮겨야)
-    public List<UserDTO> getUsers(String toggle, String orderBy, PageDTO pageDTO) throws Exception {
+    public List<UserDTO> getUsers(String toggle, String orderBy, String searchBy, String searchTerm, PageDTO pageDTO) throws Exception {
         char toggleValue = toggle.charAt(0);
-        List<UserDTO> response = userMapper.selectList(toggleValue, orderBy, pageDTO);
+        List<UserDTO> response = userMapper.selectList(toggleValue, orderBy, searchBy, searchTerm, pageDTO);
         if(response == null) new Exception("[관리자-회원목록] 리스트 조회 실패");
         return response;
     }
@@ -279,9 +279,9 @@ public class UserServiceImpl implements UserService {
 //        return response;
 //    }
 
-    public int selectUserCount(String toggle, String orderBy) throws Exception {
+    public int selectUserCount(String toggle, String orderBy, String searchBy, String searchTerm) throws Exception {
         char toggleValue = toggle.charAt(0);
-        int count = userMapper.selectUserCount(toggleValue, orderBy);
+        int count = userMapper.selectUserCount(toggleValue, orderBy, searchBy, searchTerm);
         return count;
     }
 }

@@ -186,7 +186,7 @@ public class UserController {
 
     //KHG80
     @GetMapping("/admin/userlist")
-    public String adminUserList(@RequestParam(value = "page", required = false, defaultValue = "1") int page, @RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, Model model) throws Exception {
+    public String adminUserList(@RequestParam(value = "page", required = false, defaultValue = "1") int page, @RequestParam(value = "searchTerm", defaultValue = "") String searchTerm, @RequestParam(value = "searchBy", defaultValue = "title") String searchBy, @RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, Model model) throws Exception {
 
         //pagination 추가( ref by RecruitController)
         // pageDTO 세팅(start, end, page) : RequestParam인 page에 의해 모든 것이 결정됨, N=10고정
@@ -197,12 +197,12 @@ public class UserController {
         try {
             // 실제 데이터는 pageDTO.start를 보고 10개를 추출한다. 즉, 모두 현재페이지에 종속된 변수들임
             // 최후 미션) N=10에서 N=k로 일반화 해보기
-            List<UserDTO> users = userService.getUsers(toggle, orderBy, pageDTO);
+            List<UserDTO> users = userService.getUsers(toggle, orderBy, searchBy, searchTerm, pageDTO);
 
             //
             //
             // view) count: 전체 게시글의 수 / pages: 필요 페이지의 수 / users: 실제 전달 데이터 N개묶음 / page: 현재페이지(ReqParam)
-            int count = userService.selectUserCount(toggle, orderBy);
+            int count = userService.selectUserCount(toggle, orderBy, searchBy, searchTerm);
             int pages = count > 0 ? (int) Math.ceil((double) count / 10) : 1;       //쓰임: view에
 
             model.addAttribute("count", count);
@@ -222,6 +222,9 @@ public class UserController {
 //        model.addAttribute("users", users);
         model.addAttribute("isToggled", toggle);
         model.addAttribute("orderBy", orderBy);
+
+        model.addAttribute("searchBy", searchBy);
+        model.addAttribute("searchTerm", searchTerm);
 
 
 

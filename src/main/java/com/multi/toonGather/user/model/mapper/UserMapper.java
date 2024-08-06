@@ -26,12 +26,12 @@ public interface UserMapper {
     int deleteUser(@Param("userNo") int userNo) throws Exception;
 
     //pagination 관련
-    List<UserDTO> selectList(@Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy, @Param("pageDTO") PageDTO pageDTO) throws Exception;
+    List<UserDTO> selectList(@Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy, @Param("searchBy") String searchBy, @Param("searchTerm") String searchTerm, @Param("pageDTO") PageDTO pageDTO) throws Exception;
 //    //pagination 관련
 //    List<UserDTO> selectList(@Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy) throws Exception;
 //    List<UserDTO> selectList(@Param("pageDTO")PageDTO pageDTO) throws Exception;
 
     //pagination 관련(토글과 소팅으로 나오는 총 갯수 리턴)
-    int selectUserCount(@Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy) throws Exception;
+    int selectUserCount(@Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy, @Param("searchBy") String searchBy, @Param("searchTerm") String searchTerm) throws Exception;
 
 }

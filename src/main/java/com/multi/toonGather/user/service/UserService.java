@@ -24,7 +24,7 @@ public interface UserService {
 
 
     //pagination 관련(추후 옮겨야)
-    List<UserDTO> getUsers(String toggle, String orderBy, PageDTO pageDTO) throws Exception;
+    List<UserDTO> getUsers(String toggle, String orderBy, String searchBy, String searchTerm, PageDTO pageDTO) throws Exception;
 //    List<UserDTO> getUsers(PageDTO pageDTO) throws Exception;
-    int selectUserCount(String toggle, String orderBy) throws Exception;
+    int selectUserCount(String toggle, String orderBy, String searchBy, String searchTerm) throws Exception;
 }
