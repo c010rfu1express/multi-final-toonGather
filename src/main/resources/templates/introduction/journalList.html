@@ -18,6 +18,23 @@
         .card {
             margin-bottom: 20px;
         }
+
+        .pagination {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            color: #000;
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+        }
+
+        .pagination a:hover {
+            background-color: #e0e0e0;
+        }
     </style>
     <script>
         // 선택된 radio 버튼의 값을 가져와서 수정 페이지로 이동하는 함수
@@ -70,10 +87,10 @@
 
     <div class="d-flex justify-content-between mb-3">
         <h2>소식</h2>
-        <form class="input-group" style="width: 300px;" th:action="@{/introduction/searchJournals}" method="get">
+        <form class="input-group" style="width: 300px;" th:action="@{/introduction/journalList}" method="get">
             <input type="text" class="form-control" placeholder="검색어 입력"  name="keyword" aria-label="검색어 입력" th:value="${keyword}">
             <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="submit">검색</button>
+                <button class="btn btn-secondary" type="submit">검색</button>
             </div>
         </form>
         <div sec:authorize="hasRole('ROLE_ADMIN')">
@@ -83,7 +100,8 @@
         </div>
     </div>
 
-    <div class="row">
+
+    <div class="row" th:if="${journals != null && !journals.isEmpty()}">
         <!-- 각 소식 항목을 카드로 표시 -->
         <div class="col-md-4" th:each="journal : ${journals}">
             <div class="card">
@@ -111,18 +129,68 @@
                 </div>
             </div>
         </div>
+        <div th:if="${journals == null || journals.isEmpty()}">
+            <p>작성된 소식 게시글이 없습니다.</p>
+        </div>
     </div>
 
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            <li class="page-item"><a class="page-link" href="#">이전</a></li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">다음</a></li>
-        </ul>
-    </nav>
-</div>
 
+<!--    <div class="pagination">-->
+<!--        <a th:if="${currentPage > 0}" th:href="@{/introduction/journalList(page=${currentPage - 1})}">&laquo;</a>-->
+<!--        <a th:each="i : ${#numbers.sequence(1, totalPages)}"-->
+<!--           th:href="@{/introduction/journalList(page=${i - 1})}"-->
+<!--           th:text="${i}"-->
+<!--           th:classappend="${currentPage + 1 == i} ? 'active' : ''"></a>-->
+<!--        <a th:if="${currentPage < totalPages - 1}" th:href="@{/introduction/journalList(page=${currentPage + 1})}">&raquo;</a>-->
+<!--    </div>-->
+
+
+    <div class="pagination">
+        <a th:if="${currentPage > 0}" th:href="@{/introduction/journalList(page=${currentPage - 1}, searchType=${searchType}, keyword=${keyword})}">&laquo;</a>
+        <a th:each="i : ${#numbers.sequence(1, totalPages)}"
+           th:href="@{/introduction/journalList(page=${i - 1}, keyword=${keyword})}"
+           th:text="${i}"
+           th:classappend="${currentPage + 1 == i} ? 'active' : ''"></a>
+        <a th:if="${currentPage < totalPages - 1}" th:href="@{/introduction/journalList(page=${currentPage + 1}, keyword=${keyword})}">&raquo;</a>
+    </div>
+
+
+
+
+
+<!--    <nav aria-label="Page navigation">-->
+<!--        <ul class="pagination justify-content-center">-->
+<!--            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">-->
+<!--                <a class="page-link" th:href="@{/introduction/journalList(page=${currentPage - 1}, keyword=${keyword})}">이전</a>-->
+<!--            </li>-->
+<!--            <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${currentPage + 1 == i} ? 'active'">-->
+<!--                <a class="page-link" th:href="@{/introduction/journalList(page=${i - 1}, keyword=${keyword})}" th:text="${i}"></a>-->
+<!--            </li>-->
+<!--            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">-->
+<!--                <a class="page-link" th:href="@{/introduction/journalList(page=${currentPage + 1}, keyword=${keyword})}">다음</a>-->
+<!--            </li>-->
+<!--        </ul>-->
+<!--    </nav>-->
+
+
+
+
+
+
+<!--    <nav aria-label="Page navigation">-->
+<!--        <ul class="pagination justify-content-center">-->
+<!--            <li class="page-item"><a class="page-link" href="#">이전</a></li>-->
+<!--            <li class="page-item"><a class="page-link" href="#">1</a></li>-->
+<!--            <li class="page-item"><a class="page-link" href="#">2</a></li>-->
+<!--            <li class="page-item"><a class="page-link" href="#">3</a></li>-->
+<!--            <li class="page-item"><a class="page-link" href="#">다음</a></li>-->
+<!--        </ul>-->
+<!--    </nav>-->
+
+
+
+
+</div>
+<div th:replace="common/footer.html"></div>
 </body>
 </html>
