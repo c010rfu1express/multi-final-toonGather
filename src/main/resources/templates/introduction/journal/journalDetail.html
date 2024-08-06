@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -41,11 +42,40 @@
         }
 
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        var journalNo = [[${journal.journalNo}]]; // Thymeleaf 변수 값을 JavaScript 변수에 저장
+        var userNo = [[${userNo} != null ? ${userNo} : 'null']]; // Thymeleaf 변수 값을 JavaScript 변수로 저장, userNo 값이 없을 경우 null으로 초기화
+        console.log(typeof userNo);
+        console.log('journalNo:', journalNo, 'userNo:', userNo); // 콘솔에 값 출력
+
+        function toggleLike() {
+            alert('Journal No: ' + journalNo + ', User No: ' + userNo);
+            if (userNo === null) {
+                alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
+                window.location.href = '/user/login'; // 로그인 페이지 URL로 리다이렉트
+                return;
+            }
+            $.ajax({
+                url: '/introduction/journal/like',
+                type: 'POST',
+                data: {journalNo: journalNo, userNo: userNo},
+                success: function(response) {
+                    $('#likeCount').text(response.likeCount);
+                },
+                error: function(xhr, status, error) {
+                    console.error('좋아요 처리 중 오류가 발생했습니다:', status, error);
+                    alert('좋아요 처리 중 오류가 발생했습니다.');
+                }
+            });
+        }
+    </script>
 </head>
 <body>
 
 <div th:replace="~{common/menubar}"></div>
-<div th:replace="~{introduction/introductionMenubar}"></div>
+<div th:replace="~{introduction/inMenubar}"></div>
 
 <div id="journal-details">
     <div th:if="${journal != null}">
@@ -63,18 +93,14 @@
 
 
 
-
-
-        <!-- 첨부파일 목록 표시 -->
-<!--        <div th:each="file : ${journal.journalFiles}">-->
-<!--            <div th:if="${file.fileType.startsWith('image/')}">-->
-<!--                <img th:src="@{'/uploadFiles/' + ${file.fileName}}" alt="파일 이미지" />-->
-
-<!--            </div>-->
-<!--        </div>-->
-
-
         <div class="content" th:text="${journal.content}">내용</div>
+
+        <!-- 좋아요 기능 추가 -->
+        <div>
+            <button onclick="toggleLike()" class="btn btn-primary">좋아요 <span id="likeCount" th:text="${likeCount}">0</span></button>
+            <span>/ Current Journal No: <span id="currentJournalNo" th:text="${journal.journalNo}">0</span></span>
+            <span>/ Current User No: <span id="currentUserNo" th:text="${userNo}">0</span></span>
+        </div>
     </div>
 </div>
 
