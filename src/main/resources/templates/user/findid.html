@@ -4,6 +4,20 @@
 <head>
     <title>KHG10: 아이디찾기</title>
     <meta charset="UTF-8">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- 폰트: 'Noto Sans KR' 사용 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+    <!-- 프로젝트 툰게더 전용 css 스타일 시트 -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <style>
         .navbar {
           position: fixed;
@@ -56,36 +70,75 @@
 <body>
 
 <div th:replace="~{common/menubar}"></div>
-<div>
-    아이디 찾기<br>
+<style>
+    .jumbotron {
+    position : relative;
+    }
+    .jumbotron .row {
+    position : absolute;
+    width : 100%;
+    bottom: 0%;
+    }
+</style>
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-3">
+            <h3>로그인</h3>
+        </div>
+        <div class="col-md-9">
+            <nav class="navbar navbar-expand-md">
+                <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+                    <li>-</li>
+                    <!--          <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">좋아요한 웹툰소식</a></li>-->
+                    <!--          <li><a th:href="@{/user/my/in/event}" class="nav-link px-2">좋아요한 행사</a></li>-->
+                    <!--          <li><a th:href="@{/user/my/in/merchan}" class="nav-link px-2">좋아요한 굿즈</a></li>-->
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <aside class="col-md-3">
+        <div class="panel">
+            <ul class="list-group">
+                <li><a th:href="@{/user/login}" class="nav-link px-2">로그인</a></li>
+                <li><a th:href="@{/user/signup}" class="nav-link px-2">회원가입</a></li>
+            </ul>
+        </div>
+    </aside>
+    <div class="col-md-9">
+        <div>
+            아이디 찾기<br>
 
-    <a href="#">아이디 찾기</a><br>
-    <a href="/user/findpw">비밀번호 찾기</a><br>
+            <a href="/user/findid">아이디 찾기</a><br>
+            <a href="/user/findpw">비밀번호 찾기</a><br>
 
 
-    <form th:action="@{/user/findid}" th:object="${user}" method="post" onsubmit="validateForm(event)">
-        이름*(닉네임으로 대체) : <input type="text" th:field="*{nickname}" maxlength="20" minlength="4"/> (중복불가)<br>
-        전화번호 : <input type="text" th:field="*{contactNumber}" oninput="autoFormatPhoneNumber(this)" placeholder="000-0000-0000"/><br>
+            <form th:action="@{/user/findid}" th:object="${user}" method="post" onsubmit="validateForm(event)">
+                이름*(닉네임으로 대체) : <input type="text" th:field="*{nickname}" maxlength="20" minlength="4"/> (중복불가)<br>
+                전화번호 : <input type="text" th:field="*{contactNumber}" oninput="autoFormatPhoneNumber(this)" placeholder="000-0000-0000"/><br>
 
-        <input type="submit">아이디 찾기
-    </form>
-    <!--    <form th:action="@{/user/signup}" th:object="${user}" method="post">-->
-    <!--        아이디 : <input type="text" name="userId"><br>-->
-    <!--        비밀번호 : <input type="password" name="password"><br>-->
-    <!--        비밀번호 확인 : <br>-->
-    <!--        닉네임 : <input type="text" name="nickname"><br>-->
-    <!--        연락처 : <input type="text" name="contactNumber"><br>-->
-    <!--        성별 : <select name="gender">-->
-    <!--        <option>성별을 공개하지 않습니다-->
-    <!--        <option>여-->
-    <!--        <option>남</select><br>-->
-    <!--        생년월일 : <input type="text" name="dateOfBirth"><br>-->
-    <!--        이메일 : <input type="text" name="email"><br>-->
-    <!--        자기소개(선택사항) : <input type="text" name="bio"><br>-->
-    <!--        <input type="checkbox" name="termsAgreement">본인은 툰게더 회원 약관에 동의합니다.<br>-->
+                <input type="submit">아이디 찾기
+            </form>
+            <!--    <form th:action="@{/user/signup}" th:object="${user}" method="post">-->
+            <!--        아이디 : <input type="text" name="userId"><br>-->
+            <!--        비밀번호 : <input type="password" name="password"><br>-->
+            <!--        비밀번호 확인 : <br>-->
+            <!--        닉네임 : <input type="text" name="nickname"><br>-->
+            <!--        연락처 : <input type="text" name="contactNumber"><br>-->
+            <!--        성별 : <select name="gender">-->
+            <!--        <option>성별을 공개하지 않습니다-->
+            <!--        <option>여-->
+            <!--        <option>남</select><br>-->
+            <!--        생년월일 : <input type="text" name="dateOfBirth"><br>-->
+            <!--        이메일 : <input type="text" name="email"><br>-->
+            <!--        자기소개(선택사항) : <input type="text" name="bio"><br>-->
+            <!--        <input type="checkbox" name="termsAgreement">본인은 툰게더 회원 약관에 동의합니다.<br>-->
 
-    <!--        <input type="submit">가입하기-->
-    <!--    </form>-->
+            <!--        <input type="submit">가입하기-->
+            <!--    </form>-->
+        </div>
+    </div>
 </div>
 </body>
 </html>

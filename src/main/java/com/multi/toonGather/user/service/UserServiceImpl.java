@@ -1,9 +1,14 @@
 package com.multi.toonGather.user.service;
 
+import com.multi.toonGather.common.model.dto.PageDTO;
+import com.multi.toonGather.security.CustomUserDetails;
+import com.multi.toonGather.security.CustomUserDetailsService;
 import com.multi.toonGather.user.model.dto.UserDTO;
 import com.multi.toonGather.user.model.mapper.UserMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,13 +25,20 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Override   //이것은 UserService Interface에서 가져온거임 : 예전부터 Service의 존재의 이유가 와닿지 않음..
                 //UserMapper Interface의 insertUser()와 혼동 노노 : Mapper가 DB와 관련있는거.
     public void insertUser(UserDTO userDTO) throws Exception {
         String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
         userDTO.setPassword(encodedPassword);
-        int result = userMapper.insertUser(userDTO);
+        int result = 0;
+        if(userDTO.getTypeCode() == 'K' || userDTO.getTypeCode() == 'N')
+        result = userMapper.insertUser(userDTO);
+        else {
+            userDTO.setTypeCode('G');
+            result = userMapper.insertUser(userDTO);
+        }
         if(result == 0) new Exception("[ERROR] insertUser 실패");     //문제있어..?
     }
 
@@ -127,7 +139,15 @@ public class UserServiceImpl implements UserService {
                 }
             } // if origin not null
 
+            // 회원정보 수정 후 세션등록
             int result = userMapper.updateUser(userNo, userDTO);
+            CustomUserDetails c = (CustomUserDetails)
+                    customUserDetailsService.loadUserByUsername(userMapper.selectOneByUserNo(Integer.toString(userNo)).getUserId());
+
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(c, null, c.getAuthorities());
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
             if(result == 0) new Exception("[ERROR] updateUser 실패. [userNo: " + userNo + "]");
         }
 
@@ -183,7 +203,15 @@ public class UserServiceImpl implements UserService {
                 }
             } // if origin not null
 
+            // 회원정보 수정 후 세션등록
             int result = userMapper.updateUser(userNo, userDTO);
+            CustomUserDetails c = (CustomUserDetails)
+                    customUserDetailsService.loadUserByUsername(userMapper.selectOneByUserNo(Integer.toString(userNo)).getUserId());
+
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(c, null, c.getAuthorities());
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
             if(result == 0) new Exception("[ERROR] updateUser 실패. [userNo: " + userNo + "]");
 
     }
@@ -194,9 +222,50 @@ public class UserServiceImpl implements UserService {
         if(result == 0) new Exception("[ERROR] deleteUser 실패. [userNo: " + userNo + "]");
     }
 
-    public List<UserDTO> getUsers() throws Exception {
-        List<UserDTO> response = userMapper.selectList();
+    public List<UserDTO> getUsers(PageDTO pageDTO) throws Exception {
+        List<UserDTO> response = userMapper.selectList(pageDTO);
+        if(response == null) new Exception("[관리자-회원목록] 리스트 조회 실패");
         return response;
     }
 
+    public int checkUserIdExists(String userId)  {
+        int result = 0;
+        try{
+            UserDTO userDTO = userMapper.selectOneByUserId(userId);
+            if(userId.equals(userDTO.getUserId())) result = 1;
+            return result;
+        } catch(Exception e) {
+            return result;
+        }
+
+    }
+
+    public int checkNicknameExists(String nickname) {
+        int result = 0;
+        try{
+            UserDTO userDTO = userMapper.selectOneByNickname(nickname);
+            if(nickname.equals(userDTO.getNickname())) result = 1;
+            return result;
+        } catch(Exception e) {
+            return result;
+        }
+    }
+
+    public int checkEmailExists(String email) {
+        int result = 0;
+        try{
+            UserDTO userDTO = userMapper.selectOneByEmail(email);
+            if(email.equals(userDTO.getEmail())) result = 1;
+            return result;
+        } catch(Exception e) {
+            return result;
+        }
+    }
+
+
+    //pagination 관련(추후 옮겨야)
+    public int selectUserCount(PageDTO pageDTO) throws Exception {
+        int count = userMapper.selectUserCount();
+        return count;
+    }
 }

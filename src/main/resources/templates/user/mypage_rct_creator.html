@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
 <html layout:decorate="~{layout}">
 <head>
-    <title>KHG20: 마이페이지-나의웹툰-북마크한웹툰</title>
+    <title>KHG43: 마이페이지-나의채용-창작자등록관리</title>
     <meta charset="UTF-8">
 
     <!-- Latest compiled and minified CSS -->
@@ -17,7 +17,6 @@
 
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -82,31 +81,33 @@
           z-index: 1000;
         }
     </style>
-
 </head>
 <body>
 
 <div th:replace="~{common/menubar}"></div>
 <style>
-        .jumbotron {
-        position : relative;
-        }
-        .jumbotron .row {
-        position : absolute;
-        width : 100%;
-        bottom: 0%;
-        }
+    .jumbotron {
+    position : relative;
+    }
+    .jumbotron .row {
+    position : absolute;
+    width : 100%;
+    bottom: 0%;
+    }
 </style>
 <div class="jumbotron">
     <div class="row">
         <div class="col-md-3">
-            <h3>나의 웹툰</h3>
+            <h3>나의 채용</h3>
         </div>
         <div class="col-md-9">
             <nav class="navbar navbar-expand-md">
                 <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-                    <li><a th:href="@{/user/my}" class="nav-link px-2">북마크한 웹툰</a></li>
-                    <li><a th:href="@{/user/my/wt/comment}" class="nav-link px-2">내가 남긴 코멘트</a></li>
+                    <li><a th:href="@{/user/my/rct/job}" class="nav-link px-2">내가 올린 공고</a></li>
+                    <li><a th:href="@{/user/my/rct/creator}" class="nav-link px-2">창작자 등록 현황</a></li>
+                    <li><a th:href="@{/user/my/rct/apply}" class="nav-link px-2">나의 지원서 관리</a></li>
+                    <li><a th:href="@{/user/my/rct/free}" class="nav-link px-2">프리랜서 게시글 관리</a></li>
+                    <li><a th:href="@{/user/my/rct/order}" class="nav-link px-2">프리랜서 구매 목록</a></li>
                 </ul>
             </nav>
         </div>
@@ -127,58 +128,39 @@
     </aside>
     <div class="col-md-9">
         <div class="review-list">
-            <h2>북마크한 웹툰</h2>
-            <form id="sort-form" th:action="@{/user/my/wt/webtoon}" method="get">
-                <label>
-                    <select name="orderBy" onchange="this.form.submit()">
-                        <option value="recent" th:selected="${orderBy == 'recent'}">최근저장순</option>
-                        <option value="oldest" th:selected="${orderBy == 'oldest'}">오래된순</option>
-                        <option value="views" th:selected="${orderBy == 'views'}">조회수높은순</option>
-                        <option value="title" th:selected="${orderBy == 'title'}">제목가나다순</option>
-                    </select>
-                </label>
-            </form>
-
+            <h2>창작자 등록 현황</h2>
+            <th:block th:if="${!auth_code.equals('C')}">
+                <a th:href="@{/recruit/creator/choice}">창작자 등록 신청</a>
+            </th:block>
+            <th:block th:if="${auth_code.equals('C')}">
+                <button type="button" onclick="">등록증 확인(미구현)</button>
+            </th:block><br>
             <table>
                 <thead>
                 <tr>
-                    <th>저장번호</th>
-                    <th>웹툰 번호</th>
-                    <th>유저넘버</th>
-                    <th>웹툰아이디</th>
-                    <th>플렛폼</th>
-                    <th>제목</th>
-                    <th>작가</th>
-                    <th>이미지URL</th>
-                    <th>장르</th>
-                    <th>태그</th>
-                    <th>조회수</th>
+                    <th>창작자 번호</th>
+                    <th>회원 번호</th>
+                    <th>내용</th>
+                    <th>이미지</th>
+                    <th>사업자 등록번호</th>
+                    <th>심사 현황</th>
+                    <th>등록 유형 코드</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="myWtWebtoon : ${myWtWebtoons}" class="clickable-row"
-                    th:attr="data-href=@{/webtoon/one(
-                webtoon_id=${(myWtWebtoon.platform == 1 ? 'naver_' : myWtWebtoon.platform == 2 ? 'kakao_' : '') + myWtWebtoon.webtoonId},
-                webtoon_name=${myWtWebtoon.webtoonName},
-                author=${myWtWebtoon.author}
-                )}">
-                    <td th:text="${myWtWebtoon.saveNo}">저장번호</td>
-                    <td th:text="${myWtWebtoon.webtoonNo}">웹툰 번호</td>
-                    <td th:text="${myWtWebtoon.userNo}">유저넘버</td>
-                    <td th:text="${myWtWebtoon.webtoonId}">웹툰아이디</td>
-                    <td th:text="${myWtWebtoon.platform}">플렛폼</td>
-                    <td th:text="${myWtWebtoon.webtoonName}">제목</td>
-                    <td th:text="${myWtWebtoon.author}">작가</td>
-                    <td th:text="${myWtWebtoon.thumbnailUrl}">이미지URL</td>
-                    <td th:text="${myWtWebtoon.genre}">장르</td>
-                    <td th:text="${myWtWebtoon.tags}">태그</td>
-                    <td th:text="${myWtWebtoon.count}">조회수</td>
+                <tr th:each="myRctCreator : ${myRctCreators}" class="clickable-row">
+                    <td th:text="${myRctCreator.creatorNo}">창작자 번호</td>
+                    <td th:text="${myRctCreator.memberNo}">회원 번호</td>
+                    <td th:text="${myRctCreator.content}">내용</td>
+                    <td th:text="${myRctCreator.img}">이미지</td>
+                    <td th:text="${myRctCreator.registNo}">사업자 등록번호</td>
+                    <td th:text="${myRctCreator.status}">심사 현황</td>
+                    <td th:text="${myRctCreator.typeCode}">등록 유형 코드</td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-
 </body>
 </html>

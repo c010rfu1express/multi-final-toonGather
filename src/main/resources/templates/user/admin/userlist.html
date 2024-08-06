@@ -4,6 +4,20 @@
 <head>
     <title>KHG80: 회원관리</title>
     <meta charset="UTF-8">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- 폰트: 'Noto Sans KR' 사용 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+    <!-- 프로젝트 툰게더 전용 css 스타일 시트 -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function($) {
@@ -71,59 +85,136 @@
 <body>
 
 <div th:replace="~{common/menubar}"></div>
-<div layout:fragment="content">
-    <nav class="navbar navbar-expand-md">
-        <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-            <li><a th:href="@{/user/admin/userlist}" class="nav-link px-2">회원 관리</a></li>
-            <li><a th:href="@{/user/my}" class="nav-link px-2">마이페이지(테스트용)</a></li>
-        </ul>
-    </nav>
+<style>
+    .jumbotron {
+    position : relative;
+    }
+    .jumbotron .row {
+    position : absolute;
+    width : 100%;
+    bottom: 0%;
+    }
+</style>
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-3">
+            <h3>회원 관리</h3>
+        </div>
+        <div class="col-md-9">
+            <nav class="navbar navbar-expand-md">
+                <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+                    <li><a th:href="@{/user/my}" class="nav-link px-2">마이페이지(테스트용)</a></li>
+                    <!--          <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">좋아요한 웹툰소식</a></li>-->
+                    <!--          <li><a th:href="@{/user/my/in/event}" class="nav-link px-2">좋아요한 행사</a></li>-->
+                    <!--          <li><a th:href="@{/user/my/in/merchan}" class="nav-link px-2">좋아요한 굿즈</a></li>-->
+                </ul>
+            </nav>
+        </div>
+    </div>
 </div>
-<div class="container">
-    <div class="review-list">
-        <h2>회원 목록</h2>
-        <table>
-            <thead>
-            <tr>
-                <th>회원번호</th>
-                <th>유형 코드</th>
-                <th>권한 코드</th>
-                <th>사용자 ID</th>
-                <th>닉네임</th>
-                <th>연락처</th>
-                <th>이메일</th>
-                <th>프로필 이미지 경로</th>
-                <th>소개</th>
-                <th>성별</th>
-                <th>생년월일</th>
-                <th>실명</th>
-                <th>약관 동의</th>
-                <th>약관 동의 시간</th>
-                <th>등록 시간</th>
-                <th>마지막 수정 시간</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="user : ${users}" class="clickable-row" th:attr="data-href=@{/user/admin/userdetails(userNo=${user.userNo})}">
-                <td th:text="${user.userNo}">회원번호</td>
-                <td th:text="${user.typeCode}">유형 코드</td>
-                <td th:text="${user.authCode}">권한 코드</td>
-                <td th:text="${user.userId}">사용자 ID</td>
-                <td th:text="${user.nickname}">닉네임</td>
-                <td th:text="${user.contactNumber}">연락처</td>
-                <td th:text="${user.email}">이메일</td>
-                <td th:text="${user.profileImagePath}">프로필 이미지 경로</td>
-                <td th:text="${user.bio}">소개</td>
-                <td th:text="${user.gender}">성별</td>
-                <td th:text="${user.dateOfBirth}">생년월일</td>
-                <td th:text="${user.realName}">실명</td>
-                <td th:text="${user.termsAgreement}">약관 동의</td>
-                <td th:text="${user.termsAgreementDatetime}">약관 동의 시간</td>
-                <td th:text="${user.registrationDatetime}">등록 시간</td>
-                <td th:text="${user.lastModifiedDatetime}">마지막 수정 시간</td>
-            </tr>
-            </tbody>
-        </table>
+<div class="row">
+    <aside class="col-md-3">
+        <div class="panel">
+            <ul class="list-group">
+                <li><a th:href="@{/user/admin/userlist}" class="nav-link px-2">회원 관리</a></li>
+            </ul>
+        </div>
+    </aside>
+    <script> // toggle + sorting
+        function updateCheckboxValueAndSubmit() {
+            const checkbox = document.getElementById('isToggledCheckbox');
+            const form = document.getElementById('filter-and-sort-form');
+            // 체크박스가 체크된 상태를 확인
+            checkbox.value = checkbox.checked ? 'Y' : 'N';
+            // 폼 제출
+            form.submit();
+        }
+
+        function submitForm() {
+            document.getElementById('filter-and-sort-form').submit();
+        }
+    </script>
+    <div class="col-md-9">
+        <div class="review-list">
+            <h2>회원 목록</h2>
+<!--            <form id="filter-and-sort-form" th:action="@{/user/admin/userlist(page=${page})}" method="get">-->
+<!--                <label>-->
+<!--                    <input type="checkbox" name="isToggled" id="isToggledCheckbox" value="Y" th:checked="${isToggled == 'Y'}" onchange="updateCheckboxValueAndSubmit()">창작자-->
+<!--                </label>-->
+<!--                &lt;!&ndash; Hidden field for boardNo &ndash;&gt;-->
+<!--                <input type="hidden" name="page" th:value="${page}" />-->
+<!--                <label>-->
+<!--                    <select name="orderBy" onchange="submitForm()">-->
+<!--                        <option value="recent" th:selected="${orderBy == 'recent'}">최근가입순</option>-->
+<!--                        <option value="oldest" th:selected="${orderBy == 'oldest'}">오래된순</option>-->
+<!--                        <option value="title" th:selected="${orderBy == 'title'}">닉네임가나다순</option>-->
+<!--                    </select>-->
+<!--                </label>-->
+<!--            </form>-->
+            <table>
+                <thead>
+                <tr>
+                    <th>회원번호</th>
+                    <th>유형 코드</th>
+                    <th>권한 코드</th>
+                    <th>사용자 ID</th>
+                    <th>닉네임</th>
+                    <th>연락처</th>
+                    <th>이메일</th>
+                    <th>프로필 이미지 경로</th>
+                    <th>소개</th>
+                    <th>성별</th>
+                    <th>생년월일</th>
+                    <th>실명</th>
+                    <th>약관 동의</th>
+                    <th>약관 동의 시간</th>
+                    <th>등록 시간</th>
+                    <th>마지막 수정 시간</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}" class="clickable-row" th:attr="data-href=@{/user/admin/userdetails(userNo=${user.userNo})}">
+                    <td th:text="${user.userNo}">회원번호</td>
+                    <td th:text="${user.typeCode}">유형 코드</td>
+                    <td th:text="${user.authCode}">권한 코드</td>
+                    <td th:text="${user.userId}">사용자 ID</td>
+                    <td th:text="${user.nickname}">닉네임</td>
+                    <td th:text="${user.contactNumber}">연락처</td>
+                    <td th:text="${user.email}">이메일</td>
+                    <td th:text="${user.profileImagePath}">프로필 이미지 경로</td>
+                    <td th:text="${user.bio}">소개</td>
+                    <td th:text="${user.gender}">성별</td>
+                    <td th:text="${user.dateOfBirth}">생년월일</td>
+                    <td th:text="${user.realName}">실명</td>
+                    <td th:text="${user.termsAgreement}">약관 동의</td>
+                    <td th:text="${user.termsAgreementDatetime}">약관 동의 시간</td>
+                    <td th:text="${user.registrationDatetime}">등록 시간</td>
+                    <td th:text="${user.lastModifiedDatetime}">마지막 수정 시간</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <th:block th:if="${pages != null}">
+                <div class="d-flex justify-content-center">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm previous" th:onclick="|location.href='@{/user/admin/userlist(page=${currentPage - 1})}'|" th:disabled="${currentPage == 1}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                            </svg>
+                        </button>
+                        <th:block th:each="p : ${#numbers.sequence(1, pages)}">
+                            <button type="button" class="btn btn-sm me-2 pages"
+                                    th:text="${p}" th:onclick="|location.href='@{/user/admin/userlist(page=${p})}'|"></button>
+                        </th:block>
+                        <button type="button" class="btn btn-sm  next" th:onclick="|location.href='@{/user/admin/userlist(page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </th:block>
+        </div>
     </div>
 </div>
 </body>

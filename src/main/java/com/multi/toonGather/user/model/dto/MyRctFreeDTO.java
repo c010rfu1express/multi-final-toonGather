@@ -20,4 +20,6 @@ public class MyRctFreeDTO {
     private int price;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
+    private double averageRating;  // 평균 평점 추가
+    private int reviewCount;       // 리뷰 갯수 추가
 }
