@@ -18,4 +18,7 @@ public interface JournalService {
     public boolean updateJournal(JournalDTO journalDTO, MultipartFile file, HttpServletRequest request) throws Exception;
     public JournalDTO getJournalByNoWithFiles(int journalNo);
     public void deleteJournalByTitle(String title) throws Exception;
+    public int countLikesByJournalNo(int journalNo);
+    public boolean toggleLike(int journalNo, int userNo);
+    public List<JournalDTO> searchJournalsByTitle(String keyword);
 }
