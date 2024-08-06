@@ -203,14 +203,8 @@ public class UserServiceImpl implements UserService {
                 }
             } // if origin not null
 
-            // 회원정보 수정 후 세션등록
+            // 회원정보 수정
             int result = userMapper.updateUser(userNo, userDTO);
-            CustomUserDetails c = (CustomUserDetails)
-                    customUserDetailsService.loadUserByUsername(userMapper.selectOneByUserNo(Integer.toString(userNo)).getUserId());
-
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(c, null, c.getAuthorities());
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
 
             if(result == 0) new Exception("[ERROR] updateUser 실패. [userNo: " + userNo + "]");
 
