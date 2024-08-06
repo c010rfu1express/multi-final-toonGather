@@ -18,22 +18,24 @@
             <h2>지금 핫한 리뷰🔥</h2>
             <hr>
             <div class="hot-review-slider">
-                <div class="review-card" th:each="review : ${popularReviews}" th:onclick="'location.href=\'' + @{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})} + '\''">
+                <div class="hot-review-card" th:each="review : ${popularReviews}" th:onclick="'location.href=\'' + @{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})} + '\''">
                     <img th:src="${review.webtoon.thumbnail_url}" th:alt="${review.webtoon.webtoon_name}">
-                    <div class="review-info">
-                        <div>
-                            <div class="review-webtoon">
-                                <strong><span th:text="${review.webtoon.webtoon_name}"></span></strong>
-                                <span th:text="${review.webtoon.author}"></span>
-                            </div>
-                            <div class="review-title" th:text="${review.title}"></div>
-                            <div class="review-content" th:text="${#strings.abbreviate(review.content, 50)}"></div>
+                    <div class="hot-review-info">
+                        <div class="hot-review-webtoon">
+                            <strong><span th:text="${review.webtoon.webtoon_name}"></span></strong>
+                            <span th:text="${review.webtoon.author}"></span>
                         </div>
-                        <div>
-                            <div class="review-author">
-                                <span th:text="${review.writer.nickname}"></span>
+                        <div class="hot-review-title" th:text="${review.title}"></div>
+                        <div class="hot-review-content" th:text="${#strings.abbreviate(review.content, 50)}"></div>
+                        <div class="hot-review-author">
+                            <span th:text="${review.writer.nickname}"></span>
+                        </div>
+                        <div class="hot-review-footer">
+                            <div class="hot-review-rating">
+                                <span class="stars" th:text="${'★'.repeat(review.starRating)}"></span>
+                                <span class="rating-text" th:text="${review.starRating + '점'}"></span>
                             </div>
-                            <div class="review-likes">
+                            <div class="hot-review-likes">
                                 <span class="heart">❤</span>
                                 <span th:text="${review.likeCount}"></span>
                             </div>
@@ -52,7 +54,7 @@
                     <select class="form-select" name="category" id="searchCategory">
                         <option value="review">리뷰</option>
                         <option value="diary">다이어리</option>
-                        <option value="user">작성자</option>
+                        <option value="user">사용자</option>
                     </select>
                     <input type="text" class="form-control" placeholder="검색어를 입력하세요" name="keyword" id="searchKeyword">
                     <button class="btn btn-primary" type="submit">검색</button>
@@ -62,6 +64,8 @@
         </div>
     </div>
 </div>
+
+<div th:replace="common/footer.html"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -76,135 +80,147 @@
     });
 </script>
 <script>
-    $(document).ready(function(){
-        let currentPage = 0;
-        let hasMore = true;
-        let currentCategory = '';
-        let currentKeyword = '';
+    $(document).ready(function() {
+        var currentPage = 0;
+        var currentCategory = '';
+        var currentKeyword = '';
 
-        $('#searchForm').on('submit', function(e) {
+        $('#searchForm').submit(function(e) {
             e.preventDefault();
-            currentPage = 0;
-            hasMore = true;
             currentCategory = $('#searchCategory').val();
             currentKeyword = $('#searchKeyword').val();
-            $('#searchResults').empty();
-            loadSearchResults(true);
+            currentPage = 0;
+
+            searchAndDisplayResults(currentCategory, currentKeyword, currentPage, 10);
         });
 
-        function loadSearchResults(isNewSearch = false) {
-            if (!hasMore) return;
-
+        function searchAndDisplayResults(category, keyword, page, size) {
             $.ajax({
                 url: '/social/search',
                 method: 'GET',
                 data: {
-                    category: currentCategory,
-                    keyword: currentKeyword,
-                    page: currentPage,
-                    size: 6
+                    category: category,
+                    keyword: keyword,
+                    page: page,
+                    size: size
                 },
                 success: function(response) {
-                    console.log('Server response:', response);
-                    if (response && response.results) {
-                        console.log('Search results:', response.results);
-                        displaySearchResults(response.results, currentCategory, isNewSearch);
-                        hasMore = response.hasMore;
-                        currentPage++;
-
-                        updateLoadMoreButton();
+                    if (page === 0) {
+                        $('#searchResults').empty();
+                    }
+                    displayResults(category, response.results);
+                    if (response.hasMore) {
+                        displayLoadMoreButton();
                     } else {
-                        console.error('Invalid response format:', response);
-                        $('#searchResults').append('<p>검색 결과가 없습니다.</p>');
+                        $('#loadMoreBtn').remove();
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('Error occurred while searching:', error);
-                    $('#searchResults').append('<p>검색 중 오류가 발생했습니다.</p>');
+                    console.error("Error occurred: " + error);
+                    $('#searchResults').html('<p>검색 중 오류가 발생했습니다. 다시 시도해 주세요.</p>');
                 }
             });
         }
 
-        function updateLoadMoreButton() {
-            if (hasMore) {
-                if ($('#loadMoreBtn').length === 0) {
-                    $('#searchResults').after('<button id="loadMoreBtn" class="btn btn-secondary mt-3">더보기</button>');
-                }
-            } else {
-                $('#loadMoreBtn').remove();
+        function displayResults(category, results) {
+            var resultsHtml = '';
+
+            switch(category) {
+                case 'review':
+                    resultsHtml = displayReviewResults(results);
+                    break;
+                case 'diary':
+                    resultsHtml = displayDiaryResults(results);
+                    break;
+                case 'user':
+                    resultsHtml = displayUserResults(results);
+                    break;
+            }
+
+            $('#searchResults').append(resultsHtml);
+        }
+
+        function displayReviewResults(reviews) {
+            return reviews.map(function(review) {
+                return `
+                    <div class="search-result-item" onclick="location.href='/social/reviews/${review.reviewNo}'">
+                        <div>
+                            <span class="webtoon-title">${review.webtoon.webtoon_name}</span>
+                            <span class="result-title">"${review.title}"</span>
+                            <span class="result-content">${truncateText(review.content, 50)}</span>
+                        </div>
+                        <div class="result-info">
+                            <span class="star-rating">${displayStarRating(review.starRating)}</span>
+                            <span class="author-label">작성자:</span>
+                            <span class="author-name">${review.writer.nickname}</span>
+                            <span class="created-date">${formatDate(review.createdDate)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function displayDiaryResults(diaries) {
+            return diaries.map(function(diary) {
+                return `
+                    <div class="search-result-item" onclick="location.href='/social/diaries/${diary.diaryNo}'">
+                        <div>
+                            <span class="webtoon-title">${diary.webtoon.webtoon_name}</span>
+                            <span class="result-title">"${diary.title}"</span>
+                            <span class="result-content">${truncateText(diary.content, 50)}</span>
+                        </div>
+                        <div class="result-info">
+                            <span class="${diary.statusCode === 'C' ? 'status-ongoing' : 'status-repeat'}">
+                                ${diary.statusCode === 'C' ? '정주행중' : '재탕중'}
+                            </span>
+                            <span class="author-label">작성자:</span>
+                            <span class="author-name">${diary.writer.nickname}</span>
+                            <span class="created-date">${formatDate(diary.createdDate)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function displayUserResults(users) {
+            return users.map(function(user) {
+                return `
+                    <div class="search-result-item user-result" onclick="location.href='/social/users/${user.userId}/profile'">
+                        <img src="/uploadFiles/${user.profileImagePath}" alt="${user.nickname}" class="profile-image">
+                        <span class="user-nickname">${user.nickname}</span>
+                        <span class="user-bio">${user.bio || ''}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function displayLoadMoreButton() {
+            if ($('#loadMoreBtn').length === 0) {
+                $('#searchResults').after('<button id="loadMoreBtn" class="load-more-btn">더 보기</button>');
+                $('#loadMoreBtn').click(function() {
+                    currentPage++;
+                    searchAndDisplayResults(currentCategory, currentKeyword, currentPage, 10);
+                });
             }
         }
 
-        $(document).on('click', '#loadMoreBtn', function() {
-            loadSearchResults();
-        });
-
-        function displaySearchResults(results, category, isNewSearch) {
-            const $searchResults = $('#searchResults');
-
-            if (isNewSearch) {
-                $searchResults.empty();
-            }
-
-            if (!Array.isArray(results) || results.length === 0) {
-                if (isNewSearch) {
-                    $searchResults.html('<p>검색 결과가 없습니다.</p>');
-                }
-                return;
-            }
-
-            results.forEach(function(item) {
-                let html = '';
-                if (category === 'user') {
-                    // 작성자 카테고리 처리 로직
-                    if (item.activityType === 'REVIEW') {
-                        html = createReviewHTML(item);
-                    } else if (item.activityType === 'DIARY') {
-                        html = createDiaryHTML(item);
-                    }
-                } else if (category === 'review') {
-                    html = createReviewHTML(item);
-                } else if (category === 'diary') {
-                    html = createDiaryHTML(item);
-                }
-                $searchResults.append(html);
-            });
-        }
-
-        function createReviewHTML(item) {
-            return `
-                <div class="search-item" onclick="location.href='/social/reviews/${item.reviewNo}'">
-                    <strong>[${item.webtoon ? item.webtoon.webtoon_name : ''}]</strong>
-                    <span class="fw-bold">${item.title || ''}</span>
-                    <span>${truncateText(item.content, 50)}</span>
-                    <span class="text-warning">★${item.starRating || ''}</span>
-                    <span>${item.writer ? item.writer.nickname : ''}</span>
-                    <span>${formatDate(item.createdDate)}</span>
-                </div>
-            `;
-        }
-
-        function createDiaryHTML(item) {
-            return `
-                <div class="search-item" onclick="location.href='/social/diaries/${item.diaryNo}'">
-                    <strong>[${item.webtoon ? item.webtoon.webtoon_name : ''}]</strong>
-                    <span class="fw-bold">${item.title || ''}</span>
-                    <span>${truncateText(item.content, 50)}</span>
-                    <span>${item.statusCode === 'C' ? '정주행중' : '재탕중'}</span>
-                    <span>${item.writer ? item.writer.nickname : ''}</span>
-                    <span>${formatDate(item.createdDate)}</span>
-                </div>
-            `;
-        }
 
         function truncateText(text, maxLength) {
-            if (text == null) return '';
-            return text.Length > maxLength ? text.substring(0, maxLength) + '...' : text;
+                    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+        }
+
+        function displayStarRating(rating) {
+                    var stars = '★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating));
+                    return `${stars} (${rating.toFixed(1)})`;
         }
 
         function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+            var date = new Date(dateString);
+            return date.getFullYear() + '-' +
+                   String(date.getMonth() + 1).padStart(2, '0') + '-' +
+                   String(date.getDate()).padStart(2, '0') + ' ' +
+                   String(date.getHours()).padStart(2, '0') + ':' +
+                   String(date.getMinutes()).padStart(2, '0');
         }
     });
 </script>
