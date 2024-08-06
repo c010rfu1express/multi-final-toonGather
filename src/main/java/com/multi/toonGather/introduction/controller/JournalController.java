@@ -81,9 +81,9 @@ public class JournalController {
     }
 
     @GetMapping(value = {"introduction/journal/journalUpdate"})
-    public String journalUpdateForm(@RequestParam(value = "title", required = true) String title, Model model){
+    public String journalUpdateForm(@RequestParam(value = "journalNo", required = true) int journalNo, Model model){
 
-        JournalDTO journalDTO = journalService.getJournalByTitleWithFile(title);
+        JournalDTO journalDTO = journalService.getJournalByNoWithFiles(journalNo);
 
         System.out.println("Retrieved journal 수정페이지 : " + journalDTO);
         model.addAttribute("journal", journalDTO);
@@ -130,11 +130,11 @@ public class JournalController {
 //    }
 
     @PostMapping(value = {"/introduction/deleteJournal"})
-    public String deleteJournal(@RequestBody Map<String, String> requestBody) {
-        String title = requestBody.get("title");
-        if (title != null) {
+    public String deleteJournal(@RequestBody Map<String, Integer> requestBody) {
+        Integer journalNo = requestBody.get("journalNo");
+        if (journalNo != null) {
             try {
-                journalService.deleteJournalByTitle(title);
+                journalService.deleteJournalByNo(journalNo);
                 System.out.println("삭제성공~~~~");
                 return "redirect:/introduction/journalList";
             } catch (Exception e) {

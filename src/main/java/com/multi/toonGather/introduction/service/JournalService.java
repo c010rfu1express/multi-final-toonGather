@@ -28,6 +28,7 @@ public interface JournalService {
     JournalDTO getJournalByNoWithFiles(int journalNo);
 
     void deleteJournalByTitle(String title) throws Exception;
+    void deleteJournalByNo(Integer journalNo) throws Exception;
 
     int countLikesByJournalNo(int journalNo);
 
@@ -39,4 +40,6 @@ public interface JournalService {
     int getTotalCount();
 
     int countJournalsByTitleKeyword(String keyword);
+
+
 }
