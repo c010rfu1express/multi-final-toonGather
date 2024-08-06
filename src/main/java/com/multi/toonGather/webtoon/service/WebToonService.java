@@ -1,9 +1,6 @@
 package com.multi.toonGather.webtoon.service;
 
-import com.multi.toonGather.webtoon.model.dto.CommentDTO;
-import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
-import com.multi.toonGather.webtoon.model.dto.WtUserLogDTO;
-import com.multi.toonGather.webtoon.model.dto.WtUserSaveDTO;
+import com.multi.toonGather.webtoon.model.dto.*;
 
 import java.util.List;
 
@@ -28,11 +25,13 @@ public interface WebToonService {
 
     int webToonInsert(WebtoonDTO webtoonDTO);
 
-    List<WebtoonDTO> searchWebtoon(WebtoonDTO webtoonDTO);
+    List<WebtoonDTO> searchWebtoon(TagPageDTO webtoonDTO);
 
     WtUserSaveDTO WebToonSelectSave(WtUserSaveDTO wtUserSaveDTO)throws Exception;
 
     int insertSave(WtUserSaveDTO wtUserSaveDTO)throws Exception;
 
     int deleteSave(WtUserSaveDTO wtUserSaveDTO)throws Exception;
+
+    int countWebtoon(TagPageDTO tagPageDTO);
 }

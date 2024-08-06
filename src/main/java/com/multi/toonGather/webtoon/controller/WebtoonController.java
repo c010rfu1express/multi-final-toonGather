@@ -2,10 +2,7 @@ package com.multi.toonGather.webtoon.controller;
 
 import com.multi.toonGather.security.CustomUserDetails;
 import com.multi.toonGather.user.model.dto.UserDTO;
-import com.multi.toonGather.webtoon.model.dto.CommentDTO;
-import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
-import com.multi.toonGather.webtoon.model.dto.WtUserLogDTO;
-import com.multi.toonGather.webtoon.model.dto.WtUserSaveDTO;
+import com.multi.toonGather.webtoon.model.dto.*;
 import com.multi.toonGather.webtoon.service.WebToonService;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,6 +30,8 @@ import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class WebtoonController {
@@ -122,6 +121,33 @@ public class WebtoonController {
             }
         }
         System.out.println(wtUserSaveDTO);
+
+
+        CommentLikeDTO like1 = new CommentLikeDTO();
+        like1.setCommentNo(21);
+        like1.setUserNo(1);
+        like1.setLikeCode(1);  // 좋아요
+
+        CommentLikeDTO like2 = new CommentLikeDTO();
+        like2.setCommentNo(2);
+        like2.setUserNo(2);
+        like2.setLikeCode(-1); // 싫어요
+
+        CommentLikeDTO like3 = new CommentLikeDTO();
+        like3.setCommentNo(23);
+        like3.setUserNo(1);
+        like3.setLikeCode(1);  // 좋아요
+
+        // CommentLikeDTO 객체 리스트 생성 및 초기화
+        List<CommentLikeDTO> commentLikeList = new ArrayList<>();
+        commentLikeList.add(like1);
+        commentLikeList.add(like2);
+        commentLikeList.add(like3);
+
+        Map<Integer, CommentLikeDTO> commentLikeMap = commentLikeList.stream()
+                .collect(Collectors.toMap(CommentLikeDTO::getCommentNo, like -> like));
+
+        model.addAttribute("commentLikeMap",commentLikeMap);
         model.addAttribute("save",wtUserSaveDTO);
         model.addAttribute("user",userDTO);
         model.addAttribute("one",webtoonDTO);
@@ -133,26 +159,33 @@ public class WebtoonController {
     @GetMapping("/webtoon/search")
     public String searchWebtoon(@RequestParam("search") String search,
                                 @RequestParam("Method") String Method,
-                                @RequestParam("platform") String platform,Model model) throws UnsupportedEncodingException {
-
+                                TagPageDTO tagPageDTO,
+                                Model model) throws UnsupportedEncodingException {
 
 
         List<WebtoonDTO>webtoonDTOS=new ArrayList<>();
         if(Method.equals("tags")){
-            WebtoonDTO webtoonDTO=new WebtoonDTO();
-            webtoonDTO.setTags(search);
-            if(platform.equals("NAVER")){
-                webtoonDTO.setPlatform(1);
-            }else if(platform.equals("KAKAO")){
-                webtoonDTO.setPlatform(2);
+            String[]tags=search.split(",");
+            if(tags.length==0)tagPageDTO.setTag1(search);
+            if(tags.length>0)tagPageDTO.setTag1(tags[0]);
+            if(tags.length>1) tagPageDTO.setTag2(tags[1]);
+            if(tags.length>2) tagPageDTO.setTag3(tags[2]);
+
+            int count=webToonService.countWebtoon(tagPageDTO);
+            int totalPages=count/50+1;
+            model.addAttribute("totalPages", totalPages);
+            model.addAttribute("currentPage", tagPageDTO.getPage());
+            if(tagPageDTO.getPage()==0){
+                tagPageDTO.setPage(1);
             }
-            webtoonDTOS=webToonService.searchWebtoon(webtoonDTO);
+            tagPageDTO.setStartEndTag(tagPageDTO.getPage());
+            webtoonDTOS=webToonService.searchWebtoon(tagPageDTO);
 
 
         }
         model.addAttribute("Method",Method);
 
-        model.addAttribute("platform",platform);
+        model.addAttribute("platform",tagPageDTO.getPlatform());
 
         model.addAttribute("searchTags",webtoonDTOS);
 
