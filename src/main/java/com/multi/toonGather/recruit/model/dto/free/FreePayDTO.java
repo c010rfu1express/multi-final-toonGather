@@ -11,6 +11,11 @@ public class FreePayDTO {
     private int board_no;
     private int quantity;
     private int price;
+    private String bank_name;
+    private String account;
+    private String buyer_name;
+    private String email;
+    private String phone;
     private Date ordered_date;
     private String status;
 
