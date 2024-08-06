@@ -6,51 +6,103 @@
     <title>툰게더 toonGather | 다이어리 목록</title>
     <link rel="stylesheet" th:href="@{/css/social-styles.css}">
     <style>
-        .diary-list {
+        .user-diary-list {
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 30px;
+            padding: 20px;
             margin-top: 20px;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .user-diary-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
+        .user-diary-item:hover {
             background-color: #f8f9fa;
-            font-weight: bold;
         }
-        .webtoon-info {
+        .user-diary-date {
+            width: 120px;
+            text-align: center;
+            margin-right: 15px;
             display: flex;
             align-items: center;
         }
-        .webtoon-image {
-            height: 50px;
+        .user-diary-date-box {
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin-right: 10px;
+            width: 60px;
+        }
+        .user-diary-date-month {
+            font-size: 1em;
+            font-weight: bold;
+        }
+        .user-diary-date-year {
+            font-size: 0.8em;
+            color: #666;
+        }
+        .user-diary-date-day {
+            font-size: 1.2em;
+            font-weight: bold;
+            width: 50px;
+        }
+        .user-diary-webtoon-thumbnail {
+            width: 60px;
+            height: 60px;
             object-fit: cover;
             border-radius: 4px;
-            margin-right: 10px;
+            margin-right: 15px;
         }
-        .webtoon-details {
+        .user-diary-webtoon-info {
+            width: 150px;
+            margin-right: 15px;
+        }
+        .user-diary-webtoon-title {
+            font-size: 0.9em;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .user-diary-webtoon-author {
+            font-size: 0.8em;
+            color: #666;
+        }
+        .user-diary-title {
+            flex-grow: 1;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-right: 15px;
+            margin-left: 15px;
+        }
+        .user-diary-meta {
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            font-size: 0.9em;
+            color: #888;
         }
-        .clickable-row {
-            cursor: pointer;
+        .user-diary-writer {
+            margin-right: 15px;
         }
-        .clickable-row:hover {
-            background-color: #f8f9fa;
+        .user-diary-comments {
+            color: #333;
         }
-        .status-ongoing {
-            color: #007bff;  /* 파란색 */
+        .user-diary-status {
+            margin-right: 15px;
+            font-weight: bold;
         }
-        .status-reread {
-            color: #28a745;  /* 초록색 */
+        .user-diary-meta .status-ongoing {
+            color: #007bff;
+        }
+        .user-diary-meta .status-reread {
+            color: #28a745;
         }
     </style>
 </head>
@@ -60,70 +112,66 @@
 <div class="container mt-4">
     <div th:replace="social/user/profile-menubar :: profile-menubar"></div>
 
-    <div class="diary-list">
-        <h2>다이어리 목록</h2>
-        <div th:if="${#lists.isEmpty(diaries)}">
-            <p>작성된 다이어리가 없습니다.</p>
-        </div>
-        <table th:unless="${#lists.isEmpty(diaries)}">
-            <thead>
-            <tr>
-                <th>웹툰</th>
-                <th>다이어리 제목</th>
-                <th>상태</th>
-                <th>작성일</th>
-                <th>조회수</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="diary : ${diaries}" class="clickable-row" th:attr="data-href=@{/social/diaries/{diaryNo}(diaryNo=${diary.diaryNo})}">
-                <td>
-                    <div class="webtoon-info">
-                        <img class="webtoon-image" th:src="${diary.webtoon.thumbnail_url}" alt="웹툰 썸네일">
-                        <div class="webtoon-details">
-                            <span th:text="${diary.webtoon.webtoon_name}">웹툰 제목</span>
-                            <small th:text="${diary.webtoon.author}">작가</small>
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="user-diary-list">
+                <div th:unless="${#lists.isEmpty(diaries)}">
+                    <div th:each="diary : ${diaries}" class="user-diary-item" th:attr="data-href=@{/social/diaries/{diaryNo}(diaryNo=${diary.diaryNo})}">
+                        <div class="user-diary-date">
+                            <div class="user-diary-date-box">
+                                <div class="user-diary-date-month" th:text="${#temporals.format(diary.createdDate, 'MM')}+'월'">월</div>
+                                <div class="user-diary-date-year" th:text="${#temporals.format(diary.createdDate, 'yyyy')}">년</div>
+                            </div>
+                            <div class="user-diary-date-day" th:text="${#temporals.format(diary.createdDate, 'dd')}+'일'">일</div>
+                        </div>
+                        <img class="user-diary-webtoon-thumbnail" th:src="${diary.webtoon.thumbnail_url}" alt="웹툰 썸네일">
+                        <div class="user-diary-webtoon-info">
+                            <div class="user-diary-webtoon-title" th:text="${diary.webtoon.webtoon_name}">웹툰 제목</div>
+                            <div class="user-diary-webtoon-author" th:text="${diary.webtoon.author}">작가</div>
+                        </div>
+                        <div class="user-diary-title" th:text="${diary.title}">다이어리 제목</div>
+                        <div class="user-diary-meta">
+                            <span class="user-diary-status" th:class="${#strings.toString(diary.statusCode) == 'C' ? 'user-diary-status status-ongoing' : 'user-diary-status status-reread'}"
+                                  th:text="${#strings.toString(diary.statusCode) == 'C' ? '정주행중' : '재탕중'}"></span>
+                            <span class="user-diary-comments">💬 <span th:text="${diary.commentCount}">댓글 수</span></span>
                         </div>
                     </div>
-                </td>
-                <td th:text="${diary.title}">다이어리 제목</td>
-                <td>
-                    <span th:class="${#strings.toString(diary.statusCode) == 'C' ? 'status status-ongoing' : 'status status-reread'}"
-                          th:text="${#strings.toString(diary.statusCode) == 'C' ? '정주행중' : '재탕중'}"></span>
-                </td>
-                <td th:text="${#temporals.format(diary.createdDate, 'yyyy-MM-dd HH:mm')}">작성일</td>
-                <td th:text="${diary.viewCnt}">조회수</td>
-            </tr>
-            </tbody>
-        </table>
-        <!-- 페이징 버튼 -->
-        <th:block th:if="${pages != null}">
-            <div class="d-flex justify-content-center">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-sm previous" th:onclick="|location.href='@{/social/users/__${userId}__/diaries(page=${currentPage - 1})}'|" th:disabled="${currentPage == 1}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
-                        </svg>
-                    </button>
-                    <th:block th:each="p : ${#numbers.sequence(1, pages)}">
-                        <button type="button" class="btn btn-sm me-2 pages"
-                                th:text="${p}" th:onclick="|location.href='@{/social/users/__${userId}__/diaries(page=${p})}'|"></button>
-                    </th:block>
-                    <button type="button" class="btn btn-sm next" th:onclick="|location.href='@{/social/users/__${userId}__/diaries(page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
-                        </svg>
-                    </button>
                 </div>
+                <div th:if="${#lists.isEmpty(diaries)}">
+                    <p>아직 작성한 다이어리가 없어요 😅</p>
+                </div>
+                <!-- 페이징 버튼 -->
+                <th:block th:if="${pages != null}">
+                    <div class="d-flex justify-content-center mt-4">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm previous" th:onclick="|location.href='@{/social/users/__${userId}__/diaries(page=${currentPage - 1})}'|" th:disabled="${currentPage == 1}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                                </svg>
+                            </button>
+                            <th:block th:each="p : ${#numbers.sequence(1, pages)}">
+                                <button type="button" class="btn btn-sm me-2 pages"
+                                        th:text="${p}" th:onclick="|location.href='@{/social/users/__${userId}__/diaries(page=${p})}'|"></button>
+                            </th:block>
+                            <button type="button" class="btn btn-sm next" th:onclick="|location.href='@{/social/users/__${userId}__/diaries(page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </th:block>
             </div>
-        </th:block>
+        </div>
     </div>
 </div>
+
+<div th:replace="common/footer.html"></div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function($) {
-        $(".clickable-row").click(function() {
+        $(".user-diary-item").click(function() {
             window.location = $(this).data("href");
         });
     });

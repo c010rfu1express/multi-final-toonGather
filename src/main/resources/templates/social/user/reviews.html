@@ -50,7 +50,7 @@
             text-overflow: ellipsis;
         }
         .user-review-webtoon-author {
-            font-size: 0.9em;
+            font-size: 0.7em;
             color: #666;
             margin-bottom: 5px;
             white-space: nowrap;
@@ -59,6 +59,11 @@
         }
         .user-review-rating {
             color: #ffd700;
+        }
+        .user-rating-text {
+            font-size: 0.7em;
+            color: #666;
+            margin-bottom: 5px;
         }
         .user-review-info {
             width: 300px; /* 고정 너비 설정 */
@@ -101,25 +106,30 @@
     <div class="row mt-4">
         <div class="col-12">
             <div class="user-review-list">
-                <div th:each="review, iterStat : ${reviews}" class="user-review-item" th:attr="data-href=@{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})}">
-                    <div class="user-review-number" th:text="${(currentPage - 1) * 10 + iterStat.count}"></div>
-                    <img class="user-review-webtoon-thumbnail" th:src="${review.webtoon.thumbnail_url}" alt="웹툰 썸네일">
-                    <div class="user-review-webtoon-info">
-                        <div class="user-review-webtoon-title" th:text="${review.webtoon.webtoon_name}" th:title="${review.webtoon.webtoon_name}">웹툰 제목</div>
-                        <div class="user-review-webtoon-author" th:text="${review.webtoon.author}" th:title="${review.webtoon.author}">작가</div>
-                        <div class="user-review-rating" th:text="${'★'.repeat(review.starRating) + '☆'.repeat(5 - review.starRating)}">별점</div>
-                    </div>
-                    <div class="user-review-info">
-                        <div class="user-review-title" th:text="${review.title}">리뷰 제목</div>
-                        <div class="user-review-content" th:text="${review.content}">리뷰 내용</div>
-                    </div>
-                    <div class="user-review-meta">
-                        <span class="user-review-date" th:text="${#temporals.format(review.createdDate, 'yyyy/MM/dd HH:mm')}">작성일</span>
-                        <span class="user-review-likes">❤ <span th:text="${review.likeCount}">좋아요 수</span></span>
+                <div th:unless="${#lists.isEmpty(reviews)}">
+                    <div th:each="review, iterStat : ${reviews}" class="user-review-item" th:attr="data-href=@{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})}">
+                        <div class="user-review-number" th:text="${(currentPage - 1) * 10 + iterStat.count}"></div>
+                        <img class="user-review-webtoon-thumbnail" th:src="${review.webtoon.thumbnail_url}" alt="웹툰 썸네일">
+                        <div class="user-review-webtoon-info">
+                            <div class="user-review-webtoon-title" th:text="${review.webtoon.webtoon_name}" th:title="${review.webtoon.webtoon_name}">웹툰 제목</div>
+                            <div class="user-review-webtoon-author" th:text="${review.webtoon.author}" th:title="${review.webtoon.author}">작가</div>
+                            <div class="user-review-rating">
+                                <span th:text="${'★'.repeat(review.starRating) + '☆'.repeat(5 - review.starRating)}"></span>
+                                <span class="user-rating-text" th:text="${review.starRating + '점'}"></span>
+                            </div>
+                        </div>
+                        <div class="user-review-info">
+                            <div class="user-review-title" th:text="${review.title}">리뷰 제목</div>
+                            <div class="user-review-content" th:text="${review.content}">리뷰 내용</div>
+                        </div>
+                        <div class="user-review-meta">
+                            <span class="user-review-date" th:text="${#temporals.format(review.createdDate, 'yyyy/MM/dd HH:mm')}">작성일</span>
+                            <span class="user-review-likes">❤ <span th:text="${review.likeCount}">좋아요 수</span></span>
+                        </div>
                     </div>
                 </div>
                 <div th:if="${#lists.isEmpty(reviews)}">
-                    <p>아직 작성한 리뷰가 없습니다 😅</p>
+                    <p>아직 작성한 리뷰가 없어요 😅</p>
                 </div>
                 <!-- 페이징 버튼 -->
                 <th:block th:if="${pages != null}">

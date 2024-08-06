@@ -50,7 +50,7 @@
     <div class="row mt-4">
         <div class="col-12">
             <div class="profile-section favorite-webtoons">
-                <h3><span th:text="${profileUser.nickname}">닉네임</span><span class="normal-weight">님의 </span>최애 웹툰</h3>
+                <h3>최애 웹툰</h3>
                 <hr>
                 <div th:if="${not #lists.isEmpty(favoriteWebtoons)}" class="user-webtoon-slider">
                     <div th:each="review : ${favoriteWebtoons}" class="webtoon-card" th:onclick="'location.href=\'' + @{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})} + '\''">
@@ -59,7 +59,7 @@
                             <div class="webtoon-title" th:text="${review.webtoon.webtoon_name}"></div>
                             <div class="webtoon-author" th:text="${review.webtoon.author}"></div>
                             <div class="webtoon-rating">
-                                <span class="stars" th:text="${'★'.repeat(review.starRating)}"></span>
+                                <span class="stars" th:text="${'★'.repeat(review.starRating) + '☆'.repeat(5 - review.starRating)}"></span>
                             </div>
                         </div>
                     </div>
@@ -73,7 +73,7 @@
     <div class="row mt-4">
         <div class="col-12">
             <div class="profile-section popular-reviews">
-                <h3><span th:text="${profileUser.nickname}">닉네임</span><span class="normal-weight">님의 </span>인기 리뷰</h3>
+                <h3>인기 리뷰</h3>
                 <hr>
                 <div class="user-review-slider">
                     <div th:each="review : ${popularReviews}" class="review-card" th:onclick="'location.href=\'' + @{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})} + '\''">
@@ -90,7 +90,7 @@
                             </div>
                             <div class="review-footer">
                                 <div class="review-rating">
-                                    <span class="stars" th:text="${'★'.repeat(review.starRating)}"></span>
+                                    <span class="stars" th:text="${'★'.repeat(review.starRating) + '☆'.repeat(5 - review.starRating)}"></span>
                                     <span class="rating-text" th:text="${review.starRating + '점'}"></span>
                                 </div>
                                 <div class="review-likes">
@@ -161,12 +161,16 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function(){
-        $('.webtoon-slider, .review-slider').on('wheel', function(e){
-            if(e.originalEvent.deltaY !== 0){
-                e.preventDefault();
-                $(this).scrollLeft($(this).scrollLeft() + e.originalEvent.deltaY);
-            }
+    document.addEventListener('DOMContentLoaded', function() {
+        const sliders = document.querySelectorAll('.webtoon-slider, .hot-review-slider, .user-review-slider');
+
+        sliders.forEach(slider => {
+            slider.addEventListener('wheel', function(e) {
+                if (e.deltaY !== 0) {
+                    e.preventDefault();
+                    this.scrollLeft += e.deltaY;
+                }
+            });
         });
     });
 </script>
