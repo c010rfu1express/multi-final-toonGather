@@ -73,9 +73,9 @@
                     <a class="nav-link" href="#" th:href="@{/webtoon/test?updateDay=COM}">완결</a>
                 </li>
             </ul>
-            <form class="form-inline" th:action="@{/webtoon/search}" method="get">
-                <input class="Search mr-sm-2" type="search" placeholder="제목, 작가로 검색" aria-label="검색" name="search" minlength="2" required maxlength="50">
-                <input type="hidden"  name="Method" th:value="name">
+            <form class="form-inline" th:action="@{/webtoon/search}" method="get" id="searchForm">
+                <input class="Search mr-sm-2" type="search" placeholder="제목, 작가, #태그로 검색" aria-label="검색" name="search" minlength="2" required maxlength="50">
+                <input type="hidden"  name="Method" id="methodInput" th:value="name">
                 <input type="hidden"  name="platform" th:value="ALL">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">검색</button>
             </form>
@@ -87,66 +87,80 @@
 <!-- Latest compiled JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
-    $(document).ready(function() {
-        // URL에서 파라미터 값을 가져오는 함수
-        function getUrlParameter(name) {
-            name = name.replace(/\[/g, '\\[').replace(/\]/g, '\\]');
-            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-            var results = regex.exec(location.search);
-            return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
-        }
+    document.getElementById('searchForm').onsubmit = function(event) {
+       var searchInput = document.querySelector('input[name="search"]').value;
+       var methodInput = document.getElementById('methodInput');
 
-        // 페이지 로드 시 URL에서 provider 값을 읽어와서 플랫폼 드롭다운을 설정하는 함수
-        function setPlatformFromUrl() {
-            var provider = getUrlParameter('provider');
-            if (provider) {
-                // provider 값에 따라 플랫폼 선택
-                $('.dropdown-item').each(function() {
-                    var platform = $(this).data('platform');
-                    if (platform === provider.toUpperCase()) { // 대소문자 구분을 없애기 위해 toUpperCase() 사용
-                        $('#platformDropdown').text(platform); // 선택된 플랫폼 텍스트 업데이트
-                        return false; // 선택된 후에는 반복문 종료
-                    }
-                });
+       if (searchInput.includes('#')) {
+           // 'search' 입력값에 '#'가 포함되어 있으면 'Method' 값을 'tags'로 변경
+           methodInput.value = 'tags';
+       } else {
+           // '#'가 포함되어 있지 않으면 기본 값 'name' 유지
+           methodInput.value = 'name';
+       }
+   };
 
-                // 요일별 링크에 provider 값 추가
-                updateDayLinks(provider);
-            }
-        }
 
-        // 요일별 링크의 href 속성을 업데이트하는 함수
-        function updateDayLinks(provider) {
-            var days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN', 'COM'];
-            for (var i = 0; i < days.length; i++) {
-                var dayLink = '/webtoon/test?updateDay=' + days[i] + '&provider=' + provider;
-                $('a.nav-link[href*="updateDay=' + days[i] + '"]').attr('href', dayLink);
-            }
-        }
+   $(document).ready(function() {
+       // URL에서 파라미터 값을 가져오는 함수
+       function getUrlParameter(name) {
+           name = name.replace(/\[/g, '\\[').replace(/\]/g, '\\]');
+           var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+           var results = regex.exec(location.search);
+           return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
+       }
 
-        // 페이지 로드 시 플랫폼 설정 함수 호출
-        setPlatformFromUrl();
+       // 페이지 로드 시 URL에서 provider 값을 읽어와서 플랫폼 드롭다운을 설정하는 함수
+       function setPlatformFromUrl() {
+           var provider = getUrlParameter('provider');
+           if (provider) {
+               // provider 값에 따라 플랫폼 선택
+               $('.dropdown-item').each(function() {
+                   var platform = $(this).data('platform');
+                   if (platform === provider.toUpperCase()) { // 대소문자 구분을 없애기 위해 toUpperCase() 사용
+                       $('#platformDropdown').text(platform); // 선택된 플랫폼 텍스트 업데이트
+                       return false; // 선택된 후에는 반복문 종료
+                   }
+               });
 
-        // 드롭다운 메뉴 항목 클릭 이벤트 처리
-        $('.dropdown-item').click(function(e) {
-            e.preventDefault();
-            var selectedPlatform = $(this).data('platform'); // 선택된 플랫폼 이름 가져오기
+               // 요일별 링크에 provider 값 추가
+               updateDayLinks(provider);
+           }
+       }
 
-            // 즉시 페이지 이동
-            var url = $(this).attr('href');
-            var urlParams = new URLSearchParams(window.location.search);
-            var updateDay = urlParams.get('updateDay');
-            if(updateDay===null){
-            window.location.href = url;
-            }else{
-            window.location.href = url+'&updateDay='+updateDay;
-            }
+       // 요일별 링크의 href 속성을 업데이트하는 함수
+       function updateDayLinks(provider) {
+           var days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN', 'COM'];
+           for (var i = 0; i < days.length; i++) {
+               var dayLink = '/webtoon/test?updateDay=' + days[i] + '&provider=' + provider;
+               $('a.nav-link[href*="updateDay=' + days[i] + '"]').attr('href', dayLink);
+           }
+       }
 
-            // 플랫폼 레이블 업데이트
-            $('#platformDropdown').text(selectedPlatform);
+       // 페이지 로드 시 플랫폼 설정 함수 호출
+       setPlatformFromUrl();
 
-            // 요일별 링크 업데이트는 새로고침 시 자동으로 될 것입니다.
-        });
-    });
+       // 드롭다운 메뉴 항목 클릭 이벤트 처리
+       $('.dropdown-item').click(function(e) {
+           e.preventDefault();
+           var selectedPlatform = $(this).data('platform'); // 선택된 플랫폼 이름 가져오기
+
+           // 즉시 페이지 이동
+           var url = $(this).attr('href');
+           var urlParams = new URLSearchParams(window.location.search);
+           var updateDay = urlParams.get('updateDay');
+           if(updateDay===null){
+           window.location.href = url;
+           }else{
+           window.location.href = url+'&updateDay='+updateDay;
+           }
+
+           // 플랫폼 레이블 업데이트
+           $('#platformDropdown').text(selectedPlatform);
+
+           // 요일별 링크 업데이트는 새로고침 시 자동으로 될 것입니다.
+       });
+   });
 </script>
 
 </body>
