@@ -13,4 +13,5 @@ public class CommentDTO {
     private int liked;
     private int dislike;
     private String nickname;
+    private int likeCode;
 }

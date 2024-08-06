@@ -82,6 +82,100 @@
             font-weight: bold;
             color: #333;
         }
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.comment-author {
+    margin: 0;
+}
+
+.comment-feedback {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-like, .btn-dislike {
+    border: 2px solid; /* 테두리 두께를 3px로 설정 */
+    padding: 4px 6px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, transform 0.3s;
+    font-size: 16px; /* 폰트 크기 조정 */
+    background-color: transparent; /* 배경색을 투명하게 설정 */
+    color: #333; /* 기본 텍스트 색상 설정 */
+    display: flex;
+    align-items: center;
+}
+
+.btn-like {
+    border-color:#007bff; /* 테두리 색상 설정 */
+}
+.btn-like.selected {
+    background-color: #007bff; /* 선택 상태일 때 배경색 */
+    color: #fff; /* 선택 상태일 때 텍스트 색상 */
+}
+.btn-like:hover {
+    background-color: #007bff; /* 호버 시 배경색 */
+    color: #fff; /* 호버 시 텍스트 색상 */
+    transform: scale(1.05); /* 호버 시 버튼 확대 효과 */
+}
+.btn-dislike {
+    border-color: #dc3545; /* 테두리 색상 설정 */
+}
+.btn-dislike.selected {
+    background-color: #dc3545; /* 선택 상태일 때 배경색 */
+    color: #fff; /* 선택 상태일 때 텍스트 색상 */
+}
+.btn-dislike:hover {
+    background-color: #dc3545; /* 호버 시 배경색 */
+    color: #fff; /* 호버 시 텍스트 색상 */
+    transform: scale(1.05); /* 호버 시 버튼 확대 효과 */
+}
+
+.comment-content {
+    margin-top: 10px;
+}
+
+.comments-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.comments-footer button {
+    margin-left: 10px;
+}
+
+.btn-edit, .btn-delete {
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-edit {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.btn-edit:hover {
+    background-color: #0056b3;
+}
+
+.btn-delete {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.btn-delete:hover {
+    background-color: #c82333;
+}
         .comments-footer {
             display: flex;
             justify-content: flex-end;
@@ -154,7 +248,6 @@
             background-color: gold;
             color: white;
         }
-    </style>
     </style>
 </head>
 <body>
@@ -241,9 +334,7 @@
     <div id="social"> <th:block th:if="${user.userNo > 0}">
         <!-- 리뷰 작성 폼 -->
         <form id="ReviewForm" th:action="@{/social/reviews/insert/{webtoonNo}(webtoonNo=${one.webtoon_no})}" method="get">
-
-
-            <button type="submit" class="btn btn-primary">리뷰 등록</button>
+            <button id="reviewButton" type="submit" class="btn btn-primary">리뷰 등록</button>
         </form>
 
         <form id="DiaryForm" th:action="@{/social/diaries/insert/{webtoonNo}(webtoonNo=${one.webtoon_no})}" method="get">
@@ -282,7 +373,22 @@
     <div id="comments">
         <h2>댓글 목록</h2>
         <div th:each="comment : ${comments}" class="comment">
-            <p>작성자: <span th:text="${comment.nickname}" class="author"></span></p>
+            <div class="comment-header">
+                <p class="comment-author">작성자: <span th:text="${comment.nickname}" class="author"></span></p>
+                <div class="comment-feedback">
+                    <button class="btn-like"
+                            th:data-comment-no="${comment.commentNo}"
+                            th:classappend="${commentLikeMap[comment.commentNo] != null && commentLikeMap[comment.commentNo].getLikeCode() == 1 ? ' selected' : ''}"
+                            data-action="like">
+                        👍<span th:text="${comment.liked}"></span>
+                    </button>
+                    <button class="btn-dislike"
+                            th:data-comment-no="${comment.commentNo}"
+                            th:classappend="${commentLikeMap[comment.commentNo] != null && commentLikeMap[comment.commentNo].getLikeCode() == -1 ? ' selected' : ''}"
+                            data-action="dislike">👎
+                        <span th:text="${comment.dislike}"></span></button>
+                </div>
+            </div>
             <!-- 댓글 내용을 수정 가능한 textarea로 표시 -->
             <div class="comment-content">
                 <textarea class="form-control comment-textarea" style="display: none;" rows="5" th:text="${comment.content}" required maxlength="200"></textarea>
@@ -290,17 +396,14 @@
             </div>
             <div class="comments-footer">
                 <th:block th:if="${user.userNo == comment.userNo}">
-                <button type="button" class="btn btn-primary btn-edit" th:data-comment-no="${comment.commentNo}">
-                    수정
-                </button>
-            <form th:action="@{/webtoon/comment/delete}" method="post">
-                <input type="hidden" name="commentNo" th:value="${comment.commentNo}">
-                <input type="hidden"  name="webtoon_name" th:value="${one.webtoon_name}">
-                <input type="hidden"  name="webtoon_id" th:value="${one.webtoon_id}">
-                <button type="submit" class="btn btn-danger">삭제</button>
-            </form>
+                    <button type="button" class="btn btn-primary btn-edit" th:data-comment-no="${comment.commentNo}">수정</button>
+                    <form th:action="@{/webtoon/comment/delete}" method="post">
+                        <input type="hidden" name="commentNo" th:value="${comment.commentNo}">
+                        <input type="hidden" name="webtoon_name" th:value="${one.webtoon_name}">
+                        <input type="hidden" name="webtoon_id" th:value="${one.webtoon_id}">
+                        <button type="submit" class="btn btn-danger">삭제</button>
+                    </form>
                 </th:block>
-
             </div>
         </div>
     </div>
@@ -313,9 +416,11 @@
         const id =  '[[${one.webtoon_id}]]';
         const no =  [[${one.webtoon_no}]];
         const title = '[[${one.webtoon_name}]]';
+        const userNo = [[${user.userNo}]];
+        const encodedStr = encodeURIComponent(title);
 
         // 웹툰 세부 정보를 가져오기 위한 API URL
-        const apiUrl = `https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/webtoons?keyword=${title}`;
+        const apiUrl = `https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/webtoons?keyword=${encodedStr}`;
 
         fetch(apiUrl)
             .then(response => response.json())
@@ -358,6 +463,15 @@
                         document.getElementById('webtoonIsUpdated').textContent = webtoon.isUpdated ? '업데이트 됨' : '업데이트 안 됨';
                         document.getElementById('webtoonAgeGrade').textContent = webtoon.ageGrade;
                         document.getElementById('webtoonFreeWaitHour').textContent = webtoon.freeWaitHour;
+
+                        // 버튼의 표시 여부를 webtoon.isEnd에 따라 결정
+                        const reviewButton = document.getElementById('reviewButton');
+                        if (!webtoon.isEnd&&userNo > 0) {
+                             reviewButton.style.display = 'none';
+                        }
+
+
+
                     } else {
                         console.error('해당 ID의 웹툰이 데이터에서 찾을 수 없습니다.');
                     }
@@ -373,7 +487,7 @@
         const contentTextarea = document.getElementById('content');
 
         // userNo 값 읽기
-        const userNo = [[${user.userNo}]];
+
 
         // userNo가 1 이하인 경우 textarea를 읽기 전용으로 설정
         if (userNo <= 0) {

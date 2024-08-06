@@ -18,7 +18,7 @@
        #webtoonContainer {
            display: flex;
            flex-wrap: wrap;
-           gap: 40px;
+           gap: 20px;
            justify-content: center;
            max-width: 1200px; /* 최대 너비 설정 */
        }
@@ -106,6 +106,14 @@
             margin-right: 10px;
             margin-bottom: 10px; /* 선택 옵션 및 입력 필드 사이의 간격 설정 */
         }
+#TagPageButtons {
+            display: flex;
+            justify-content: center; /* 버튼들을 가로로 중앙 정렬 */
+            gap: 10px; /* 버튼 간 간격 */
+        }
+
+
+
     </style>
 </head>
 <body>
@@ -157,6 +165,21 @@
     </div>
 
 
+    <div id="TagPageButtons" th:if="${totalPages > 0}">
+        <div th:each="i : ${#numbers.sequence(1, totalPages)}">
+            <form th:action="@{/webtoon/search}" method="get">
+                <input type="hidden" name="search" th:value="${search}"/>
+                <input type="hidden" name="Method" th:value="${Method}"/>
+                <input type="hidden" name="platform" th:value="${platform}"/>
+                <input type="hidden" name="page" th:value="${i}"/>
+                <button type="submit" class="page-button" th:classappend="${i == currentPage} ? 'active' : ''" th:text="${i}"></button>
+            </form>
+        </div>
+    </div>
+    <br>
+
+
+
 </div>
 
 
@@ -165,6 +188,9 @@
     const search = '[[${search}]]';
     const method = '[[${Method}]]';
     let platform = '[[${platform}]]';
+
+    const webtoons= '[[${searchTags}]]';
+
     if(platform=="ALL"){
     platform="";
     }
@@ -173,6 +199,8 @@
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('searchInput').value = search;
     });
+
+
 
     function fetchWebtoons(page) {
         let apiUrl = `https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/webtoons?keyword=${keyword}&provider=${platform}&page=${page}&perPage=100&sort=ASC`;

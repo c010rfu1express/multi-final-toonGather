@@ -1,10 +1,7 @@
 package com.multi.toonGather.webtoon.service;
 
-import com.multi.toonGather.webtoon.model.dto.CommentDTO;
-import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
+import com.multi.toonGather.webtoon.model.dto.*;
 import com.multi.toonGather.webtoon.model.dao.WebToonMapper;
-import com.multi.toonGather.webtoon.model.dto.WtUserLogDTO;
-import com.multi.toonGather.webtoon.model.dto.WtUserSaveDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -80,8 +77,8 @@ public class WebToonServiceImpl implements WebToonService{
     }
 
     @Override
-    public List<WebtoonDTO> searchWebtoon(WebtoonDTO webtoonDTO) {
-        List<WebtoonDTO> webtoonDTOS=webToonMapper.searchWebtoon(webtoonDTO);
+    public List<WebtoonDTO> searchWebtoon(TagPageDTO tagPageDTO) {
+        List<WebtoonDTO> webtoonDTOS=webToonMapper.searchWebtoon(tagPageDTO);
         return webtoonDTOS;
     }
 
@@ -102,6 +99,12 @@ public class WebToonServiceImpl implements WebToonService{
     public int deleteSave(WtUserSaveDTO wtUserSaveDTO) throws Exception {
         int result=webToonMapper.deleteSave(wtUserSaveDTO);
         return result;
+    }
+
+    @Override
+    public int countWebtoon(TagPageDTO tagPageDTO) {
+        int count=webToonMapper.countWebtoon(tagPageDTO);
+        return count;
     }
 
 
