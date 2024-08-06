@@ -86,12 +86,42 @@
         WHERE log_no = #{logNo}
     </update>
 
-    <select id="searchWebtoon" resultType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO">
-        SELECT * FROM webtoon
-        WHERE tags LIKE CONCAT('%', #{tags}, '%')
-        <if test="platform != 0">
-            AND platform = #{platform}
+    <select id="countWebtoon" resultType="int">
+        SELECT COUNT(*)
+        FROM webtoon
+        WHERE tags LIKE CONCAT('%', #{tag1}, '%')
+        <if test="platform == 'NAVER'">
+            AND platform = 1
         </if>
+        <if test="platform == 'KAKAO'">
+            AND platform = 2
+        </if>
+        <if test="tag2 != null">
+            AND tags LIKE CONCAT('%', #{tag2}, '%')
+        </if>
+        <if test="tag3 != null">
+            AND tags LIKE CONCAT('%', #{tag3}, '%')
+        </if>
+    </select>
+
+    <select id="searchWebtoon" resultType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO">
+        SELECT *
+        FROM webtoon
+        WHERE tags LIKE CONCAT('%', #{tag1}, '%')
+        <if test="platform == 'NAVER'">
+            AND platform = 1
+        </if>
+        <if test="platform == 'KAKAO'">
+            AND platform = 2
+        </if>
+        <if test="tag2 != null">
+            AND tags LIKE CONCAT('%', #{tag2}, '%')
+        </if>
+        <if test="tag3 != null">
+            AND tags LIKE CONCAT('%', #{tag3}, '%')
+        </if>
+        ORDER BY webtoon_name
+        LIMIT #{start}, 50
     </select>
 
     <select id="WebToonSelectSave" resultMap="wtUserSavetMap">

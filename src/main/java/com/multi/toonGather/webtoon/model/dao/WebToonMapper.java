@@ -1,9 +1,6 @@
 package com.multi.toonGather.webtoon.model.dao;
 
-import com.multi.toonGather.webtoon.model.dto.CommentDTO;
-import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
-import com.multi.toonGather.webtoon.model.dto.WtUserLogDTO;
-import com.multi.toonGather.webtoon.model.dto.WtUserSaveDTO;
+import com.multi.toonGather.webtoon.model.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -30,11 +27,13 @@ public interface WebToonMapper {
 
     int webToonInsert(WebtoonDTO webtoonDTO);
 
-    List<WebtoonDTO> searchWebtoon(WebtoonDTO webtoonDTO);
+    List<WebtoonDTO> searchWebtoon(TagPageDTO tagPageDTO);
 
     WtUserSaveDTO WebToonSelectSave(WtUserSaveDTO wtUserSaveDTO);
 
     int insertSave(WtUserSaveDTO wtUserSaveDTO);
 
     int deleteSave(WtUserSaveDTO wtUserSaveDTO);
+
+    int countWebtoon(TagPageDTO tagPageDTO);
 }
