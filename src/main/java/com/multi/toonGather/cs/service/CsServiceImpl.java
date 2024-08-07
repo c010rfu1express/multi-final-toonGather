@@ -96,51 +96,48 @@ public class CsServiceImpl implements CsService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean updateQuestion(QuestionDTO question, List<String> existingImages, List<String> removedImages, MultipartFile[] images, HttpServletRequest request) throws Exception {
-        try {
-            csMapper.updateQuestion(question);
 
-            String root = request.getSession().getServletContext().getRealPath("/");
-            String filePath = root + "/uploadFiles/cs";
+        csMapper.updateQuestion(question);
 
-            // 기존 이미지 삭제 처리
-            if (removedImages != null && !removedImages.isEmpty()) {
-                for (String savedName : removedImages) {
-                    File fileToDelete = new File(filePath + "/" + savedName);
-                    if (fileToDelete.exists()) {
-                        fileToDelete.delete();
-                    }
-                    csMapper.deleteQuestionFileBySavedName(savedName);
+        String root = request.getSession().getServletContext().getRealPath("/");
+        String filePath = root + "/uploadFiles/cs";
+
+        // 기존 이미지 삭제 처리
+        if (removedImages != null && !removedImages.isEmpty()) {
+            for (String savedName : removedImages) {
+                File fileToDelete = new File(filePath + "/" + savedName);
+                if (fileToDelete.exists()) {
+                    fileToDelete.delete();
                 }
+                csMapper.deleteQuestionFileBySavedName(savedName);
             }
-
-            // 새로운 이미지 저장
-            if (images != null && images.length > 0) {
-                for (MultipartFile image : images) {
-                    String originName = image.getOriginalFilename();
-                    if (originName != null && !originName.isEmpty()) {
-                        String ext = originName.substring(originName.lastIndexOf("."));
-                        String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
-
-                        // 파일 저장
-                        try {
-                            image.transferTo(new File(filePath + "/" + savedName));
-                            QuestionFilesDTO questionFilesDTO = new QuestionFilesDTO();
-                            questionFilesDTO.setCsQNo(question.getCsQNo());
-                            questionFilesDTO.setOriginName(originName);
-                            questionFilesDTO.setSavedName(savedName);
-                            csMapper.insertQuestionFile(questionFilesDTO);
-                        } catch (IOException e) {
-                            new File(filePath + "/" + savedName).delete();
-                            throw new Exception("File upload error", e);
-                        }
-                    }
-                }
-            }
-
-            return true;
-        } catch (Exception e) {
-            throw new Exception("Update question failed", e);
         }
+
+        // 새로운 이미지 저장
+        if (images != null && images.length > 0) {
+            for (MultipartFile image : images) {
+                String originName = image.getOriginalFilename();
+                if (originName != null && !originName.isEmpty()) {
+                    String ext = originName.substring(originName.lastIndexOf("."));
+                    String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
+
+                    // 파일 저장
+                    try {
+                        image.transferTo(new File(filePath + "/" + savedName));
+                        QuestionFilesDTO questionFilesDTO = new QuestionFilesDTO();
+                        questionFilesDTO.setCsQNo(question.getCsQNo());
+                        questionFilesDTO.setOriginName(originName);
+                        questionFilesDTO.setSavedName(savedName);
+                        csMapper.insertQuestionFile(questionFilesDTO);
+                    } catch (IOException e) {
+                        new File(filePath + "/" + savedName).delete();
+                        throw new Exception("File upload error", e);
+                    }
+                }
+            }
+        }
+
+        return true;
 
     }
 

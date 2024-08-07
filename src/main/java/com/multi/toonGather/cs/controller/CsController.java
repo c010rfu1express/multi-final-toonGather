@@ -185,7 +185,7 @@ public class CsController {
                                  @RequestParam("csQCategory") String category,
                                  @RequestParam("csQContent") String content,
                                  @RequestParam("images") MultipartFile[] images,
-                                 @RequestParam("existingImages") List<String> existingImages,
+                                 @RequestParam(value = "existingImages", required = false) List<String> existingImages,
                                  @RequestParam(value = "removedImages", required = false) List<String> removedImages,
                                  HttpServletRequest request) throws Exception {
         QuestionDTO question = csService.getQuestionById(csQNo);
@@ -194,6 +194,9 @@ public class CsController {
         question.setCsQTitle(title);
         question.setCsQCategory(categoryDTO);
         question.setCsQContent(content);
+
+        System.out.println(existingImages);
+        System.out.println(removedImages);
 
         boolean isSuccess = csService.updateQuestion(question, existingImages, removedImages, images, request);
         if (isSuccess) {

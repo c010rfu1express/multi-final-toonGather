@@ -112,7 +112,7 @@
                 <div class="image-preview" id="existingImagePreview">
                     <div th:each="image : ${files}">
                         <img th:src="@{'/uploadFiles/cs/' + ${image.savedName}}" alt="첨부된 이미지">
-                        <div class="remove-button" onclick="removeExistingImage(this, '${image.savedName}')">삭제</div>
+                        <div class="remove-button" th:attr="data-saved-name=${image.savedName}" onclick="removeExistingImage(this)">삭제</div>
                         <input type="hidden" name="existingImages" th:value="${image.savedName}">
                     </div>
                 </div>
@@ -157,16 +157,17 @@
         });
     });
 
-    function removeExistingImage(element, imageName) {
-        element.previousElementSibling.remove(); // Remove image
-        element.remove(); // Remove button
+    function removeExistingImage(element) {
+        const imageName = element.getAttribute('data-saved-name');
+        element.previousElementSibling.remove(); // 이미지 삭제
+        element.remove(); // 버튼 삭제
         const hiddenInput = document.createElement('input');
         hiddenInput.type = 'hidden';
         hiddenInput.name = 'removedImages';
         hiddenInput.value = imageName;
         document.querySelector('form').appendChild(hiddenInput);
+        console.log("Removed image added to form: " + imageName); // 디버그 로그
     }
 </script>
 </body>
 </html>
-
