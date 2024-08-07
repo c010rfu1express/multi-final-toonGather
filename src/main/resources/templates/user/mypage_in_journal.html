@@ -175,7 +175,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="myInJournal : ${myInJournals}" class="clickable-row" th:attr="data-href=@{/introduction/journal/journalDetail(title=${myInJournal.title})}">
+                <tr th:each="myInJournal : ${myInJournals}" class="clickable-row" th:attr="data-href=@{/introduction/journal/journalDetail(journalNo=${myInJournal.journalNo})}">
                     <td th:text="${myInJournal.likedNo}">좋아요 번호</td>
                     <td th:text="${myInJournal.userNo}">회원번호</td>
                     <td th:text="${myInJournal.likedDate}">좋아요 날짜</td>
