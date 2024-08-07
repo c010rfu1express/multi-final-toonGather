@@ -9,14 +9,125 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         .card-img-top {
             width: 100%;
             height: 200px;
             object-fit: cover;
         }
+
         .card {
-            margin-bottom: 20px;
+            margin-bottom: 20px; /* 게시글 위아래 사이 간격 */
+        }
+
+        .card-title {
+            color: #445566; /* 제목 색상 */
+            text-decoration: none; /* 기본 밑줄 제거 */
+            font-weight: bold; /* 굵게 보이도록 설정 */
+        }
+
+        .card-title:hover {
+            color: #445566; /* 제목 색상 */
+            text-decoration: underline; /* 호버 시 밑줄 추가 */
+        }
+
+        .card-content {
+            display: flex;
+        }
+
+        .form-check {
+            align-items: center;
+            margin-right: 10px;
+        }
+
+        /* 페이징 스타일 */
+
+        .pagination {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            color: #000;
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            padding: 8px 15px; /* 타원형 버튼을 위한 패딩 */
+            border-radius: 50px; /* 타원형으로 만들기 위한 반지름 설정 */
+            display: inline-flex; /* 인라인 플렉스 박스로 버튼 중앙 정렬 */
+            align-items: center; /* 수직 중앙 정렬 */
+            justify-content: center; /* 수평 중앙 정렬 */
+            font-weight: bold; /* 글자 굵기 조정 */
+            height: 40px; /* 버튼 높이 설정 */
+        }
+
+        .pagination a:hover {
+            background-color: #e0e0e0;
+            color: #000; /* 텍스트 색상 유지 */
+        }
+
+        .pagination .btn-custom {
+            background-color: #f0f0f0; /* 클릭되지 않은 버튼의 옅은 회색 */
+            border-color: #f0f0f0;
+            color: #333;
+        }
+
+        .pagination .btn-custom:hover {
+            background-color: #fef4c3; /* 호버 효과 - 파스텔톤 노란색 */
+            border-color: #fef4c3;
+            color: #333;
+        }
+        .pagination .btn-custom.active {
+            background-color: #fef4c3; /* 클릭된 버튼 색상 - 파스텔톤 노란색 */
+            border-color: #fef4c3;
+            color: #333;
+        }
+
+        /* 검색창 스타일 */
+
+        .search-container {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-container input[type="text"] {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s, background-color 0.3s;
+            color: #456; /* 입력 텍스트 색상 변경 */
+        }
+
+        .search-container input[type="text"]::placeholder {
+            color: #456; /* placeholder 색상 변경 */
+        }
+
+        .search-container input[type="text"]:focus {
+            border-color: #40bcf4;
+            background-color: #fef4c3;
+        }
+
+        .search-container button {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .search-container button i {
+            color: #666;
+        }
+
+        .search-container button:hover i {
+            color: #40bcf4;
         }
     </style>
     <script>
@@ -24,9 +135,9 @@
         function getCheckedTitle() {
             var checkedValue = document.querySelector('input[name="journalCheck"]:checked');
             if (checkedValue) {
-                var title = checkedValue.value;
+                var journalNo = checkedValue.value;
                 // 수정 페이지로 이동
-                window.location.href = '/introduction/journal/journalUpdate?title=' + encodeURIComponent(title);
+                window.location.href = '/introduction/journal/journalUpdate?journalNo=' + encodeURIComponent(journalNo);
             } else {
                 // 체크된 항목이 없는 경우 알림
                 alert("수정할 게시글을 선택하세요.");
@@ -37,13 +148,13 @@
         function deleteSelectedJournal() {
             var checkedValue = document.querySelector('input[name="journalCheck"]:checked');
             if (checkedValue) {
-                var title = checkedValue.value;
+                var journalNo = checkedValue.value;
 
                 // AJAX를 통해 삭제 요청 보내기
                 $.ajax({
                     url: '/introduction/deleteJournal',
                     method: 'POST',
-                    data: JSON.stringify({title: title}),
+                    data: JSON.stringify({journalNo: journalNo}),
                     contentType: 'application/json',
                     success: function(response) {
 
@@ -69,21 +180,24 @@
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between mb-3">
-        <h2>소식</h2>
-        <div class="input-group" style="width: 300px;">
-            <input type="text" class="form-control" placeholder="검색어 입력"  name="keyword" aria-label="검색어 입력" value="[[${keyword}]]">
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="submit">검색</button>
-            </div>
+        <div class="d-flex align-items-center">
+            <h2 class="mr-3">소식</h2>
+            <form class="search-container" th:action="@{/introduction/journalList}" method="get">
+                <input type="text" placeholder="검색어 입력"  name="keyword" th:value="${keyword}">
+                <button type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
         </div>
-        <div sec:authorize="hasRole('ROLE_ADMIN')">
-            <a href="/introduction/journal/journalInsert" class="btn btn-primary">작성</a>
-            <button class="btn btn-warning" onclick="getCheckedTitle()">수정</button>
+        <div class="d-flex" sec:authorize="hasRole('ROLE_ADMIN')">
+            <a href="/introduction/journal/journalInsert" class="btn btn-primary mr-2">작성</a>
+            <button class="btn btn-warning mr-2" onclick="getCheckedTitle()">수정</button>
             <button class="btn btn-danger" onclick="deleteSelectedJournal()">삭제</button>
         </div>
     </div>
 
-    <div class="row">
+
+    <div class="row" th:if="${journals != null && !journals.isEmpty()}">
         <!-- 각 소식 항목을 카드로 표시 -->
         <div class="col-md-4" th:each="journal : ${journals}">
             <div class="card">
@@ -96,33 +210,39 @@
                 <img th:if="${#lists.size(journal.journalFiles) > 0}" th:src="@{/uploadFiles/{fileName}(fileName=${journal.journalFiles.get(0).fileName})}" class="card-img-top" alt="썸네일 이미지">
 
                 <div class="card-body">
-                    <div class="d-flex align-items-center mb-2">
+                    <div class="card-content">
                         <div class="form-check" sec:authorize="hasRole('ROLE_ADMIN')">
-                            <input class="form-check-input" type="radio" name="journalCheck" th:value="${journal.title}" th:id="'journalCheck' + ${journal.title}">
+                            <input class="form-check-input" type="radio" name="journalCheck" th:value="${journal.journalNo}" th:id="'journalCheck' + ${journal.journalNo}">
                         </div>
-                        <div>
-                            <a th:href="@{/introduction/journal/journalDetail(title=${journal.title})}" class="card-title" th:text="${journal.title}">제목</a>
+                        <div class="card-title-container">
+                            <!--journalNo로 검색해서 상세페이지 넘겨주기-->
+                            <a th:href="@{/introduction/journal/journalDetail(journalNo=${journal.journalNo})}" class="card-title" th:text="${journal.title}">제목</a>
                         </div>
                     </div>
-
                     <p class="card-text">
                         <small class="text-muted" th:text="${#dates.format(journal.postingDate, 'yyyy-MM-dd')}">게시일시</small>
                     </p>
                 </div>
             </div>
         </div>
+        <div th:if="${journals == null || journals.isEmpty()}">
+            <p>작성된 소식 게시글이 없습니다.</p>
+        </div>
     </div>
 
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            <li class="page-item"><a class="page-link" href="#">이전</a></li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">다음</a></li>
-        </ul>
-    </nav>
-</div>
 
+
+    <div class="pagination justify-content-center">
+        <a class="btn btn-custom" th:if="${currentPage > 0}" th:href="@{/introduction/journalList(page=${currentPage - 1}, searchType=${searchType}, keyword=${keyword})}">&laquo;</a>
+        <a class="btn btn-custom" th:each="i : ${#numbers.sequence(1, totalPages)}"
+           th:href="@{/introduction/journalList(page=${i - 1}, keyword=${keyword})}"
+           th:text="${i}"
+           th:classappend="${currentPage + 1 == i} ? 'active' : ''"></a>
+        <a class="btn btn-custom" th:if="${currentPage < totalPages - 1}" th:href="@{/introduction/journalList(page=${currentPage + 1}, keyword=${keyword})}">&raquo;</a>
+    </div>
+
+
+</div>
+<div th:replace="common/footer.html"></div>
 </body>
 </html>

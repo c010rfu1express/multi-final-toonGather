@@ -8,39 +8,110 @@
     <title>소식 게시글 상세</title>
     <style>
         #journal-details {
-            max-width: 800px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 20px; /* 내용 좌우 패딩 */
             border: 1px solid #ddd;
             border-radius: 8px;
-            background-color: #f9f9f9;
-            text-align: center; /* 이미지 가운데 정렬을 위한 속성 추가 */
+            background-color: #ffffff; /* 배경 색상을 흰색으로 변경 */
+<!--            text-align: center; /* 이미지 가운데 정렬을 위한 속성 추가 */-->
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
         }
         #journal-details img {
             max-height: 300px; /* 이미지의 최대 높이를 300px로 제한 */
             width: auto; /* 높이에 맞춰 자동으로 너비를 조정 */
-            margin-top: 20px;
+            margin: 10px 0; /* 위아래 여백 10px, 좌우 여백 0px */
         }
-        #journal-details h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
+
         #journal-details .posting-date {
             font-size: 14px; /* 게시일자 폰트 크기 */
             color: #777;    /* 게시일자 색상 */
-            margin-bottom: 20px;
+            margin-top: 20px;
         }
-        #journal-details h1,
-        #journal-details .posting-date,
-        #journal-details .content {
-            text-align: left; /* 텍스트 왼쪽 정렬 */
 
+        #journal-details .journal-title {
+            color: #445566; /* 제목 색깔 변경 */
+            font-size: 2em;
+            margin-bottom: 10px;
         }
+
         #journal-details .content {
             margin-top: 20px;
             white-space: pre-line; /* 줄바꿈과 공백을 유지 */
+            line-height: 1.6; /* 줄 간격 추가 */
+            font-size: 16px; /* 글자 크기 조정 */
+            color: #333; /* 글자 색상 조정 */
+            padding: 10px 0; /* 내용 상하 패딩 추가 */
+            background-color: #ffffff; /* 배경 색상을 흰색으로 변경 */
+
+            margin: 0; /* 왼쪽 마진 제거 */
+            margin-bottom: 20px; /* 밑쪽 여백 추가 */
+            padding: 0; /* 필요에 따라 패딩 조정 */
+            width: 100%; /* 부모 요소에 맞게 너비 조정 */
+            box-sizing: border-box; /* 패딩과 테두리가 너비에 포함되도록 설정 */
         }
 
+        .d-flex {
+            margin-left: 107px; /* 왼쪽 페이지 끝에서 간격 추가 - 소식&검색창 */
+        }
+/* 검색창 스타일 */
+
+        .search-container {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-container input[type="text"] {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s, background-color 0.3s;
+            color: #456; /* 입력 텍스트 색상 변경 */
+        }
+
+        .search-container input[type="text"]::placeholder {
+            color: #456; /* placeholder 색상 변경 */
+        }
+
+        .search-container input[type="text"]:focus {
+            border-color: #40bcf4;
+            background-color: #fef4c3;
+        }
+
+        .search-container button {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .search-container button i {
+            color: #666;
+        }
+
+        .search-container button:hover i {
+            color: #40bcf4;
+        }
+/* 좋아요 버튼 스타일 */
+        .btn-primary {
+            background-color: #fef4c3; /* 배경 색상 변경 */
+            color: #333; /* 텍스트 색상 변경 (선택 사항) */
+            border: 1px solid #ddd; /* 버튼의 테두리 색상 설정 (선택 사항) */
+        }
+
+        .btn-primary:hover {
+            background-color: #e0e0e0; /* 마우스 오버 시 배경 색상 변경 (선택 사항) */
+        }
+
+        .btn-primary:focus {
+            box-shadow: 0 0 0 0.2rem rgba(240, 212, 182, 0.5); /* 포커스 시 그림자 효과 (선택 사항) */
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -51,9 +122,9 @@
         console.log('journalNo:', journalNo, 'userNo:', userNo); // 콘솔에 값 출력
 
         function toggleLike() {
-            alert('Journal No: ' + journalNo + ', User No: ' + userNo);
+<!--            alert('Journal No: ' + journalNo + ', User No: ' + userNo);-->
             if (userNo === null) {
-                alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
+                alert('로그인이 필요합니다. 로그인 페이지로 이동합니다. -> 로그인이 필요한 서비스 입니다. 로그인 하시겠습니까? 변경 예정');
                 window.location.href = '/user/login'; // 로그인 페이지 URL로 리다이렉트
                 return;
             }
@@ -77,9 +148,20 @@
 <div th:replace="~{common/menubar}"></div>
 <div th:replace="~{introduction/inMenubar}"></div>
 
+<div class="d-flex justify-content-between mb-3" >
+    <div class="d-flex align-items-center">
+        <h2 class="mr-3">소식</h2>
+        <form class="search-container" th:action="@{/introduction/journalList}" method="get">
+            <input type="text" placeholder="검색어 입력"  name="keyword" th:value="${keyword}">
+            <button type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+    </div>
+</div>
 <div id="journal-details">
     <div th:if="${journal != null}">
-        <h1 th:text="${journal.title}">제목</h1>
+        <h1 class="journal-title" th:text="${journal.title}">제목</h1>
         <p class="posting-date" th:text="${#dates.format(journal.postingDate, 'yyyy-MM-dd')}">게시일시</p>
 
 
@@ -98,11 +180,15 @@
         <!-- 좋아요 기능 추가 -->
         <div>
             <button onclick="toggleLike()" class="btn btn-primary">좋아요 <span id="likeCount" th:text="${likeCount}">0</span></button>
-            <span>/ Current Journal No: <span id="currentJournalNo" th:text="${journal.journalNo}">0</span></span>
-            <span>/ Current User No: <span id="currentUserNo" th:text="${userNo}">0</span></span>
         </div>
     </div>
 </div>
 
+
+<!--<span>/ Current Journal No: <span id="currentJournalNo" th:text="${journal.journalNo}">0</span></span>-->
+<!--<span>/ Current User No: <span id="currentUserNo" th:text="${userNo}">0</span></span>-->
+
+
+<div th:replace="common/footer.html"></div>
 </body>
 </html>
