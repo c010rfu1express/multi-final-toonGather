@@ -101,7 +101,7 @@
         </div>
     </div>
 
-    <form th:action="@{/social/reviews/insert}" method="post">
+    <form id="reviewForm" th:action="@{/social/reviews/insert}" method="post">
         <input type="hidden" name="webtoonNo" th:value="${webtoon.webtoon_no}">
 
         <div class="review-insert-form-row">
@@ -149,6 +149,15 @@
         if (charCount > 1000) {
             this.value = this.value.slice(0, 1000);
             document.getElementById('charCount').textContent = 1000;
+        }
+    });
+
+    // 별점 확인
+    document.getElementById('reviewForm').addEventListener('submit', function(e) {
+        var starRating = document.querySelector('input[name="starRating"]:checked');
+        if (!starRating) {
+            e.preventDefault(); // 폼 제출 중지
+            alert('별점은 1점부터 입력할 수 있어요 🌟'); // 사용자에게 알림
         }
     });
 </script>

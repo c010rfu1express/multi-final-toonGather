@@ -6,6 +6,16 @@
     <title>툰게더 toonGather | 리뷰</title>
     <link rel="stylesheet" th:href="@{/css/social-styles.css}">
     <style>
+        .rating-filter {
+            margin-bottom: 20px;
+        }
+        .rating-filter select {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            font-size: 14px;
+        }
         .user-review-list {
             background-color: #fff;
             border-radius: 8px;
@@ -106,6 +116,22 @@
 
     <div class="row mt-4">
         <div class="col-12">
+            <div class="rating-filter mb-3">
+                <form th:action="@{/social/users/__${userId}__/reviews}" method="get" id="ratingFilterForm">
+                    <select name="starRating" id="ratingFilter" onchange="this.form.submit()" style="font-size: 0.9em;">
+                        <option value="" th:selected="${param.starRating == null or param.starRating.isEmpty()}">모든 리뷰</option>
+                        <option value="5" th:selected="${param.starRating != null and param.starRating[0] == '5'}">★★★★★</option>
+                        <option value="4" th:selected="${param.starRating != null and param.starRating[0] == '4'}">★★★★☆</option>
+                        <option value="3" th:selected="${param.starRating != null and param.starRating[0] == '3'}">★★★☆☆</option>
+                        <option value="2" th:selected="${param.starRating != null and param.starRating[0] == '2'}">★★☆☆☆</option>
+                        <option value="1" th:selected="${param.starRating != null and param.starRating[0] == '1'}">★☆☆☆☆</option>
+                    </select>
+                    <select name="sort" onchange="this.form.submit()" style="font-size: 0.9em;">
+                        <option value="date" th:selected="${param.sort == null or param.sort[0] == 'date'}">최신순</option>
+                        <option value="likes" th:selected="${param.sort != null and param.sort[0] == 'likes'}">좋아요순</option>
+                    </select>
+                </form>
+            </div>
             <div class="user-review-list">
                 <div th:unless="${#lists.isEmpty(reviews)}">
                     <div th:each="review, iterStat : ${reviews}" class="user-review-item" th:attr="data-href=@{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})}">
@@ -136,16 +162,16 @@
                 <th:block th:if="${pages != null}">
                     <div class="d-flex justify-content-center">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-sm previous" th:onclick="|location.href='@{/social/users/__${userId}__/reviews(page=${currentPage - 1})}'|" th:disabled="${currentPage == 1}">
+                            <button type="button" class="btn btn-sm previous" th:onclick="|location.href='@{/social/users/__${userId}__/reviews(page=${currentPage - 1}, starRating=${param.starRating}, sort=${param.sort})}'|" th:disabled="${currentPage == 1}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
                                     <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
                                 </svg>
                             </button>
                             <th:block th:each="p : ${#numbers.sequence(1, pages)}">
                                 <button type="button" class="btn btn-sm me-2 pages"
-                                        th:text="${p}" th:onclick="|location.href='@{/social/users/__${userId}__/reviews(page=${p})}'|"></button>
+                                        th:text="${p}" th:onclick="|location.href='@{/social/users/__${userId}__/reviews(page=${p}, starRating=${param.starRating}, sort=${param.sort})}'|"></button>
                             </th:block>
-                            <button type="button" class="btn btn-sm next" th:onclick="|location.href='@{/social/users/__${userId}__/reviews(page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">
+                            <button type="button" class="btn btn-sm next" th:onclick="|location.href='@{/social/users/__${userId}__/reviews(page=${currentPage + 1}, starRating=${param.starRating}, sort=${param.sort})}'|" th:disabled="${currentPage == pages}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
                                     <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
                                 </svg>
