@@ -80,7 +80,7 @@
 <script>
 
     let currentPage = 1; // 초기 페이지 번호
-    const isLoggedIn=[[${isLoggedIn}]];
+    const isLoggedAge=[[${isLoggedAge}]];
 
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -131,15 +131,12 @@
                     // 썸네일 이미지 추가
                     const webtoonImage = document.createElement('img');
 
-                    if (ageGrade> 18 && !isLoggedIn) {
+                    if (ageGrade> 18 && isLoggedAge<19) {
                         webtoonImage.src = '/images/error_logo.png'; // 로그인하지 않은 경우 표시할 제한 이미지
                         webtoonImage.alt = '19금 콘텐츠';
-                        console.log("!!!!!!!!!!");
                     } else {
                         webtoonImage.src = thumbnailUrl;
                         webtoonImage.alt = `${title} 썸네일`;
-                        console.log(+""+isLoggedIn);
-                        console.log();
                     }
 
                     webtoonImage.classList.add('webtoon-thumbnail');

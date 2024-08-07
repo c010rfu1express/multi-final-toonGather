@@ -26,6 +26,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,9 +48,13 @@ public class WebtoonController {
     public String Webtoon( Model model,@AuthenticationPrincipal CustomUserDetails c){
         LocalDate currentDate = LocalDate.now();
         if(c!=null){
-            model.addAttribute("isLoggedIn",true);
+            LocalDate today = LocalDate.now();
+            LocalDate dateOfBirth= c.getUserDTO().getDateOfBirth();
+            Period.between(dateOfBirth, today).getYears();
+
+            model.addAttribute("isLoggedAge",Period.between(dateOfBirth, today).getYears());
         }else {
-            model.addAttribute("isLoggedIn",false);
+            model.addAttribute("isLoggedAge",0);
         }
 
         // 현재 날짜의 요일 가져오기
