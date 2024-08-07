@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8">
@@ -14,7 +13,7 @@
                 document.getElementById("menubar").innerHTML = this.responseText;
             }
         };
-        xhttp.open("GET", "common/menubar.html", true);
+        xhttp.open("GET", "/common/menubar", true);
         xhttp.send();
     };
 </script>
