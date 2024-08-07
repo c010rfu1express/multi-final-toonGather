@@ -19,7 +19,7 @@
           text-align: left;
           margin:30px auto;
         }
-        .post-slider .next{
+        .post-slider .slider-button-next{
           position: absolute;
           top: 50%;
           width: 40px;
@@ -35,7 +35,7 @@
           justify-content: center;
           cursor: pointer;
         }
-        .post-slider .prev{
+        .post-slider .slider-button-prev{
           position: absolute;
           top: 50%;
           width: 40px;
@@ -54,14 +54,14 @@
         .post-slider .post-wrapper{
 
           width:84%;
-          height:270px;
+          height:280px;
           margin:0px auto;
           overflow: hidden;
           padding:10px 0px 10px 0px;
         }
         .post-slider .post-wrapper .post{
           width:300px;
-          height:270px;
+          height:280px;
           margin:0px 10px;
           display:inline-block;
           background:white;
@@ -75,12 +75,16 @@
             padding-right: 15px;
             margin-right: 15px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             cursor: pointer;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            border-top: 5px solid #87CEFA;
+            border-top: 3px solid #87CEFA;
+            transition: transform 0.3s ease;
+        }
+        .post-slider .post-wrapper .post .post-info:hover {
+            transform: translateY(-5px);
         }
         .post-slider .post-wrapper .post .post-info .slider-image {
             width: 100%;
@@ -99,11 +103,11 @@
 </div>
 <div class="page-wrapper" style="position:relative;">
     <!--page slider -->
-    <div class="post-slider">
+    <div id="job-slider" class="post-slider">
         <h1 class="slider-title">구인/구직</h1>
         <hr>
-        <i class="fas fa-chevron-left prev"></i>
-        <i class="fas fa-chevron-right next" ></i>
+        <i class="fas fa-chevron-left slider-button-prev" data-slider="job"></i>
+        <i class="fas fa-chevron-right slider-button-next" data-slider="job"></i>
         <div class="post-wrapper">
             <div class="post" th:each="job : ${jobs}">
                 <div class="post-info" th:attr="data-href=@{/recruit/job/view(no=${job.board_no})}" onclick="window.location.href=this.getAttribute('data-href')">
@@ -113,8 +117,11 @@
                     <h5 class="post-subject" th:text="${#strings.abbreviate(job.title, 10)}"></h5>
                     <br>
                     <div style="display: inline-flex; align-items: center;">
-                        <i class="far fa-user"></i>&nbsp;
-                        <span th:text="${job.member.nickname}" style="margin-right: 5px;"></span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#4a4a4a" class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                        </svg>
+                        <span th:text="${job.member.nickname}" style="margin-left: 5px;"></span>
                     </div>
                 </div>
             </div>
@@ -124,12 +131,12 @@
 </div>
 <div class="page-wrapper" style="position:relative;">
     <!--page slider -->
-    <div class="post-slider">
+    <div id="free-slider" class="post-slider">
         <br>
         <h1 class="slider-title">프리랜서</h1>
         <hr>
-        <i class="fas fa-chevron-left prev"></i>
-        <i class="fas fa-chevron-right next" ></i>
+        <i class="fas fa-chevron-left slider-button-prev" data-slider="free"></i>
+        <i class="fas fa-chevron-right slider-button-next" data-slider="free"></i>
         <div class="post-wrapper">
             <div class="post" th:each="free : ${frees}">
                 <div class="post-info" th:attr="data-href=@{/recruit/free/view(no=${free.board_no})}" onclick="window.location.href=this.getAttribute('data-href')">
@@ -140,8 +147,11 @@
                     <br>
                     <div style="display: inline-flex; align-items: center;">
                         <div style="display: inline-flex; align-items: center;">
-                            <i class="far fa-user"></i>&nbsp;
-                            <span th:text="${free.member.nickname}" style="margin-right: 5px;"></span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#4a4a4a" class="bi bi-person-circle" viewBox="0 0 16 16">
+                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                            </svg>
+                            <span th:text="${free.member.nickname}" style="margin-left: 5px; margin-right: 5px;"></span>
                             <span th:if="${free.type_code == 'C'}" style="line-height: 1; vertical-align: middle;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#1E90FF" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
                                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
@@ -157,13 +167,22 @@
 <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 <script>
-    $('.post-wrapper').slick({
+    $('#job-slider .post-wrapper').slick({
       slidesToShow: 4,
       slidesToScroll: 1,
       autoplay: true,
       autoplaySpeed: 5000,
-      nextArrow:$('.next'),
-      prevArrow:$('.prev'),
+      nextArrow: $('#job-slider .slider-button-next'),
+      prevArrow: $('#job-slider .slider-button-prev'),
+    });
+
+    $('#free-slider .post-wrapper').slick({
+      slidesToShow: 4,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 5000,
+      nextArrow: $('#free-slider .slider-button-next'),
+      prevArrow: $('#free-slider .slider-button-prev'),
     });
 </script>
 </body>
