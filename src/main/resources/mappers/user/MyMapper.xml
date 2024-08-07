@@ -26,9 +26,35 @@
         cs_q_view_count AS csQViewCount,
         created_date AS createdDate,
         modified_date AS modifiedDate
-        FROM cs_question
-        WHERE cs_q_writer_no = #{userNo}
+        FROM
+        cs_question
+        WHERE
+        cs_q_writer_no = #{userNo}
+        <if test="toggleValue == 'Y'">
+            AND cs_q_status_code = 'S'
+        </if>
+        <choose>
+            <when test="orderBy == 'recentedited'">
+                ORDER BY modified_date DESC
+            </when>
+            <when test="orderBy == 'recent'">
+                ORDER BY cs_q_no DESC
+            </when>
+            <when test="orderBy == 'oldest'">
+                ORDER BY cs_q_no ASC
+            </when>
+            <when test="orderBy == 'views'">
+                ORDER BY cs_q_view_count DESC
+            </when>
+            <when test="orderBy == 'title'">
+                ORDER BY cs_q_title ASC
+            </when>
+            <otherwise>
+                ORDER BY modified_date DESC
+            </otherwise>
+        </choose>
     </select>
+
 
     <resultMap type="MyInJournalDTO" id="MyInJournalResultMap">
         <!-- in_journal_like 테이블의 컬럼 -->
@@ -52,7 +78,6 @@
         ij.title AS title,
         ij.content AS content,
         ij.posting_date AS postingDate
-
         FROM
         in_journal ij
         INNER JOIN
@@ -61,7 +86,28 @@
         ij.journal_no = ijl.journal_no
         WHERE
         ijl.user_no = #{userNo}
+        <choose>
+            <when test="orderBy == 'recentliked'">
+                ORDER BY ijl.liked_no DESC
+            </when>
+            <when test="orderBy == 'oldestliked'">
+                ORDER BY ijl.liked_no ASC
+            </when>
+            <when test="orderBy == 'recent'">
+                ORDER BY ij.journal_no DESC
+            </when>
+            <when test="orderBy == 'oldest'">
+                ORDER BY ij.journal_no ASC
+            </when>
+            <when test="orderBy == 'title'">
+                ORDER BY ij.title ASC
+            </when>
+            <otherwise>
+                ORDER BY ijl.liked_no DESC
+            </otherwise>
+        </choose>
     </select>
+
 
     <resultMap type="MyRctJobDTO" id="MyRctJobResultMap">
         <id property="boardNo" column="board_no" />
@@ -90,7 +136,31 @@
         rct_job
         WHERE
         writer = #{userNo}
+        <if test="toggleValue == 'Y'">
+            AND dead_line &lt; NOW()
+        </if>
+        <choose>
+            <when test="orderBy == 'recentedited'">
+                ORDER BY modified_date DESC
+            </when>
+            <when test="orderBy == 'recent'">
+                ORDER BY board_no DESC
+            </when>
+            <when test="orderBy == 'oldest'">
+                ORDER BY board_no ASC
+            </when>
+            <when test="orderBy == 'dueSoon'">
+                ORDER BY dead_line ASC
+            </when>
+            <when test="orderBy == 'title'">
+                ORDER BY title ASC
+            </when>
+            <otherwise>
+                ORDER BY modified_date DESC
+            </otherwise>
+        </choose>
     </select>
+
 
     <resultMap type="MySoReviewDTO" id="MySoReviewResultMap">
         <id property="likeNo" column="like_no" />
@@ -129,7 +199,37 @@
         sr.writer_no = srl.liked_user
         WHERE
         srl.liked_user = #{userNo}
+        <choose>
+            <when test="orderBy == 'recentliked'">
+                ORDER BY srl.like_no DESC
+            </when>
+            <when test="orderBy == 'oldestliked'">
+                ORDER BY srl.like_no ASC
+            </when>
+            <when test="orderBy == 'recentadded'">
+                ORDER BY sr.created_date DESC
+            </when>
+            <when test="orderBy == 'oldestadded'">
+                ORDER BY sr.created_date ASC
+            </when>
+            <when test="orderBy == 'highrated'">
+                ORDER BY sr.star_rating DESC
+            </when>
+            <when test="orderBy == 'lowrated'">
+                ORDER BY sr.star_rating ASC
+            </when>
+            <when test="orderBy == 'views'">
+                ORDER BY sr.view_cnt DESC
+            </when>
+            <when test="orderBy == 'title'">
+                ORDER BY sr.title ASC
+            </when>
+            <otherwise>
+                ORDER BY srl.like_no DESC
+            </otherwise>
+        </choose>
     </select>
+
 
     <resultMap type="MySoDiaryDTO" id="MySoDiaryResultMap">
         <id property="commentNo" column="comment_no"/>
@@ -172,7 +272,31 @@
         sd.diary_no = sdc.diary_no
         WHERE
         sdc.commenter_no = #{userNo}
+        <choose>
+            <when test="orderBy == 'recentposted'">
+                ORDER BY sdc.comment_no DESC
+            </when>
+            <when test="orderBy == 'oldestposted'">
+                ORDER BY sdc.comment_no ASC
+            </when>
+            <when test="orderBy == 'recentadded'">
+                ORDER BY sdc.diary_no DESC
+            </when>
+            <when test="orderBy == 'oldestadded'">
+                ORDER BY sdc.diary_no ASC
+            </when>
+            <when test="orderBy == 'views'">
+                ORDER BY sd.view_cnt DESC
+            </when>
+            <when test="orderBy == 'title'">
+                ORDER BY sd.title ASC
+            </when>
+            <otherwise>
+                ORDER BY sdc.comment_no DESC
+            </otherwise>
+        </choose>
     </select>
+
 
     <resultMap type="MyInEventDTO" id="MyInEventResultMap">
         <!-- `in_event_like` 테이블의 컬럼들 -->
@@ -200,7 +324,6 @@
         iel.liked_no AS likedNo,
         iel.user_no AS userNo,
         iel.liked_date AS likedDate,
-
         ie.event_no AS eventNo,
         ie.title AS title,
         ie.event_category_code AS eventCategoryCode,
@@ -216,12 +339,34 @@
         FROM
         in_event ie
         INNER JOIN
-        in_event_like iel
-        ON
-        ie.event_no = iel.event_no
+        in_event_like iel ON ie.event_no = iel.event_no
         WHERE
         iel.user_no = #{userNo}
+        <if test="toggleValue == 'Y'">
+            AND end_date &gt; NOW()
+        </if>
+        <choose>
+            <when test="orderBy == 'recentliked'">
+                ORDER BY iel.liked_no DESC
+            </when>
+            <when test="orderBy == 'oldestliked'">
+                ORDER BY iel.liked_no ASC
+            </when>
+            <when test="orderBy == 'recent'">
+                ORDER BY ie.event_no DESC
+            </when>
+            <when test="orderBy == 'oldest'">
+                ORDER BY ie.event_no ASC
+            </when>
+            <when test="orderBy == 'title'">
+                ORDER BY ie.title ASC
+            </when>
+            <otherwise>
+                ORDER BY iel.liked_no DESC
+            </otherwise>
+        </choose>
     </select>
+
 
     <resultMap type="MyWtWebtoonDTO" id="MyWtWebtoonResultMap">
         <id property="saveNo" column="save_no"/>
@@ -260,6 +405,23 @@
         w.webtoon_no = wu.webtoon_no
         WHERE
         wu.user_no = #{userNo}
+        <choose>
+            <when test="orderBy == 'recent'">
+                ORDER BY wu.save_no DESC
+            </when>
+            <when test="orderBy == 'oldest'">
+                ORDER BY wu.save_no ASC
+            </when>
+            <when test="orderBy == 'views'">
+                ORDER BY w.count DESC
+            </when>
+            <when test="orderBy == 'title'">
+                ORDER BY w.webtoon_name ASC
+            </when>
+            <otherwise>
+                ORDER BY wu.save_no DESC
+            </otherwise>
+        </choose>
     </select>
 
     <resultMap type="MyWtCommentDTO" id="MyWtCommentResultMap">
@@ -304,8 +466,26 @@
         w.webtoon_no = c.webtoon_no
         WHERE
         c.user_no = #{userNo}
+        <choose>
+            <when test="orderBy == 'recent'">
+                ORDER BY c.comment_no DESC
+            </when>
+            <when test="orderBy == 'oldest'">
+                ORDER BY c.comment_no ASC
+            </when>
+            <when test="orderBy == 'views'">
+                ORDER BY w.count DESC
+            </when>
+            <when test="orderBy == 'likes'">
+                ORDER BY c.liked DESC
+            </when>
+            <otherwise>
+                ORDER BY c.comment_no DESC
+            </otherwise>
+        </choose>
     </select>
 
+<!--    MyRctApplicationDTO 클래스를 사용하는 경우가 2가지임을 체크하기 (1)내가지원한목록 (2)내가올린공고_지원서 시작-->
     <resultMap type="MyRctApplicationDTO" id="MyRctApplicationResultMap">
         <id property="applyNo" column="apply_no"/>
         <result property="boardNo" column="board_no"/>
@@ -353,7 +533,82 @@
         rj.board_no = rja.board_no
         WHERE
         rja.writer = #{userNo}
+        <if test="toggleValue == 'Y'">
+            AND rj.dead_line &lt; NOW()
+        </if>
+        <choose>
+            <when test="orderBy == 'recentApplication'">
+                ORDER BY rja.apply_no DESC
+            </when>
+            <when test="orderBy == 'oldestApplication'">
+                ORDER BY rja.apply_no ASC
+            </when>
+            <when test="orderBy == 'recentedited'">
+                ORDER BY rj.modified_date DESC
+            </when>
+            <when test="orderBy == 'recent'">
+                ORDER BY rja.board_no DESC
+            </when>
+            <when test="orderBy == 'oldest'">
+                ORDER BY rja.board_no ASC
+            </when>
+            <when test="orderBy == 'dueSoon'">
+                ORDER BY rj.dead_line ASC
+            </when>
+            <when test="orderBy == 'title'">
+                ORDER BY rj.title ASC
+            </when>
+            <otherwise>
+                ORDER BY rja.apply_no DESC
+            </otherwise>
+        </choose>
     </select>
+
+
+    <select id="selectListMyRctJobApplication" resultType="MyRctApplicationDTO">
+        SELECT
+        rja.apply_no AS applyNo,
+        rja.board_no AS boardNo,
+        rja.writer AS writer,
+        rja.title AS applyTitle,
+        rja.content AS applyContent,
+        rja.img AS applyImg,
+        rja.created_date AS applyCreatedDate,
+        rja.check_status AS applyCheckStatus,
+
+        rj.writer AS jobWriter,
+        rj.title AS jobTitle,
+        rj.content AS jobContent,
+        rj.location AS jobLocation,
+        rj.img AS jobImg,
+        rj.created_date AS jobCreatedDate,
+        rj.modified_date AS jobModifiedDate,
+        rj.dead_line AS jobDeadLine
+        FROM
+        rct_job rj
+        INNER JOIN
+        rct_job_apply rja
+        ON
+        rj.board_no = rja.board_no
+        WHERE
+        rja.board_no = #{boardNo}
+        <if test="toggleValue == 'Y'">
+            AND rja.check_status = false
+        </if>
+        <choose>
+            <when test="orderBy == 'recent'">
+                ORDER BY rja.apply_no DESC
+            </when>
+            <when test="orderBy == 'oldest'">
+                ORDER BY rja.apply_no ASC
+            </when>
+            <otherwise>
+                ORDER BY rja.apply_no DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <!--    MyRctApplicationDTO 클래스를 사용하는 경우가 2가지임을 체크하기 (1)내가지원한목록 (2)내가올린공고_지원서 끝-->
 
     <resultMap type="MyRctFreeDTO" id="MyRctFreeResultMap">
         <id property="boardNo" column="board_no"/>
@@ -364,21 +619,198 @@
         <result property="price" column="price"/>
         <result property="createdDate" column="created_date"/>
         <result property="modifiedDate" column="modified_date"/>
+
+        <result property="averageRating" column="average_rating"/>
+        <result property="reviewCount" column="review_count"/>
     </resultMap>
 
     <select id="selectListMyRctFree" resultType="MyRctFreeDTO">
         SELECT
-        board_no AS boardNo,
-        writer AS writer,
-        title AS title,
+        rf.board_no AS boardNo,
+        rf.writer,
+        rf.title,
+        rf.content,
+        rf.img,
+        rf.price,
+        rf.created_date AS createdDate,
+        rf.modified_date AS modifiedDate,
+        COALESCE(AVG(rfr.star_rating), 0.0) AS averageRating,
+        COALESCE(COUNT(rfr.review_no), 0) AS reviewCount
+        FROM
+        rct_free rf
+        LEFT JOIN
+        rct_free_review rfr
+        ON
+        rf.board_no = rfr.board_no
+        WHERE
+        rf.writer = #{userNo}
+        GROUP BY
+        rf.board_no, rf.writer, rf.title, rf.content, rf.img, rf.price, rf.created_date, rf.modified_date
+        <choose>
+            <when test="orderBy == 'recentedited'">
+                ORDER BY rf.modified_date DESC
+            </when>
+            <when test="orderBy == 'recent'">
+                ORDER BY rf.board_no DESC
+            </when>
+            <when test="orderBy == 'oldest'">
+                ORDER BY rf.board_no ASC
+            </when>
+            <when test="orderBy == 'topRated'">
+                ORDER BY averageRating DESC
+            </when>
+            <when test="orderBy == 'lowRated'">
+                ORDER BY averageRating ASC
+            </when>
+            <when test="orderBy == 'reviews'">
+                ORDER BY reviewCount DESC
+            </when>
+            <when test="orderBy == 'title'">
+                ORDER BY rf.title ASC
+            </when>
+            <otherwise>
+                ORDER BY rf.modified_date DESC
+            </otherwise>
+        </choose>
+
+    </select>
+
+    <resultMap type="MyRctCreatorDTO" id="MyRctCreatorResultMap">
+        <id property="creatorNo" column="creator_no"/>
+        <result property="memberNo" column="member_no"/>
+        <result property="content" column="content"/>
+        <result property="img" column="img"/>
+        <result property="registNo" column="regist_no"/>
+        <result property="status" column="status"/>
+        <result property="typeCode" column="type_code"/>
+    </resultMap>
+
+    <select id="selectListMyRctCreator" resultType="MyRctCreatorDTO">
+        SELECT
+        creator_no AS creatorNo,
+        member_no AS memberNo,
         content AS content,
         img AS img,
-        price AS price,
-        created_date AS createdDate,
-        modified_date AS modifiedDate
+        regist_no AS registNo,
+        status AS status,
+        type_code AS typeCode
         FROM
-        rct_free
+        rct_creator_regist
         WHERE
-        writer = #{userNo}
+        member_no = #{userNo}
     </select>
+
+    <resultMap type="MyRctOrderDTO" id="MyRctOrderResultMap">
+        <id property="orderNo" column="order_no"/>
+        <result property="memberNo" column="member_no"/>
+        <result property="boardNo" column="board_no"/>
+        <result property="quantity" column="quantity"/>
+        <result property="price" column="price"/>
+        <result property="orderedDate" column="ordered_date"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <select id="selectListMyRctOrder" resultType="MyRctOrderDTO">
+        SELECT
+        order_no AS orderNo,
+        member_no AS memberNo,
+        board_no AS boardNo,
+        quantity AS quantity,
+        price AS price,
+        ordered_date AS orderedDate,
+        status AS status
+        FROM
+        rct_free_pay
+        WHERE
+        member_no = #{userNo}
+        <if test="toggleValue == 'Y'">
+            AND status = 'C'
+        </if>
+        <choose>
+            <when test="orderBy == 'recent'">
+                ORDER BY order_no DESC
+            </when>
+            <when test="orderBy == 'oldest'">
+                ORDER BY order_no ASC
+            </when>
+            <when test="orderBy == 'expensive'">
+                ORDER BY price DESC
+            </when>
+            <when test="orderBy == 'cheap'">
+                ORDER BY price ASC
+            </when>
+            <otherwise>
+                ORDER BY order_no DESC
+            </otherwise>
+        </choose>
+    </select>
+
+
+    <resultMap type="MyInMerchanDTO" id="MyInMerchanResultMap">
+        <id property="likedNo" column="liked_no"/>
+        <result property="merchanNo" column="merchan_no"/>
+        <result property="userNo" column="user_no"/>
+        <result property="likedDate" column="liked_date"/>
+
+        <result property="title" column="title"/>
+        <result property="regularPrice" column="regular_price"/>
+        <result property="discountPrice" column="discount_price"/>
+        <result property="shippingCost" column="shipping_cost"/>
+        <result property="merchanInfo" column="merchan_info"/>
+        <result property="content" column="content"/>
+        <result property="postingDate" column="posting_date"/>
+    </resultMap>
+
+    <select id="selectListMyInMerchan" resultType="MyInMerchanDTO">
+        SELECT
+        iml.liked_no AS likedNo,
+        iml.merchan_no AS merchanNo,
+        iml.user_no AS userNo,
+        iml.liked_date AS likedDate,
+        im.title AS title,
+        im.regular_price AS regularPrice,
+        im.discount_price AS discountPrice,
+        im.shipping_cost AS shippingCost,
+        im.merchan_info AS merchanInfo,
+        im.content AS content,
+        im.posting_date AS postingDate
+        FROM
+        in_merchan im
+        INNER JOIN
+        in_merchan_like iml
+        ON
+        im.merchan_no = iml.merchan_no
+        WHERE
+        iml.user_no = #{userNo}
+        <if test="toggleValue == 'Y'">
+            AND im.discount_price > 1000
+        </if>
+        <choose>
+            <when test="orderBy == 'recentliked'">
+                ORDER BY iml.liked_no DESC
+            </when>
+            <when test="orderBy == 'oldestliked'">
+                ORDER BY iml.liked_no ASC
+            </when>
+            <when test="orderBy == 'recent'">
+                ORDER BY iml.merchan_no DESC
+            </when>
+            <when test="orderBy == 'oldest'">
+                ORDER BY iml.merchan_no ASC
+            </when>
+            <when test="orderBy == 'expensive'">
+                ORDER BY im.regular_price DESC
+            </when>
+            <when test="orderBy == 'cheap'">
+                ORDER BY im.regular_price ASC
+            </when>
+            <when test="orderBy == 'title'">
+                ORDER BY im.title ASC
+            </when>
+            <otherwise>
+                ORDER BY iml.liked_no DESC
+            </otherwise>
+        </choose>
+    </select>
+
 </mapper>

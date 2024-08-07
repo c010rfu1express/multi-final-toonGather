@@ -25,8 +25,8 @@ public class CsServiceImpl implements CsService {
 
     // 내 문의글 목록 조회
     @Override
-    public List<QuestionDTO> myQuestionList(int userNo) throws Exception {
-        return csMapper.myQuestionList(userNo);
+    public List<QuestionDTO> myQuestionList(int userNo, int offset, int pageSize) throws Exception {
+        return csMapper.myQuestionList(userNo, offset, pageSize);
     }
 
     // 카테고리 목록 조회
@@ -45,7 +45,7 @@ public class CsServiceImpl implements CsService {
 
             String root = request.getSession().getServletContext().getRealPath("/");
             System.out.println("root : " + root);
-            String filePath = root + "/uploadFiles";
+            String filePath = root + "/uploadFiles/cs";
 
             File mkdir = new File(filePath);
             if (!mkdir.exists()) {
@@ -100,7 +100,7 @@ public class CsServiceImpl implements CsService {
             csMapper.updateQuestion(question);
 
             String root = request.getSession().getServletContext().getRealPath("/");
-            String filePath = root + "/uploadFiles";
+            String filePath = root + "/uploadFiles/cs";
 
             // 새로운 이미지가 첨부된 경우
             if (images != null && images.length > 0 && !images[0].isEmpty()) {
@@ -156,7 +156,7 @@ public class CsServiceImpl implements CsService {
 
             // 파일 삭제
             for (QuestionFilesDTO file : files) {
-                File delFile = new File(request.getSession().getServletContext().getRealPath("/") + "/uploadFiles/" + file.getSavedName());
+                File delFile = new File(request.getSession().getServletContext().getRealPath("/") + "/uploadFiles/cs/" + file.getSavedName());
                 if (delFile.exists()) {
                     delFile.delete();
                 }
@@ -170,8 +170,8 @@ public class CsServiceImpl implements CsService {
     }
 
     @Override
-    public List<QuestionDTO> questionList() throws Exception {
-        return csMapper.questionList();
+    public List<QuestionDTO> questionList(int offset, int limit) throws Exception {
+        return csMapper.questionList(offset, limit);
     }
 
     @Override
@@ -207,5 +207,25 @@ public class CsServiceImpl implements CsService {
     @Override
     public boolean deleteFaq(int csFaqNo) throws Exception {
         return csMapper.deleteFaq(csFaqNo);
+    }
+
+    @Override
+    public int getTotalCount() throws Exception {
+        return csMapper.getTotalCount();
+    }
+
+    @Override
+    public int getTotalCountById(int userNo) throws Exception {
+        return csMapper.getTotalCountById(userNo);
+    }
+
+    @Override
+    public int countSearchQuestions(String searchType, String keyword) throws Exception {
+        return csMapper.countSearchQuestions(searchType, keyword);
+    }
+
+    @Override
+    public List<QuestionDTO> searchQuestions(String searchType, String keyword, int offset, int pageSize) throws Exception {
+        return csMapper.searchQuestions(searchType, keyword, offset, pageSize);
     }
 }
