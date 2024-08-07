@@ -154,6 +154,20 @@
             <h2>내가 올린 공고-지원서목록</h2>
             <h3><a th:href="@{/recruit/job/view(no=${boardNo})}">공고 확인</a></h3>
             <form id="filter-and-sort-form" th:action="@{/user/my/rct/job/apply(boardNo=${boardNo})}" method="get">
+                <!-- 검색 조건 -->
+                <label>
+                    <select name="searchBy">
+                        <option value="title" th:selected="${searchBy == 'title'}">지원서제목</option>
+                        <option value="content" th:selected="${searchBy == 'content'}">지원서내용</option>
+<!--                        <option value="realname" th:selected="${searchBy == 'realname'}">지원자성명</option>-->
+                    </select>
+                </label>
+                <input type="text" name="searchTerm" placeholder="검색어를 입력하세요" th:value="${searchTerm}" />
+
+                <!-- 검색 버튼 -->
+                <button type="submit">검색</button>
+
+                <!-- 정렬 또는 토글 -->
                 <label>
                     <input type="checkbox" name="isToggled" id="isToggledCheckbox" value="Y" th:checked="${isToggled == 'Y'}" onchange="updateCheckboxValueAndSubmit()">미열람
                 </label>
@@ -218,8 +232,30 @@
                 </tr>
                 </tbody>
             </table>
+            <!-- 페이징 -->
+            <th:block th:if="${pages != null}">
+                <div class="d-flex justify-content-center">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm previous" th:onclick="|location.href='@{/user/my/rct/job/apply(boardNo=${boardNo}, isToggled=${isToggled}, orderBy=${orderBy}, searchBy=${searchBy}, searchTerm=${searchTerm}, page=${currentPage - 1})}'|" th:disabled="${currentPage == 1}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                            </svg>
+                        </button>
+                        <th:block th:each="p : ${#numbers.sequence(1, pages)}">
+                            <button type="button" class="btn btn-sm me-2 pages"
+                                    th:text="${p}" th:onclick="|location.href='@{/user/my/rct/job/apply(boardNo=${boardNo}, isToggled=${isToggled}, orderBy=${orderBy}, searchBy=${searchBy}, searchTerm=${searchTerm}, page=${p})}'|"></button>
+                        </th:block>
+                        <button type="button" class="btn btn-sm  next" th:onclick="|location.href='@{/user/my/rct/job/apply(boardNo=${boardNo}, isToggled=${isToggled}, orderBy=${orderBy}, searchBy=${searchBy}, searchTerm=${searchTerm}, page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </th:block>
         </div>
     </div>
 </div>
+<div th:replace="common/footer.html"></div>
 </body>
 </html>
