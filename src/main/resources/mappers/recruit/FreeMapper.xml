@@ -57,8 +57,10 @@
 		rct_free f
 		JOIN
 		users m ON f.writer = m.user_no
-		LEFT JOIN
+		INNER JOIN
 		rct_creator_regist c ON f.writer = c.member_no
+		WHERE
+		c.status = 'A'
 		<if test="page != null">
 			ORDER BY f.board_no DESC
 			LIMIT #{start}, 10

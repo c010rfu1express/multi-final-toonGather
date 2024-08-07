@@ -78,8 +78,9 @@ public class RecruitController {
 
         creatorService.insertCreator(creatorDTO);
         creatorService.updateMember(creatorDTO.getMember_no());
+        userDetails.setAuthCode();
 
-        return "recruit/main";
+        return "redirect:/recruit/main";
     }
 
     @RequestMapping("/creator/naverocr_result")
@@ -122,6 +123,7 @@ public class RecruitController {
             System.out.println("성공");
             creatorDTO.setStatus("A");
             creatorDTO.setType_code("C");
+            userDetails.setAuthCode();
             creatorService.insertCreator(creatorDTO);
             creatorService.updateMember(creatorDTO.getMember_no());
         } else {
