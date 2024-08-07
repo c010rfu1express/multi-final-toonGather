@@ -19,4 +19,8 @@ public interface EventService {
     List<EventCategoryDTO> getAllEventCategories();
 
     void insertEvent(EventDTO eventDTO, MultipartFile file, HttpServletRequest request) throws Exception;
+
+    EventDTO getEventByNoWithFiles(int eventNo);
+
+    void deleteEventByNo(Integer eventNo) throws Exception;
 }

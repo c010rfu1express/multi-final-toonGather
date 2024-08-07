@@ -67,7 +67,7 @@
     </select>
 
 
-    <!-- Select files associated with a specific event -->
+    <!-- Select files associated with a specific event 번호로 행사 파일 가져오기 -->
     <select id="selectFilesByEventNo" parameterType="int" resultMap="eventFileResultMap">
         SELECT *
         FROM in_event_files
@@ -92,5 +92,22 @@
         INSERT INTO in_event_files (event_no, file_name, file_path, file_size, file_type)
         VALUES (#{eventNo}, #{fileName}, #{filePath}, #{fileSize}, #{fileType});
     </insert>
+
+    <!-- 번호로 행사 가져오기 -->
+    <select id="selectEventByNo" parameterType="int" resultMap="eventResultMap">
+        SELECT * FROM in_event WHERE event_no = #{eventNo}
+    </select>
+
+    <!-- Delete files associated with a specific event -->
+    <delete id="deleteFiles" parameterType="int">
+        DELETE FROM in_event_files
+        WHERE event_no = #{eventNo}
+    </delete>
+
+    <!-- Delete a specific event -->
+    <delete id="deleteEvent" parameterType="int">
+        DELETE FROM in_event
+        WHERE event_no = #{eventNo}
+    </delete>
 
 </mapper>

@@ -1,8 +1,6 @@
 package com.multi.toonGather.introduction.service;
 
-import com.multi.toonGather.introduction.model.dto.EventCategoryDTO;
-import com.multi.toonGather.introduction.model.dto.EventDTO;
-import com.multi.toonGather.introduction.model.dto.EventFileDTO;
+import com.multi.toonGather.introduction.model.dto.*;
 import com.multi.toonGather.introduction.model.mapper.EventMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +17,11 @@ import java.util.UUID;
 public class EventServiceImpl implements EventService {
     @Autowired
     private EventMapper eventMapper;
+
+
+    static String projectRootPath = System.getProperty("user.dir");
+    private static final String UPLOAD_DIR = Paths.get(projectRootPath, "src", "main", "webapp", "uploadFiles", "introduction").toString();
+
 
     @Override
     public int countEventsByTitleKeyword(String keyword) {
@@ -114,6 +118,49 @@ public class EventServiceImpl implements EventService {
              System.out.println("File object is null");
          }
 
+    }
+
+    @Override
+    public EventDTO getEventByNoWithFiles(int eventNo) {
+        // 번호로 행사 가져오기
+        EventDTO event = eventMapper.selectEventByNo(eventNo);
+        System.out.println("getEventByNoWithFiles 확인1 : " + event.toString());
+
+        if (event != null) {
+            // 행사에 첨부된 파일 리스트 가져오기
+            System.out.println("확인2 : " + event.getEventNo());
+            List<EventFileDTO> eventFiles = eventMapper.selectFilesByEventNo(event.getEventNo());
+            System.out.println("확인3 : " + eventFiles);
+            event.setEventFiles(eventFiles); // EventDTO에 파일 리스트 설정
+        }
+
+        return event;
+    }
+
+    @Override
+    public void deleteEventByNo(Integer eventNo) throws Exception {
+        try {
+            // eventNo으로 게시글 찾기
+            EventDTO event = eventMapper.selectEventByNo(eventNo);
+            if (event != null) {
+                // 파일 삭제
+                List<EventFileDTO> files = eventMapper.selectFilesByEventNo(event.getEventNo());
+                String filePath = UPLOAD_DIR;
+                for (EventFileDTO file : files) {
+                    File existingFile = new File(filePath + "/" + file.getFileName());
+                    if (existingFile.exists()) {
+                        existingFile.delete();
+                    }
+                }
+                // 파일 정보 삭제
+                eventMapper.deleteFiles(event.getEventNo());
+                // 게시글 삭제
+                eventMapper.deleteEvent(event.getEventNo());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("Failed to delete event", e);
+        }
     }
 }
 

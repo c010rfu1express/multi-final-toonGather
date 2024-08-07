@@ -138,7 +138,7 @@
     </style>
     <script>
         // 선택된 radio 버튼의 값을 가져와서 수정 페이지로 이동하는 함수
-        function getCheckedTitle() {
+        function getCheckedNo() {
             var checkedValue = document.querySelector('input[name="eventCheck"]:checked');
             if (checkedValue) {
                 var eventNo = checkedValue.value;
@@ -197,7 +197,7 @@
         </div>
         <div class="d-flex" sec:authorize="hasRole('ROLE_ADMIN')">
             <a href="/introduction/event/eventInsert" class="btn btn-primary mr-2">작성</a>
-            <button class="btn btn-warning mr-2" onclick="getCheckedTitle()">수정</button>
+            <button class="btn btn-warning mr-2" onclick="getCheckedNo()">수정</button>
             <button class="btn btn-danger" onclick="deleteSelectedEvent()">삭제</button>
         </div>
     </div>

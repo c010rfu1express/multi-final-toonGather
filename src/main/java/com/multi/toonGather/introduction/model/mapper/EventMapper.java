@@ -21,4 +21,10 @@ public interface EventMapper {
     void insertEvent(EventDTO eventDTO);
 
     void insertEventFile(EventFileDTO fileDTO);
+
+    EventDTO selectEventByNo(int eventNo);
+
+    void deleteFiles(int eventNo);
+
+    void deleteEvent(int eventNo);
 }

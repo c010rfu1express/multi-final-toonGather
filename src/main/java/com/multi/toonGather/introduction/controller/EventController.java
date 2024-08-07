@@ -9,11 +9,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class EventController {
@@ -100,4 +102,40 @@ public class EventController {
             return "error";
         }
     }
+
+    @GetMapping(value = {"introduction/event/eventUpdate"})
+    public String eventUpdateForm(@RequestParam(value = "eventNo", required = true) int eventNo, Model model){
+
+        EventDTO eventDTO = eventService.getEventByNoWithFiles(eventNo);
+
+        System.out.println("Retrieved event 수정페이지 : " + eventDTO);
+
+        List<EventCategoryDTO> eventCategories = eventService.getAllEventCategories();
+        System.out.println("Event Categories: " + eventCategories);
+
+
+        model.addAttribute("eventCategories", eventCategories);
+        model.addAttribute("event", eventDTO);
+
+        return "introduction/event/eventUpdate";
+    }
+
+    @PostMapping(value = {"/introduction/deleteEvent"})
+    public String deleteEvent(@RequestBody Map<String, Integer> requestBody) {
+        Integer eventNo = requestBody.get("eventNo");
+        if (eventNo != null) {
+            try {
+                eventService.deleteEventByNo(eventNo);
+                System.out.println("삭제성공~~~~");
+                return "redirect:/introduction/event/eventList";
+            } catch (Exception e) {
+                System.out.println("삭제실패~~~~");
+                e.printStackTrace();
+            }
+        }
+        return "redirect:/introduction/event/eventList";
+    }
+
+
+
 }
