@@ -59,7 +59,7 @@
                            color="default"
                            role="button"
                            class="btn btn-outline-primary btn-block"
-                           th:classappend="${auth_code == 'C'} ? 'disabled' : ''">
+                           th:classappend="${auth_code == 'C' or #strings.isEmpty(auth_code)} ? 'disabled' : ''">
                             <span class="button__start-icon-wrapper">
                                 <span color="#e4e5ed" role="img" rotate="0" class="css-nh621w">
                                     <svg aria-hidden="true" fill="currentColor" focusable="false" height="24" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" width="24" class="css-7kp13n">
@@ -77,7 +77,7 @@
                            color="default"
                            role="button"
                            class="btn btn-outline-primary btn-block"
-                           th:classappend="${auth_code == 'C'} ? 'disabled' : ''">
+                           th:classappend="${auth_code == 'C' or #strings.isEmpty(auth_code)} ? 'disabled' : ''">
                             <span class="button__start-icon-wrapper">
                                 <span color="#e4e5ed" role="img" rotate="0" class="css-nh621w">
                                     <svg aria-hidden="true" fill="currentColor" focusable="false" height="24" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" width="24" class="css-7kp13n">
