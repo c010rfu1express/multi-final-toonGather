@@ -731,13 +731,9 @@ public class RecruitController {
     @GetMapping("/free/pay/order")
     public String order(@RequestParam("no") int no, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
         FreeDTO freeDTO = freeService.findBoardByNo(no);
-        String email = userDetails.getEmail();
-        String phone = userDetails.getPhone();
         String name = userDetails.getRealName();
 
         model.addAttribute("free", freeDTO);
-        model.addAttribute("email", email);
-        model.addAttribute("phone", phone);
         model.addAttribute("name", name);
         return "recruit/free/pay/order";
     }
@@ -745,7 +741,7 @@ public class RecruitController {
     @PostMapping("/free/pay/order")
     public String order(@RequestParam("board_no") int board_no, @RequestParam("quantity") int quantity, @RequestParam("price") int price,
                         @RequestParam("account") String account, @RequestParam("bank_name") String bank_name,
-                        @RequestParam("name") String name, @RequestParam("email") String email, @RequestParam("phone") String phone,
+                        @RequestParam("name") String name, @RequestParam("contact") String contact,
                         @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
         // 작성자의 memberNo와 userName을 설정
         FreePayDTO payDTO = new FreePayDTO();
@@ -756,8 +752,7 @@ public class RecruitController {
         payDTO.setBank_name(bank_name);
         payDTO.setAccount(account);
         payDTO.setBuyer_name(name);
-        payDTO.setEmail(email);
-        payDTO.setPhone(phone);
+        payDTO.setContact(contact);
 
         freeService.order(payDTO);
 

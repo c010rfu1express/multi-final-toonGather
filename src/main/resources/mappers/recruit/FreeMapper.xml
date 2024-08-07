@@ -223,8 +223,7 @@
 		, bank_name
 		, account
 		, buyer_name
-		, email
-		, phone
+		, contact
 		)
 		VALUES
 		(
@@ -235,8 +234,7 @@
 		, #{ bank_name }
 		, #{ account }
 		, #{ buyer_name }
-		, #{ email }
-		, #{ phone }
+		, #{ contact }
 		)
 	</insert>
 
