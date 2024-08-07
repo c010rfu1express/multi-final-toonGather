@@ -6,48 +6,94 @@
     <title>툰게더 toonGather | 리뷰 목록</title>
     <link rel="stylesheet" th:href="@{/css/social-styles.css}">
     <style>
-        .review-list {
+        .user-review-list {
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 30px;
+            padding: 20px;
             margin-top: 20px;
         }
-        .review-list table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .review-list th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        .review-list th {
-            background-color: #f8f9fa;
-            font-weight: bold;
-        }
-        .webtoon-info {
+        .user-review-item {
             display: flex;
             align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
-        .webtoon-image {
-            height: 50px;
-            object-fit: cover;
-            border-radius: 4px;
+        .user-review-item:hover {
+            background-color: #f8f9fa;
+        }
+        .user-review-number {
+            width: 30px;
+            text-align: center;
+            font-weight: 300; /* 얇은 글씨 */
+            color: #888; /* 연한 색상 */
             margin-right: 10px;
         }
-        .webtoon-details {
+        .user-review-webtoon-thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 15px;
+        }
+        .user-review-webtoon-info {
+            width: 150px;
+            margin-right: 15px;
+        }
+        .user-review-webtoon-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .user-review-webtoon-author {
+            font-size: 0.7em;
+            color: #666;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .user-review-rating {
+            color: #ffd700;
+        }
+        .user-rating-text {
+            font-size: 0.7em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .user-review-info {
+            width: 300px; /* 고정 너비 설정 */
+            margin-right: 15px;
+        }
+        .user-review-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .user-review-content {
+            font-size: 0.9em;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .user-review-meta {
+            margin-left: auto;
             display: flex;
-            flex-direction: column;
+            font-size: 0.9em;
+            color: #888;
         }
-        .rating {
-            color: #f39c12;
+        .user-review-date {
+            margin-right: 15px;
         }
-        .clickable-row {
-            cursor: pointer;
-        }
-        .clickable-row:hover {
-            background-color: #f8f9fa;
+        .user-review-likes {
+            color: #ff4081;
         }
     </style>
 </head>
@@ -57,67 +103,66 @@
 <div class="container mt-4">
     <div th:replace="social/user/profile-menubar :: profile-menubar"></div>
 
-    <div class="review-list">
-        <h2>리뷰 목록</h2>
-        <div th:if="${#lists.isEmpty(reviews)}">
-            <p>작성된 리뷰가 없습니다.</p>
-        </div>
-        <table th:unless="${#lists.isEmpty(reviews)}">
-            <thead>
-            <tr>
-                <th>웹툰</th>
-                <th>리뷰 제목</th>
-                <th>별점</th>
-                <th>작성일</th>
-                <th>조회수</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="review : ${reviews}" class="clickable-row" th:attr="data-href=@{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})}">
-                <td>
-                    <div class="webtoon-info">
-                        <img class="webtoon-image" th:src="${review.webtoon.thumbnail_url}" alt="웹툰 썸네일">
-                        <div class="webtoon-details">
-                            <span th:text="${review.webtoon.webtoon_name}">웹툰 제목</span>
-                            <small th:text="${review.webtoon.author}">작가</small>
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="user-review-list">
+                <div th:unless="${#lists.isEmpty(reviews)}">
+                    <div th:each="review, iterStat : ${reviews}" class="user-review-item" th:attr="data-href=@{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})}">
+                        <div class="user-review-number" th:text="${(currentPage - 1) * 10 + iterStat.count}"></div>
+                        <img class="user-review-webtoon-thumbnail" th:src="${review.webtoon.thumbnail_url}" alt="웹툰 썸네일">
+                        <div class="user-review-webtoon-info">
+                            <div class="user-review-webtoon-title" th:text="${review.webtoon.webtoon_name}" th:title="${review.webtoon.webtoon_name}">웹툰 제목</div>
+                            <div class="user-review-webtoon-author" th:text="${review.webtoon.author}" th:title="${review.webtoon.author}">작가</div>
+                            <div class="user-review-rating">
+                                <span th:text="${'★'.repeat(review.starRating) + '☆'.repeat(5 - review.starRating)}"></span>
+                                <span class="user-rating-text" th:text="${review.starRating + '점'}"></span>
+                            </div>
+                        </div>
+                        <div class="user-review-info">
+                            <div class="user-review-title" th:text="${review.title}">리뷰 제목</div>
+                            <div class="user-review-content" th:text="${review.content}">리뷰 내용</div>
+                        </div>
+                        <div class="user-review-meta">
+                            <span class="user-review-date" th:text="${#temporals.format(review.createdDate, 'yyyy/MM/dd HH:mm')}">작성일</span>
+                            <span class="user-review-likes">❤ <span th:text="${review.likeCount}">좋아요 수</span></span>
                         </div>
                     </div>
-                </td>
-                <td th:text="${review.title}">리뷰 제목</td>
-                <td class="rating" th:text="${review.starRating + '/5'}">별점</td>
-                <td th:text="${#temporals.format(review.createdDate, 'yyyy-MM-dd HH:mm')}">작성일</td>
-                <td th:text="${review.viewCnt}">조회수</td>
-            </tr>
-            </tbody>
-        </table>
-        <!-- 페이징 버튼 -->
-        <th:block th:if="${pages != null}">
-            <div class="d-flex justify-content-center">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-sm previous" th:onclick="|location.href='@{/social/users/__${userId}__/reviews(page=${currentPage - 1})}'|" th:disabled="${currentPage == 1}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
-                        </svg>
-                    </button>
-                    <th:block th:each="p : ${#numbers.sequence(1, pages)}">
-                        <button type="button" class="btn btn-sm me-2 pages"
-                                th:text="${p}" th:onclick="|location.href='@{/social/users/__${userId}__/reviews(page=${p})}'|"></button>
-                    </th:block>
-                    <button type="button" class="btn btn-sm next" th:onclick="|location.href='@{/social/users/__${userId}__/reviews(page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
-                        </svg>
-                    </button>
                 </div>
+                <div th:if="${#lists.isEmpty(reviews)}">
+                    <p>아직 작성한 리뷰가 없어요 😅</p>
+                </div>
+                <!-- 페이징 버튼 -->
+                <th:block th:if="${pages != null}">
+                    <div class="d-flex justify-content-center">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm previous" th:onclick="|location.href='@{/social/users/__${userId}__/reviews(page=${currentPage - 1})}'|" th:disabled="${currentPage == 1}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                                </svg>
+                            </button>
+                            <th:block th:each="p : ${#numbers.sequence(1, pages)}">
+                                <button type="button" class="btn btn-sm me-2 pages"
+                                        th:text="${p}" th:onclick="|location.href='@{/social/users/__${userId}__/reviews(page=${p})}'|"></button>
+                            </th:block>
+                            <button type="button" class="btn btn-sm next" th:onclick="|location.href='@{/social/users/__${userId}__/reviews(page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </th:block>
             </div>
-        </th:block>
+        </div>
     </div>
 </div>
+
+<div th:replace="common/footer.html"></div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function($) {
-        $(".clickable-row").click(function() {
+        $(".user-review-item").click(function() {
             window.location = $(this).data("href");
         });
     });
@@ -148,7 +193,6 @@
             });
         });
     });
-</script>
 </script>
 </body>
 </html>
