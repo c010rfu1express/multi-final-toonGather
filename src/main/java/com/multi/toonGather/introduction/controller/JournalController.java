@@ -24,13 +24,38 @@ public class JournalController {
     private JournalServiceImpl journalService;
 
     @GetMapping(value = {"introduction/journalList"})
-    public String journalListAdmin(Model model){
+    public String journalListAdmin(Model model,
+                                   @RequestParam(value = "keyword", required = false) String keyword,
+                                   @RequestParam(value = "page", defaultValue = "0") int page){
 
-        List<JournalDTO> journals = journalService.getAllJournalsWithFiles();
+        int pageSize = 9;
+        int offset = page * pageSize;
+        int totalRows;
+        List<JournalDTO> journals;
 
+        System.out.println("컨트롤러 journalList 에서 keyword=" + keyword + " ,offset=" + offset + " ,pageSize=" + pageSize);
+
+        if (keyword != null && !keyword.isEmpty()){
+            System.out.println("keyword is not empty");
+            totalRows = journalService.countJournalsByTitleKeyword(keyword);
+//            journals = journalService.searchJournalsByTitle(keyword);
+            journals = journalService.searchJournalsByTitle(keyword, offset, pageSize);
+        } else {
+            System.out.println("keyword is null");
+            totalRows = journalService.getTotalCount();
+//            journals = journalService.getAllJournalsWithFiles();
+            journals = journalService.getAllJournalsWithFiles(offset, pageSize);
+        }
+
+        int totalPages = (totalRows % pageSize == 0) ? totalRows / pageSize : (totalRows / pageSize) + 1;
+
+        System.out.println("Total Rows: " + totalRows);
         System.out.println("Retrieved journals: " + journals);  // 로그 출력 : 실제로 데이터가 반환되고 있는지 확인하기 위해, 컨트롤러에서 로그를 출력
 
         model.addAttribute("journals", journals);
+        model.addAttribute("keyword", keyword); // 검색어를 모델에 추가하여 검색 창에 유지
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
 
         return "introduction/journalList";
     }
@@ -56,9 +81,9 @@ public class JournalController {
     }
 
     @GetMapping(value = {"introduction/journal/journalUpdate"})
-    public String journalUpdateForm(@RequestParam(value = "title", required = true) String title, Model model){
+    public String journalUpdateForm(@RequestParam(value = "journalNo", required = true) int journalNo, Model model){
 
-        JournalDTO journalDTO = journalService.getJournalByTitleWithFile(title);
+        JournalDTO journalDTO = journalService.getJournalByNoWithFiles(journalNo);
 
         System.out.println("Retrieved journal 수정페이지 : " + journalDTO);
         model.addAttribute("journal", journalDTO);
@@ -105,11 +130,11 @@ public class JournalController {
 //    }
 
     @PostMapping(value = {"/introduction/deleteJournal"})
-    public String deleteJournal(@RequestBody Map<String, String> requestBody) {
-        String title = requestBody.get("title");
-        if (title != null) {
+    public String deleteJournal(@RequestBody Map<String, Integer> requestBody) {
+        Integer journalNo = requestBody.get("journalNo");
+        if (journalNo != null) {
             try {
-                journalService.deleteJournalByTitle(title);
+                journalService.deleteJournalByNo(journalNo);
                 System.out.println("삭제성공~~~~");
                 return "redirect:/introduction/journalList";
             } catch (Exception e) {
@@ -123,11 +148,13 @@ public class JournalController {
 
 
     @GetMapping(value = {"introduction/journal/journalDetail"})
-    public String journalDetailUser(@RequestParam(value = "title", required = true) String title,
+    public String journalDetailUser(@RequestParam(value = "title", required = false) String title,
+                                    @RequestParam(value = "journalNo", required = false) int journalNo,
                                     HttpSession session,
                                     Model model){
 
-        JournalDTO journalDTO = journalService.getJournalByTitleWithFile(title);
+//        JournalDTO journalDTO = journalService.getJournalByTitleWithFile(title);
+        JournalDTO journalDTO = journalService.getJournalByNoWithFiles(journalNo);
 
         System.out.println("Retrieved journal 상세페이지 : " + journalDTO);
         model.addAttribute("journal", journalDTO);
@@ -166,12 +193,16 @@ public class JournalController {
         return response;
     }
 
-    @GetMapping("/introduction/searchJournals")
-    public String searchJournals(@RequestParam("keyword") String keyword, Model model) {
-        List<JournalDTO> journals = journalService.searchJournalsByTitle(keyword);
-        model.addAttribute("journals", journals);
-        model.addAttribute("keyword", keyword); // 검색어를 모델에 추가하여 검색 창에 유지
-        return "introduction/journalList"; // 소식 목록 페이지로 이동
-    }
+//    @GetMapping("/introduction/searchJournals")
+//    public String searchJournals(@RequestParam("keyword") String keyword, Model model) {
+//        System.out.println("searchJournals 메서드 호출됨");
+//        List<JournalDTO> journals = journalService.searchJournalsByTitle(keyword);
+//        System.out.println("searchJournals 메서드 DTO잘 받아옴");
+//        System.out.println("Retrieved journals: " + journals);  // 로그 출력 : 실제로 데이터가 반환되고 있는지 확인하기 위해, 컨트롤러에서 로그를 출력
+//
+//        model.addAttribute("journals", journals);
+//        model.addAttribute("keyword", keyword); // 검색어를 모델에 추가하여 검색 창에 유지
+//        return "introduction/journalList"; // 소식 목록 페이지로 이동
+//    }
 
 }

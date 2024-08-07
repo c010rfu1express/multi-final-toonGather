@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.multi.toonGather.introduction.model.mapper.JournalMapper">
+
+    <!-- Result map for JournalDTO -->
+    <resultMap id="journalResultMap" type="com.multi.toonGather.introduction.model.dto.JournalDTO">
+        <id property="journalNo" column="journal_no"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="postingDate" column="posting_date"/>
+        <collection property="journalFiles" ofType="com.multi.toonGather.introduction.model.dto.JournalFileDTO">
+            <id property="journalFileNo" column="journal_file_no"/>
+            <result property="journalNo" column="journal_no"/>
+            <result property="fileName" column="file_name"/>
+            <result property="filePath" column="file_path"/>
+            <result property="fileType" column="file_type"/>
+            <result property="uploadDate" column="upload_date"/>
+        </collection>
+    </resultMap>
+
+    <!-- Result map for JournalFileDTO -->
+    <resultMap id="journalFileResultMap" type="com.multi.toonGather.introduction.model.dto.JournalFileDTO">
+        <id property="journalFileNo" column="journal_file_no"/>
+        <result property="journalNo" column="journal_no"/>
+        <result property="fileName" column="file_name"/>
+        <result property="filePath" column="file_path"/>
+        <result property="fileType" column="file_type"/>
+        <result property="uploadDate" column="upload_date"/>
+    </resultMap>
+
+    <!-- Result map for JournalLikeDTO -->
+    <resultMap id="journalLikeResultMap" type="com.multi.toonGather.introduction.model.dto.JournalLikeDTO">
+        <id property="likedNo" column="liked_no"/>
+        <result property="journalNo" column="journal_no"/>
+        <result property="userNo" column="user_no"/>
+        <result property="likedDate" column="liked_date"/>
+    </resultMap>
+
+    <!-- Insert a new journal entry -->
+    <insert id="insertJournal" parameterType="com.multi.toonGather.introduction.model.dto.JournalDTO" useGeneratedKeys="true" keyProperty="journalNo">
+        INSERT INTO in_journal (title, content, posting_date)
+        VALUES (#{title}, #{content}, NOW())
+    </insert>
+
+    <!-- Insert a new journal file -->
+    <insert id="insertJournalFile" parameterType="com.multi.toonGather.introduction.model.dto.JournalFileDTO">
+        INSERT INTO in_journal_files (journal_no, file_name, file_path, file_type, upload_date)
+        VALUES (#{journalNo}, #{fileName}, #{filePath}, #{fileType}, NOW())
+    </insert>
+
+    <!-- Select a journal entry by its number -->
+    <select id="selectJournalByNo" parameterType="int" resultMap="journalResultMap">
+        SELECT j.*, f.journal_file_no, f.file_name, f.file_path, f.file_type, f.upload_date
+        FROM in_journal j
+        LEFT JOIN in_journal_files f ON j.journal_no = f.journal_no
+        WHERE j.journal_no = #{journalNo}
+    </select>
+
+    <!-- Select all journal entries with pagination -->
+    <select id="selectAllJournals" parameterType="map" resultMap="journalResultMap">
+        SELECT j.*, f.journal_file_no, f.file_name, f.file_path, f.file_type, f.upload_date
+        FROM in_journal j
+        LEFT JOIN in_journal_files f ON j.journal_no = f.journal_no
+        ORDER BY j.posting_date DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- Select files associated with a journal entry -->
+    <select id="selectFilesByJournalNo" parameterType="int" resultMap="journalFileResultMap">
+        SELECT * FROM in_journal_files
+        WHERE journal_no = #{journalNo}
+    </select>
+
+    <!-- Update a journal entry -->
+    <update id="updateJournal" parameterType="com.multi.toonGather.introduction.model.dto.JournalDTO">
+        UPDATE in_journal
+        SET title = #{title},
+        content = #{content},
+        posting_date = #{postingDate}
+        WHERE journal_no = #{journalNo}
+    </update>
+
+    <!-- Delete files associated with a journal entry -->
+    <delete id="deleteFiles" parameterType="int">
+        DELETE FROM in_journal_files
+        WHERE journal_no = #{journalNo}
+    </delete>
+
+    <!-- Delete a journal entry -->
+    <delete id="deleteJournal" parameterType="int">
+        DELETE FROM in_journal
+        WHERE journal_no = #{journalNo}
+    </delete>
+
+    <!-- Count the number of likes for a journal entry -->
+    <select id="countLikesByJournalNo" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM in_journal_like
+        WHERE journal_no = #{journalNo}
+    </select>
+
+    <!-- Check if a like exists for a specific journal entry by a user -->
+    <select id="existsByJournalNoAndUserNo" parameterType="map" resultType="boolean">
+        SELECT EXISTS(SELECT 1
+        FROM in_journal_like
+        WHERE journal_no = #{journalNo}
+        AND user_no = #{userNo})
+    </select>
+
+    <!-- Insert a like for a journal entry -->
+    <insert id="insertLike" parameterType="com.multi.toonGather.introduction.model.dto.JournalLikeDTO">
+        INSERT INTO in_journal_like (journal_no, user_no)
+        VALUES (#{journalNo}, #{userNo})
+    </insert>
+
+    <!-- Delete a like for a journal entry -->
+    <delete id="deleteLike" parameterType="map">
+        DELETE FROM in_journal_like
+        WHERE journal_no = #{journalNo}
+        AND user_no = #{userNo}
+    </delete>
+
+    <!-- Find journal entries by title containing a keyword with pagination -->
+    <select id="findByTitleContaining" parameterType="map" resultMap="journalResultMap">
+        SELECT j.*, f.journal_file_no, f.file_name, f.file_path, f.file_type, f.upload_date
+        FROM in_journal j
+        LEFT JOIN in_journal_files f ON j.journal_no = f.journal_no
+        WHERE j.title LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY j.posting_date DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- Get the total count of journal entries -->
+    <select id="getTotalCount" resultType="int">
+        SELECT COUNT(*)
+        FROM in_journal
+    </select>
+
+    <!-- Get the count of journal entries by title containing a keyword -->
+    <select id="countByTitleContaining" parameterType="String" resultType="int">
+        SELECT COUNT(*)
+        FROM in_journal
+        WHERE title LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+</mapper>

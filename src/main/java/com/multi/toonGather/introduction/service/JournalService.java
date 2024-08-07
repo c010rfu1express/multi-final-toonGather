@@ -8,17 +8,38 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface JournalService {
+
     JournalDTO getJournal(int journalNo);
+
     List<JournalFileDTO> getJournalFiles(int journalNo);
-    List<JournalDTO> getAllJournals();
+
+
     JournalDTO getJournalByTitle(String title);
+
     void insertJournal(String title, String content, MultipartFile file, HttpServletRequest request) throws Exception;
-    List<JournalDTO> getAllJournalsWithFiles();
+
+//    List<JournalDTO> getAllJournalsWithFiles();
+    List<JournalDTO> getAllJournalsWithFiles(int offset, int limit);
+
     JournalDTO getJournalByTitleWithFile(String title);
-    public boolean updateJournal(JournalDTO journalDTO, MultipartFile file, HttpServletRequest request) throws Exception;
-    public JournalDTO getJournalByNoWithFiles(int journalNo);
-    public void deleteJournalByTitle(String title) throws Exception;
-    public int countLikesByJournalNo(int journalNo);
-    public boolean toggleLike(int journalNo, int userNo);
-    public List<JournalDTO> searchJournalsByTitle(String keyword);
+
+    boolean updateJournal(JournalDTO journalDTO, MultipartFile file, HttpServletRequest request) throws Exception;
+
+    JournalDTO getJournalByNoWithFiles(int journalNo);
+
+    void deleteJournalByTitle(String title) throws Exception;
+    void deleteJournalByNo(Integer journalNo) throws Exception;
+
+    int countLikesByJournalNo(int journalNo);
+
+    boolean toggleLike(int journalNo, int userNo);
+
+//    List<JournalDTO> searchJournalsByTitle(String keyword);
+    List<JournalDTO> searchJournalsByTitle(String keyword, int offset, int pageSize);
+
+    int getTotalCount();
+
+    int countJournalsByTitleKeyword(String keyword);
+
+
 }
