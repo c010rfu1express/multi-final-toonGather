@@ -24,9 +24,9 @@
             <div class="social-user-profile-placeholder"></div>
             <nav class="social-user-menu">
                 <ul>
-                    <li><a th:href="@{'/social/users/' + ${profileUser.userId} + '/profile'}">홈</a></li>
-                    <li><a th:href="@{'/social/users/' + ${profileUser.userId} + '/reviews'}">리뷰</a></li>
-                    <li><a th:href="@{'/social/users/' + ${profileUser.userId} + '/diaries'}">다이어리</a></li>
+                    <li><a th:href="@{'/social/users/' + ${profileUser.userId} + '/profile'}" th:class="${currentUri.endsWith('/profile')} ? 'active' : ''">홈</a></li>
+                    <li><a th:href="@{'/social/users/' + ${profileUser.userId} + '/reviews'}" th:class="${currentUri.endsWith('/reviews')} ? 'active' : ''">리뷰</a></li>
+                    <li><a th:href="@{'/social/users/' + ${profileUser.userId} + '/diaries'}" th:class="${currentUri.endsWith('/diaries')} ? 'active' : ''">다이어리</a></li>
                 </ul>
             </nav>
         </div>
