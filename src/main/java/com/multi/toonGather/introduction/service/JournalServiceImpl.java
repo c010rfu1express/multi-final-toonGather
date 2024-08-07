@@ -1,8 +1,6 @@
 package com.multi.toonGather.introduction.service;
 
-import com.multi.toonGather.introduction.model.dto.JournalDTO;
-import com.multi.toonGather.introduction.model.dto.JournalFileDTO;
-import com.multi.toonGather.introduction.model.dto.JournalLikeDTO;
+import com.multi.toonGather.introduction.model.dto.*;
 import com.multi.toonGather.introduction.model.mapper.JournalMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,18 +23,18 @@ public class JournalServiceImpl implements JournalService {
     static String projectRootPath = System.getProperty("user.dir");
     private static final String UPLOAD_DIR = Paths.get(projectRootPath, "src", "main", "webapp", "uploadFiles", "introduction").toString();
 
+    @Override
     public JournalDTO getJournal(int journalNo) {
         return journalMapper.selectJournalByNo(journalNo);
     }
 
+    @Override
     public List<JournalFileDTO> getJournalFiles(int journalNo) {
         return journalMapper.selectFilesByJournalNo(journalNo);
     }
 
-    public List<JournalDTO> getAllJournals() {
-        return journalMapper.selectAllJournals();
-    }
 
+    @Override
     public JournalDTO getJournalByTitle(String title) {
         return journalMapper.selectJournalByTitle(title);
     }
@@ -50,50 +48,88 @@ public class JournalServiceImpl implements JournalService {
 
         // Insert the journal and get the generated ID
         journalMapper.insertJournal(journalDTO);
-        JournalFileDTO fileDTO = new JournalFileDTO();
-        // Now the journalDTO should have the generated journalNo
         int journalNo = journalDTO.getJournalNo();
 
-        String root = request.getSession().getServletContext().getRealPath("/");
-        System.out.println("root : " + root);
-        String filePath = root + "/uploadFiles";
 
-        File mkdir = new File(filePath);
-        if (!mkdir.exists()) {
-            mkdir.mkdirs();
+
+        // Only proceed with file handling if a file is provided
+        if (file != null && !file.isEmpty()){
+
+            System.out.println("File object is not null.");
+            System.out.println("File name: " + file.getOriginalFilename());
+            System.out.println("File size: " + file.getSize());
+            System.out.println("File content type: " + file.getContentType());
+
+
+            JournalFileDTO fileDTO = new JournalFileDTO();
+            String root = request.getSession().getServletContext().getRealPath("/");
+            System.out.println("root : " + root);
+            String filePath = root + "/uploadFiles";
+
+            File mkdir = new File(filePath);
+            if (!mkdir.exists()) {
+                mkdir.mkdirs();
+            }
+
+            String originName = file.getOriginalFilename();
+            if (originName != null && !originName.isEmpty()) {
+                String ext = originName.substring(originName.lastIndexOf("."));
+                String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
+
+                // 파일 저장
+                try {
+                    file.transferTo(new File(filePath + "/" + savedName));
+
+                    fileDTO.setJournalNo(journalNo);
+                    fileDTO.setFileName(savedName);
+                    fileDTO.setFilePath(filePath);
+                    fileDTO.setFileType(file.getContentType());
+                    System.out.println("journalfiledto 테스트 :" + fileDTO.toString());
+
+                    // Insert the file information into the database
+                    journalMapper.insertJournalFile(fileDTO);
+                } catch (IOException e) {
+                    System.out.println("File upload error : " + e);
+                    // Clean up the uploaded file if an error occurs
+                    new File(filePath + "/" + savedName).delete();
+                    throw new Exception("File upload failed, rolling back transaction.", e); // 예외를 던져 트랜잭션을 롤백함
+                }
+            } // if origin not null
+
+
+
+
+
+        }else{
+            System.out.println("File object is null");
         }
 
-        String originName = file.getOriginalFilename();
-        if (originName != null && !originName.isEmpty()) {
-            String ext = originName.substring(originName.lastIndexOf("."));
-            String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
-
-            // 파일 저장
-            try {
-                file.transferTo(new File(filePath + "/" + savedName));
-
-                fileDTO.setJournalNo(journalNo);
-                fileDTO.setFileName(savedName);
-            } catch (IOException e) {
-                System.out.println("File upload error : " + e);
-                new File(filePath + "/" + savedName).delete();
-                throw new Exception("File upload failed, rolling back transaction.", e); // 예외를 던져 트랜잭션을 롤백함
-            }
-        } // if origin not null
-
-        fileDTO.setFilePath(filePath);
-        fileDTO.setFileType(file.getContentType());
-        System.out.println("journalfiledto 테스트 :" + fileDTO.toString());
-
-        journalMapper.insertJournalFile(fileDTO);
 
     }
 
-    public List<JournalDTO> getAllJournalsWithFiles() {
+//    public List<JournalDTO> getAllJournalsWithFiles() {
+//        // 모든 소식 가져오기
+//        List<JournalDTO> journals = journalMapper.selectAllJournals();
+////        System.out.println("journals 확인" + journals[0].toString());
+////        System.out.println("journals 확인" + journals[0].journalFiles[0].toString());
+//        // 각 소식에 대한 첨부파일 가져오기
+//        for (JournalDTO journal : journals) {
+//            List<JournalFileDTO> journalFiles = journalMapper.selectFilesByJournalNo(journal.getJournalNo());
+//            journal.setJournalFiles(journalFiles); // JournalDTO에 파일 리스트 설정
+//        }
+//
+//        return journals;
+//
+//
+//    }
+
+    @Override
+    public List<JournalDTO> getAllJournalsWithFiles(int offset, int limit) {
         // 모든 소식 가져오기
-        List<JournalDTO> journals = journalMapper.selectAllJournals();
-//        System.out.println("journals 확인" + journals[0].toString());
-//        System.out.println("journals 확인" + journals[0].journalFiles[0].toString());
+        List<JournalDTO> journals = journalMapper.selectAllJournals(offset, limit);
+        System.out.println("서비스 메소드 에서 offset=" + offset + " ,pageSize=" + limit);
+        System.out.println("serviceimple getalljouranlswithfiels(offset,limit) Retrieved journals: " + journals);
+
         // 각 소식에 대한 첨부파일 가져오기
         for (JournalDTO journal : journals) {
             List<JournalFileDTO> journalFiles = journalMapper.selectFilesByJournalNo(journal.getJournalNo());
@@ -109,6 +145,7 @@ public class JournalServiceImpl implements JournalService {
 //        return journalMapper.selectJournalByTitle(title);
 //    }
 
+    @Override
     public JournalDTO getJournalByTitleWithFile(String title) {
         // 제목으로 소식 가져오기
         JournalDTO journal = journalMapper.selectJournalByTitle(title);
@@ -126,6 +163,7 @@ public class JournalServiceImpl implements JournalService {
     }
 
 
+    @Override
     public JournalDTO getJournalByNoWithFiles(int journalNo) {
         // 번호로 소식 가져오기
         JournalDTO journal = journalMapper.selectJournalByNo(journalNo);
@@ -142,6 +180,7 @@ public class JournalServiceImpl implements JournalService {
         return journal;
     }
 
+    @Override
     @Transactional
     public boolean updateJournal(JournalDTO journalDTO, MultipartFile file, HttpServletRequest request) throws Exception {
 
@@ -210,6 +249,7 @@ public class JournalServiceImpl implements JournalService {
 
     }
 
+    @Override
     @Transactional
     public void deleteJournalByTitle(String title) throws Exception {
         try {
@@ -236,11 +276,38 @@ public class JournalServiceImpl implements JournalService {
         }
     }
 
+    @Override
+    public void deleteJournalByNo(Integer journalNo) throws Exception {
+        try {
+            // journalNo으로 게시글 찾기
+            JournalDTO journal = journalMapper.selectJournalByNo(journalNo);
+            if (journal != null) {
+                // 파일 삭제
+                List<JournalFileDTO> files = journalMapper.selectFilesByJournalNo(journal.getJournalNo());
+                String filePath = UPLOAD_DIR;
+                for (JournalFileDTO file : files) {
+                    File existingFile = new File(filePath + "/" + file.getFileName());
+                    if (existingFile.exists()) {
+                        existingFile.delete();
+                    }
+                }
+                // 파일 정보 삭제
+                journalMapper.deleteFiles(journal.getJournalNo());
+                // 게시글 삭제
+                journalMapper.deleteJournal(journal.getJournalNo());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("Failed to delete journal", e);
+        }
+    }
+
     //아래는 좋아요 관련 service
     public int countLikesByJournalNo(int journalNo) {
         return journalMapper.countLikesByJournalNo(journalNo);
     }
 
+    @Override
     public boolean toggleLike(int journalNo, int userNo) {
         boolean exists = journalMapper.existsByJournalNoAndUserNo(journalNo, userNo);
         if (exists) {
@@ -255,7 +322,38 @@ public class JournalServiceImpl implements JournalService {
         }
     }
 
-    public List<JournalDTO> searchJournalsByTitle(String keyword) {
-        return journalMapper.findByTitleContaining(keyword);
+//    public List<JournalDTO> searchJournalsByTitle(String keyword) {
+//        List<JournalDTO> journals = journalMapper.findByTitleContaining(keyword);
+//
+//        // 각 소식에 대한 첨부파일 가져오기
+//        for (JournalDTO journal : journals) {
+//            List<JournalFileDTO> journalFiles = journalMapper.selectFilesByJournalNo(journal.getJournalNo());
+//            journal.setJournalFiles(journalFiles); // JournalDTO에 파일 리스트 설정
+//        }
+//        return journals;
+//    }
+
+    @Override
+    public List<JournalDTO> searchJournalsByTitle(String keyword, int offset, int pageSize) {
+        List<JournalDTO> journals = journalMapper.findByTitleContaining(keyword, offset, pageSize);
+
+        // 각 소식에 대한 첨부파일 가져오기
+        for (JournalDTO journal : journals) {
+            List<JournalFileDTO> journalFiles = journalMapper.selectFilesByJournalNo(journal.getJournalNo());
+            journal.setJournalFiles(journalFiles); // JournalDTO에 파일 리스트 설정
+        }
+        return journals;
     }
+
+    @Override
+    public int getTotalCount(){
+        return journalMapper.getTotalCount();
+    };
+
+    @Override
+    public int countJournalsByTitleKeyword(String keyword){
+        return journalMapper.countByTitleContaining(keyword);
+    };
+
+
 }
