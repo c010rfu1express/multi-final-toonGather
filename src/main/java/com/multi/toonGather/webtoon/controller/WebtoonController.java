@@ -44,8 +44,13 @@ public class WebtoonController {
     }
 
     @GetMapping(value = {"/","webtoon/test"})
-    public String Webtoon( Model model){
+    public String Webtoon( Model model,@AuthenticationPrincipal CustomUserDetails c){
         LocalDate currentDate = LocalDate.now();
+        if(c!=null){
+            model.addAttribute("isLoggedIn",true);
+        }else {
+            model.addAttribute("isLoggedIn",false);
+        }
 
         // 현재 날짜의 요일 가져오기
         DayOfWeek dayOfWeek = currentDate.getDayOfWeek();
@@ -121,28 +126,11 @@ public class WebtoonController {
             }
         }
         System.out.println(wtUserSaveDTO);
-
-
-        CommentLikeDTO like1 = new CommentLikeDTO();
-        like1.setCommentNo(21);
-        like1.setUserNo(1);
-        like1.setLikeCode(1);  // 좋아요
-
-        CommentLikeDTO like2 = new CommentLikeDTO();
-        like2.setCommentNo(2);
-        like2.setUserNo(2);
-        like2.setLikeCode(-1); // 싫어요
-
-        CommentLikeDTO like3 = new CommentLikeDTO();
-        like3.setCommentNo(23);
-        like3.setUserNo(1);
-        like3.setLikeCode(1);  // 좋아요
-
+        CommentLikeDTO commentLikeDTO=new CommentLikeDTO();
+        commentLikeDTO.setUserNo(userDTO.getUserNo());
         // CommentLikeDTO 객체 리스트 생성 및 초기화
-        List<CommentLikeDTO> commentLikeList = new ArrayList<>();
-        commentLikeList.add(like1);
-        commentLikeList.add(like2);
-        commentLikeList.add(like3);
+        List<CommentLikeDTO> commentLikeList = webToonService.commentLikeList(commentLikeDTO);
+
 
         Map<Integer, CommentLikeDTO> commentLikeMap = commentLikeList.stream()
                 .collect(Collectors.toMap(CommentLikeDTO::getCommentNo, like -> like));
@@ -160,7 +148,13 @@ public class WebtoonController {
     public String searchWebtoon(@RequestParam("search") String search,
                                 @RequestParam("Method") String Method,
                                 TagPageDTO tagPageDTO,
+                                @AuthenticationPrincipal CustomUserDetails c,
                                 Model model) throws UnsupportedEncodingException {
+        if(c!=null){
+            model.addAttribute("isLoggedIn",true);
+        }else {
+            model.addAttribute("isLoggedIn",false);
+        }
 
 
         List<WebtoonDTO>webtoonDTOS=new ArrayList<>();
@@ -483,6 +477,57 @@ public class WebtoonController {
         }
         return kkao;
     }
+
+    @PostMapping("/webtoon/one/like")
+    public ResponseEntity<String> likeComment(@RequestBody Map<String, Object> request,@AuthenticationPrincipal CustomUserDetails c) {
+        int commentNo = Integer.parseInt((String.valueOf(request.get("commentNo"))));
+        boolean isSelected= (boolean) request.get("isSelected");
+
+        try {
+            CommentLikeDTO commentLikeDTO=new CommentLikeDTO();
+            commentLikeDTO.setCommentNo(commentNo);
+            commentLikeDTO.setUserNo(c.getUserDTO().getUserNo());
+
+            if (isSelected) {
+                int result=webToonService.likeDelete(commentLikeDTO);
+                int newLikeCount = -1;
+                return ResponseEntity.ok(String.format("{\"success\": true, \"newLikeCount\": %d}", newLikeCount));
+            } else {
+                int result=webToonService.likeInsert(commentLikeDTO);
+                int newLikeCount = 1;
+                return ResponseEntity.ok(String.format("{\"success\": true, \"newLikeCount\": %d}", newLikeCount));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"success\": false}");
+        }
+    }
+
+    @PostMapping("/webtoon/one/dislike")
+    public ResponseEntity<String> dislikeComment(@RequestBody Map<String, Object> request,@AuthenticationPrincipal CustomUserDetails c) {
+        int commentNo = Integer.parseInt((String.valueOf(request.get("commentNo"))));
+        boolean isSelected= (boolean) request.get("isSelected");
+
+        try {
+            CommentLikeDTO commentLikeDTO=new CommentLikeDTO();
+            commentLikeDTO.setCommentNo(commentNo);
+            commentLikeDTO.setUserNo(c.getUserDTO().getUserNo());
+
+            if (isSelected) {
+                int result=webToonService.dislikeDelete(commentLikeDTO);
+                int newLikeCount = -1;
+                return ResponseEntity.ok(String.format("{\"success\": true, \"newLikeCount\": %d}", newLikeCount));
+            } else {
+                int result=webToonService.dislikeInsert(commentLikeDTO);
+                int newLikeCount = 1;
+                return ResponseEntity.ok(String.format("{\"success\": true, \"newLikeCount\": %d}", newLikeCount));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"success\": false}");
+        }
+    }
+
 
 
 

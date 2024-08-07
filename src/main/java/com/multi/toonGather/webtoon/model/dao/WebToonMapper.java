@@ -36,4 +36,21 @@ public interface WebToonMapper {
     int deleteSave(WtUserSaveDTO wtUserSaveDTO);
 
     int countWebtoon(TagPageDTO tagPageDTO);
+
+    List<CommentLikeDTO> commentLikeList(CommentLikeDTO commentLikeDTO);
+
+ int likeInsert(CommentLikeDTO commentLikeDTO);
+
+ int likeUpdateUP(CommentLikeDTO commentLikeDTO);
+
+ int likeDelet(CommentLikeDTO commentLikeDTO);
+
+ int likeUpdateDown(CommentLikeDTO commentLikeDTO);
+
+ int dislikeInsert(CommentLikeDTO commentLikeDTO);
+
+ int dislikeUpdateUP(CommentLikeDTO commentLikeDTO);
+
+
+ int dislikeUpdateDown(CommentLikeDTO commentLikeDTO);
 }
