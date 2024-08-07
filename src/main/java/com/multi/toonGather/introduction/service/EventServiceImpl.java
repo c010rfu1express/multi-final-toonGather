@@ -162,5 +162,30 @@ public class EventServiceImpl implements EventService {
             throw new Exception("Failed to delete event", e);
         }
     }
+
+    @Override
+    public int countLikesByEventNo(int eventNo) {
+        return eventMapper.countLikesByEventNo(eventNo);
+    }
+
+    @Override
+    public EventCategoryDTO getEventCategoryByCode(int eventCategoryCode) {
+        return eventMapper.getEventCategoryByCode(eventCategoryCode);
+    }
+
+    @Override
+    public boolean toggleLike(int eventNo, int userNo) {
+        boolean exists = eventMapper.existsByEventNoAndUserNo(eventNo, userNo);
+        if (exists) {
+            eventMapper.deleteLike(eventNo, userNo);
+            return false; // 좋아요 취소
+        } else {
+            EventLikeDTO like = new EventLikeDTO();
+            like.setEventNo(eventNo);
+            like.setUserNo(userNo);
+            eventMapper.insertLike(like);
+            return true; // 좋아요 추가
+        }
+    }
 }
 

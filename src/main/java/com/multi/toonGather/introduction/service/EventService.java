@@ -23,4 +23,10 @@ public interface EventService {
     EventDTO getEventByNoWithFiles(int eventNo);
 
     void deleteEventByNo(Integer eventNo) throws Exception;
+
+    int countLikesByEventNo(int eventNo);
+
+    EventCategoryDTO getEventCategoryByCode(int eventCategoryCode);
+
+    boolean toggleLike(int eventNo, int userNo);
 }

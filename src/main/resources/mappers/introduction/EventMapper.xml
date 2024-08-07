@@ -110,4 +110,40 @@
         WHERE event_no = #{eventNo}
     </delete>
 
+    <select id="countLikesByEventNo" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM in_event_like
+        WHERE event_no = #{eventNo}
+    </select>
+
+    <!-- Select event category by code -->
+    <select id="getEventCategoryByCode" parameterType="int" resultMap="eventCategoryResultMap">
+        SELECT *
+<!--        event_category_code AS eventCategoryCode,-->
+<!--        event_category_title AS eventCategoryTitle-->
+        FROM
+        in_event_category
+        WHERE
+        event_category_code = #{eventCategoryCode}
+    </select>
+
+    <!-- Check if like exists -->
+    <select id="existsByEventNoAndUserNo" parameterType="map" resultType="boolean">
+        SELECT EXISTS(SELECT 1
+        FROM in_event_like
+        WHERE event_no = #{eventNo} AND user_no = #{userNo})
+    </select>
+
+    <!-- Delete like -->
+    <delete id="deleteLike" parameterType="map">
+        DELETE FROM in_event_like
+        WHERE event_no = #{eventNo} AND user_no = #{userNo}
+    </delete>
+
+    <!-- Insert like -->
+    <insert id="insertLike" parameterType="com.multi.toonGather.introduction.model.dto.EventLikeDTO">
+        INSERT INTO in_event_like (event_no, user_no, liked_date)
+        VALUES (#{eventNo}, #{userNo}, NOW())
+    </insert>
+
 </mapper>

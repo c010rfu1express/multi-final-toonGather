@@ -3,17 +3,20 @@ package com.multi.toonGather.introduction.controller;
 import com.multi.toonGather.introduction.model.dto.EventCategoryDTO;
 import com.multi.toonGather.introduction.model.dto.EventDTO;
 import com.multi.toonGather.introduction.service.EventServiceImpl;
+import com.multi.toonGather.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -136,6 +139,69 @@ public class EventController {
         return "redirect:/introduction/event/eventList";
     }
 
+    @GetMapping("/introduction/event/eventDetail")
+    public String eventDetail(@RequestParam(value = "eventNo", required = true) int eventNo,
+                                  HttpSession session,
+                                  Model model) {
+
+        // 행사 정보와 첨부 파일 리스트를 가져옵니다.
+        EventDTO eventDTO = eventService.getEventByNoWithFiles(eventNo);
+        System.out.println("Retrieved event 상세페이지 : " + eventDTO);
+
+        // 행사 카테고리 정보를 가져옵니다 (카테고리 코드로 조회)
+        EventCategoryDTO eventCategoryDTO = eventService.getEventCategoryByCode(eventDTO.getEventCategoryCode());
+        String eventCategoryTitle = (eventCategoryDTO != null) ? eventCategoryDTO.getEventCategoryTitle() : "미정";
+        System.out.println("Retrieved event eventCategoryTitle : " + eventCategoryTitle);
+
+        // 날짜 포맷터 설정
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedPostingDate = eventDTO.getPostingDate().format(formatter);
+        String formattedStartDate = eventDTO.getStartDate().format(formatter);
+        String formattedEndDate = eventDTO.getEndDate().format(formatter);
+
+        // 모델에 포맷된 날짜 추가
+        model.addAttribute("event", eventDTO);
+        model.addAttribute("formattedPostingDate", formattedPostingDate);
+        model.addAttribute("formattedStartDate", formattedStartDate);
+        model.addAttribute("formattedEndDate", formattedEndDate);
+        model.addAttribute("eventCategoryTitle", eventCategoryTitle);
 
 
+        // 좋아요 수를 계산합니다.
+        int likeCount = eventService.countLikesByEventNo(eventDTO.getEventNo());
+        model.addAttribute("likeCount", likeCount);
+
+        // 현재 인증된 사용자의 인증 정보를 가져옵니다.
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 인증 정보가 없거나 인증되지 않은 사용자이거나 "anonymousUser"인 경우
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+            return "introduction/event/eventDetail";
+        }
+
+        // 인증된 사용자 정보를 CustomUserDetails로 변환합니다.
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        int userNo = userDetails.getMemNo();
+
+        // userNo를 모델에 추가하여 뷰로 전달합니다.
+        model.addAttribute("userNo", userNo);
+
+        return "introduction/event/eventDetail";
+    }
+
+    @PostMapping(value = "/introduction/event/like")
+    @ResponseBody
+    public Map<String, Integer> toggleLike(@RequestParam("eventNo") int eventNo,
+                                           @RequestParam("userNo") int userNo) {
+        System.out.println("toggleLike 메서드 호출됨");
+        System.out.println("toggleLike method called with eventNo: " + eventNo + " and userNo: " + userNo);
+
+        boolean liked = eventService.toggleLike(eventNo, userNo);  // 좋아요 토글 메서드 호출
+        int likeCount = eventService.countLikesByEventNo(eventNo);  // 좋아요 수 계산
+
+        Map<String, Integer> response = new HashMap<>();
+        response.put("likeCount", likeCount);
+
+        return response;
+    }
 }
