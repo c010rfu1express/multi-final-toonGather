@@ -870,11 +870,16 @@
     </resultMap>
 
     <select id="selectCountMyRctFree" resultType="int">
-        SELECT COUNT(*)
+        SELECT
+        COUNT(*) AS totalCount
         FROM
         rct_free rf
+        LEFT JOIN
+        rct_free_review rfr
+        ON
+        rf.board_no = rfr.board_no
         WHERE
-        writer = #{userNo}
+        rf.writer = #{userNo}
         <if test="searchBy != null and searchTerm != null and searchTerm != ''">
             <choose>
                 <when test="searchBy == 'title'">
@@ -885,32 +890,6 @@
                 </when>
             </choose>
         </if>
-        <choose>
-            <when test="orderBy == 'recentedited'">
-                ORDER BY rf.modified_date DESC
-            </when>
-            <when test="orderBy == 'recent'">
-                ORDER BY rf.board_no DESC
-            </when>
-            <when test="orderBy == 'oldest'">
-                ORDER BY rf.board_no ASC
-            </when>
-            <when test="orderBy == 'topRated'">
-                ORDER BY averageRating DESC
-            </when>
-            <when test="orderBy == 'lowRated'">
-                ORDER BY averageRating ASC
-            </when>
-            <when test="orderBy == 'reviews'">
-                ORDER BY reviewCount DESC
-            </when>
-            <when test="orderBy == 'title'">
-                ORDER BY rf.title ASC
-            </when>
-            <otherwise>
-                ORDER BY rf.modified_date DESC
-            </otherwise>
-        </choose>
     </select>
     <select id="selectListMyRctFree" resultType="MyRctFreeDTO">
         SELECT
