@@ -32,7 +32,7 @@
                         </div>
                         <div class="hot-review-footer">
                             <div class="hot-review-rating">
-                                <span class="stars" th:text="${'★'.repeat(review.starRating)}"></span>
+                                <span class="stars" th:text="${'★'.repeat(review.starRating) + '☆'.repeat(5 - review.starRating)}"></span>
                                 <span class="rating-text" th:text="${review.starRating + '점'}"></span>
                             </div>
                             <div class="hot-review-likes">
@@ -70,12 +70,16 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function(){
-        $('.hot-review-slider').on('wheel', function(e){
-            if(e.originalEvent.deltaY !== 0){
-                e.preventDefault();
-                $(this).scrollLeft($(this).scrollLeft() + e.originalEvent.deltaY);
-            }
+    document.addEventListener('DOMContentLoaded', function() {
+        const sliders = document.querySelectorAll('.webtoon-slider, .hot-review-slider, .user-review-slider');
+
+        sliders.forEach(slider => {
+            slider.addEventListener('wheel', function(e) {
+                if (e.deltaY !== 0) {
+                    e.preventDefault();
+                    this.scrollLeft += e.deltaY;
+                }
+            });
         });
     });
 </script>
