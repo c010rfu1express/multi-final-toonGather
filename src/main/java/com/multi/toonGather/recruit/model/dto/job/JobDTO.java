@@ -14,6 +14,7 @@ public class JobDTO {
     private String content;
     private String location;
     private String img;
+    private String contact;
     private Date created_date;
     private Date modified_date;
     private LocalDate dead_line;
