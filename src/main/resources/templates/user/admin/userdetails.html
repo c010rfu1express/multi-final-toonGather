@@ -217,6 +217,7 @@
             <option value="F">여
             <option value="M">남</select><br>
             생년월일 : <input type="text" th:field="*{dateOfBirth}" oninput="autoFormatDate(this)" placeholder="yyyy-mm-dd"/><br>
+            실명 : <input type="text" th:field="*{realName}" maxlength="20"/><br>
             이메일 : <input type="text" th:field="*{email}"/>
             <button type="button" onclick="checkEmailDuplicate()">중복확인</button>
             <br>
