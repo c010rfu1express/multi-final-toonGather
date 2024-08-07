@@ -44,6 +44,7 @@
 <body>
 <div th:replace="common/menubar.html"></div>
 
+<div class="content-wrapper">
 <div class="container mt-4">
     <div th:replace="social/user/profile-menubar :: profile-menubar"></div>
 
@@ -75,7 +76,7 @@
             <div class="profile-section popular-reviews">
                 <h3>인기 리뷰</h3>
                 <hr>
-                <div class="user-review-slider">
+                <div th:if="${not #lists.isEmpty(popularReviews)}" class="user-review-slider">
                     <div th:each="review : ${popularReviews}" class="review-card" th:onclick="'location.href=\'' + @{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})} + '\''">
                         <img th:src="${review.webtoon.thumbnail_url}" th:alt="${review.webtoon.webtoon_name}">
                         <div class="review-info">
@@ -100,6 +101,9 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div th:if="${#lists.isEmpty(popularReviews)}" class="no-popular-reviews">
+                    아직 작성한 리뷰가 없어요 😅
                 </div>
             </div>
         </div>
@@ -158,7 +162,7 @@
         </div>
     </div>
 </div>
-
+</div>
 <div th:replace="common/footer.html"></div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
