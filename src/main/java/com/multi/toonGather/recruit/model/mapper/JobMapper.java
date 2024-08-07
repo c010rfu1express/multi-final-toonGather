@@ -18,7 +18,7 @@ public interface JobMapper {
 
     JobDTO selectBoard(int no) throws Exception;
 
-    @Update("UPDATE rct_job SET title = #{title}, content = #{content}, location = #{location}, dead_line = #{dead_line}, img = #{img} WHERE board_no = #{board_no}")
+    @Update("UPDATE rct_job SET title = #{title}, content = #{content}, location = #{location}, dead_line = #{dead_line}, img = #{img}, contact = #{contact} WHERE board_no = #{board_no}")
     int updateBoard(JobDTO jobDTO) throws Exception;
 
     @Delete("DELETE FROM rct_job WHERE board_no = #{no}")

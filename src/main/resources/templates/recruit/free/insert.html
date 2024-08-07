@@ -12,14 +12,8 @@
 <body>
 <div th:replace="~{common/menubar}"></div>
 <div layout:fragment="content">
-  <nav class="navbar navbar-expand-md">
-    <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-      <li><a th:href="@{/recruit/creator/choice}" class="nav-link px-2">창작자 등록</a></li>
-      <li><a th:href="@{/recruit/job/list}" class="nav-link px-2">구인/구직</a></li>
-      <li><a th:href="@{/recruit/free/list}" class="nav-link px-2">프리랜서</a></li>
-      <li><a th:href="@{/recruit/ask/list}" class="nav-link px-2">문의 내역</a></li>
-    </ul>
-  </nav>
+  <div th:replace="~{recruit/menubar}"></div>
+  <br>
   <div class="container mt-5">
     <div class="card">
       <div class="card-header">
@@ -52,7 +46,7 @@
             <input id="inicis" name="inicis" type="text" class="form-control" placeholder="포트원 PG사명.CID 형식으로 입력해주세요">
           </div>
           <div class="form-group">
-            <label for="bank">무통장 입금 (필수)</label>
+            <label for="bank_name">무통장 입금 (필수)</label>
             <div style="display: flex; align-items: center;">
               <select id="bank_name" name="bank_name" class="form-control" style="width: 200px;" required>
                 <option value="" disabled selected>은행을 선택하세요</option>
@@ -73,16 +67,22 @@
               </select>
               <input id="account" name="account" type="text" class="form-control" required placeholder="계좌번호를 입력해주세요">
               <br>
-          </div>
-          <div class="form-group text-right">
-            <br>
-            <button type="submit" class="btn btn-primary">등록</button>
-            <a href="#" th:href="@{/recruit/free/list}" class="btn btn-secondary">취소</a>
+            </div>
+            <div class="form-group">
+              <label for="contact">연락처</label>
+              <input type="text" id="contact" name="contact" th:field="*{contact}" class="form-control" required>
+            </div>
+            <div class="form-group text-right">
+              <br>
+              <button type="submit" class="btn btn-primary">등록</button>
+              <a href="#" th:href="@{/recruit/free/list}" class="btn btn-secondary">취소</a>
+            </div>
           </div>
         </form>
       </div>
     </div>
   </div>
 </div>
+<div th:replace="common/footer.html"></div>
 </body>
 </html>
