@@ -34,4 +34,15 @@ public interface WebToonService {
     int deleteSave(WtUserSaveDTO wtUserSaveDTO)throws Exception;
 
     int countWebtoon(TagPageDTO tagPageDTO);
+
+    List<CommentLikeDTO> commentLikeList(CommentLikeDTO commentLikeDTO);
+
+    int likeInsert(CommentLikeDTO commentLikeDTO);
+
+    int likeDelete(CommentLikeDTO commentLikeDTO);
+
+    int dislikeInsert(CommentLikeDTO commentLikeDTO);
+
+    int dislikeDelete(CommentLikeDTO commentLikeDTO);
+
 }
