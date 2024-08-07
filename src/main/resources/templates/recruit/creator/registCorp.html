@@ -3,10 +3,41 @@
 <html layout:decorate="~{layout}">
 <head>
   <meta charset="UTF-8">
-  <title>창작자 등록</title>
+  <title>툰게더 toonGather</title>
   <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+  <style>
+    .text-gray {
+      margin-bottom: 4rem;
+    }
+
+    .text {
+      margin-bottom: 1rem;
+    }
+    .choice {
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      padding: 20px;
+      border: 1px solid #888888;
+    }
+    .text-header {
+      border-bottom: none;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .text-body {
+      padding: 20px;
+      border-radius: 8px;
+    }
+    .info-text {
+      text-align: center;
+      color: #6c757d;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
 <div th:replace="~{common/menubar}"></div>
@@ -14,23 +45,31 @@
   <div th:replace="~{recruit/menubar}"></div>
   <br>
   <div class="container mt-5">
-    <div class="card">
-      <div class="card-header">
-        <h2 class="text-center mb-0">창작자 등록</h2>
+    <div class="choice">
+      <div class="text-header">
+        <h2 class="text-center mb-0">기업 창작자 등록</h2>
+        <hr>
       </div>
-      <div class="card-body">
+      <div class="text-body">
+        <p class="info-text" style="text-align: left;">
+          사업자 등록증 이미지를 제출해 주세요. <br>
+          사업자 등록증에 기재된 사업자 등록 번호를 정확히 입력해 주셔야 합니다. <br>
+          제출된 정보는 자동으로 확인되어 등록이 완료됩니다.
+        </p>
         <form action="#" th:action="@{/recruit/creator/naverocr_result}" id="form" method="post" enctype="multipart/form-data">
           <div class="form-group">
+            <br>
             <div class="form-group">
               <label for="content">사업자 등록 번호</label>
-              <textarea id="regist_no" name="regist_no" class="form-control" required placeholder="OOO-OO-OOOOO 형식으로 작성"></textarea>
+              <input id="regist_no" name="regist_no" class="form-control" required placeholder="000-00-00000 형식으로 작성">
             </div>
-            <span class="input-group-text">IMG</span>
+            <br>
+            <label for="file">IMG</label>
             <input class="form-control" type="file" name="file" required>
           </div>
           <div class="form-group text-right">
             <button type="submit" class="btn btn-primary">등록</button>
-            <a href="#" th:href="@{/recruit/main}" class="btn btn-secondary">취소</a>
+            <a href="#" th:href="@{/recruit/creator/choice}" class="btn btn-secondary">취소</a>
           </div>
         </form>
       </div>

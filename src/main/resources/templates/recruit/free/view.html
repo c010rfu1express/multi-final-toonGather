@@ -4,7 +4,7 @@
 <html layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>게시글 조회</title>
+    <title>툰게더 toonGather</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/starRating.css}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -14,6 +14,28 @@
             text-align: center;
             font-size: 15pt;
         }
+        .choice {
+          background-color: #ffffff;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          border-radius: 8px;
+          padding: 20px;
+          border: 1px solid #888888;
+        }
+        .text-header {
+          border-bottom: none;
+          padding: 20px;
+          border-radius: 8px;
+          margin-bottom: 20px;
+        }
+        .text-body {
+          padding: 20px;
+          border-radius: 8px;
+        }
+        .info-text {
+          text-align: center;
+          color: #6c757d;
+          font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -22,12 +44,11 @@
     <div th:replace="~{recruit/menubar}"></div>
     <br>
     <div class="container">
-        <div class="card">
-            <div class="card-header">
-                <h2 class="text-center mb-4">프리랜서</h2>
-            </div>
-            <hr color="grey">
-            <div class="card-body">
+        <div class="text-header">
+            <h2 class="text-center mb-4">프리랜서</h2>
+        </div>
+        <div class="choice">
+            <div class="text-body">
                 <div>
                     <h3 class="font-bold">[[${free.title}]]</h3>
                 </div>
@@ -118,7 +139,7 @@
                 </form>
             </div>
             <hr>
-            <div th:each="re : ${list}" class="comment" data-comment-id="${re.review_no}">
+            <div th:each="re : ${list}" class="comment" data-comment-id="${re.review_no}" >
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div class="text-left" th:if="${auth_code == 'A'}">
                         <b>#[[${re.review_no}]]</b>&nbsp;
