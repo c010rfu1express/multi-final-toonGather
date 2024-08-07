@@ -186,21 +186,24 @@ public class UserController {
 
     //KHG80
     @GetMapping("/admin/userlist")
-    public String adminUserList(@RequestParam(value = "page", required = false, defaultValue = "1")  int page, Model model) throws Exception {
-
-//        List<UserDTO> users = userService.getUsers();
-//        model.addAttribute("users", users);
+    public String adminUserList(@RequestParam(value = "page", required = false, defaultValue = "1") int page, @RequestParam(value = "searchTerm", defaultValue = "") String searchTerm, @RequestParam(value = "searchBy", defaultValue = "title") String searchBy, @RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, Model model) throws Exception {
 
         //pagination 추가( ref by RecruitController)
+        // pageDTO 세팅(start, end, page) : RequestParam인 page에 의해 모든 것이 결정됨, N=10고정
         PageDTO pageDTO = new PageDTO();
         pageDTO.setPage(page);
         pageDTO.setStartEnd(pageDTO.getPage());
-        try {
-            //추후 재구현해야함(공용 허락받은 후)
-            int count = userService.selectUserCount(pageDTO);
-            int pages = count > 0 ? (int) Math.ceil((double) count / 10) : 1;
 
-            List<UserDTO> users = userService.getUsers(pageDTO);
+        try {
+            // 실제 데이터는 pageDTO.start를 보고 10개를 추출한다. 즉, 모두 현재페이지에 종속된 변수들임
+            // 최후 미션) N=10에서 N=k로 일반화 해보기
+            List<UserDTO> users = userService.getUsers(toggle, orderBy, searchBy, searchTerm, pageDTO);
+
+            //
+            //
+            // view) count: 전체 게시글의 수 / pages: 필요 페이지의 수 / users: 실제 전달 데이터 N개묶음 / page: 현재페이지(ReqParam)
+            int count = userService.selectUserCount(toggle, orderBy, searchBy, searchTerm);
+            int pages = count > 0 ? (int) Math.ceil((double) count / 10) : 1;       //쓰임: view에
 
             model.addAttribute("count", count);
             model.addAttribute("pages", pages);
@@ -214,8 +217,76 @@ public class UserController {
 
 
 
+
+//        List<UserDTO> users = userService.getUsers(toggle, orderBy);
+//        model.addAttribute("users", users);
+        model.addAttribute("isToggled", toggle);
+        model.addAttribute("orderBy", orderBy);
+
+        model.addAttribute("searchBy", searchBy);
+        model.addAttribute("searchTerm", searchTerm);
+
+
+
+
+
         return "/user/admin/userlist";
     }
+
+//    //KHG80 (페이징구현전)
+//    @GetMapping("/admin/userlist")
+//    public String adminUserList(@RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, Model model) throws Exception {
+//
+//        List<UserDTO> users = userService.getUsers(toggle, orderBy);
+//        model.addAttribute("users", users);
+//        model.addAttribute("isToggled", toggle);
+//        model.addAttribute("orderBy", orderBy);
+//
+//
+//
+//
+//
+//        return "/user/admin/userlist";
+//    }
+
+//    //KHG80
+//    @GetMapping("/admin/userlist")
+//    public String adminUserList(@RequestParam(value = "page", required = false, defaultValue = "1")  int page, Model model) throws Exception {
+//
+////        List<UserDTO> users = userService.getUsers();
+////        model.addAttribute("users", users);
+//
+//        //pagination 추가( ref by RecruitController)
+//        // pageDTO 세팅(start, end, page) : RequestParam인 page에 의해 모든 것이 결정됨, N=10고정
+//        PageDTO pageDTO = new PageDTO();
+//        pageDTO.setPage(page);
+//        pageDTO.setStartEnd(pageDTO.getPage());
+//
+//        try {
+//            // 실제 데이터는 pageDTO.start를 보고 10개를 추출한다. 즉, 모두 현재페이지에 종속된 변수들임
+//            // 최후 미션) N=10에서 N=k로 일반화 해보기
+//            List<UserDTO> users = userService.getUsers(pageDTO);
+//
+//            //
+//            //
+//            // view) count: 전체 게시글의 수 / pages: 필요 페이지의 수 / users: 실제 전달 데이터 N개묶음 / page: 현재페이지(ReqParam)
+//            int count = userService.selectUserCount(pageDTO);
+//            int pages = count > 0 ? (int) Math.ceil((double) count / 10) : 1;       //쓰임: view에
+//
+//            model.addAttribute("count", count);
+//            model.addAttribute("pages", pages);
+//            model.addAttribute("users", users);
+//            model.addAttribute("currentPage", page);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println("user list error : " + e);
+//        }
+//
+//
+//
+//        return "/user/admin/userlist";
+//    }
 
     //KHG81-(1)GET
     @GetMapping("/admin/userdetails")

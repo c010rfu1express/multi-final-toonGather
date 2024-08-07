@@ -3,6 +3,12 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.multi.toonGather.user.model.mapper.MyMapper">
+    <sql id="pagingQuery">
+        <if test="pageNDTO.page != null">
+            LIMIT #{pageNDTO.start}, 6
+        </if>
+    </sql>
+
     <resultMap type="MyCsQuestionDTO" id="MyCsQuestionResultMap">
         <id property="csQNo" column="cs_q_no" />
         <result property="csQTitle" column="cs_q_title" />
@@ -15,7 +21,7 @@
         <result property="modifiedDate" column="modified_date" />
     </resultMap>
 
-    <select id="selectListMyCsQuestion" resultType="MyCsQuestionDTO">
+    <sql id="MyCsQuestionQueryA">
         SELECT
         cs_q_no AS csQNo,
         cs_q_title AS csQTitle,
@@ -26,10 +32,22 @@
         cs_q_view_count AS csQViewCount,
         created_date AS createdDate,
         modified_date AS modifiedDate
+    </sql>
+    <sql id="MyCsQuestionQueryB">
         FROM
         cs_question
         WHERE
         cs_q_writer_no = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND cs_q_title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'content'">
+                    AND cs_q_content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <if test="toggleValue == 'Y'">
             AND cs_q_status_code = 'S'
         </if>
@@ -53,6 +71,15 @@
                 ORDER BY modified_date DESC
             </otherwise>
         </choose>
+    </sql>
+    <select id="selectCountMyCsQuestion" resultType="int">
+        SELECT COUNT(*)
+        <include refid="MyCsQuestionQueryB"/>
+    </select>
+    <select id="selectListMyCsQuestion" resultType="MyCsQuestionDTO">
+        <include refid="MyCsQuestionQueryA"/>
+        <include refid="MyCsQuestionQueryB"/>
+        <include refid="pagingQuery"/>
     </select>
 
 
@@ -69,7 +96,7 @@
         <result property="postingDate" column="posting_date" />
     </resultMap>
 
-    <select id="selectListMyInJournal" resultType="MyInJournalDTO">
+    <sql id="MyInJournalQueryA">
         SELECT
         ijl.liked_no AS likedNo,
         ijl.user_no AS userNo,
@@ -78,6 +105,8 @@
         ij.title AS title,
         ij.content AS content,
         ij.posting_date AS postingDate
+    </sql>
+    <sql id="MyInJournalQueryB">
         FROM
         in_journal ij
         INNER JOIN
@@ -86,6 +115,16 @@
         ij.journal_no = ijl.journal_no
         WHERE
         ijl.user_no = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND ij.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'content'">
+                    AND ij.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <choose>
             <when test="orderBy == 'recentliked'">
                 ORDER BY ijl.liked_no DESC
@@ -106,6 +145,15 @@
                 ORDER BY ijl.liked_no DESC
             </otherwise>
         </choose>
+    </sql>
+    <select id="selectCountMyInJournal" resultType="int">
+        SELECT COUNT(*)
+        <include refid="MyInJournalQueryB"/>
+    </select>
+    <select id="selectListMyInJournal" resultType="MyInJournalDTO">
+        <include refid="MyInJournalQueryA"/>
+        <include refid="MyInJournalQueryB"/>
+        <include refid="pagingQuery"/>
     </select>
 
 
@@ -121,7 +169,7 @@
         <result property="deadLine" column="dead_line" jdbcType="TIMESTAMP" />
     </resultMap>
 
-    <select id="selectListMyRctJob" resultType="MyRctJobDTO">
+    <sql id="MyRctJobQueryA">
         SELECT
         board_no AS boardNo,
         writer AS writer,
@@ -132,10 +180,25 @@
         created_date AS createdDate,
         modified_date AS modifiedDate,
         dead_line AS deadLine
+    </sql>
+    <sql id="MyRctJobQueryB">
         FROM
         rct_job
         WHERE
         writer = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'content'">
+                    AND content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'location'">
+                    AND location LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <if test="toggleValue == 'Y'">
             AND dead_line &lt; NOW()
         </if>
@@ -159,8 +222,16 @@
                 ORDER BY modified_date DESC
             </otherwise>
         </choose>
+    </sql>
+    <select id="selectCountMyRctJob" resultType="int">
+        SELECT COUNT(*)
+        <include refid="MyRctJobQueryB"/>
     </select>
-
+    <select id="selectListMyRctJob" resultType="MyRctJobDTO">
+        <include refid="MyRctJobQueryA"/>
+        <include refid="MyRctJobQueryB"/>
+        <include refid="pagingQuery"/>
+    </select>
 
     <resultMap type="MySoReviewDTO" id="MySoReviewResultMap">
         <id property="likeNo" column="like_no" />
@@ -176,8 +247,7 @@
         <result property="modifiedDate" column="modified_date" />
         <result property="viewCnt" column="view_cnt" />
     </resultMap>
-
-    <select id="selectListMySoReview" resultType="MySoReviewDTO">
+    <sql id="MySoReviewQueryA">
         SELECT
         srl.like_no AS likeNo,
         srl.review_no AS reviewNo,
@@ -191,14 +261,26 @@
         sr.created_date AS createdDate,
         sr.modified_date AS modifiedDate,
         sr.view_cnt AS viewCnt
+    </sql>
+    <sql id="MySoReviewQueryB">
         FROM
         so_review sr
         INNER JOIN
         so_review_likes srl
         ON
-        sr.writer_no = srl.liked_user
+        sr.review_no = srl.review_no
         WHERE
         srl.liked_user = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'rTitle'">
+                    AND sr.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'rContent'">
+                    AND sr.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <choose>
             <when test="orderBy == 'recentliked'">
                 ORDER BY srl.like_no DESC
@@ -228,6 +310,15 @@
                 ORDER BY srl.like_no DESC
             </otherwise>
         </choose>
+    </sql>
+    <select id="selectCountMySoReview" resultType="int">
+        SELECT COUNT(*)
+        <include refid="MySoReviewQueryB"/>
+    </select>
+    <select id="selectListMySoReview" resultType="MySoReviewDTO">
+        <include refid="MySoReviewQueryA"/>
+        <include refid="MySoReviewQueryB"/>
+        <include refid="pagingQuery"/>
     </select>
 
 
@@ -247,8 +338,7 @@
         <result property="diaryModifiedDate" column="diary_modified_date"/>
         <result property="viewCnt" column="view_cnt"/>
     </resultMap>
-
-    <select id="selectListMySoDiary" resultType="MySoDiaryDTO">
+    <sql id="MySoDiaryQueryA">
         SELECT
         sdc.comment_no AS commentNo,
         sdc.diary_no AS diaryNo,
@@ -264,6 +354,8 @@
         sd.created_date AS diaryCreatedDate,
         sd.modified_date AS diaryModifiedDate,
         sd.view_cnt AS viewCnt
+    </sql>
+    <sql id="MySoDiaryQueryB">
         FROM
         so_diary sd
         INNER JOIN
@@ -272,6 +364,19 @@
         sd.diary_no = sdc.diary_no
         WHERE
         sdc.commenter_no = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'comment'">
+                    AND sdc.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'dTitle'">
+                    AND sd.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'dContent'">
+                    AND sd.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <choose>
             <when test="orderBy == 'recentposted'">
                 ORDER BY sdc.comment_no DESC
@@ -295,6 +400,15 @@
                 ORDER BY sdc.comment_no DESC
             </otherwise>
         </choose>
+    </sql>
+    <select id="selectCountMySoDiary" resultType="int">
+        SELECT COUNT(*)
+        <include refid="MySoDiaryQueryB"/>
+    </select>
+    <select id="selectListMySoDiary" resultType="MySoDiaryDTO">
+        <include refid="MySoDiaryQueryA"/>
+        <include refid="MySoDiaryQueryB"/>
+        <include refid="pagingQuery"/>
     </select>
 
 
@@ -318,8 +432,7 @@
         <result property="content" column="content" />
         <result property="postingDate" column="posting_date" />
     </resultMap>
-
-    <select id="selectListMyInEvent" resultType="MyInEventDTO">
+    <sql id="MyInEventQueryA">
         SELECT
         iel.liked_no AS likedNo,
         iel.user_no AS userNo,
@@ -336,12 +449,30 @@
         ie.coordinates AS coordinates,
         ie.content AS content,
         ie.posting_date AS postingDate
+    </sql>
+    <sql id="MyInEventQueryB">
         FROM
         in_event ie
         INNER JOIN
         in_event_like iel ON ie.event_no = iel.event_no
         WHERE
         iel.user_no = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND ie.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'content'">
+                    AND ie.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'place'">
+                    AND ie.place LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'address'">
+                    AND ie.address LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <if test="toggleValue == 'Y'">
             AND end_date &gt; NOW()
         </if>
@@ -365,8 +496,16 @@
                 ORDER BY iel.liked_no DESC
             </otherwise>
         </choose>
+    </sql>
+    <select id="selectCountMyInEvent" resultType="int">
+        SELECT COUNT(*)
+        <include refid="MyInEventQueryB"/>
     </select>
-
+    <select id="selectListMyInEvent" resultType="MyInEventDTO">
+        <include refid="MyInEventQueryA"/>
+        <include refid="MyInEventQueryB"/>
+        <include refid="pagingQuery"/>
+    </select>
 
     <resultMap type="MyWtWebtoonDTO" id="MyWtWebtoonResultMap">
         <id property="saveNo" column="save_no"/>
@@ -383,7 +522,7 @@
         <result property="count" column="count"/>
     </resultMap>
 
-    <select id="selectListMyWtWebtoon" resultType="MyWtWebtoonDTO">
+    <sql id="MyWtWebtoonQueryA">
         SELECT
         wu.save_no AS saveNo,
         wu.webtoon_no AS webtoonNo,
@@ -397,6 +536,8 @@
         w.genre AS genre,
         w.tags AS tags,
         w.count AS count
+    </sql>
+    <sql id="MyWtWebtoonQueryB">
         FROM
         webtoon w
         INNER JOIN
@@ -405,6 +546,22 @@
         w.webtoon_no = wu.webtoon_no
         WHERE
         wu.user_no = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND w.webtoon_name LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'author'">
+                    AND w.author LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'genre'">
+                    AND w.genre LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'tag'">
+                    AND w.tags LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <choose>
             <when test="orderBy == 'recent'">
                 ORDER BY wu.save_no DESC
@@ -422,6 +579,15 @@
                 ORDER BY wu.save_no DESC
             </otherwise>
         </choose>
+    </sql>
+    <select id="selectCountMyWtWebtoon" resultType="int">
+        SELECT COUNT(*)
+        <include refid="MyWtWebtoonQueryB"/>
+    </select>
+    <select id="selectListMyWtWebtoon" resultType="MyWtWebtoonDTO">
+        <include refid="MyWtWebtoonQueryA"/>
+        <include refid="MyWtWebtoonQueryB"/>
+        <include refid="pagingQuery"/>
     </select>
 
     <resultMap type="MyWtCommentDTO" id="MyWtCommentResultMap">
@@ -441,7 +607,7 @@
         <result property="count" column="count"/>
     </resultMap>
 
-    <select id="selectListMyWtComment" resultType="MyWtCommentDTO">
+    <sql id="MyWtCommentQueryA">
         SELECT
         c.comment_no AS commentNo,
         c.webtoon_no AS webtoonNo,
@@ -458,6 +624,8 @@
         w.genre AS genre,
         w.tags AS tags,
         w.count AS count
+    </sql>
+    <sql id="MyWtCommentQueryB">
         FROM
         webtoon w
         INNER JOIN
@@ -466,6 +634,25 @@
         w.webtoon_no = c.webtoon_no
         WHERE
         c.user_no = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'comment'">
+                    AND c.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'title'">
+                    AND w.webtoon_name LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'author'">
+                    AND w.author LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'genre'">
+                    AND w.genre LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'tag'">
+                    AND w.tags LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <choose>
             <when test="orderBy == 'recent'">
                 ORDER BY c.comment_no DESC
@@ -483,6 +670,15 @@
                 ORDER BY c.comment_no DESC
             </otherwise>
         </choose>
+    </sql>
+    <select id="selectCountMyWtComment" resultType="int">
+        SELECT COUNT(*)
+        <include refid="MyWtCommentQueryB"/>
+    </select>
+    <select id="selectListMyWtComment" resultType="MyWtCommentDTO">
+        <include refid="MyWtCommentQueryA"/>
+        <include refid="MyWtCommentQueryB"/>
+        <include refid="pagingQuery"/>
     </select>
 
 <!--    MyRctApplicationDTO 클래스를 사용하는 경우가 2가지임을 체크하기 (1)내가지원한목록 (2)내가올린공고_지원서 시작-->
@@ -505,8 +701,7 @@
         <result property="jobModifiedDate" column="modified_date"/>
         <result property="jobDeadLine" column="dead_line"/>
     </resultMap>
-
-    <select id="selectListMyRctApplication" resultType="MyRctApplicationDTO">
+    <sql id="MyRctApplicationQueryA">
         SELECT
         rja.apply_no AS applyNo,
         rja.board_no AS boardNo,
@@ -525,6 +720,8 @@
         rj.created_date AS jobCreatedDate,
         rj.modified_date AS jobModifiedDate,
         rj.dead_line AS jobDeadLine
+    </sql>
+    <sql id="MyRctApplicationQueryB">
         FROM
         rct_job rj
         INNER JOIN
@@ -533,6 +730,25 @@
         rj.board_no = rja.board_no
         WHERE
         rja.writer = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND rja.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'content'">
+                    AND rja.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'jTitle'">
+                    AND rj.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'jContent'">
+                    AND rj.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'jLocation'">
+                    AND rj.location LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <if test="toggleValue == 'Y'">
             AND rj.dead_line &lt; NOW()
         </if>
@@ -562,10 +778,18 @@
                 ORDER BY rja.apply_no DESC
             </otherwise>
         </choose>
+    </sql>
+    <select id="selectCountMyRctApplication" resultType="int">
+        SELECT COUNT(*)
+        <include refid="MyRctApplicationQueryB"/>
+    </select>
+    <select id="selectListMyRctApplication" resultType="MyRctApplicationDTO">
+        <include refid="MyRctApplicationQueryA"/>
+        <include refid="MyRctApplicationQueryB"/>
+        <include refid="pagingQuery"/>
     </select>
 
-
-    <select id="selectListMyRctJobApplication" resultType="MyRctApplicationDTO">
+    <sql id="MyRctJobApplicationQueryA">
         SELECT
         rja.apply_no AS applyNo,
         rja.board_no AS boardNo,
@@ -584,6 +808,8 @@
         rj.created_date AS jobCreatedDate,
         rj.modified_date AS jobModifiedDate,
         rj.dead_line AS jobDeadLine
+    </sql>
+    <sql id="MyRctJobApplicationQueryB">
         FROM
         rct_job rj
         INNER JOIN
@@ -592,6 +818,16 @@
         rj.board_no = rja.board_no
         WHERE
         rja.board_no = #{boardNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND rja.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'content'">
+                    AND rja.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <if test="toggleValue == 'Y'">
             AND rja.check_status = false
         </if>
@@ -606,6 +842,15 @@
                 ORDER BY rja.apply_no DESC
             </otherwise>
         </choose>
+    </sql>
+    <select id="selectCountMyRctJobApplication" resultType="int">
+        SELECT COUNT(*)
+        <include refid="MyRctJobApplicationQueryB"/>
+    </select>
+    <select id="selectListMyRctJobApplication" resultType="MyRctApplicationDTO">
+        <include refid="MyRctJobApplicationQueryA"/>
+        <include refid="MyRctJobApplicationQueryB"/>
+        <include refid="pagingQuery"/>
     </select>
 
     <!--    MyRctApplicationDTO 클래스를 사용하는 경우가 2가지임을 체크하기 (1)내가지원한목록 (2)내가올린공고_지원서 끝-->
@@ -624,6 +869,49 @@
         <result property="reviewCount" column="review_count"/>
     </resultMap>
 
+    <select id="selectCountMyRctFree" resultType="int">
+        SELECT COUNT(*)
+        FROM
+        rct_free rf
+        WHERE
+        writer = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND rf.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'content'">
+                    AND rf.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
+        <choose>
+            <when test="orderBy == 'recentedited'">
+                ORDER BY rf.modified_date DESC
+            </when>
+            <when test="orderBy == 'recent'">
+                ORDER BY rf.board_no DESC
+            </when>
+            <when test="orderBy == 'oldest'">
+                ORDER BY rf.board_no ASC
+            </when>
+            <when test="orderBy == 'topRated'">
+                ORDER BY averageRating DESC
+            </when>
+            <when test="orderBy == 'lowRated'">
+                ORDER BY averageRating ASC
+            </when>
+            <when test="orderBy == 'reviews'">
+                ORDER BY reviewCount DESC
+            </when>
+            <when test="orderBy == 'title'">
+                ORDER BY rf.title ASC
+            </when>
+            <otherwise>
+                ORDER BY rf.modified_date DESC
+            </otherwise>
+        </choose>
+    </select>
     <select id="selectListMyRctFree" resultType="MyRctFreeDTO">
         SELECT
         rf.board_no AS boardNo,
@@ -644,6 +932,16 @@
         rf.board_no = rfr.board_no
         WHERE
         rf.writer = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND rf.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'content'">
+                    AND rf.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         GROUP BY
         rf.board_no, rf.writer, rf.title, rf.content, rf.img, rf.price, rf.created_date, rf.modified_date
         <choose>
@@ -672,7 +970,9 @@
                 ORDER BY rf.modified_date DESC
             </otherwise>
         </choose>
-
+        <if test="pageNDTO.page != null">
+            LIMIT #{pageNDTO.start}, 6
+        </if>
     </select>
 
     <resultMap type="MyRctCreatorDTO" id="MyRctCreatorResultMap">
@@ -685,7 +985,7 @@
         <result property="typeCode" column="type_code"/>
     </resultMap>
 
-    <select id="selectListMyRctCreator" resultType="MyRctCreatorDTO">
+    <sql id="MyRctCreatorQueryA">
         SELECT
         creator_no AS creatorNo,
         member_no AS memberNo,
@@ -694,10 +994,20 @@
         regist_no AS registNo,
         status AS status,
         type_code AS typeCode
+    </sql>
+    <sql id="MyRctCreatorQueryB">
         FROM
         rct_creator_regist
         WHERE
         member_no = #{userNo}
+    </sql>
+    <select id="selectCountMyRctCreator" resultType="int">
+        SELECT COUNT(*)
+        <include refid="MyRctCreatorQueryB"/>
+    </select>
+    <select id="selectListMyRctCreator" resultType="MyRctCreatorDTO">
+        <include refid="MyRctCreatorQueryA"/>
+        <include refid="MyRctCreatorQueryB"/>
     </select>
 
     <resultMap type="MyRctOrderDTO" id="MyRctOrderResultMap">
@@ -710,7 +1020,7 @@
         <result property="status" column="status"/>
     </resultMap>
 
-    <select id="selectListMyRctOrder" resultType="MyRctOrderDTO">
+    <sql id="MyRctOrderQueryA">
         SELECT
         order_no AS orderNo,
         member_no AS memberNo,
@@ -719,10 +1029,19 @@
         price AS price,
         ordered_date AS orderedDate,
         status AS status
+    </sql>
+    <sql id="MyRctOrderQueryB">
         FROM
         rct_free_pay
         WHERE
         member_no = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'boardNo'">
+                    AND board_no LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <if test="toggleValue == 'Y'">
             AND status = 'C'
         </if>
@@ -743,8 +1062,16 @@
                 ORDER BY order_no DESC
             </otherwise>
         </choose>
+    </sql>
+    <select id="selectCountMyRctOrder" resultType="int">
+        SELECT COUNT(*)
+        <include refid="MyRctOrderQueryB"/>
     </select>
-
+    <select id="selectListMyRctOrder" resultType="MyRctOrderDTO">
+        <include refid="MyRctOrderQueryA"/>
+        <include refid="MyRctOrderQueryB"/>
+        <include refid="pagingQuery"/>
+    </select>
 
     <resultMap type="MyInMerchanDTO" id="MyInMerchanResultMap">
         <id property="likedNo" column="liked_no"/>
@@ -761,7 +1088,7 @@
         <result property="postingDate" column="posting_date"/>
     </resultMap>
 
-    <select id="selectListMyInMerchan" resultType="MyInMerchanDTO">
+    <sql id="MyInMerchanQueryA">
         SELECT
         iml.liked_no AS likedNo,
         iml.merchan_no AS merchanNo,
@@ -774,6 +1101,8 @@
         im.merchan_info AS merchanInfo,
         im.content AS content,
         im.posting_date AS postingDate
+    </sql>
+    <sql id="MyInMerchanQueryB">
         FROM
         in_merchan im
         INNER JOIN
@@ -782,6 +1111,19 @@
         im.merchan_no = iml.merchan_no
         WHERE
         iml.user_no = #{userNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND im.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'info'">
+                    AND im.merchan_info LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'content'">
+                    AND im.content LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
         <if test="toggleValue == 'Y'">
             AND im.discount_price > 1000
         </if>
@@ -811,6 +1153,15 @@
                 ORDER BY iml.liked_no DESC
             </otherwise>
         </choose>
+    </sql>
+    <select id="selectCountMyInMerchan" resultType="int">
+        SELECT COUNT(*)
+        <include refid="MyInMerchanQueryB"/>
+    </select>
+    <select id="selectListMyInMerchan" resultType="MyInMerchanDTO">
+        <include refid="MyInMerchanQueryA"/>
+        <include refid="MyInMerchanQueryB"/>
+        <include refid="pagingQuery"/>
     </select>
 
 </mapper>
