@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.multi.toonGather.introduction.model.mapper.EventMapper">
+
+    <!-- Result map for EventDTO -->
+    <resultMap id="eventResultMap" type="com.multi.toonGather.introduction.model.dto.EventDTO">
+        <id property="eventNo" column="event_no"/>
+        <result property="title" column="title"/>
+        <result property="eventCategoryCode" column="event_category_code"/>
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="cost" column="cost"/>
+        <result property="site" column="site"/>
+        <result property="place" column="place"/>
+        <result property="address" column="address"/>
+        <result property="coordinates" column="coordinates"/>
+        <result property="content" column="content"/>
+        <result property="postingDate" column="posting_date"/>
+        <collection property="eventFiles" ofType="com.multi.toonGather.introduction.model.dto.EventFileDTO">
+            <id property="eventFileNo" column="event_file_no"/>
+            <result property="eventNo" column="event_no"/>
+            <result property="fileName" column="file_name"/>
+            <result property="filePath" column="file_path"/>
+            <result property="fileType" column="file_type"/>
+            <result property="uploadDate" column="upload_date"/>
+        </collection>
+    </resultMap>
+
+    <!-- Result map for EventFileDTO -->
+    <resultMap id="eventFileResultMap" type="com.multi.toonGather.introduction.model.dto.EventFileDTO">
+        <id property="eventFileNo" column="event_file_no"/>
+        <result property="eventNo" column="event_no"/>
+        <result property="fileName" column="file_name"/>
+        <result property="filePath" column="file_path"/>
+        <result property="fileType" column="file_type"/>
+        <result property="uploadDate" column="upload_date"/>
+    </resultMap>
+
+    <!-- Result map for EventLikeDTO -->
+    <resultMap id="eventLikeResultMap" type="com.multi.toonGather.introduction.model.dto.EventLikeDTO">
+        <id property="likedNo" column="liked_no"/>
+        <result property="eventNo" column="event_no"/>
+        <result property="userNo" column="user_no"/>
+        <result property="likedDate" column="liked_date"/>
+    </resultMap>
+
+    <!-- Result map for EventCategoryDTO -->
+    <resultMap id="eventCategoryResultMap" type="com.multi.toonGather.introduction.model.dto.EventCategoryDTO">
+        <id property="eventCategoryCode" column="event_category_code"/>
+        <result property="eventCategoryTitle" column="event_category_title"/>
+    </resultMap>
+
+    <!-- Select all events with pagination -->
+<!--    <select id="selectAllEvents" parameterType="map" resultMap="eventResultMap">-->
+<!--        SELECT e.*, c.event_category_title-->
+<!--        FROM in_event e-->
+<!--        LEFT JOIN in_event_category c ON e.event_category_code = c.event_category_code-->
+<!--        ORDER BY e.posting_date DESC-->
+<!--        LIMIT #{limit} OFFSET #{offset}-->
+<!--    </select>-->
+    <select id="selectAllEvents" parameterType="map" resultMap="eventResultMap">
+        SELECT *
+        FROM in_event
+        ORDER BY posting_date DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+
+    <!-- Select files associated with a specific event -->
+    <select id="selectFilesByEventNo" parameterType="int" resultMap="eventFileResultMap">
+        SELECT *
+        FROM in_event_files
+        WHERE event_no = #{eventNo}
+    </select>
+
+    <select id="getTotalCount" resultType="int">
+        SELECT COUNT(*)
+        FROM in_event
+    </select>
+
+    <select id="selectAllEventCategories" resultMap="eventCategoryResultMap">
+        SELECT * FROM in_event_category
+    </select>
+
+    <insert id="insertEvent" parameterType="com.multi.toonGather.introduction.model.dto.EventDTO" useGeneratedKeys="true" keyProperty="eventNo">
+        INSERT INTO in_event (title, content, event_category_code, cost, place, address, coordinates, start_date, end_date, site, posting_date)
+        VALUES (#{title}, #{content}, #{eventCategoryCode}, #{cost}, #{place}, #{address}, #{coordinates}, #{startDate}, #{endDate}, #{site}, NOW());
+    </insert>
+
+    <insert id="insertEventFile" parameterType="com.multi.toonGather.introduction.model.dto.EventFileDTO">
+        INSERT INTO in_event_files (event_no, file_name, file_path, file_size, file_type)
+        VALUES (#{eventNo}, #{fileName}, #{filePath}, #{fileSize}, #{fileType});
+    </insert>
+
+</mapper>
