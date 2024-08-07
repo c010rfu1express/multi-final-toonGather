@@ -24,11 +24,15 @@
     </resultMap>
 
     <resultMap id="wtUserSavetMap" type="com.multi.toonGather.webtoon.model.dto.WtUserSaveDTO">
-
         <id property="saveNo" column="save_no"/>
         <result property="webtoonNo" column="webtoon_no"/>
         <result property="userNo" column="user_no"/>
+    </resultMap>
 
+    <resultMap id="CommentLikeResultMap" type="com.multi.toonGather.webtoon.model.dto.CommentLikeDTO">
+        <id property="commentNo" column="comment_no" />
+        <result property="userNo" column="user_no" />
+        <result property="likeCode" column="like_code" />
     </resultMap>
 
 <select id="WebToonSelectOne" parameterType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO" resultType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO">
@@ -139,6 +143,53 @@
     <delete id="deleteSave">
         DELETE FROM wt_user_save WHERE save_no = #{saveNo}
     </delete>
+
+    <select id="commentLikeList" resultMap="CommentLikeResultMap">
+        SELECT *
+        FROM wt_comment_like
+        WHERE user_no = #{userNo}
+    </select>
+
+    <insert id="likeInsert">
+        INSERT INTO wt_comment_like (comment_no, user_no,like_code)
+        VALUES (#{commentNo}, #{userNo},1)
+    </insert>
+
+    <update id="likeUpdateUP">
+        UPDATE wt_comment
+        SET liked = liked + 1
+        WHERE comment_no = #{commentNo};
+    </update>
+
+    <delete id="likeDelet">
+        DELETE FROM wt_comment_like
+        WHERE comment_no = #{commentNo}
+        AND user_no = #{userNo};
+    </delete>
+
+    <update id="likeUpdateDown">
+        UPDATE wt_comment
+        SET liked = liked - 1
+        WHERE comment_no = #{commentNo};
+    </update>
+
+
+    <insert id="dislikeInsert">
+        INSERT INTO wt_comment_like (comment_no, user_no,like_code)
+        VALUES (#{commentNo}, #{userNo},-1)
+    </insert>
+
+    <update id="dislikeUpdateUP">
+        UPDATE wt_comment
+        SET dislike = dislike + 1
+        WHERE comment_no = #{commentNo};
+    </update>
+
+    <update id="dislikeUpdateDown">
+        UPDATE wt_comment
+        SET dislike = dislike - 1
+        WHERE comment_no = #{commentNo};
+    </update>
 
 
 </mapper>
