@@ -16,14 +16,8 @@
 <body>
 <div th:replace="~{common/menubar}"></div>
 <div layout:fragment="content">
-  <nav class="navbar navbar-expand-md">
-    <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-      <li><a th:href="@{/recruit/creator/choice}" class="nav-link px-2">창작자 등록</a></li>
-      <li><a th:href="@{/recruit/job/list}" class="nav-link px-2">구인/구직</a></li>
-      <li><a th:href="@{/recruit/free/list}" class="nav-link px-2">프리랜서</a></li>
-      <li><a th:href="@{/recruit/ask/list}" class="nav-link px-2">문의 내역</a></li>
-    </ul>
-  </nav>
+  <div th:replace="~{recruit/menubar}"></div>
+  <br>
   <div class="container mt-5">
     <div class="card">
       <div class="card-header">
@@ -59,7 +53,7 @@
           <div class="form-group">
             <br>
             <h3 class="font-bold">의뢰인 정보</h3>
-            <span >이름</span>
+            <span >입금자 명</span>
             <input id="name" name="name" type="text" class="form-control" required th:value="${name}" maxlength="20">
             <br>
             <span >연락처</span>
@@ -186,11 +180,11 @@
       buyer_tel: document.getElementById('phone').value
     }, function (rsp) { // 콜백 함수
       if (rsp.success) {
-        alert("완료 -> imp_uid : " + rsp.imp_uid + " / merchant_uid(orderKey) : " + rsp.merchant_uid);
+        alert("결제 성공");
         // 결제 성공 후 폼 제출
         document.getElementById('form').submit();
       } else {
-        alert("실패 : 코드(" + rsp.error_code + ") / 메세지(" + rsp.error_msg + ")");
+        alert("결제 실패 : " + rsp.error_msg);
       }
     });
   }
@@ -208,14 +202,15 @@
       buyer_tel: document.getElementById('phone').value
     }, function (rsp) { // 콜백 함수
       if (rsp.success) {
-        alert("완료 -> imp_uid : " + rsp.imp_uid + " / merchant_uid(orderKey) : " + rsp.merchant_uid);
+        alert("결제 성공");
         // 결제 성공 후 폼 제출
         document.getElementById('form').submit();
       } else {
-        alert("실패 : 코드(" + rsp.error_code + ") / 메세지(" + rsp.error_msg + ")");
+        alert("결제 실패 : " + rsp.error_msg);
       }
     });
   }
 </script>
+<div th:replace="common/footer.html"></div>
 </body>
 </html>

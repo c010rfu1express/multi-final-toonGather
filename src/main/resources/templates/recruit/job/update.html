@@ -10,14 +10,8 @@
 <body>
 <div th:replace="~{common/menubar}"></div>
 <div layout:fragment="content">
-    <nav class="navbar navbar-expand-md">
-        <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-            <li><a th:href="@{/recruit/creator/choice}" class="nav-link px-2">창작자 등록</a></li>
-            <li><a th:href="@{/recruit/job/list}" class="nav-link px-2">구인/구직</a></li>
-            <li><a th:href="@{/recruit/free/list}" class="nav-link px-2">프리랜서</a></li>
-            <li><a th:href="@{/recruit/ask/list}" class="nav-link px-2">문의 내역</a></li>
-        </ul>
-    </nav>
+    <div th:replace="~{recruit/menubar}"></div>
+    <br>
     <div class="container">
         <h3>게시글 수정 페이지</h3>
         <hr>
@@ -25,36 +19,38 @@
         <form th:action="@{/recruit/job/update}" method="post" enctype="multipart/form-data">
             <input type="hidden" name="board_no" th:value="${job.board_no}" readonly>
             <input type="hidden" name="existingImage" th:value="${job.img}">
-                <div class="form-group">
-                    <td class="t1">게시글 제목 :</td>
-                    <td><input name="title" th:value="${job.title}" class="form-control" maxlength='50' required></td>
+            <div class="form-group">
+                <td class="t1">게시글 제목 :</td>
+                <td><input name="title" th:value="${job.title}" class="form-control" maxlength='50' required></td>
+            </div>
+            <div class="form-group">
+                <td class="t1">게시글 내용 :</td>
+                <td><input name="content" th:value="${job.content}" class="form-control" style="height:300px;" required maxlength="1000"></td>
+            </div>
+            <div class="form-group">
+                <td class="t1">근무지 :</td>
+                <td><input name="location" th:value="${job.location}" class="form-control" maxlength="50"></td>
+            </div>
+            <div class="form-group">
+                <td class="t1">마감일자 :</td>
+                <td><input type="date" name="dead_line" th:value="${job.dead_line}" class="form-control"></td>
+            </div>
+            <div class="form-group">
+                <label for="singleFile">이미지 변경</label>
+                <input type="file" name="singleFile" class="form-control" onchange="handleFileSelect(event)">
+                <div id="selectedImage" th:if="${job.img != '' && job.img != null}">
+                    <img th:src="@{'/uploadFiles/job/' + ${job.img}}" alt="Selected Image" style="max-width: 200px; max-height: 200px;">
+                    <button type="button" onclick="removeImage()" class="btn btn-sm">x</button>
                 </div>
-                <div class="form-group">
-                    <td class="t1">게시글 내용 :</td>
-                    <td><input name="content" th:value="${job.content}" class="form-control" style="height:300px;" required maxlength="1000"></td>
-                </div>
-                <div class="form-group">
-                    <td class="t1">근무지 :</td>
-                    <td><input name="location" th:value="${job.location}" class="form-control" maxlength="50"></td>
-                </div>
-                <div class="form-group">
-                    <td class="t1">마감일자 :</td>
-                    <td><input type="date" name="dead_line" th:value="${job.dead_line}" class="form-control"></td>
-                </div>
-                <div class="form-group">
-                    <label for="singleFile">이미지 변경</label>
-                    <input type="file" name="singleFile" class="form-control" onchange="handleFileSelect(event)">
-                    <div id="selectedImage" th:if="${job.img != '' && job.img != null}">
-                        <img th:src="@{'/uploadFiles/' + ${job.img}}" alt="Selected Image" style="max-width: 200px; max-height: 200px;">
-                        <button type="button" onclick="removeImage()" class="btn btn-sm">x</button>
-                    </div>
-                </div>
-                <div class="form-group text-right">
-                    <a th:href="@{/recruit/job/list}">
-                        <button id="b1" class="btn btn-outline-primary">첫페이지로</button>
-                    </a>
-                    <button id="b2" type="submit" class="btn btn-primary">수정</button>
-                </div>
+            </div>
+            <div class="form-group">
+                <label for="contact">연락처</label>
+                <input type="text" id="contact" name="contact" th:value="${job.contact}" class="form-control" required>
+            </div>
+            <div class="form-group text-right">
+                <a href="/recruit/job/list" class="btn btn-outline-primary">첫페이지로</a>
+                <button id="b2" type="submit" class="btn btn-primary">수정</button>
+            </div>
         </form>
     </div>
 </div>
@@ -82,5 +78,6 @@
             }
     }
 </script>
+<div th:replace="common/footer.html"></div>
 </body>
 </html>

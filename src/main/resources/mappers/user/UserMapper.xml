@@ -241,7 +241,7 @@
         WHERE user_no = #{userNo}
     </delete>
 
-    <select id="selectList" parameterType="pageDTO" resultType="userDTO">
+    <select id="selectList" resultType="userDTO">
         SELECT
         user_no AS userNo,
         type_code AS typeCode,
@@ -260,10 +260,118 @@
         registration_datetime AS registrationDatetime,
         last_modified_datetime AS lastModifiedDatetime
         FROM users
-        <if test="page != null">
-            ORDER BY user_no DESC
-            LIMIT #{start}, 10
+        WHERE 1=1
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'id'">
+                    AND user_id LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'type'">
+                    AND type_code LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'auth'">
+                    AND auth_code LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'nickname'">
+                    AND nickname LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'contactNo'">
+                    AND contact_number LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'email'">
+                    AND email LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'bio'">
+                    AND bio LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'gender'">
+                    AND gender LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'dateOfBirth'">
+                    AND date_of_birth LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'realName'">
+                    AND real_name LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
         </if>
+        <if test="toggleValue == 'Y'">
+            AND auth_code = 'C'
+        </if>
+        <choose>
+            <when test="orderBy == 'recent'">
+                ORDER BY user_no DESC
+            </when>
+            <when test="orderBy == 'oldest'">
+                ORDER BY user_no ASC
+            </when>
+            <when test="orderBy == 'nickname'">
+                ORDER BY nickname ASC
+            </when>
+            <otherwise>
+                ORDER BY user_no DESC
+            </otherwise>
+        </choose>
+        <if test="pageDTO.page != null">
+            LIMIT #{pageDTO.start}, 10
+        </if>
+    </select>
+
+    <select id="selectUserCount" resultType="int">
+        SELECT COUNT(*)
+        FROM users
+        WHERE 1=1
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'id'">
+                    AND user_id LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'type'">
+                    AND type_code LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'auth'">
+                    AND auth_code LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'nickname'">
+                    AND nickname LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'contactNo'">
+                    AND contact_number LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'email'">
+                    AND email LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'bio'">
+                    AND bio LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'gender'">
+                    AND gender LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'dateOfBirth'">
+                    AND date_of_birth LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'realName'">
+                    AND real_name LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
+        <if test="toggleValue == 'Y'">
+            AND auth_code = 'C'
+        </if>
+        <choose>
+            <when test="orderBy == 'recent'">
+                ORDER BY user_no DESC
+            </when>
+            <when test="orderBy == 'oldest'">
+                ORDER BY user_no ASC
+            </when>
+            <when test="orderBy == 'nickname'">
+                ORDER BY nickname ASC
+            </when>
+            <otherwise>
+                ORDER BY user_no DESC
+            </otherwise>
+        </choose>
     </select>
 
 </mapper>

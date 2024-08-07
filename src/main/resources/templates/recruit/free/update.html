@@ -10,14 +10,8 @@
 <body>
 <div th:replace="~{common/menubar}"></div>
 <div layout:fragment="content">
-    <nav class="navbar navbar-expand-md">
-        <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-            <li><a th:href="@{/recruit/creator/choice}" class="nav-link px-2">창작자 등록</a></li>
-            <li><a th:href="@{/recruit/job/list}" class="nav-link px-2">구인/구직</a></li>
-            <li><a th:href="@{/recruit/free/list}" class="nav-link px-2">프리랜서</a></li>
-            <li><a th:href="@{/recruit/ask/list}" class="nav-link px-2">문의 내역</a></li>
-        </ul>
-    </nav>
+    <div th:replace="~{recruit/menubar}"></div>
+    <br>
     <div class="container">
         <h3>게시글 수정 페이지</h3>
         <hr>
@@ -25,32 +19,66 @@
         <form th:action="@{/recruit/free/update}" method="post" enctype="multipart/form-data">
             <input type="hidden" name="board_no" th:value="${free.board_no}" readonly>
             <input type="hidden" name="existingImage" th:value="${free.img}">
-                <div class="form-group">
-                    <td class="t1">게시글 제목 :</td>
-                    <td><input name="title" th:value="${free.title}" class="form-control" maxlength='50' required></td>
+            <div class="form-group">
+                <td class="t1">게시글 제목 :</td>
+                <td><input name="title" th:value="${free.title}" class="form-control" maxlength='50' required></td>
+            </div>
+            <div class="form-group">
+                <td class="t1">게시글 내용 :</td>
+                <td><input name="content" th:value="${free.content}" class="form-control" style="height:300px;" required maxlength="1000"></td>
+            </div>
+            <div class="form-group">
+                <label for="singleFile">이미지 변경</label>
+                <input type="file" name="singleFile" class="form-control" onchange="handleFileSelect(event)">
+                <div id="selectedImage" th:if="${free.img != '' && free.img != null}">
+                    <img th:src="@{'/uploadFiles/free/' + ${free.img}}" alt="Selected Image" style="max-width: 200px; max-height: 200px;">
+                    <button type="button" onclick="removeImage()" class="btn btn-sm">x</button>
                 </div>
-                <div class="form-group">
-                    <td class="t1">게시글 내용 :</td>
-                    <td><input name="content" th:value="${free.content}" class="form-control" style="height:300px;" required maxlength="1000"></td>
+            </div>
+            <div class="form-group">
+                <td class="t1">가격 :</td>
+                <td><input name="price" th:value="${free.price}" type="number" class="form-control" required min="0"></td>
+            </div>
+            <div class="form-group">
+                <label for="kakao_pg">카카오페이 (선택)</label>
+                <input id="kakao_pg" name="kakao_pg" type="text" th:value="${free.kakao_pg}" class="form-control" placeholder="포트원 PG사명.CID 형식으로 입력해주세요">
+            </div>
+            <div class="form-group">
+                <label for="inicis_pg">KG이니시스 (선택)</label>
+                <input id="inicis_pg" name="inicis_pg" type="text" th:value="${free.inicis_pg}" class="form-control" placeholder="포트원 PG사명.CID 형식으로 입력해주세요">
+            </div>
+            <div class="form-group">
+                <label for="bank_name">무통장 입금 (필수)</label>
+                <div style="display: flex; align-items: center;">
+                    <select id="bank_name" name="bank_name" class="form-control" style="width: 200px;" required>
+                        <option value="" disabled th:selected="${free.bank_name == ''}">은행을 선택하세요</option>
+                        <option value="국민은행" th:selected="${free.bank_name == '국민은행'}">국민은행</option>
+                        <option value="신한은행" th:selected="${free.bank_name == '신한은행'}">신한은행</option>
+                        <option value="우리은행" th:selected="${free.bank_name == '우리은행'}">우리은행</option>
+                        <option value="하나은행" th:selected="${free.bank_name == '하나은행'}">하나은행</option>
+                        <option value="기업은행" th:selected="${free.bank_name == '기업은행'}">기업은행</option>
+                        <option value="농협은행" th:selected="${free.bank_name == '농협은행'}">농협은행</option>
+                        <option value="대구은행" th:selected="${free.bank_name == '대구은행'}">대구은행</option>
+                        <option value="부산은행" th:selected="${free.bank_name == '부산은행'}">부산은행</option>
+                        <option value="광주은행" th:selected="${free.bank_name == '광주은행'}">광주은행</option>
+                        <option value="전북은행" th:selected="${free.bank_name == '전북은행'}">전북은행</option>
+                        <option value="제주은행" th:selected="${free.bank_name == '제주은행'}">제주은행</option>
+                        <option value="카카오뱅크" th:selected="${free.bank_name == '카카오뱅크'}">카카오뱅크</option>
+                        <option value="토스뱅크" th:selected="${free.bank_name == '토스뱅크'}">토스뱅크</option>
+                        <option value="SC제일은행" th:selected="${free.bank_name == 'SC제일은행'}">SC제일은행</option>
+                    </select>
+                    <input id="account" name="account" type="text" class="form-control" required placeholder="계좌번호를 입력해주세요" th:value="${free.account}">
+                    <br>
                 </div>
-                <div class="form-group">
-                    <label for="singleFile">이미지 변경</label>
-                    <input type="file" name="singleFile" class="form-control" onchange="handleFileSelect(event)">
-                    <div id="selectedImage" th:if="${free.img != '' && free.img != null}">
-                        <img th:src="@{'/uploadFiles/' + ${free.img}}" alt="Selected Image" style="max-width: 200px; max-height: 200px;">
-                        <button type="button" onclick="removeImage()" class="btn btn-sm">x</button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <td class="t1">가격 :</td>
-                    <td><input name="price" th:value="${free.price}" type="number" class="form-control" required min="0"></td>
-                </div>
-                <div class="form-group text-right">
-                    <a th:href="@{/recruit/free/list}">
-                        <button id="b1" class="btn btn-outline-primary">첫페이지로</button>
-                    </a>
-                    <button id="b2" type="submit" class="btn btn-primary">수정</button>
-                </div>
+            </div>
+            <div class="form-group">
+                <label for="contact">연락처</label>
+                <input type="text" id="contact" name="contact" th:value="${free.contact}" class="form-control" required>
+            </div>
+            <div class="form-group text-right">
+                <a href="/recruit/free/list" class="btn btn-outline-primary">첫페이지로</a>
+                <button id="b2" type="submit" class="btn btn-primary">수정</button>
+            </div>
         </form>
     </div>
 </div>
@@ -78,5 +106,6 @@
             }
     }
 </script>
+<div th:replace="common/footer.html"></div>
 </body>
 </html>

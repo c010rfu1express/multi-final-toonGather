@@ -107,5 +107,51 @@ public class WebToonServiceImpl implements WebToonService{
         return count;
     }
 
+    @Override
+    public List<CommentLikeDTO> commentLikeList(CommentLikeDTO commentLikeDTO) {
+        List<CommentLikeDTO>list=webToonMapper.commentLikeList(commentLikeDTO);
+        return list;
+    }
+
+    @Override
+    public int likeInsert(CommentLikeDTO commentLikeDTO) {
+        int result=webToonMapper.likeInsert(commentLikeDTO);
+        if(result>0){
+            System.out.println();
+            result=webToonMapper.likeUpdateUP(commentLikeDTO);
+        }
+        return result;
+    }
+
+    @Override
+    public int likeDelete(CommentLikeDTO commentLikeDTO) {
+        int result=webToonMapper.likeDelet(commentLikeDTO);
+        if(result>0){
+            System.out.println();
+            result=webToonMapper.likeUpdateDown(commentLikeDTO);
+        }
+        return result;
+    }
+
+    @Override
+    public int dislikeInsert(CommentLikeDTO commentLikeDTO) {
+        int result=webToonMapper.dislikeInsert(commentLikeDTO);
+        if(result>0){
+            System.out.println();
+            result=webToonMapper.dislikeUpdateUP(commentLikeDTO);
+        }
+        return result;
+    }
+
+    @Override
+    public int dislikeDelete(CommentLikeDTO commentLikeDTO) {
+        int result=webToonMapper.likeDelet(commentLikeDTO);
+        if(result>0){
+            System.out.println();
+            result=webToonMapper.dislikeUpdateDown(commentLikeDTO);
+        }
+        return result;
+    }
+
 
 }

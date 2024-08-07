@@ -14,14 +14,8 @@
 <body>
 <div th:replace="~{common/menubar}"></div>
 <div layout:fragment="content">
-    <nav class="navbar navbar-expand-md">
-        <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-            <li><a th:href="@{/recruit/creator/choice}" class="nav-link px-2">창작자 등록</a></li>
-            <li><a th:href="@{/recruit/job/list}" class="nav-link px-2">구인/구직</a></li>
-            <li><a th:href="@{/recruit/free/list}" class="nav-link px-2">프리랜서</a></li>
-            <li><a th:href="@{/recruit/ask/list}" class="nav-link px-2">문의 내역</a></li>
-        </ul>
-    </nav>
+    <div th:replace="~{recruit/menubar}"></div>
+    <br>
     <div class="container">
         <div class="card">
             <div class="card-header">
@@ -44,9 +38,13 @@
                         <span class="font-weight-bold" style="font-size : 15pt;">지원 내용</span>
                         <br> [[${apply.content}]] <br>
                         <div th:if="${apply.img != null}">
-                            <img th:src="@{'/uploadFiles/job/apply' + ${apply.img}}" width="250" height="250" alt="지원글 이미지">
+                            <img th:src="@{'/uploadFiles/job/apply/' + ${apply.img}}" width="250" height="250" alt="지원글 이미지">
                         </div>
+                        <br> <br>
+                        <span class="font-weight-bold" style="font-size : 15pt;">지원자 연락처</span>
+                        <br> [[${apply.contact}]] <br>
                     </label>
+
                 </div>
                 <div class="mt-4 text-right">
                     <a href="/recruit/job/applyList" class="btn btn-outline-primary">목록으로</a>
@@ -56,5 +54,6 @@
         </div>
     </div>
 </div>
+<div th:replace="common/footer.html"></div>
 </body>
 </html>

@@ -75,8 +75,14 @@
 <div id="webtoonContainer"></div>
 <div id="pageButtons"></div>
 </div>
+
+<div th:replace="common/footer.html"></div>
 <script>
+
     let currentPage = 1; // 초기 페이지 번호
+    const isLoggedIn=[[${isLoggedIn}]];
+
+
     const urlParams = new URLSearchParams(window.location.search);
     let provider=urlParams.get('provider');
     let updateDay=urlParams.get('updateDay');
@@ -115,7 +121,7 @@
                 webtoonContainer.innerHTML = ''; // 기존 웹툰 카드 초기화
 
                 webtoons.forEach(webtoon => {
-                    const { id, title, thumbnail, authors } = webtoon;
+                    const { id, title, thumbnail, authors,ageGrade } = webtoon;
                     const thumbnailUrl = thumbnail[0]; // 첫 번째 썸네일 이미지만 사용
 
                     // 웹툰 카드 생성
@@ -124,8 +130,18 @@
 
                     // 썸네일 이미지 추가
                     const webtoonImage = document.createElement('img');
-                    webtoonImage.src = thumbnailUrl;
-                    webtoonImage.alt = `${title} 썸네일`;
+
+                    if (ageGrade> 18 && !isLoggedIn) {
+                        webtoonImage.src = '/images/error_logo.png'; // 로그인하지 않은 경우 표시할 제한 이미지
+                        webtoonImage.alt = '19금 콘텐츠';
+                        console.log("!!!!!!!!!!");
+                    } else {
+                        webtoonImage.src = thumbnailUrl;
+                        webtoonImage.alt = `${title} 썸네일`;
+                        console.log(+""+isLoggedIn);
+                        console.log();
+                    }
+
                     webtoonImage.classList.add('webtoon-thumbnail');
                     webtoonCard.appendChild(webtoonImage);
 

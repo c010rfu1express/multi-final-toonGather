@@ -379,6 +379,7 @@
                     <button class="btn-like"
                             th:data-comment-no="${comment.commentNo}"
                             th:classappend="${commentLikeMap[comment.commentNo] != null && commentLikeMap[comment.commentNo].getLikeCode() == 1 ? ' selected' : ''}"
+                            data-initial-liked="${comment.liked}"
                             data-action="like">
                         👍<span th:text="${comment.liked}"></span>
                     </button>
@@ -408,10 +409,11 @@
         </div>
     </div>
 </div>
-
+<div th:replace="common/footer.html"></div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+
         const urlParams = new URLSearchParams(window.location.search);
         const id =  '[[${one.webtoon_id}]]';
         const no =  [[${one.webtoon_no}]];
@@ -562,6 +564,110 @@
 
         });
     });
+
+
+    const likeButtons = document.querySelectorAll('.btn-like');
+    const dislikeButtons = document.querySelectorAll('.btn-dislike');
+   function isDislikeSelected(commentNo) {
+        return Array.from(dislikeButtons).some(button =>
+            button.getAttribute('data-comment-no') === commentNo &&
+            button.classList.contains('selected')
+        );
+    }
+    likeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const commentNo = button.getAttribute('data-comment-no');
+            const isSelected = button.classList.contains('selected');
+
+            if (isDislikeSelected(commentNo)) {
+                // 싫어요 버튼이 선택된 상태일 때 좋아요 클릭 방지
+                alert('싫어요가 선택된 상태에서는 좋아요를 클릭할 수 없습니다.');
+                return;
+            }
+
+            // 서버에 AJAX 요청 보내기
+            fetch(`/webtoon/one/like`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ commentNo,isSelected })
+            }).then(response => {
+                // 서버 응답이 JSON인지 확인
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('서버 오류');
+                }
+            }).then(data => {
+                if (data.success) {
+                    // 성공적으로 처리된 경우 UI 업데이트
+                    button.classList.toggle('selected'); // 'selected' 클래스 토글
+                    const likeCountSpan = button.querySelector('span');
+                    const newLikeCount = data.newLikeCount;
+                    const currentLikeCount = parseInt(likeCountSpan.textContent, 10) || parseInt(button.getAttribute('data-initial-liked'), 10) || 0;
+                    console.log(currentLikeCount)
+                    likeCountSpan.textContent = currentLikeCount + newLikeCount;
+                } else {
+                    console.error('좋아요 처리 실패');
+                }
+            }).catch(error => {
+                console.error('에러 발생:', error);
+            });
+        });
+    });
+
+
+    function isLikeSelected(commentNo) {
+        return Array.from(likeButtons).some(button =>
+            button.getAttribute('data-comment-no') === commentNo &&
+            button.classList.contains('selected')
+        );
+    }
+
+    dislikeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const commentNo = button.getAttribute('data-comment-no');
+            const isSelected = button.classList.contains('selected');
+
+            if (isLikeSelected(commentNo)) {
+                // 싫어요 버튼이 선택된 상태일 때 좋아요 클릭 방지
+                alert('좋아요가 선택된 상태에서는 싫어요를 클릭할 수 없습니다.');
+                return;
+            }
+
+            // 서버에 AJAX 요청 보내기
+            fetch(`/webtoon/one/dislike`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ commentNo,isSelected })
+            }).then(response => {
+                // 서버 응답이 JSON인지 확인
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('서버 오류');
+                }
+            }).then(data => {
+                if (data.success) {
+                    // 성공적으로 처리된 경우 UI 업데이트
+                    button.classList.toggle('selected'); // 'selected' 클래스 토글
+                    const likeCountSpan = button.querySelector('span');
+                    const newLikeCount = data.newLikeCount;
+                    const currentLikeCount = parseInt(likeCountSpan.textContent, 10) || parseInt(button.getAttribute('data-initial-liked'), 10) || 0;
+                    console.log(currentLikeCount)
+                    likeCountSpan.textContent = currentLikeCount + newLikeCount;
+                } else {
+                    console.error('좋아요 처리 실패');
+                }
+            }).catch(error => {
+                console.error('에러 발생:', error);
+            });
+        });
+    });
+
 
     });
 </script>
