@@ -7,55 +7,76 @@
     <link rel="stylesheet" th:href="@{/css/social-styles.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/starRating.css}">
     <style>
-        .webtoon-info {
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            padding: 15px;
-            margin-bottom: 20px;
+        .review-edit-container {
             display: flex;
-            align-items: start;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
         }
-        .webtoon-image {
-            width: 100px;
-            object-fit: cover;
-            border-radius: 4px;
-            margin-right: 15px;
+        .review-edit-box {
+            flex: 1;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .webtoon-details {
-            flex-grow: 1;
-        }
-        .webtoon-details h2 {
+        .review-edit-title {
             font-size: 24px;
-            color: #333;
             margin-bottom: 10px;
         }
-        .webtoon-details p {
+        .review-edit-subtitle {
             font-size: 16px;
             color: #666;
+        }
+        .review-edit-webtoon-info {
+            display: flex;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .review-edit-webtoon-info:hover {
+            background-color: #e9ecef;
+        }
+        .review-edit-webtoon-details h3 {
+            color: #333;
+            text-decoration: none;
+        }
+        .review-edit-webtoon-details {
+            flex: 1;
+        }
+        .review-edit-webtoon-details p {
             margin: 5px 0;
         }
-        .review-form {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 30px;
+        .review-edit-webtoon-thumbnail {
+            width: 100px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
         }
-        .form-group {
+        .review-edit-form-row {
+            display: flex;
+            gap: 20px;
             margin-bottom: 20px;
         }
-        .form-group label {
+        .review-edit-form-group {
+            flex: 1;
+        }
+        .review-edit-form-group label {
             display: block;
             margin-bottom: 5px;
         }
-        .form-group input[type="text"],
-        .form-group textarea {
+        .review-edit-form-group input[type="text"],
+        .review-edit-form-group textarea {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-        .form-group textarea {
+        .review-edit-content {
             height: 200px;
+        }
+        .review-edit-buttons {
+            text-align: right;
         }
     </style>
 </head>
@@ -63,30 +84,29 @@
 <div th:replace="common/menubar.html"></div>
 
 <div class="container mt-4">
-    <div th:replace="social/user/profile-menubar :: profile-menubar"></div>
-
-    <div class="review-form">
-        <div class="webtoon-info">
-            <img class="webtoon-image" th:src="${review.webtoon.thumbnail_url}" alt="웹툰 썸네일">
-            <div class="webtoon-details">
-                <h2>웹툰 정보</h2>
-                <p><strong>제목:</strong> <span th:text="${review.webtoon.webtoon_name}"></span></p>
-                <p><strong>작가:</strong> <span th:text="${review.webtoon.author}"></span></p>
-            </div>
+    <div class="review-edit-container">
+        <div class="review-edit-box">
+            <h2 class="review-edit-title">리뷰 수정하기</h2>
+            <p class="review-edit-subtitle">내가 쓴 리뷰를 수정할 수 있습니다 ✏️</p>
         </div>
-        <form th:action="@{/social/reviews/{reviewNo}/edit(reviewNo=${review.reviewNo})}" method="post">
-            <div class="form-group">
+        <div class="review-edit-box review-edit-webtoon-info" th:onclick="'window.location.href=\'' + @{/webtoon/one(webtoon_id=${(review.webtoon.platform == 1 ? 'naver' : 'kakao') + '_' + review.webtoon.webtoon_id}, webtoon_name=${review.webtoon.webtoon_name})} + '\''">
+            <div class="review-edit-webtoon-details">
+                <h3 th:text="${review.webtoon.webtoon_name}">웹툰 제목</h3>
+                <p><strong>작가:</strong> <span th:text="${review.webtoon.author}"></span></p>
+                <p><strong>장르:</strong> <span th:text="${review.webtoon.genre}"></span></p>
+                <p><strong>태그:</strong> <span th:text="${review.webtoon.tags}"></span></p>
+            </div>
+            <img class="review-edit-webtoon-thumbnail" th:src="${review.webtoon.thumbnail_url}" alt="웹툰 썸네일">
+        </div>
+    </div>
+
+    <form th:action="@{/social/reviews/{reviewNo}/edit(reviewNo=${review.reviewNo})}" method="post">
+        <div class="review-edit-form-row">
+            <div class="review-edit-form-group">
                 <label for="title">리뷰 제목</label>
                 <input type="text" id="title" name="title" th:value="${review.title}" required maxlength="50">
             </div>
-
-            <div class="form-group">
-                <label for="content">내용</label>
-                <textarea id="content" name="content" th:text="${review.content}" required maxlength="1000" style="white-space: pre-wrap;"></textarea>
-                <p class="small">최대 1000자까지 입력 가능합니다. (<span id="charCount">0</span>/1000)</p>
-            </div>
-
-            <div class="form-group">
+            <div class="review-edit-form-group">
                 <label>별점</label>
                 <div class="star-rating">
                     <input type="radio" id="5-stars" name="starRating" value="5" th:checked="${review.starRating == 5}">
@@ -101,12 +121,22 @@
                     <label for="1-star" class="star">&#9733;</label>
                 </div>
             </div>
+        </div>
 
-            <button type="submit" class="btn btn-primary">수정</button>
+        <div class="review-edit-form-group">
+            <label for="content">내용</label>
+            <textarea id="content" name="content" class="review-edit-content" th:text="${review.content}" required maxlength="1000" style="white-space: pre-wrap;"></textarea>
+            <p class="small">최대 1000자까지 입력 가능합니다. (<span id="charCount">0</span>/1000)</p>
+        </div>
+
+        <div class="review-edit-buttons">
             <a th:href="@{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})}" class="btn btn-secondary">취소</a>
-        </form>
-    </div>
+            <button type="submit" class="btn btn-primary">수정</button>
+        </div>
+    </form>
 </div>
+
+<div th:replace="common/footer.html"></div>
 
 <script>
     document.getElementById('content').addEventListener('input', function() {
@@ -127,4 +157,3 @@
 </script>
 </body>
 </html>
-
