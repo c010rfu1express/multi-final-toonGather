@@ -154,9 +154,14 @@
         </div>
     </section>
 </main>
-<div class="chatbot">
-    <button>챗봇</button>
-</div>
+    <div class="chatbot">
+        <button onclick="openChatbotWindow()">챗봇</button>
+    </div>
     <div th:replace="common/footer.html"></div>
+    <script>
+        function openChatbotWindow() {
+            window.open('/cs/chatbotPage', 'Chatbot', 'width=600,height=800');
+        }
+    </script>
 </body>
 </html>

@@ -95,34 +95,33 @@ public class CsServiceImpl implements CsService {
     // 문의글 수정 메소드
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateQuestion(QuestionDTO question, MultipartFile[] images, HttpServletRequest request) throws Exception {
+    public boolean updateQuestion(QuestionDTO question, List<String> existingImages, List<String> removedImages, MultipartFile[] images, HttpServletRequest request) throws Exception {
         try {
             csMapper.updateQuestion(question);
 
             String root = request.getSession().getServletContext().getRealPath("/");
             String filePath = root + "/uploadFiles/cs";
 
-            // 새로운 이미지가 첨부된 경우
-            if (images != null && images.length > 0 && !images[0].isEmpty()) {
-                // 기존 이미지 삭제
-                List<QuestionFilesDTO> existingFiles = csMapper.getQuestionFilesByQuestionId(question.getCsQNo());
-                for (QuestionFilesDTO file : existingFiles) {
-                    File existingFile = new File(filePath + "/" + file.getSavedName());
-                    if (existingFile.exists()) {
-                        existingFile.delete();
+            // 기존 이미지 삭제 처리
+            if (removedImages != null && !removedImages.isEmpty()) {
+                for (String savedName : removedImages) {
+                    File fileToDelete = new File(filePath + "/" + savedName);
+                    if (fileToDelete.exists()) {
+                        fileToDelete.delete();
                     }
+                    csMapper.deleteQuestionFileBySavedName(savedName);
                 }
+            }
 
-                // 기존 이미지 데이터베이스에서 삭제
-                csMapper.deleteQuestionFiles(question.getCsQNo());
-
-                // 새로운 이미지 저장
+            // 새로운 이미지 저장
+            if (images != null && images.length > 0) {
                 for (MultipartFile image : images) {
                     String originName = image.getOriginalFilename();
                     if (originName != null && !originName.isEmpty()) {
                         String ext = originName.substring(originName.lastIndexOf("."));
                         String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
 
+                        // 파일 저장
                         try {
                             image.transferTo(new File(filePath + "/" + savedName));
                             QuestionFilesDTO questionFilesDTO = new QuestionFilesDTO();
@@ -142,6 +141,7 @@ public class CsServiceImpl implements CsService {
         } catch (Exception e) {
             throw new Exception("Update question failed", e);
         }
+
     }
 
     @Override

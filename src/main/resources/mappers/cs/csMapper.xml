@@ -109,6 +109,10 @@
         WHERE cs_q_no = #{csQNo}
     </update>
 
+    <delete id="deleteQuestionFileBySavedName" parameterType="string">
+        DELETE FROM cs_question_files WHERE cs_q_saved_name = #{savedName}
+    </delete>
+
     <delete id="deleteQuestionFiles" parameterType="int">
         DELETE FROM cs_question_files WHERE cs_q_no = #{csQNo}
     </delete>
