@@ -197,7 +197,8 @@
   <div class="col-md-9">
     <form th:action="@{/user/my/editprofile}" th:object="${user}" method="post" enctype="multipart/form-data" onsubmit="validateForm(event)">
       프로필 사진<br>
-      <img th:src="@{/uploadFiles/{fileName}(fileName=${user.profileImagePath})}" style="width: 100px; height: auto;"/><br>
+      <img th:if="${user.profileImagePath == null}" src="/images/defaultprofileimage.png" style="width: 100px; height: auto;"/>
+      <img th:if="${user.profileImagePath != null}" th:src="@{/uploadFiles/{fileName}(fileName=${user.profileImagePath})}" style="width: 100px; height: auto;"/><br>
       <input type="file" name="image"><br>
       아이디 : <input type="text" th:field="*{userId}" maxlength="20" minlength="4" readonly/><br>
       비밀번호 : <input type="password" th:field="*{password}" maxlength="30" minlength="8"/><br>
