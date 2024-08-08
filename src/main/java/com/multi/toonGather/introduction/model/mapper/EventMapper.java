@@ -38,4 +38,6 @@ public interface EventMapper {
     void deleteLike(@Param("eventNo") int eventNo, @Param("userNo") int userNo);
 
     void insertLike(EventLikeDTO like);
+
+    void updateEvent(EventDTO event);
 }

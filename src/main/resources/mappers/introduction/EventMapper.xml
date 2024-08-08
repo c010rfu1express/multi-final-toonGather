@@ -146,4 +146,20 @@
         VALUES (#{eventNo}, #{userNo}, NOW())
     </insert>
 
+    <!-- Update a event entry -->
+    <update id="updateEvent" parameterType="com.multi.toonGather.introduction.model.dto.EventDTO">
+        UPDATE in_event
+        SET title = #{title},
+        content = #{content},
+        event_category_code = #{eventCategoryCode},
+        cost = #{cost},
+        address = #{address},
+        place = #{place},
+        coordinates = #{coordinates},
+        start_date = #{startDate},
+        end_date = #{endDate},
+        site = #{site}
+        WHERE event_no = #{eventNo}
+    </update>
+
 </mapper>

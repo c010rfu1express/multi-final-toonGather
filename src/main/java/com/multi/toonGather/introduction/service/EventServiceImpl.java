@@ -187,5 +187,65 @@ public class EventServiceImpl implements EventService {
             return true; // 좋아요 추가
         }
     }
+
+    @Override
+    public boolean updateEvent(EventDTO event, MultipartFile file, HttpServletRequest request) throws Exception {
+        try {
+            // 이벤트 업데이트
+            eventMapper.updateEvent(event);
+
+            String root = request.getSession().getServletContext().getRealPath("/");
+            String filePath = root + "/uploadFiles";
+
+            System.out.println("updateEvent serviceImpl check file null : ");
+            System.out.println("Original Filename: " + file.getOriginalFilename());
+            System.out.println("File Name: " + file.getName());
+            System.out.println("File Size: " + file.getSize());
+            System.out.println("File Content Type: " + file.getContentType());
+            System.out.println("Is Empty: " + file.isEmpty());
+
+            // 새로운 파일이 첨부된 경우
+            if (file != null && !file.isEmpty()) {
+                // 기존 파일 삭제
+                List<EventFileDTO> existingFiles = eventMapper.selectFilesByEventNo(event.getEventNo());
+
+                for (EventFileDTO fileDTO : existingFiles) {
+                    File existingFile = new File(filePath + "/" + fileDTO.getFileName());
+                    if (existingFile.exists()) {
+                        existingFile.delete();
+                    }
+                }
+
+                // 기존 파일 데이터베이스에서 삭제
+                eventMapper.deleteFiles(event.getEventNo());
+
+                // 새로운 파일 저장
+                EventFileDTO fileDTO = new EventFileDTO();
+                String originName = file.getOriginalFilename();
+
+                if (originName != null && !originName.isEmpty() && !file.isEmpty()) {
+                    String ext = originName.substring(originName.lastIndexOf("."));
+                    String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
+
+                    try {
+                        file.transferTo(new File(filePath + "/" + savedName));
+
+                        fileDTO.setEventNo(event.getEventNo());
+                        fileDTO.setFileName(savedName);
+                    } catch (IOException e) {
+                        new File(filePath + "/" + savedName).delete();
+                        throw new Exception("File upload error", e);
+                    }
+                }
+                fileDTO.setFilePath(filePath);
+                fileDTO.setFileType(file.getContentType());
+                System.out.println("eventFileDTO 수정페이지 서비스 :" + fileDTO.toString());
+                eventMapper.insertEventFile(fileDTO);
+            }
+            return true;
+        } catch (Exception e) {
+            throw new Exception("Update event failed", e);
+        }
+    }
 }
 

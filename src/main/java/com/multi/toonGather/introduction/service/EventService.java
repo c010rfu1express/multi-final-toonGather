@@ -29,4 +29,6 @@ public interface EventService {
     EventCategoryDTO getEventCategoryByCode(int eventCategoryCode);
 
     boolean toggleLike(int eventNo, int userNo);
+
+    boolean updateEvent(EventDTO event, MultipartFile file, HttpServletRequest request) throws Exception;
 }

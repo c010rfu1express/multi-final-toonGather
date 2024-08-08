@@ -123,6 +123,43 @@ public class EventController {
         return "introduction/event/eventUpdate";
     }
 
+    @PostMapping(value = {"introduction/event/eventUpdate"})
+    public String eventUpdate(@RequestParam("eventNo") int eventNo,
+                              @RequestParam("title") String title,
+                              @RequestParam("content") String content,
+                              @RequestParam("file") MultipartFile file,
+                              @RequestParam("eventCategoryCode") int eventCategoryCode,
+                              @RequestParam("cost") int cost,
+                              @RequestParam("address") String address,
+                              @RequestParam("place") String place,
+                              @RequestParam("coordinates") String coordinates,
+                              @RequestParam("startDate") String startDate,
+                              @RequestParam("endDate") String endDate,
+                              @RequestParam("site") String site,
+                              HttpServletRequest request) throws Exception {
+
+        System.out.println("update post 확인 : " + eventNo);
+        EventDTO event = eventService.getEventByNoWithFiles(eventNo);
+        event.setTitle(title);
+        event.setContent(content);
+        event.setEventCategoryCode(eventCategoryCode);
+        event.setCost(cost);
+        event.setAddress(address);
+        event.setPlace(place);
+        event.setCoordinates(coordinates);
+        event.setStartDate(LocalDate.parse(startDate));
+        event.setEndDate(LocalDate.parse(endDate));
+        event.setSite(site);
+
+        System.out.println("확인 44");
+        boolean isSuccess = eventService.updateEvent(event, file, request);
+        System.out.println("확인 55");
+        if(isSuccess) return "redirect:/introduction/event/eventList";
+        else return "introduction/event/eventUpdate";
+    }
+
+
+
     @PostMapping(value = {"/introduction/deleteEvent"})
     public String deleteEvent(@RequestBody Map<String, Integer> requestBody) {
         Integer eventNo = requestBody.get("eventNo");
