@@ -185,6 +185,7 @@
 
 <script>
     let currentPage = 1; // 초기 페이지 번호
+    const isLoggedAge=[[${isLoggedAge}]];
     const search = '[[${search}]]';
     const method = '[[${Method}]]';
     let platform = '[[${platform}]]';
@@ -225,7 +226,7 @@
                 }
 
                 webtoons.forEach(webtoon => {
-                    const { id, title, thumbnail, authors, provider, updateDays } = webtoon;
+                    const { id, title, thumbnail, authors, provider, updateDays,ageGrade } = webtoon;
                     const thumbnailUrl = thumbnail[0]; // 첫 번째 썸네일 이미지만 사용
 
                     // 웹툰 카드 생성
@@ -234,8 +235,13 @@
 
                     // 썸네일 이미지 추가 (왼쪽)
                     const webtoonImage = document.createElement('img');
-                    webtoonImage.src = thumbnailUrl;
-                    webtoonImage.alt = `${title} 썸네일`;
+                    if (ageGrade> 18 && isLoggedAge<19) {
+                        webtoonImage.src = '/images/error_logo.png'; // 로그인하지 않은 경우 표시할 제한 이미지
+                        webtoonImage.alt = '19금 콘텐츠';
+                    } else {
+                        webtoonImage.src = thumbnailUrl;
+                        webtoonImage.alt = `${title} 썸네일`;
+                    }
                     webtoonImage.classList.add('webtoon-thumbnail');
                     webtoonCard.appendChild(webtoonImage);
 
@@ -249,8 +255,10 @@
                     webtoonTitle.classList.add('webtoon-title');
                     webtoonTitle.addEventListener('click', (event) => {
                         event.preventDefault(); // 기본 동작 중단
+
                         const queryString = `webtoon_id=${id}&webtoon_name=${encodeURIComponent(title)}`;
                         window.location.href = `/webtoon/one?${queryString}`;
+
                     });
                     webtoonInfo.appendChild(webtoonTitle);
 
@@ -286,7 +294,7 @@
                 for (let i = 1; i <= totalPages; i++) {
                     const pageBtn = document.createElement('button');
                     pageBtn.textContent = i;
-                    pageBtn.classList.add('page-btn');
+                    pageBtn.classList.add('page-button');
                     if (i === currentPage) {
                         pageBtn.disabled = true; // 현재 페이지 버튼 비활성화
                     }
