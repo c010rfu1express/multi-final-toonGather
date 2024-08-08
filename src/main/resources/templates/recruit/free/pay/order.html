@@ -193,7 +193,7 @@
     IMP.request_pay({
       pg: "[[${free.kakao_pg}]]", // PG사명 또는 PG사명.CID
       pay_method: "card", // 결제 방법
-      merchant_uid: "test" + new Date().getTime(), // 가맹점 주문번호
+      merchant_uid: "kakao_" + new Date().getTime(), // 가맹점 주문번호
       name: "[[${free.title}]]", // 결제창에 노출될 상품명
       amount: hiddenPriceInput.value, // 가격
       buyer_email: document.getElementById('email').value,

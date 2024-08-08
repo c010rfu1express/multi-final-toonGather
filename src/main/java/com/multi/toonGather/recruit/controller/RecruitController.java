@@ -127,7 +127,13 @@ public class RecruitController {
             creatorService.insertCreator(creatorDTO);
             creatorService.updateMember(creatorDTO.getMember_no());
         } else {
-            model.addAttribute("message", "창작자 등록 실패");
+            if (!containsA) {
+                model.addAttribute("message", "사업자 등록증을 확인할 수 없습니다. 파일을 다시 확인해 주세요.");
+            } else if (!containsB){
+                model.addAttribute("message", "회원정보에 등록된 실명과 사업자 등록증에 기재된 이름이 일치하지 않습니다. 확인 후 다시 시도해 주세요.");
+            } else{
+                model.addAttribute("message", "사업자 등록번호가 일치하지 않습니다. 사업자 등록증에 기재된 번호를 확인해 주세요.");
+            }
             System.out.println("실패");
             creatorDTO.setStatus("R");
             creatorDTO.setType_code("C");

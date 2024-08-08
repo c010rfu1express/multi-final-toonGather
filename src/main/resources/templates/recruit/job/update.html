@@ -61,7 +61,7 @@
                     </div>
                     <div class="form-group">
                         <label for="content">상세 요강 *</label>
-                        <input id="content" name="content" th:value="${job.content}" class="form-control" style="height:300px;" required maxlength="1000">
+                        <textarea id="content" name="content" th:text="${job.content}" class="form-control" rows="5" required maxlength="1000"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="singleFile">이미지 변경</label>
