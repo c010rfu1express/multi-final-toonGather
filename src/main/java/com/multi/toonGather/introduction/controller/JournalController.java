@@ -24,7 +24,7 @@ public class JournalController {
     private JournalServiceImpl journalService;
 
     @GetMapping(value = {"introduction/journalList"})
-    public String journalListAdmin(Model model,
+    public String journalList(Model model,
                                    @RequestParam(value = "keyword", required = false) String keyword,
                                    @RequestParam(value = "page", defaultValue = "0") int page){
 
