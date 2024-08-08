@@ -70,6 +70,16 @@ public class SocialServiceImpl implements SocialService {
     }
     @Override
     @Transactional(readOnly = true)
+    public int getFollowingCount(String userId) {
+        return socialMapper.selectFollowingCount(userId);
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public int getFollowerCount(String userId) {
+        return socialMapper.selectFollowerCount(userId);
+    }
+    @Override
+    @Transactional(readOnly = true)
     public List<ReviewDTO> getFavoriteWebtoons(String userId) throws Exception {
         return socialMapper.selectFavoriteWebtoons(userId);
     }
@@ -80,13 +90,23 @@ public class SocialServiceImpl implements SocialService {
     }
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewDTO> getReviewsByUserId(String userId, PageDTO pageDTO) throws Exception {
-        return socialMapper.selectReviewsByUserId(userId, pageDTO);
+    public List<ReviewDTO> getReviewsByUserId(String userId, PageDTO pageDTO, Integer starRating) throws Exception {
+        return socialMapper.selectReviewsByUserId(userId, pageDTO, starRating);
     }
     @Override
     @Transactional(readOnly = true)
-    public int getReviewCountByUserId(String userId) throws Exception {
-        return socialMapper.selectReviewCountByUserId(userId);
+    public int getReviewCountByUserId(String userId, Integer starRating) throws Exception {
+        return socialMapper.selectReviewCountByUserId(userId, starRating);
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReviewDTO> getReviewsByUserIdSortedByLikes(String userId, PageDTO pageDTO, Integer starRating) throws Exception {
+        return socialMapper.selectReviewsByUserIdSortedByLikes(userId, pageDTO, starRating);
+    }
+    @Override
+    @Transactional(readOnly = true)
+    public int getReviewCountByUserIdSortedByLikes(String userId, Integer starRating) throws Exception {
+        return socialMapper.selectReviewCountByUserIdSortedByLikes(userId, starRating);
     }
     @Override
     @Transactional(readOnly = true)
@@ -120,6 +140,16 @@ public class SocialServiceImpl implements SocialService {
     @Transactional
     public boolean isFollowing(int followerNo, int followingNo) throws Exception {
         return socialMapper.isFollowing(followerNo, followingNo);
+    }
+    @Override
+    @Transactional
+    public List<UserDTO> getFollowers(String userId) throws Exception {
+        return socialMapper.selectFollowers(userId);
+    }
+    @Override
+    @Transactional
+    public List<UserDTO> getFollowing(String userId) throws Exception {
+        return socialMapper.selectFollowing(userId);
     }
     @Override
     @Transactional

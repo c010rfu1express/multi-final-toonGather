@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>툰게더 toonGather | 툰투게더</title>
+    <link rel="stylesheet" th:href="@{/css/social-styles.css}">
+    <style>
+        .follow-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .follow-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100px;
+            text-decoration: none;
+            color: inherit;
+        }
+        .follow-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+        .follow-nickname {
+            text-align: center;
+            word-break: break-word;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="common/menubar.html"></div>
+
+<div class="content-wrapper">
+    <div class="container mt-4">
+        <div th:replace="social/main-menubar :: main-menubar"></div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <h2 th:text="${type == 'followers' ? '팔로워' : '팔로잉'}">팔로우 목록</h2>
+                <div class="mb-3">
+                    <a th:href="@{'/social/users/' + ${userId} + '/follows?type=following'}"
+                       th:class="${type == 'following' ? 'active' : ''}">팔로잉 ([[${followingCount}]])</a> |
+                    <a th:href="@{'/social/users/' + ${userId} + '/follows?type=followers'}"
+                       th:class="${type == 'followers' ? 'active' : ''}">팔로워 ([[${followerCount}]])</a>
+                </div>
+                <div class="follow-list">
+                    <a th:each="user : ${follows}"
+                       th:href="@{'/social/users/' + ${user.userId} + '/profile'}"
+                       class="follow-item">
+                        <img th:src="${user.profileImagePath != null ? '/uploadFiles/' + user.profileImagePath : '/img/default-profile.png'}"
+                             alt="프로필 사진" class="follow-avatar">
+                        <span class="follow-nickname" th:text="${user.nickname}">사용자 닉네임</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="common/footer.html"></div>
+
+
+</body>
+</html>
