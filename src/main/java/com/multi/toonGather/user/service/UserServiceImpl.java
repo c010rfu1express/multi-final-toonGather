@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
             userDTO.setTypeCode('G');
             result = userMapper.insertUser(userDTO);
         }
-        if(result == 0) new Exception("[ERROR] insertUser 실패");     //문제있어..?
+        if(result == 0) new Exception("[ERROR] insertUser 실패");
     }
 
     public String findId(UserDTO userDTO) throws Exception{
