@@ -32,6 +32,32 @@
       font-size: 14px;
     }
   </style>
+  <script>
+    $(document).ready(function () {
+      // 폼 제출 시 공백 확인
+      $('#form').on('submit', function (e) {
+        var isValid = true;
+        var errorMessage = "필수 항목이 공백으로만 입력되었습니다."; // 오류 메시지
+
+        // 필수 입력 필드
+        var requiredFields = ['#title', '#content', '#contact', '#account'];
+
+        for (var i = 0; i < requiredFields.length; i++) {
+          var value = $(requiredFields[i]).val().trim();
+
+          if (value === '') {
+            isValid = false;
+            break; // 첫 번째 공백 필드를 발견하면 반복문 종료
+          }
+        }
+
+        if (!isValid) {
+          alert(errorMessage);
+          e.preventDefault(); // 폼 제출 중지
+        }
+      });
+    });
+  </script>
 </head>
 <body>
 <div th:replace="~{common/menubar}"></div>
