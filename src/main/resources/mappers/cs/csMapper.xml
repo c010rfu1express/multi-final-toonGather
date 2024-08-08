@@ -181,6 +181,7 @@
         SELECT COUNT(*)
         FROM cs_question q
         LEFT JOIN users u ON q.cs_q_writer_no = u.user_no
+        LEFT JOIN cs_category c ON q.cs_q_category_code = c.cs_category_code
         WHERE
         <choose>
             <when test="searchType == 'title'">
@@ -188,6 +189,9 @@
             </when>
             <when test="searchType == 'author'">
                 u.nickname LIKE CONCAT('%', #{keyword}, '%')
+            </when>
+            <when test="searchType == 'category'">
+                c.cs_category_desc LIKE CONCAT('%', #{keyword}, '%')
             </when>
         </choose>
     </select>
@@ -210,6 +214,9 @@
             </when>
             <when test="searchType == 'author'">
                 u.nickname LIKE CONCAT('%', #{keyword}, '%')
+            </when>
+            <when test="searchType == 'category'">
+                c.cs_category_desc LIKE CONCAT('%', #{keyword}, '%')
             </when>
         </choose>
         ORDER BY cs_q_no DESC
