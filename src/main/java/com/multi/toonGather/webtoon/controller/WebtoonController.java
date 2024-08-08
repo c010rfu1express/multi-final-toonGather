@@ -28,10 +28,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.TextStyle;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -50,8 +47,6 @@ public class WebtoonController {
         if(c!=null){
             LocalDate today = LocalDate.now();
             LocalDate dateOfBirth= c.getUserDTO().getDateOfBirth();
-            Period.between(dateOfBirth, today).getYears();
-
             model.addAttribute("isLoggedAge",Period.between(dateOfBirth, today).getYears());
         }else {
             model.addAttribute("isLoggedAge",0);
@@ -116,7 +111,19 @@ public class WebtoonController {
         webtoonDTO.setTags(resultDTO.getTags());
         try {
             List<CommentDTO>comments=webToonService.Commentlist(webtoonDTO);
+            List<CommentDTO>bestComments=webToonService.CommentBestList(webtoonDTO);
+
+            Set<Integer> bestCommentNos = bestComments.stream()
+                    .map(CommentDTO::getCommentNo)
+                    .collect(Collectors.toSet());
+
+            // comments 리스트에서 bestCommentNos에 포함된 댓글 제거
+            comments = comments.stream()
+                    .filter(comment -> !bestCommentNos.contains(comment.getCommentNo()))
+                    .collect(Collectors.toList());
+
             model.addAttribute("comments",comments);
+            model.addAttribute("bestComments",bestComments);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -124,11 +131,16 @@ public class WebtoonController {
         userDTO.setUserNo(c.getUserDTO().getUserNo());
         wtUserSaveDTO.setWebtoonNo(webtoonDTO.getWebtoon_no());
         wtUserSaveDTO.setUserNo(c.getUserDTO().getUserNo());
+            LocalDate today = LocalDate.now();
+            LocalDate dateOfBirth= c.getUserDTO().getDateOfBirth();
+            model.addAttribute("isLoggedAge",Period.between(dateOfBirth, today).getYears());
             try {
         wtUserSaveDTO=webToonService.WebToonSelectSave(wtUserSaveDTO);
             }catch (Exception e){
                 e.printStackTrace();
             }
+        }else {
+            model.addAttribute("isLoggedAge",0);
         }
         System.out.println(wtUserSaveDTO);
         CommentLikeDTO commentLikeDTO=new CommentLikeDTO();
@@ -156,9 +168,13 @@ public class WebtoonController {
                                 @AuthenticationPrincipal CustomUserDetails c,
                                 Model model) throws UnsupportedEncodingException {
         if(c!=null){
-            model.addAttribute("isLoggedIn",true);
+            LocalDate today = LocalDate.now();
+            LocalDate dateOfBirth= c.getUserDTO().getDateOfBirth();
+            Period.between(dateOfBirth, today).getYears();
+
+            model.addAttribute("isLoggedAge",Period.between(dateOfBirth, today).getYears());
         }else {
-            model.addAttribute("isLoggedIn",false);
+            model.addAttribute("isLoggedAge",0);
         }
 
 
