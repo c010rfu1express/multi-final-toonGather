@@ -116,6 +116,7 @@
                 <thead>
                 <tr>
                     <th>No.</th>
+                    <th>카테고리</th>
                     <th>제목</th>
                     <th>작성일</th>
                     <th>상태</th>
@@ -124,6 +125,7 @@
                 <tbody>
                 <tr th:each="myQuestion : ${questions}">
                     <td th:text="${myQuestion.csQNo}"></td>
+                    <td th:text="${myQuestion.csQCategory.csCategoryDesc}"></td>
                     <td>
                         <a th:href="@{/cs/questionDetail/{csQNo}(csQNo=${myQuestion.csQNo})}" th:text="${myQuestion.csQTitle}"></a>
                     </td>
@@ -154,9 +156,14 @@
         </div>
     </section>
 </main>
-<div class="chatbot">
-    <button>챗봇</button>
-</div>
+    <div class="chatbot">
+        <button onclick="openChatbotWindow()">챗봇</button>
+    </div>
     <div th:replace="common/footer.html"></div>
+    <script>
+        function openChatbotWindow() {
+            window.open('/cs/chatbotPage', 'Chatbot', 'width=600,height=800');
+        }
+    </script>
 </body>
 </html>
