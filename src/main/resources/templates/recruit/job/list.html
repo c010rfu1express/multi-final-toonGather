@@ -3,7 +3,7 @@
 <html layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>툰게더 toonGather</title>
+    <title>툰게더 toonGather | 구인/구직</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -45,7 +45,7 @@
             <p th:if="${jobs == null}" style="text-align: center;">구인/구직 글이 존재하지 않습니다.</p>
         </div>
         <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-secondary btn-sm" th:if="${auth_code == 'C'}" th:onclick="|location.href='@{/recruit/job/insert}'|">글쓰기</button>
+            <button type="button" class="btn btn-primary btn-sm" th:if="${auth_code == 'C'}" th:onclick="|location.href='@{/recruit/job/insert}'|">글쓰기</button>
         </div>
 
         <th:block th:if="${pages != null}">
