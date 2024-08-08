@@ -55,8 +55,9 @@
         SELECT c.comment_no, c.webtoon_no, c.user_no, u.nickname, c.content, c.liked, c.dislike
         FROM wt_comment c
         INNER JOIN users u ON c.user_no = u.user_no
-        where
+        WHERE
         webtoon_no = #{webtoon_no}
+        ORDER BY c.comment_no DESC
     </select>
     <insert id="insertComment" parameterType="com.multi.toonGather.webtoon.model.dto.CommentDTO">
         INSERT INTO wt_comment (webtoon_no, user_no, content)
@@ -192,4 +193,13 @@
     </update>
 
 
+    <select id="CommentBestList" parameterType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO" resultMap="commentResultMap">
+        SELECT c.comment_no, c.webtoon_no, c.user_no, u.nickname, c.content, c.liked, c.dislike
+        FROM wt_comment c
+        INNER JOIN users u ON c.user_no = u.user_no
+        WHERE c.webtoon_no = #{webtoon_no}
+        AND (c.liked - c.dislike) >= 10
+        ORDER BY c.liked - c.dislike DESC
+        LIMIT 3;
+    </select>
 </mapper>

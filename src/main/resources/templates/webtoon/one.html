@@ -5,16 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>웹툰 정보</title>
     <style>
+        /* 전체 스타일 */
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
             padding: 20px;
         }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            width: 30%;
+        }
+
         #webtoonOne {
             width: 100%;
             max-width: 80%;
             margin: auto;
         }
+
         #webtoonDetail {
             background-color: #ffffff;
             padding: 20px;
@@ -22,42 +43,18 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin: auto;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            padding: 10px; /* 패딩을 늘림 */
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-            vertical-align: top; /* 셀 내용을 상단 정렬 */
-        }
-        th {
-            background-color: #f2f2f2;
-            width: 30%;
-        }
+
         #webtoonThumbnail {
             width: 30%;
             text-align: center;
-            vertical-align: top; /* 이미지를 표의 상단에 정렬 */
         }
+
         #webtoonThumbnail img {
             max-width: 100%;
             border-radius: 8px;
-            height: auto; /* 이미지 높이를 자동으로 조정 */
+            height: auto;
         }
-        #menuBar {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 10px;
-        }
-        #menuBar a {
-            margin-left: 10px;
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-        }
+        /* 댓글 스타일 */
         #comments {
             margin-top: 20px;
             padding: 10px;
@@ -82,100 +79,45 @@
             font-weight: bold;
             color: #333;
         }
-.comment-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.comment-author {
-    margin: 0;
-}
-
-.comment-feedback {
-    display: flex;
-    gap: 10px;
-}
-
-.btn-like, .btn-dislike {
-    border: 2px solid; /* 테두리 두께를 3px로 설정 */
-    padding: 4px 6px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s, transform 0.3s;
-    font-size: 16px; /* 폰트 크기 조정 */
-    background-color: transparent; /* 배경색을 투명하게 설정 */
-    color: #333; /* 기본 텍스트 색상 설정 */
-    display: flex;
-    align-items: center;
-}
-
-.btn-like {
-    border-color:#007bff; /* 테두리 색상 설정 */
-}
-.btn-like.selected {
-    background-color: #007bff; /* 선택 상태일 때 배경색 */
-    color: #fff; /* 선택 상태일 때 텍스트 색상 */
-}
-.btn-like:hover {
-    background-color: #007bff; /* 호버 시 배경색 */
-    color: #fff; /* 호버 시 텍스트 색상 */
-    transform: scale(1.05); /* 호버 시 버튼 확대 효과 */
-}
-.btn-dislike {
-    border-color: #dc3545; /* 테두리 색상 설정 */
-}
-.btn-dislike.selected {
-    background-color: #dc3545; /* 선택 상태일 때 배경색 */
-    color: #fff; /* 선택 상태일 때 텍스트 색상 */
-}
-.btn-dislike:hover {
-    background-color: #dc3545; /* 호버 시 배경색 */
-    color: #fff; /* 호버 시 텍스트 색상 */
-    transform: scale(1.05); /* 호버 시 버튼 확대 효과 */
-}
-
-.comment-content {
-    margin-top: 10px;
-}
-
-.comments-footer {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin-top: 10px;
-}
-
-.comments-footer button {
-    margin-left: 10px;
-}
-
-.btn-edit, .btn-delete {
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.btn-edit {
-    background-color: #007bff;
-    color: #fff;
-}
-
-.btn-edit:hover {
-    background-color: #0056b3;
-}
-
-.btn-delete {
-    background-color: #dc3545;
-    color: #fff;
-}
-
-.btn-delete:hover {
-    background-color: #c82333;
-}
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .comment-feedback {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-like, .btn-dislike {
+            border: 2px solid;
+            padding: 4px 6px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s, transform 0.3s;
+            font-size: 16px;
+            background-color: transparent;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+        .btn-like {
+            border-color: #007bff;
+        }
+        .btn-like.selected, .btn-like:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .btn-dislike {
+            border-color: #dc3545;
+        }
+        .btn-dislike.selected, .btn-dislike:hover {
+            background-color: #dc3545;
+            color: #fff;
+        }
+        .comment-content {
+            margin-top: 10px;
+        }
         .comments-footer {
             display: flex;
             justify-content: flex-end;
@@ -213,9 +155,6 @@
             align-items: center;
             flex-wrap: wrap;
         }
-        #social form {
-            margin-bottom: 10px;
-        }
         #social button {
             background-color: #007bff;
             color: #fff;
@@ -229,7 +168,6 @@
         #social button:hover {
             background-color: #0056b3;
         }
-
         .btn-star {
             display: inline-flex;
             align-items: center;
@@ -238,7 +176,7 @@
             color: gold;
             border: 2px solid gold;
             padding: 5px 10px;
-             font-size: 18px;
+            font-size: 18px;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s, color 0.3s;
@@ -248,6 +186,20 @@
             background-color: gold;
             color: white;
         }
+        .best-label {
+            background-color: red;
+            color: white;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .hidden {
+            display: none !important;
+        }.button-container {
+    display: flex;
+    justify-content: center; /* 버튼을 가운데 정렬 */
+}
+
     </style>
 </head>
 <body>
@@ -372,9 +324,13 @@
 
     <div id="comments">
         <h2>댓글 목록</h2>
-        <div th:each="comment : ${comments}" class="comment">
+        <div th:each="comment , iterStat: ${bestComments}" class="comment">
             <div class="comment-header">
-                <p class="comment-author">작성자: <span th:text="${comment.nickname}" class="author"></span></p>
+
+                <p class="comment-author">
+                    <span class="best-label">BEST<span th:text="${iterStat.index + 1}"></span></span>
+                    작성자: <span th:text="${comment.nickname}" class="author"></span>
+                </p>
                 <div class="comment-feedback">
                     <button class="btn-like"
                             th:data-comment-no="${comment.commentNo}"
@@ -392,6 +348,7 @@
             </div>
             <!-- 댓글 내용을 수정 가능한 textarea로 표시 -->
             <div class="comment-content">
+
                 <textarea class="form-control comment-textarea" style="display: none;" rows="5" th:text="${comment.content}" required maxlength="200"></textarea>
                 <p class="comment-text" th:text="${comment.content}"></p>
             </div>
@@ -407,13 +364,91 @@
                 </th:block>
             </div>
         </div>
+        <div id="comments-container">
+            <div th:each="comment, iterStat : ${comments}" class="comment" th:classappend="${iterStat.index >= 10 ? ' hidden' : ''}">
+                <div class="comment-header">
+                    <p class="comment-author">작성자: <span th:text="${comment.nickname}" class="author"></span></p>
+                    <div class="comment-feedback">
+                        <button class="btn-like"
+                                th:data-comment-no="${comment.commentNo}"
+                                th:classappend="${commentLikeMap[comment.commentNo] != null && commentLikeMap[comment.commentNo].getLikeCode() == 1 ? ' selected' : ''}"
+                                data-initial-liked="${comment.liked}"
+                                data-action="like">
+                            👍<span th:text="${comment.liked}"></span>
+                        </button>
+                        <button class="btn-dislike"
+                                th:data-comment-no="${comment.commentNo}"
+                                th:classappend="${commentLikeMap[comment.commentNo] != null && commentLikeMap[comment.commentNo].getLikeCode() == -1 ? ' selected' : ''}"
+                                data-action="dislike">👎
+                            <span th:text="${comment.dislike}"></span></button>
+                    </div>
+                </div>
+                <!-- 댓글 내용을 수정 가능한 textarea로 표시 -->
+                <div class="comment-content">
+                    <textarea class="form-control comment-textarea" style="display: none;" rows="5" th:text="${comment.content}" required maxlength="200"></textarea>
+                    <p class="comment-text" th:text="${comment.content}"></p>
+                </div>
+                <div class="comments-footer">
+                    <th:block th:if="${user.userNo == comment.userNo}">
+                        <button type="button" class="btn btn-primary btn-edit" th:data-comment-no="${comment.commentNo}">수정</button>
+                        <form th:action="@{/webtoon/comment/delete}" method="post">
+                            <input type="hidden" name="commentNo" th:value="${comment.commentNo}">
+                            <input type="hidden" name="webtoon_name" th:value="${one.webtoon_name}">
+                            <input type="hidden" name="webtoon_id" th:value="${one.webtoon_id}">
+                            <button type="submit" class="btn btn-danger">삭제</button>
+                        </form>
+                    </th:block>
+                </div>
+            </div> <div class="button-container">
+            <button id="load-more" class="btn btn-primary">더보기</button>
+        </div>
+        </div>
+
     </div>
 </div>
 <div th:replace="common/footer.html"></div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
 
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const loadMoreButton = document.getElementById('load-more');
+    let currentLimit = 10;
+    const comments = document.querySelectorAll('#comments-container .comment');
+    const totalComments = comments.length;
+
+    // 초기 댓글 표시
+    comments.forEach((comment, index) => {
+        if (index < currentLimit) {
+            comment.classList.remove('hidden');
+        }
+    });
+
+    loadMoreButton.addEventListener('click', function() {
+        currentLimit += 10;
+        comments.forEach((comment, index) => {
+            if (index < currentLimit) {
+                comment.classList.remove('hidden');
+            }
+        });
+
+        // Hide the button if all comments are shown
+        if (currentLimit >= totalComments) {
+            console.log('Hiding button');
+            loadMoreButton.classList.add('hidden');
+        }
+    });
+
+    // 페이지 로드 시 모든 댓글이 이미 로드된 경우 버튼 숨기기
+    if (currentLimit >= totalComments) {
+        console.log('Hiding button on page load');
+        loadMoreButton.classList.add('hidden');
+    }
+
+
+
+        const isLoggedAge=[[${isLoggedAge}]];
         const urlParams = new URLSearchParams(window.location.search);
         const id =  '[[${one.webtoon_id}]]';
         const no =  [[${one.webtoon_no}]];
@@ -430,6 +465,20 @@
                 if (data && data.webtoons && data.webtoons.length > 0) {
                     const webtoon = data.webtoons.find(webtoon => webtoon.id === id);
                     if (webtoon) {
+
+                    if (webtoon.ageGrade> 18 && isLoggedAge<19) {
+                        if(isLoggedAge>0){
+                        alert("19세 이용가 입니다");
+                        window.location.href = `/`;
+                        }else{
+                        alert("19세 이용가 입니다 로그인을 하시오");
+                        window.location.href = `/user/login`;
+                        }
+                        event.preventDefault(); // 기본 동작 중단
+
+                    }
+
+
                         document.getElementById('webtoonTitle').textContent = webtoon.title;
                         document.getElementById('webtoonProvider').textContent = webtoon.provider;
 
