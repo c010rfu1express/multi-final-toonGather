@@ -2,10 +2,41 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
 <html layout:decorate="~{layout}">
 <head>
-  <title>창작자 등록</title>
+  <title>툰게더 toonGather</title>
   <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+  <style>
+    .text-gray {
+      margin-bottom: 4rem;
+    }
+
+    .text {
+      margin-bottom: 1rem;
+    }
+    .choice {
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      padding: 20px;
+      border: 1px solid #888888;
+    }
+    .text-header {
+      border-bottom: none;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .text-body {
+      padding: 20px;
+      border-radius: 8px;
+    }
+    .info-text {
+      text-align: center;
+      color: #6c757d;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
 <div th:replace="~{common/menubar}"></div>
@@ -13,19 +44,25 @@
   <div th:replace="~{recruit/menubar}"></div>
   <br>
   <div class="container mt-5">
-    <div class="card">
-      <div class="card-header">
-        <h2 class="text-center mb-0">창작자 등록</h2>
+    <div class="choice">
+      <div class="text-header">
+        <h2 class="text-center mb-0">개인 창작자 등록</h2>
+        <hr>
       </div>
-      <div class="card-body">
+      <div class="text-body">
+        <p class="info-text" style="text-align: left;">
+          본인의 전문 분야와 보유 기술을 포함하여 자신을 소개해 주세요. <br>
+          이 정보는 사이트에서의 최소한의 인증 장치로 사용됩니다. <br>
+        </p>
         <form action="#" th:action="@{/recruit/creator/registInd}" id="form" method="post" enctype="multipart/form-data">
           <div class="form-group">
+            <br>
             <label for="content">자기소개</label>
             <textarea id="content" name="content" class="form-control" rows="5" required ></textarea>
           </div>
           <div class="form-group text-right">
             <button type="submit" class="btn btn-primary">등록</button>
-            <a href="#" th:href="@{/recruit/main}" class="btn btn-secondary">취소</a>
+            <a href="#" th:href="@{/recruit/creator/choice}" class="btn btn-secondary">취소</a>
           </div>
         </form>
       </div>

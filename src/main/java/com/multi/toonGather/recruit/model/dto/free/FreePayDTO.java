@@ -14,8 +14,7 @@ public class FreePayDTO {
     private String bank_name;
     private String account;
     private String buyer_name;
-    private String email;
-    private String phone;
+    private String contact;
     private String status;
     private String type_code;
     private Date ordered_date;
