@@ -172,8 +172,10 @@ public class CsController {
     public String updateQuestion(@PathVariable("csQNo") int csQNo, Model model) throws Exception {
         QuestionDTO question = csService.getQuestionById(csQNo);
         List<CsCategoryDTO> categories = csService.getCategories();
+        List<QuestionFilesDTO> questionFiles = csService.getQuestionByQuestionId(question.getCsQNo());
         model.addAttribute("question", question);
         model.addAttribute("categories", categories);
+        model.addAttribute("files", questionFiles);
         return "cs/updateQuestion";
     }
 
@@ -183,6 +185,8 @@ public class CsController {
                                  @RequestParam("csQCategory") String category,
                                  @RequestParam("csQContent") String content,
                                  @RequestParam("images") MultipartFile[] images,
+                                 @RequestParam(value = "existingImages", required = false) List<String> existingImages,
+                                 @RequestParam(value = "removedImages", required = false) List<String> removedImages,
                                  HttpServletRequest request) throws Exception {
         QuestionDTO question = csService.getQuestionById(csQNo);
         CsCategoryDTO categoryDTO = new CsCategoryDTO();
@@ -191,7 +195,10 @@ public class CsController {
         question.setCsQCategory(categoryDTO);
         question.setCsQContent(content);
 
-        boolean isSuccess = csService.updateQuestion(question, images, request);
+        System.out.println(existingImages);
+        System.out.println(removedImages);
+
+        boolean isSuccess = csService.updateQuestion(question, existingImages, removedImages, images, request);
         if (isSuccess) {
             return "redirect:/cs/questionDetail/" + question.getCsQNo();
         } else {
