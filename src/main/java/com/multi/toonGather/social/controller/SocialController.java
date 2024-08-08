@@ -341,8 +341,7 @@ public class SocialController {
      * @throws Exception the exception
      */
     @GetMapping("/reviews/{reviewNo}")
-    public String reviewDetail(@PathVariable("userId") String userId,
-                               @PathVariable("reviewNo") int reviewNo,
+    public String reviewDetail(@PathVariable("reviewNo") int reviewNo,
                                @AuthenticationPrincipal CustomUserDetails currentUser,
                                Model model) throws Exception {
         // 리뷰 조회수 증가
@@ -706,8 +705,7 @@ public class SocialController {
      * @throws Exception the exception
      */
     @GetMapping("/diaries/{diaryNo}")
-    public String diaryDetail(@PathVariable("userId") String userId,
-                              @PathVariable("diaryNo") int diaryNo,
+    public String diaryDetail(@PathVariable("diaryNo") int diaryNo,
                               @AuthenticationPrincipal CustomUserDetails currentUser,
                               Model model) throws Exception {
         socialService.incrementDiaryViewCount(diaryNo);
