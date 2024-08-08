@@ -2,12 +2,14 @@ package com.multi.toonGather.introduction.model.dto;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
-public class JournalFileDTO {
-    private int journalFileNo;
-    private int journalNo;
+public class EventFileDTO {
+    private int eventFileNo;
+    private int eventNo;
     private String fileName;
     private String filePath;
     private String fileType;
-    private String uploadDate;
+    private LocalDateTime uploadDate;
 }
