@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>툰게더 toonGather | 툰투게더<</title>
+    <title>툰게더 toonGather | 툰투게더</title>
     <link rel="stylesheet" th:href="@{/css/social-styles.css}">
     <style>
         h3 {
@@ -44,13 +44,20 @@
 <body>
 <div th:replace="common/menubar.html"></div>
 
+<div class="content-wrapper">
 <div class="container mt-4">
     <div th:replace="social/user/profile-menubar :: profile-menubar"></div>
 
     <div class="row mt-4">
         <div class="col-12">
             <div class="profile-section favorite-webtoons">
-                <h3>최애 웹툰</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3>최애 웹툰</h3>
+                    <a th:href="@{/social/users/{userId}/reviews(userId=${profileUser.userId}, starRating=5)}"
+                       style="font-size: 0.8em; text-decoration: none;">
+                        모두 보기
+                    </a>
+                </div>
                 <hr>
                 <div th:if="${not #lists.isEmpty(favoriteWebtoons)}" class="user-webtoon-slider">
                     <div th:each="review : ${favoriteWebtoons}" class="webtoon-card" th:onclick="'location.href=\'' + @{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})} + '\''">
@@ -73,9 +80,15 @@
     <div class="row mt-4">
         <div class="col-12">
             <div class="profile-section popular-reviews">
-                <h3>인기 리뷰</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3>인기 리뷰</h3>
+                    <a th:href="@{/social/users/{userId}/reviews(userId=${profileUser.userId}, sort=likes)}"
+                       style="font-size: 0.8em; text-decoration: none;">
+                        모두 보기
+                    </a>
+                </div>
                 <hr>
-                <div class="user-review-slider">
+                <div th:if="${not #lists.isEmpty(popularReviews)}" class="user-review-slider">
                     <div th:each="review : ${popularReviews}" class="review-card" th:onclick="'location.href=\'' + @{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})} + '\''">
                         <img th:src="${review.webtoon.thumbnail_url}" th:alt="${review.webtoon.webtoon_name}">
                         <div class="review-info">
@@ -100,6 +113,9 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div th:if="${#lists.isEmpty(popularReviews)}" class="no-popular-reviews">
+                    아직 작성한 리뷰가 없어요 😅
                 </div>
             </div>
         </div>
@@ -158,13 +174,13 @@
         </div>
     </div>
 </div>
-
+</div>
 <div th:replace="common/footer.html"></div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const sliders = document.querySelectorAll('.webtoon-slider, .hot-review-slider, .user-review-slider');
+        const sliders = document.querySelectorAll('user-webtoon-slider, .user-review-slider');
 
         sliders.forEach(slider => {
             slider.addEventListener('wheel', function(e) {

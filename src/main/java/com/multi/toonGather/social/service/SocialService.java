@@ -25,10 +25,14 @@ public interface SocialService {
 
     // 사용자 메인 페이지
     UserDTO selectUserProfile(String userId) throws Exception;
+    int getFollowingCount(String userId) throws Exception;
+    int getFollowerCount(String userId) throws Exception;
     List<ReviewDTO> getFavoriteWebtoons(String userId) throws Exception;
     List<ReviewDTO> getPopularReviewsByUser(String userId, int limit) throws Exception;
-    List<ReviewDTO> getReviewsByUserId(String userId, PageDTO pageDTO) throws Exception;
-    int getReviewCountByUserId(String userId) throws Exception;
+    List<ReviewDTO> getReviewsByUserId(String userId, PageDTO pageDTO, Integer starRating) throws Exception;
+    int getReviewCountByUserId(String userId, Integer starRating) throws Exception;
+    List<ReviewDTO> getReviewsByUserIdSortedByLikes(String userId, PageDTO pageDTO, Integer starRating) throws Exception;
+    int getReviewCountByUserIdSortedByLikes(String userId, Integer starRating) throws Exception;
     List<DiaryDTO> getDiariesByUserId(String userId, PageDTO pageDTO) throws Exception;
     int getDiaryCountByUserId(String userId) throws Exception;
     List<ActivityDTO> getRecentActivities(String userId, int limit) throws Exception;
@@ -36,6 +40,8 @@ public interface SocialService {
     // 팔로잉
     boolean toggleFollow(int followerNo, int followingNo) throws Exception;
     boolean isFollowing(int followerNo, int followingNo) throws Exception;
+    List<UserDTO> getFollowers(String userId) throws Exception;
+    List<UserDTO> getFollowing(String userId) throws Exception;
     List<UserDTO> getFollowingUsers(int userNo) throws Exception;
 
     // 리뷰

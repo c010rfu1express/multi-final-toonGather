@@ -16,7 +16,7 @@
 
 .like-button label:hover,
 .like-button input:checked + label {
-  color: #ff4136;
+  color: #ff4081;
 }
 
 .like-button label::before {

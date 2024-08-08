@@ -10,6 +10,7 @@
 
 <div th:replace="common/menubar.html"></div>
 
+<div class="content-wrapper">
 <div class="container mt-4">
     <div th:replace="social/main-menubar :: main-menubar"></div>
 
@@ -64,7 +65,7 @@
         </div>
     </div>
 </div>
-
+</div>
 <div th:replace="common/footer.html"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -97,6 +98,31 @@
 
             searchAndDisplayResults(currentCategory, currentKeyword, currentPage, 10);
         });
+
+        // 카테고리 변경 시 placeholder 업데이트
+        $('#searchCategory').change(function() {
+            updatePlaceholder();
+        });
+
+        function updatePlaceholder() {
+            var category = $('#searchCategory').val();
+            var placeholder = '';
+            switch(category) {
+                case 'review':
+                    placeholder = '제목, 내용, 웹툰 제목으로 검색';
+                    break;
+                case 'diary':
+                    placeholder = '제목, 내용, 웹툰 제목으로 검색';
+                    break;
+                case 'user':
+                    placeholder = '사용자 닉네임, 아이디, 자기소개로 검색';
+                    break;
+            }
+            $('#searchKeyword').attr('placeholder', placeholder);
+        }
+
+        // 초기 placeholder 설정
+        updatePlaceholder();
 
         function searchAndDisplayResults(category, keyword, page, size) {
             $.ajax({

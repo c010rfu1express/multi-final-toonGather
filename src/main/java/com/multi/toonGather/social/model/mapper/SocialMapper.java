@@ -30,11 +30,15 @@ public interface SocialMapper {
     List<UserDTO> searchUsers(@Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit) throws Exception;
 
     // 사용자 메인 페이지
-    UserDTO selectUserProfile(String userId) throws Exception;
+    UserDTO selectUserProfile(@Param("userId") String userId) throws Exception;
+    int selectFollowingCount(@Param("userId") String userId);
+    int selectFollowerCount(@Param("userId") String userId);
     List<ReviewDTO> selectFavoriteWebtoons(@Param("userId") String userId) throws Exception;
     List<ReviewDTO> selectPopularReviewsByUser(@Param("userId") String userId, @Param("limit") int limit) throws Exception;
-    List<ReviewDTO> selectReviewsByUserId(@Param("userId") String userId, @Param("pageDTO") PageDTO pageDTO) throws Exception;
-    int selectReviewCountByUserId(String userId) throws Exception;
+    List<ReviewDTO> selectReviewsByUserId(@Param("userId") String userId, @Param("pageDTO") PageDTO pageDTO, @Param("starRating") Integer starRating) throws Exception;
+    int selectReviewCountByUserId(@Param("userId") String userId, @Param("starRating") Integer starRating) throws Exception;
+    List<ReviewDTO> selectReviewsByUserIdSortedByLikes(@Param("userId") String userId, @Param("pageDTO") PageDTO pageDTO, @Param("starRating") Integer starRating) throws Exception;
+    int selectReviewCountByUserIdSortedByLikes(@Param("userId") String userId, @Param("starRating") Integer starRating) throws Exception;
     List<DiaryDTO> selectDiariesByUserId(@Param("userId") String userId, @Param("pageDTO") PageDTO pageDTO) throws Exception;
     int selectDiaryCountByUserId(String userId) throws Exception;
     List<ActivityDTO> selectRecentActivities(@Param("userId") String userId, @Param("limit") int limit) throws Exception;
@@ -43,7 +47,9 @@ public interface SocialMapper {
     void insertFollow(@Param("followerNo") int followerNo, @Param("followingNo") int followingNo) throws Exception;
     void deleteFollow(@Param("followerNo") int followerNo, @Param("followingNo") int followingNo) throws Exception;
     boolean isFollowing(@Param("followerNo") int followerNo, @Param("followingNo") int followingNo) throws Exception;
-    List<UserDTO> selectFollowingUsers(int userNo) throws Exception;
+    List<UserDTO> selectFollowers(@Param("userId") String userId) throws Exception;
+    List<UserDTO> selectFollowing(@Param("userId") String userId) throws Exception;
+    List<UserDTO> selectFollowingUsers(@Param("userNo") int userNo) throws Exception;
 
     // 리뷰
     void incrementReviewViewCount(int reviewNo) throws Exception;
