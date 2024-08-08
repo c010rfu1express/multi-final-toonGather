@@ -301,6 +301,7 @@
         const commentContent = document.getElementById('diaryCommentContent');
         const charCount = document.getElementById('diaryCharCount');
         const submitButton = commentForm.querySelector('button[type="submit"]');
+        const commentCountSpan = document.querySelector('.diary-comment-count span');
 
         if (commentForm) {
             submitButton.addEventListener('click', function(e) {
@@ -324,21 +325,21 @@
                 .then(data => {
                     if (data.success) {
                         const newComment = createCommentElement(data.comment);
+                        const noCommentsMessage = document.querySelector('.diary-no-comments');
+                        if (noCommentsMessage) {
+                            noCommentsMessage.remove();
+                        }
                         if (!commentsList) {
-                            // 댓글 목록이 없으면 새로 생성
                             commentsList = document.createElement('div');
                             commentsList.className = 'diary-comments-list';
-                            commentForm.parentNode.insertBefore(commentsList, commentForm);
-                        }
-                        if (commentsList.querySelector('.diary-no-comments')) {
-                            commentsList.innerHTML = '';
+                            const commentsSection = document.querySelector('.diary-comments-section');
+                            commentsSection.insertBefore(commentsList, commentForm);
                         }
                         commentsList.appendChild(newComment);
                         commentContent.value = '';
                         charCount.textContent = '0';
 
                         // 댓글 수 업데이트
-                        const commentCountSpan = document.querySelector('.diary-comment-count span');
                         if (commentCountSpan) {
                             commentCountSpan.textContent = parseInt(commentCountSpan.textContent) + 1;
                         }
@@ -356,73 +357,80 @@
             });
         }
 
-            // 댓글 삭제 이벤트 리스너
-            if (commentsList) {
-                commentsList.addEventListener('click', function(e) {
-                    if (e.target.classList.contains('diary-delete-comment')) {
-                        const commentId = e.target.getAttribute('data-comment-id');
-                        if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
-                            deleteComment(commentId, e.target.closest('.diary-comment'));
-                        }
-                    }
-                });
-            }
-
-            function createCommentElement(comment) {
-                const commentDiv = document.createElement('div');
-                commentDiv.className = 'diary-comment';
-                commentDiv.innerHTML = `
-                    <a href="/social/users/${comment.commenter.userId}/profile">
-                        <img class="diary-comment-profile-img" src="/uploadFiles/${comment.commenter.profileImagePath}" alt="프로필 이미지">
-                    </a>
-                    <div class="diary-comment-content-wrapper">
-                        <div class="diary-comment-meta">
-                            <span class="diary-comment-author">${comment.commenter.nickname}</span>
-                            <span class="diary-comment-date">${formatDate(comment.createdDate)}</span>
-                        </div>
-                        <div class="diary-comment-content">${comment.content.replace(/\n/g, '<br>')}</div>
-                    </div>
-                    <button class="btn btn-sm btn-danger diary-delete-comment" data-comment-id="${comment.commentNo}">삭제</button>
-                `;
-                return commentDiv;
-            }
-
-            function formatDate(dateString) {
-                const date = new Date(dateString);
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                const hours = String(date.getHours()).padStart(2, '0');
-                const minutes = String(date.getMinutes()).padStart(2, '0');
-                const seconds = String(date.getSeconds()).padStart(2, '0');
-
-                return `${year}. ${month}. ${day}. ${hours}:${minutes}:${seconds}`;
-            }
-
-            function deleteComment(commentId, commentElement) {
-                fetch(`/social/diaries/comments/${commentId}`, {
-                    method: 'DELETE'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        commentElement.remove();
-
-                        // 댓글 수 업데이트
-                        const commentCountSpan = document.querySelector('.diary-comment-count span');
-                        if (commentCountSpan) {
-                            commentCountSpan.textContent = parseInt(commentCountSpan.textContent) - 1;
-                        }
-                    } else {
-                        alert('댓글 삭제에 실패했습니다.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('오류가 발생했습니다.');
-                });
+        // 댓글 삭제 이벤트 리스너
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('diary-delete-comment')) {
+                const commentId = e.target.getAttribute('data-comment-id');
+                if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+                    deleteComment(commentId, e.target.closest('.diary-comment'));
+                }
             }
         });
+
+        function createCommentElement(comment) {
+            const commentDiv = document.createElement('div');
+            commentDiv.className = 'diary-comment';
+            commentDiv.innerHTML = `
+                <a href="/social/users/${comment.commenter.userId}/profile">
+                    <img class="diary-comment-profile-img" src="/uploadFiles/${comment.commenter.profileImagePath}" alt="프로필 이미지">
+                </a>
+                <div class="diary-comment-content-wrapper">
+                    <div class="diary-comment-meta">
+                        <span class="diary-comment-author">${comment.commenter.nickname}</span>
+                        <span class="diary-comment-date">${formatDate(comment.createdDate)}</span>
+                    </div>
+                    <div class="diary-comment-content">${comment.content.replace(/\n/g, '<br>')}</div>
+                </div>
+                <button class="btn btn-sm btn-danger diary-delete-comment" data-comment-id="${comment.commentNo}">삭제</button>
+            `;
+            return commentDiv;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+
+            return `${year}. ${month}. ${day}. ${hours}:${minutes}:${seconds}`;
+        }
+
+        function deleteComment(commentId, commentElement) {
+            fetch(`/social/diaries/comments/${commentId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    commentElement.remove();
+
+                    // 댓글 수 업데이트
+                    if (commentCountSpan) {
+                        const currentCount = parseInt(commentCountSpan.textContent) - 1;
+                        commentCountSpan.textContent = currentCount;
+
+                        // 모든 댓글이 삭제된 경우
+                        if (currentCount === 0) {
+                            const noCommentsMessage = document.createElement('div');
+                            noCommentsMessage.className = 'diary-no-comments';
+                            noCommentsMessage.textContent = '첫 번째 댓글을 작성해보세요! 😎';
+                            commentsList.innerHTML = '';
+                            commentsList.appendChild(noCommentsMessage);
+                        }
+                    }
+                } else {
+                    alert('댓글 삭제에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('오류가 발생했습니다.');
+            });
+        }
+    });
 </script>
 <script th:inline="javascript">
     $(document).ready(function() {
