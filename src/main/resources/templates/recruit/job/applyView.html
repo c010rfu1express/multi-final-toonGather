@@ -4,24 +4,47 @@
 <html layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>지원서 조회</title>
+    <title>툰게더 toonGather</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous">
     </script>
+    <style>
+        .choice {
+          background-color: #ffffff;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          border-radius: 8px;
+          padding: 20px;
+          border: 1px solid #888888;
+        }
+        .text-header {
+          border-bottom: none;
+          padding: 20px;
+          border-radius: 8px;
+          margin-bottom: 20px;
+        }
+        .text-body {
+          padding: 20px;
+          border-radius: 8px;
+        }
+        .info-text {
+          text-align: center;
+          color: #6c757d;
+          font-size: 14px;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="~{common/menubar}"></div>
 <div layout:fragment="content">
-    <div th:replace="~{recruit/menubar}"></div>
     <br>
     <div class="container">
-        <div class="card">
-            <div class="card-header">
-                <h2 class="text-center mb-4">지원서</h2>
-            </div>
-            <div class="card-body">
+        <div class="text-header">
+            <h2 class="text-center mb-4">지원서</h2>
+        </div>
+        <div class="choice">
+            <div class="text-body">
                 <div>
                     <h3 class="font-bold">[[${apply.title}]]</h3>
                 </div>
@@ -47,7 +70,7 @@
 
                 </div>
                 <div class="mt-4 text-right">
-                    <a href="/recruit/job/applyList" class="btn btn-outline-primary">목록으로</a>
+                    <a th:href="@{/user/my/rct/apply}" class="btn btn-outline-primary">목록으로</a>
                 </div>
             </div>
             <br>

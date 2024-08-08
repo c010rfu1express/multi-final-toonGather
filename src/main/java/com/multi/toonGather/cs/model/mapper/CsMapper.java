@@ -57,4 +57,6 @@ public interface CsMapper {
                                       @Param("keyword") String keyword,
                                       @Param("offset") int offset,
                                       @Param("limit") int limit);
+
+    void deleteQuestionFileBySavedName(@Param("savedName") String savedName);
 }

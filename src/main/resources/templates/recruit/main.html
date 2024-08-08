@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
 <html layout:decorate="~{layout}">
 <head>
-    <title>채용 페이지</title>
+    <title>툰게더 toonGather</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
     <style>
@@ -11,7 +11,7 @@
           z-index: 1000;
         }
         .post-slider{
-          width:60%;
+          width:65%;
           margin:0px auto;
           position:relative;
         }
@@ -19,7 +19,7 @@
           text-align: left;
           margin:30px auto;
         }
-        .post-slider .next{
+        .post-slider .slider-button-next{
           position: absolute;
           top: 50%;
           width: 40px;
@@ -35,7 +35,7 @@
           justify-content: center;
           cursor: pointer;
         }
-        .post-slider .prev{
+        .post-slider .slider-button-prev{
           position: absolute;
           top: 50%;
           width: 40px;
@@ -54,14 +54,14 @@
         .post-slider .post-wrapper{
 
           width:84%;
-          height:270px;
+          height:280px;
           margin:0px auto;
           overflow: hidden;
           padding:10px 0px 10px 0px;
         }
         .post-slider .post-wrapper .post{
           width:300px;
-          height:270px;
+          height:280px;
           margin:0px 10px;
           display:inline-block;
           background:white;
@@ -75,12 +75,16 @@
             padding-right: 15px;
             margin-right: 15px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             cursor: pointer;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            border-top: 5px solid #87CEFA;
+            border-top: 3px solid #87CEFA;
+            transition: transform 0.3s ease;
+        }
+        .post-slider .post-wrapper .post .post-info:hover {
+            transform: translateY(-5px);
         }
         .post-slider .post-wrapper .post .post-info .slider-image {
             width: 100%;
@@ -99,11 +103,23 @@
 </div>
 <div class="page-wrapper" style="position:relative;">
     <!--page slider -->
-    <div class="post-slider">
-        <h1 class="slider-title">구인/구직</h1>
+    <div id="job-slider" class="post-slider">
+        <h1 class="slider-title">
+            <a th:href="@{/recruit/job/list}" style="text-decoration: none; color: inherit; display: flex; align-items: center;">
+                구인/구직
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-briefcase" viewBox="0 0 16 16" style="margin-left: 8px;">
+                    <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5m1.886 6.914L15 7.151V12.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V7.15l6.614 1.764a1.5 1.5 0 0 0 .772 0M1.5 4h13a.5.5 0 0 1 .5.5v1.616L8.129 7.948a.5.5 0 0 1-.258 0L1 6.116V4.5a.5.5 0 0 1 .5-.5"/>
+                </svg>
+            </a>
+        </h1>
+
+        <span style="color: #6B7280; font-size: 14px;">
+            구인/구직 게시판은 작가나 어시스턴트, 편집자 등을 구할 수 있는 게시판입니다. <br>
+            다양한 분야의 전문가들과 함께 일할 기회를 만들어보세요.
+        </span>
         <hr>
-        <i class="fas fa-chevron-left prev"></i>
-        <i class="fas fa-chevron-right next" ></i>
+        <i class="fas fa-chevron-left slider-button-prev" data-slider="job"></i>
+        <i class="fas fa-chevron-right slider-button-next" data-slider="job"></i>
         <div class="post-wrapper">
             <div class="post" th:each="job : ${jobs}">
                 <div class="post-info" th:attr="data-href=@{/recruit/job/view(no=${job.board_no})}" onclick="window.location.href=this.getAttribute('data-href')">
@@ -113,8 +129,11 @@
                     <h5 class="post-subject" th:text="${#strings.abbreviate(job.title, 10)}"></h5>
                     <br>
                     <div style="display: inline-flex; align-items: center;">
-                        <i class="far fa-user"></i>&nbsp;
-                        <span th:text="${job.member.nickname}" style="margin-right: 5px;"></span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#4a4a4a" class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                        </svg>
+                        <span th:text="${job.member.nickname}" style="margin-left: 5px;"></span>
                     </div>
                 </div>
             </div>
@@ -124,12 +143,24 @@
 </div>
 <div class="page-wrapper" style="position:relative;">
     <!--page slider -->
-    <div class="post-slider">
+    <div id="free-slider" class="post-slider">
         <br>
-        <h1 class="slider-title">프리랜서</h1>
+        <h1 class="slider-title">
+            <a th:href="@{/recruit/free/list}" style="text-decoration: none; color: inherit; display: flex; align-items: center;">
+                프리랜서
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-person-workspace" viewBox="0 0 16 16" style="margin-left: 8px;">
+                    <path d="M4 16s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-5.95a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
+                    <path d="M2 1a2 2 0 0 0-2 2v9.5A1.5 1.5 0 0 0 1.5 14h.653a5.4 5.4 0 0 1 1.066-2H1V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v9h-2.219c.554.654.89 1.373 1.066 2h.653a1.5 1.5 0 0 0 1.5-1.5V3a2 2 0 0 0-2-2z"/>
+                </svg>
+            </a>
+        </h1>
+        <span style="color: #6B7280; font-size: 14px;">
+             프리랜서 게시판은 자신의 기술과 서비스를 판매할 수 있는 공간입니다. <br>
+             필요한 작업을 맡기거나, 자신의 전문성을 통해 새로운 기회를 만들어보세요.
+        </span>
         <hr>
-        <i class="fas fa-chevron-left prev"></i>
-        <i class="fas fa-chevron-right next" ></i>
+        <i class="fas fa-chevron-left slider-button-prev" data-slider="free"></i>
+        <i class="fas fa-chevron-right slider-button-next" data-slider="free"></i>
         <div class="post-wrapper">
             <div class="post" th:each="free : ${frees}">
                 <div class="post-info" th:attr="data-href=@{/recruit/free/view(no=${free.board_no})}" onclick="window.location.href=this.getAttribute('data-href')">
@@ -140,8 +171,11 @@
                     <br>
                     <div style="display: inline-flex; align-items: center;">
                         <div style="display: inline-flex; align-items: center;">
-                            <i class="far fa-user"></i>&nbsp;
-                            <span th:text="${free.member.nickname}" style="margin-right: 5px;"></span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#4a4a4a" class="bi bi-person-circle" viewBox="0 0 16 16">
+                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                            </svg>
+                            <span th:text="${free.member.nickname}" style="margin-left: 5px; margin-right: 5px;"></span>
                             <span th:if="${free.type_code == 'C'}" style="line-height: 1; vertical-align: middle;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#1E90FF" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
                                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
@@ -157,13 +191,22 @@
 <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 <script>
-    $('.post-wrapper').slick({
-      slidesToShow: 4,
+    $('#job-slider .post-wrapper').slick({
+      slidesToShow: 5,
       slidesToScroll: 1,
       autoplay: true,
       autoplaySpeed: 5000,
-      nextArrow:$('.next'),
-      prevArrow:$('.prev'),
+      nextArrow: $('#job-slider .slider-button-next'),
+      prevArrow: $('#job-slider .slider-button-prev'),
+    });
+
+    $('#free-slider .post-wrapper').slick({
+      slidesToShow: 5,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 5000,
+      nextArrow: $('#free-slider .slider-button-next'),
+      prevArrow: $('#free-slider .slider-button-prev'),
     });
 </script>
 </body>
