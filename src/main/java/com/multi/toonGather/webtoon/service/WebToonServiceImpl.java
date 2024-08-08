@@ -35,6 +35,12 @@ public class WebToonServiceImpl implements WebToonService{
     }
 
     @Override
+    public List<CommentDTO> CommentBestList(WebtoonDTO webtoonDTO) {
+        List<CommentDTO> list=webToonMapper.CommentBestList(webtoonDTO);
+        return list;
+    }
+
+    @Override
     public int insertComment(CommentDTO commentDTO) throws Exception {
         int result=webToonMapper.insertComment(commentDTO);
         return result;
@@ -152,6 +158,8 @@ public class WebToonServiceImpl implements WebToonService{
         }
         return result;
     }
+
+
 
 
 }
