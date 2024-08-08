@@ -2,6 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" th:href="@{/css/social-styles.css}">
+    <style>
+        .follow-count {
+            color: #333;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .follow-count:hover {
+            color: #007bff;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
 <div th:fragment="profile-menubar">
@@ -12,6 +24,14 @@
                 <div class="profile-text" style="display: flex; flex-direction: column; justify-content: center;">
                     <h2 th:text="${profileUser.nickname}" style="margin: 0 0 5px 0; font-weight: bold;">사용자 닉네임</h2>
                     <p th:text="${profileUser.bio}" style="margin: 0;">사용자 자기소개</p>
+                    <p style="font-size: 0.8em; margin: 0;">
+                        <a th:href="@{'/social/users/' + ${profileUser.userId} + '/follows?type=following'}" class="follow-count">
+                            팔로잉 <span th:text="${followingCount}">0</span>
+                        </a> |
+                        <a th:href="@{'/social/users/' + ${profileUser.userId} + '/follows?type=followers'}" class="follow-count">
+                            팔로워 <span th:text="${followerCount}">0</span>
+                        </a>
+                    </p>
                 </div>
                 <button th:if="${#authentication.principal != null and #authentication.principal.userDTO.userId != profileUser.userId}"
                         th:class="${isFollowing != null and isFollowing ? 'btn btn-secondary follow-btn' : 'btn btn-primary follow-btn'}"
