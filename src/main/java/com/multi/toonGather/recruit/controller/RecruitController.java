@@ -283,6 +283,7 @@ public class RecruitController {
                 model.addAttribute("savedName", savedName);
                 jobDTO.setImg(savedName);
                 jobService.updateBoard(jobDTO);
+                new File(filePath + existingImage).delete();
             } catch (Exception e) {
                 System.out.println("job update error : " + e);
                 /* 실패시 파일 삭제 */
@@ -570,6 +571,7 @@ public class RecruitController {
                 model.addAttribute("savedName", savedName);
                 freeDTO.setImg(savedName);
                 freeService.updateBoard(freeDTO);
+                new File(filePath + existingImage).delete();
             } catch (Exception e) {
                 System.out.println("free update error : " + e);
                 /* 실패시 파일 삭제 */
