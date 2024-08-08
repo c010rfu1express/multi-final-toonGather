@@ -40,4 +40,6 @@ public interface EventMapper {
     void insertLike(EventLikeDTO like);
 
     void updateEvent(EventDTO event);
+
+    void deleteEventFileBySavedName(String savedName);
 }

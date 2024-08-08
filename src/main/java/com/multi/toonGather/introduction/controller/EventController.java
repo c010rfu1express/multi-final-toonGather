@@ -72,7 +72,7 @@ public class EventController {
     @PostMapping(value = {"introduction/event/eventInsert"})
     public String eventInsert(@RequestParam("title") String title,
                                 @RequestParam("content") String content,
-                                @RequestParam("file") MultipartFile file,
+                                @RequestParam("images") MultipartFile[] images,
                                 @RequestParam("eventCategoryCode") int eventCategoryCode,
                                 @RequestParam("cost") String cost,
                                 @RequestParam("address") String address,
@@ -118,11 +118,14 @@ public class EventController {
 
             eventDTO.setSite(site);
             System.out.println("event dto 확인 : " + eventDTO.toString());
-
-            eventService.insertEvent(eventDTO, file, request);
-
             System.out.println("이거확인111");
-            return "redirect:/introduction/event/eventList";
+            boolean isSuccess = eventService.insertEvent(eventDTO, images, request);
+            if (isSuccess) {
+                return "redirect:/introduction/event/eventList";
+            }else{
+                return "introduction/event/eventInsert";
+            }
+
         } catch (Exception e) {
             // 에러 처리
             e.printStackTrace();
@@ -134,15 +137,13 @@ public class EventController {
     public String eventUpdateForm(@RequestParam(value = "eventNo", required = true) int eventNo, Model model){
 
         EventDTO eventDTO = eventService.getEventByNoWithFiles(eventNo);
-
         System.out.println("Retrieved event 수정페이지 : " + eventDTO);
 
         List<EventCategoryDTO> eventCategories = eventService.getAllEventCategories();
         System.out.println("Event Categories: " + eventCategories);
 
-
-        model.addAttribute("eventCategories", eventCategories);
         model.addAttribute("event", eventDTO);
+        model.addAttribute("eventCategories", eventCategories);
 
         return "introduction/event/eventUpdate";
     }
@@ -151,7 +152,7 @@ public class EventController {
     public String eventUpdate(@RequestParam("eventNo") int eventNo,
                               @RequestParam("title") String title,
                               @RequestParam("content") String content,
-                              @RequestParam("file") MultipartFile file,
+                              @RequestParam("images") MultipartFile[] images,
                               @RequestParam("eventCategoryCode") int eventCategoryCode,
                               @RequestParam("cost") String cost,
                               @RequestParam("address") String address,
@@ -160,6 +161,8 @@ public class EventController {
                               @RequestParam("startDate") String startDate,
                               @RequestParam("endDate") String endDate,
                               @RequestParam("site") String site,
+                              @RequestParam(value = "existingImages", required = false) List<String> existingImages,
+                              @RequestParam(value = "removedImages", required = false) List<String> removedImages,
                               HttpServletRequest request) throws Exception {
 
         System.out.println("update post 확인 : " + eventNo);
@@ -198,11 +201,15 @@ public class EventController {
 
         event.setSite(site);
 
-        System.out.println("확인 44");
-        boolean isSuccess = eventService.updateEvent(event, file, request);
+
+        System.out.println(existingImages);
+        System.out.println(removedImages);
+
+
+        boolean isSuccess = eventService.updateEvent(event, existingImages, removedImages, images, request);
         System.out.println("확인 55");
         if(isSuccess) return "redirect:/introduction/event/eventList";
-        else return "introduction/event/eventUpdate";
+        else return "introduction/event/eventUpdate/" + event.getEventNo();
     }
 
 

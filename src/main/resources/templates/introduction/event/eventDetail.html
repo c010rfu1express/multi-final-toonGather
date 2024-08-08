@@ -131,7 +131,7 @@
     <div class="d-flex align-items-center">
         <h2 class="mr-3">행사</h2>
         <form class="search-container" th:action="@{/introduction/event/eventList}" method="get">
-            <input type="text" placeholder="검색어 입력" name="keyword" th:value="${keyword}">
+            <input type="text" placeholder="검색어 입력" name="keyword" th:value="${keyword}" maxlength="20">
             <button type="submit">
                 <i class="fas fa-search"></i>
             </button>

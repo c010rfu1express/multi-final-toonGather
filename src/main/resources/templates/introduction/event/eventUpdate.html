@@ -26,6 +26,28 @@
             content: " *";
             color: red;
         }
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .image-preview img {
+            max-width: 150px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .image-preview .remove-button {
+            display: block;
+            background-color: #ff0000;
+            color: white;
+            text-align: center;
+            margin-top: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            padding: 2px 5px;
+        }
     </style>
 </head>
 <body>
@@ -43,27 +65,27 @@
                 <label for="title" class="required">제목</label>
                 <input type="text" class="form-control" id="title" name="title" maxlength="50" th:value="${event.title}" required>
             </div>
+
+
+
+
             <div class="form-group">
-                <label for="file">이미지 첨부</label>
-                <input type="file" class="form-control-file" id="file" name="file" multiple>
+                <label>첨부된 이미지</label>
+                <div class="image-preview" id="existingImagePreview">
+                    <div th:each="image : ${event.eventFiles}">
+                        <img th:src="@{'/uploadFiles/' + ${image.fileName}}" alt="첨부된 이미지">
+                        <div class="remove-button" th:attr="data-saved-name=${image.fileName}" onclick="removeExistingImage(this)">삭제</div>
+                        <input type="hidden" name="existingImages" th:value="${image.fileName}">
+                    </div>
+                </div>
             </div>
-<!--   다중이미지 첨부 & 첨부된 이미지 출력,삭제    -->
-<!--            <div class="form-group">-->
-<!--                <label>첨부된 이미지</label>-->
-<!--                <div class="image-preview" id="existingImagePreview">-->
-<!--                    <div th:each="image : ${files}">-->
-<!--                        <img th:src="@{'/uploadFiles/cs/' + ${image.savedName}}" alt="첨부된 이미지">-->
-<!--                        <div class="remove-button" th:attr="data-saved-name=${image.savedName}" onclick="removeExistingImage(this)">삭제</div>-->
-<!--                        <input type="hidden" name="existingImages" th:value="${image.savedName}">-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="form-group">-->
-<!--                <label>이미지 추가</label>-->
-<!--                <input type="file" id="imageUpload" name="images" multiple>-->
-<!--                <div class="image-preview" id="imagePreview"></div>-->
-<!--            </div>-->
-<!--            .....................-->
+
+
+            <div class="form-group">
+                <label for="imageUpload">이미지 추가</label>
+                <input type="file" class="form-control-file" id="imageUpload" name="images" multiple>
+                <div class="image-preview" id="imagePreview"></div>
+            </div>
 
 
             <div class="form-group">
@@ -115,6 +137,41 @@
 </div>
 
 <div th:replace="common/footer.html"></div>
+<script>
+    document.getElementById('imageUpload').addEventListener('change', function(event) {
+        const files = event.target.files;
+        const imagePreview = document.getElementById('imagePreview');
+        imagePreview.innerHTML = '';
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgElement = document.createElement('img');
+                imgElement.src = e.target.result;
+                const removeButton = document.createElement('div');
+                removeButton.innerText = '삭제';
+                removeButton.classList.add('remove-button');
+                removeButton.onclick = function() {
+                    imgElement.remove();
+                    removeButton.remove();
+                };
+                imagePreview.appendChild(imgElement);
+                imagePreview.appendChild(removeButton);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
 
+    function removeExistingImage(element) {
+        const imageName = element.getAttribute('data-saved-name');
+        element.previousElementSibling.remove(); // 이미지 삭제
+        element.remove(); // 버튼 삭제
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'removedImages';
+        hiddenInput.value = imageName;
+        document.querySelector('form').appendChild(hiddenInput);
+        console.log("Removed image added to form: " + imageName); // 디버그 로그
+    }
+</script>
 </body>
 </html>
