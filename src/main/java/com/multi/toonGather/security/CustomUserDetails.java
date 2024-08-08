@@ -87,4 +87,8 @@ public class CustomUserDetails implements UserDetails {
         return userDTO.getContactNumber();
     }
 
+    public void setAuthCode() {
+        userDTO.setAuthCode('C');
+    }
+
 }

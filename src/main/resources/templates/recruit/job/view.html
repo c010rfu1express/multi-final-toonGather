@@ -4,12 +4,36 @@
 <html layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>게시글 조회</title>
+    <title>툰게더 toonGather</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous">
     </script>
+    <style>
+        .choice {
+          background-color: #ffffff;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          border-radius: 8px;
+          padding: 20px;
+          border: 1px solid #888888;
+        }
+        .text-header {
+          border-bottom: none;
+          padding: 20px;
+          border-radius: 8px;
+          margin-bottom: 20px;
+        }
+        .text-body {
+          padding: 20px;
+          border-radius: 8px;
+        }
+        .info-text {
+          text-align: center;
+          color: #6c757d;
+          font-size: 14px;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="~{common/menubar}"></div>
@@ -17,11 +41,11 @@
     <div th:replace="~{recruit/menubar}"></div>
     <br>
     <div class="container">
-        <div class="card">
-            <div class="card-header">
-                <h2 class="text-center mb-4">구인/구직</h2>
-            </div>
-            <div class="card-body">
+        <div class="text-header">
+            <h2 class="text-center mb-4">구인/구직</h2>
+        </div>
+        <div class="choice">
+            <div class="text-body">
                 <div>
                     <h3 class="font-bold">[[${job.title}]]</h3>
                 </div>
@@ -87,8 +111,9 @@
                         <br> [[${job.contact}]] <br>
                         <div th:if="${member_no != null and member_no != '' and member_no != job.writer}">
                             <div style="margin-right:1px;" class="mt-4 text-center">
-                                <a th:if="${hasApplied == false}" th:href="@{/recruit/job/apply(no=${job.board_no})}" class="btn btn-success">지원하기</a>
-                                <button th:if="${hasApplied == true}" class="btn btn-success" disabled>지원완료</button>
+                                <a id="apply-button" th:if="${hasApplied == false}" th:href="@{/recruit/job/apply(no=${job.board_no})}" class="btn btn-success">지원하기</a>
+                                <button id="applied-button" th:if="${hasApplied == true}" class="btn btn-success" disabled>지원완료</button>
+                                <button id="expired-button" class="btn btn-success" style="display: none;" disabled>마감된 공고</button>
                             </div>
                         </div>
                     </label>
@@ -107,5 +132,21 @@
     </div>
 </div>
 <div th:replace="common/footer.html"></div>
+<script>
+    $(document).ready(function() {
+       var deadLine = '[[${job.dead_line}]]';
+       if (deadLine) {
+           var currentDate = new Date(); // 현재 날짜
+           var deadlineDate = new Date(deadLine); // 마감일
+
+           if (deadlineDate < currentDate) {
+               // 마감일이 현재 날짜보다 이전인 경우
+               $('#apply-button').hide(); // 지원하기 버튼 숨기기
+               $('#applied-button').hide(); // 지원완료 버튼 숨기기
+               $('#expired-button').show(); // 이미 마감된 공고 버튼 표시
+           }
+       }
+   });
+</script>
 </body>
 </html>
