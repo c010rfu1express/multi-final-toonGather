@@ -242,7 +242,7 @@
         <div class="pagination justify-content-center">
             <a class="btn btn-custom" th:if="${currentPage > 0}" th:href="@{/introduction/eventList(page=${currentPage - 1}, searchType=${searchType}, keyword=${keyword})}">&laquo;</a>
             <a class="btn btn-custom" th:each="i : ${#numbers.sequence(1, totalPages)}"
-               th:href="@{/introduction/eventList(page=${i - 1}, keyword=${keyword})}"
+               th:href="@{/introduction/event/eventList(page=${i - 1}, keyword=${keyword})}"
                th:text="${i}"
                th:classappend="${currentPage + 1 == i} ? 'active' : ''"></a>
             <a class="btn btn-custom" th:if="${currentPage < totalPages - 1}" th:href="@{/introduction/eventList(page=${currentPage + 1}, keyword=${keyword})}">&raquo;</a>

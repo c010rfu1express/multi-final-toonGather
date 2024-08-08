@@ -70,16 +70,16 @@ public class EventController {
     }
 
     @PostMapping(value = {"introduction/event/eventInsert"})
-    public String journalInsert(@RequestParam("title") String title,
+    public String eventInsert(@RequestParam("title") String title,
                                 @RequestParam("content") String content,
                                 @RequestParam("file") MultipartFile file,
                                 @RequestParam("eventCategoryCode") int eventCategoryCode,
-                                @RequestParam("cost") int cost,
+                                @RequestParam("cost") String cost,
                                 @RequestParam("address") String address,
                                 @RequestParam("place") String place,
                                 @RequestParam("coordinates") String coordinates,
                                 @RequestParam("startDate") String startDate,
-                                @RequestParam("endDate") String endDate,
+                                @RequestParam(value = "endDate", required = false) String endDate,
                                 @RequestParam("site") String site,
                                 HttpServletRequest request) {
         try {
@@ -87,13 +87,37 @@ public class EventController {
             eventDTO.setTitle(title);
             eventDTO.setContent(content);
             eventDTO.setEventCategoryCode(eventCategoryCode);
-            eventDTO.setCost(cost);
+
+
+            System.out.println("cost : " + cost);
+            int costInt;
+            if (cost == null || cost.trim().isEmpty()) {
+                // costStr이 null이거나 비어 있거나 공백 문자로만 이루어진 경우
+                costInt = 0;
+            } else{
+                costInt = Integer.parseInt(cost);
+            }
+            System.out.println("costInt : " + costInt);
+            eventDTO.setCost(costInt);
+
+
             eventDTO.setAddress(address);
             eventDTO.setPlace(place);
             eventDTO.setCoordinates(coordinates);
             eventDTO.setStartDate(LocalDate.parse(startDate));
-            eventDTO.setEndDate(LocalDate.parse(endDate));
+
+
+            // endDate가 빈 문자열인지 확인
+            System.out.println("endDate : " + endDate);
+            if (endDate == null || endDate.trim().isEmpty()) {
+                eventDTO.setEndDate(null); // endDate가 빈 문자열인 경우 null로 설정
+            } else {
+                eventDTO.setEndDate(LocalDate.parse(endDate));
+            }
+
+
             eventDTO.setSite(site);
+            System.out.println("event dto 확인 : " + eventDTO.toString());
 
             eventService.insertEvent(eventDTO, file, request);
 
@@ -129,7 +153,7 @@ public class EventController {
                               @RequestParam("content") String content,
                               @RequestParam("file") MultipartFile file,
                               @RequestParam("eventCategoryCode") int eventCategoryCode,
-                              @RequestParam("cost") int cost,
+                              @RequestParam("cost") String cost,
                               @RequestParam("address") String address,
                               @RequestParam("place") String place,
                               @RequestParam("coordinates") String coordinates,
@@ -143,12 +167,35 @@ public class EventController {
         event.setTitle(title);
         event.setContent(content);
         event.setEventCategoryCode(eventCategoryCode);
-        event.setCost(cost);
+
+
+        System.out.println("cost : " + cost);
+        int costInt;
+        if (cost == null || cost.trim().isEmpty()) {
+            // costStr이 null이거나 비어 있거나 공백 문자로만 이루어진 경우
+            costInt = 0;
+        } else{
+            costInt = Integer.parseInt(cost);
+        }
+        System.out.println("costInt : " + costInt);
+        event.setCost(costInt);
+
+
         event.setAddress(address);
         event.setPlace(place);
         event.setCoordinates(coordinates);
         event.setStartDate(LocalDate.parse(startDate));
-        event.setEndDate(LocalDate.parse(endDate));
+
+
+        // endDate가 빈 문자열인지 확인
+        System.out.println("endDate : " + endDate);
+        if (endDate == null || endDate.trim().isEmpty()) {
+            event.setEndDate(null); // endDate가 빈 문자열인 경우 null로 설정
+        } else {
+            event.setEndDate(LocalDate.parse(endDate));
+        }
+
+
         event.setSite(site);
 
         System.out.println("확인 44");
@@ -194,7 +241,15 @@ public class EventController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedPostingDate = eventDTO.getPostingDate().format(formatter);
         String formattedStartDate = eventDTO.getStartDate().format(formatter);
-        String formattedEndDate = eventDTO.getEndDate().format(formatter);
+
+        String formattedEndDate;
+        if (eventDTO.getEndDate() != null) {
+            formattedEndDate = eventDTO.getEndDate().format(formatter);
+        } else {
+            formattedEndDate = ""; // or any default value you want to set
+        }
+        System.out.println("Formatted End Date: " + formattedEndDate);
+
 
         // 모델에 포맷된 날짜 추가
         model.addAttribute("event", eventDTO);

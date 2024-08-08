@@ -45,8 +45,27 @@
             </div>
             <div class="form-group">
                 <label for="file">이미지 첨부</label>
-                <input type="file" class="form-control-file" id="file" name="file">
+                <input type="file" class="form-control-file" id="file" name="file" multiple>
             </div>
+<!--   다중이미지 첨부 & 첨부된 이미지 출력,삭제    -->
+<!--            <div class="form-group">-->
+<!--                <label>첨부된 이미지</label>-->
+<!--                <div class="image-preview" id="existingImagePreview">-->
+<!--                    <div th:each="image : ${files}">-->
+<!--                        <img th:src="@{'/uploadFiles/cs/' + ${image.savedName}}" alt="첨부된 이미지">-->
+<!--                        <div class="remove-button" th:attr="data-saved-name=${image.savedName}" onclick="removeExistingImage(this)">삭제</div>-->
+<!--                        <input type="hidden" name="existingImages" th:value="${image.savedName}">-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="form-group">-->
+<!--                <label>이미지 추가</label>-->
+<!--                <input type="file" id="imageUpload" name="images" multiple>-->
+<!--                <div class="image-preview" id="imagePreview"></div>-->
+<!--            </div>-->
+<!--            .....................-->
+
+
             <div class="form-group">
                 <label for="eventCategoryCode" class="required">행사 종류</label>
                 <select class="custom-select" id="eventCategoryCode" name="eventCategoryCode" required>
@@ -59,7 +78,7 @@
             </div>
             <div class="form-group">
                 <label for="cost">이용요금</label>
-                <input type="number" class="form-control" id="cost" name="cost" maxlength="50" th:value="${event.cost}">
+                <input type="text" class="form-control" id="cost" name="cost" maxlength="50" th:value="${event.cost}">
             </div>
             <div class="form-group">
                 <label for="content" class="required">개요</label>
