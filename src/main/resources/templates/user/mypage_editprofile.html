@@ -190,6 +190,14 @@
     .form-check-input {
     accent-color: #03C75A;
     }
+
+    .profile-image {
+    width: 100px;
+    height: auto;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+    }
 </style>
 <div class="jumbotron">
   <div class="row">
@@ -283,8 +291,8 @@
         <form th:action="@{/user/my/editprofile}" th:object="${user}" method="post" enctype="multipart/form-data" onsubmit="validateForm(event)" id="editProfileForm">
           <div class="row p-2">
             <div class="col-3">
-              <img th:if="${user.profileImagePath == null}" src="/images/defaultprofileimage.png" style="width: 100px; height: auto;"/>
-              <img th:if="${user.profileImagePath != null}" th:src="@{/uploadFiles/{fileName}(fileName=${user.profileImagePath})}" style="width: 100px; height: auto;"/>
+              <img th:if="${user.profileImagePath == null}" src="/images/defaultprofileimage.png" style="width: 100px; height: auto;" class="profile-image"/>
+              <img th:if="${user.profileImagePath != null}" th:src="@{/uploadFiles/{fileName}(fileName=${user.profileImagePath})}" style="width: 100px; height: auto;" class="profile-image"/>
             </div>
             <div class="col-9"></div>
             <div class="col-3">
@@ -411,7 +419,7 @@
             <div class="col-6">
             </div>
             <div class="col-12">
-              <textarea class="form-control" rows="3" maxlength="150" th:field="*{bio}"></textarea>
+              <textarea class="form-control" rows="3" maxlength="150" th:field="*{bio}" placeholder="본인을 자유롭게 표현해주세요.&#13;&#10;소개 내용은 소셜 페이지에 활용됩니다!"></textarea>
             </div>
           </div>
           <div class="col-12 p-2">

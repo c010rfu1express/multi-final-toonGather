@@ -410,7 +410,7 @@ async function checkDuplicates(userId, nickname, email) {
                             연락처
                         </div>
                         <div class="col-6">
-                            <input class="form-control px-3" type="text" th:field="*{contactNumber}" oninput="autoFormatPhoneNumber(this)" placeholder="000-0000-0000"/>
+                            <input class="form-control px-3 logininput" type="text" th:field="*{contactNumber}" oninput="autoFormatPhoneNumber(this)" placeholder="000-0000-0000"/>
                         </div>
                         <div class="col-3">
                         </div>
@@ -484,7 +484,7 @@ async function checkDuplicates(userId, nickname, email) {
                         <div class="col-6">
                         </div>
                         <div class="col-12">
-                            <textarea class="form-control" rows="3" maxlength="150" th:field="*{bio}"></textarea>
+                            <textarea class="form-control logininput" rows="3" maxlength="150" th:field="*{bio}" placeholder="본인을 자유롭게 표현해주세요.&#13;&#10;소개 내용은 소셜 페이지에 활용됩니다!"></textarea>
                         </div>
                     </div>
 
