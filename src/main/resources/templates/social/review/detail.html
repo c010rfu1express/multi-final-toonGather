@@ -294,11 +294,8 @@
                 type: 'POST',
                 success: function(response) {
                     if (response.success) {
-                        if (response.isFollowing) {
-                            btn.text('팔로잉').removeClass('btn-primary').addClass('btn-secondary');
-                        } else {
-                            btn.text('팔로우').removeClass('btn-secondary').addClass('btn-primary');
-                        }
+                        // 팔로우 상태 변경 성공 시 페이지 새로고침
+                        location.reload();
                     } else {
                         alert('팔로우 상태를 변경하는데 실패했습니다.');
                     }
@@ -309,7 +306,6 @@
             });
         });
     });
-</script>
 </script>
 </body>
 </html>
