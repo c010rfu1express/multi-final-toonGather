@@ -4,7 +4,7 @@
 <html layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>툰게더 toonGather</title>
+    <title>툰게더 toonGather | 구인/구직</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -118,10 +118,10 @@
                         </div>
                     </label>
                     <div class="mt-4 text-right">
-                        <a href="/recruit/job/list" class="btn btn-outline-primary">목록으로</a>
+                        <a href="/recruit/job/list" class="btn btn-secondary">목록으로</a>
                         <div th:if="${member_no == job.member.userNo}">
                             <br>
-                            <a th:href="@{/recruit/job/update(no=${job.board_no})}" class="btn btn-primary">수정</a>
+                            <a th:href="@{/recruit/job/update(no=${job.board_no})}" class="btn btn-warning">수정</a>
                             <a th:href="@{/recruit/job/delete(no=${job.board_no})}" class="btn btn-danger">삭제</a>
                         </div>
                     </div>

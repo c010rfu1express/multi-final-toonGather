@@ -3,7 +3,7 @@
 <html layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>툰게더 toonGather</title>
+    <title>툰게더 toonGather | 구인/구직</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
@@ -61,7 +61,7 @@
                     </div>
                     <div class="form-group">
                         <label for="content">상세 요강 *</label>
-                        <input id="content" name="content" th:value="${job.content}" class="form-control" style="height:300px;" required maxlength="1000">
+                        <input id="content" name="content" th:value="${job.content}" class="form-control" style="height:300px;" required maxlength="1000" pattern=".*\S+.*">
                     </div>
                     <div class="form-group">
                         <label for="singleFile">이미지 변경</label>
@@ -73,11 +73,11 @@
                     </div>
                     <div class="form-group">
                         <label for="contact">채용담당자 연락처 *</label>
-                        <input type="text" id="contact" name="contact" th:value="${job.contact}" class="form-control" required maxlength="100">
+                        <input type="text" id="contact" name="contact" th:value="${job.contact}" class="form-control" required maxlength="100" pattern=".*\S+.*">
                         <small class="form-text text-muted">전화번호 또는 이메일 중 선호하는 형식으로 작성해 주세요.</small>
                     </div>
                     <div class="form-group text-right">
-                        <a href="/recruit/job/list" class="btn btn-outline-primary">첫페이지로</a>
+                        <a href="/recruit/job/list" class="btn btn-secondary">첫페이지로</a>
                         <button id="b2" type="submit" class="btn btn-primary">수정</button>
                     </div>
                 </form>

@@ -31,12 +31,29 @@
 <style>
     .jumbotron {
     position : relative;
+    background-color : #EEEEEE;
     }
     .jumbotron .row {
     position : absolute;
     width : 100%;
     bottom: 0%;
     }
+
+    #loginbox {
+    border-radius : 5%;
+    border-color : #F2F2F2;
+    }
+
+    .logininput {
+    background-color : #FCFCFC;
+    border : none;
+    height : 50px;
+    }
+
+    .logininput::placeholder {
+    color : #BBBBBB;
+    }
+
 </style>
 <div class="jumbotron">
     <div class="row">
@@ -65,42 +82,52 @@
         </div>
     </aside>
     <div class="col-md-9">
-        <div>
-            로그인<br>
-            <a href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=74obWxfUMfykv5opH_Xw&redirect_uri=http://localhost:8099/user/auth/naver/callback&state=test">네이버로 시작하기</a><br>
-            <a href="https://kauth.kakao.com/oauth/authorize?client_id=87b870e71a148436e9f9c4a2aba3801d&redirect_uri=http://localhost:8099/user/auth/kakao/callback&response_type=code">카카오로 시작하기</a><br>
-            또는<br>
+        <div class="row justify-content-center">
+            <div class="col-6 border" id="loginbox" style="text-align:center;">
+                <div class="px-3 py-4" style="text-align: center; ">
+                    <h2>로그인</h2>
+                </div>
+                <div class="px-3 py-2">
+                    <a href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=74obWxfUMfykv5opH_Xw&redirect_uri=http://localhost:8099/user/auth/naver/callback&state=test"><img src="/images/user/b_naver.png" class="img-fluid"></a>
+                </div>
+                <div class="px-3 py-2">
+                    <a href="https://kauth.kakao.com/oauth/authorize?client_id=87b870e71a148436e9f9c4a2aba3801d&redirect_uri=http://localhost:8099/user/auth/kakao/callback&response_type=code"><img src="/images/user/b_kakao.png" class="img-fluid"></a>
+                </div>
 
-            <form th:action="@{/user/login}" method="post">
-                아이디 : <input type="text" name="username" maxlength="20" minlength="4"/> (중복불가)<br>
-                비밀번호 : <input type="password" name="password" maxlength="30" minlength="8"/><br>
-                <input type="submit">로그인<br>
-            </form>
-        <!--    <form th:action="@{/user/login}" th:object="${user}" method="post">-->
-        <!--        아이디 : <input type="text" th:field="*{userId}"/> (중복불가)<br>-->
-        <!--        비밀번호 : <input type="password" th:field="*{password}"/><br>-->
+                <div class="row px-3 py-2">
+                    <div class="col-5"><hr></div>
+                    <div class="col-2" style="text-align:center;">또는</div>
+                    <div class="col-5"><hr></div>
+                </div>
 
-        <!--        <input type="submit">로그인<br>-->
-        <!--    </form>-->
-            <a href="/user/signup">회원가입</a> | <a href="/user/findid">ID/PW 찾기</a>
-            <!--    <form th:action="@{/user/signup}" th:object="${user}" method="post">-->
-            <!--        아이디 : <input type="text" name="userId"><br>-->
-            <!--        비밀번호 : <input type="password" name="password"><br>-->
-            <!--        비밀번호 확인 : <br>-->
-            <!--        닉네임 : <input type="text" name="nickname"><br>-->
-            <!--        연락처 : <input type="text" name="contactNumber"><br>-->
-            <!--        성별 : <select name="gender">-->
-            <!--        <option>성별을 공개하지 않습니다-->
-            <!--        <option>여-->
-            <!--        <option>남</select><br>-->
-            <!--        생년월일 : <input type="text" name="dateOfBirth"><br>-->
-            <!--        이메일 : <input type="text" name="email"><br>-->
-            <!--        자기소개(선택사항) : <input type="text" name="bio"><br>-->
-            <!--        <input type="checkbox" name="termsAgreement">본인은 툰게더 회원 약관에 동의합니다.<br>-->
+                <form th:action="@{/user/login}" method="post">
+                    <div class="row px-3">
+                        <div class="col-12 mb-3 py-1">
+                            <input type="text" name="username" class="form-control logininput" maxlength="20" minlength="4" placeholder="아이디"/>
+                        </div>
 
-            <!--        <input type="submit">가입하기-->
-            <!--    </form>-->
+                        <div class="col-12 mb-3 py-1">
+                            <input type="password" name="password" class="form-control logininput" maxlength="30" minlength="8" placeholder="비밀번호"/>
+                        </div>
+
+                        <div class="col-12 pt-3 pb-4">
+                            <button type="submit" class="btn btn-primary btn-block" style="background-color:grey; height:50px;">로그인</button>
+                        </div>
+
+                        <div class="col-12 pt-2 pb-5" style="text-align:center;">
+                            <a href="/user/signup" style="color: black;">회원가입</a> | <a href="/user/findid" style="color: black;">ID/PW 찾기</a>
+                        </div>
+
+                    </div>
+
+
+                </form>
+
+
+
+            </div>
         </div>
+
     </div>
 </div>
 <div th:replace="common/footer.html"></div>

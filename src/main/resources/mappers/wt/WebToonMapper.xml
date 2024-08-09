@@ -12,6 +12,8 @@
         <result property="liked" column="liked" />
         <result property="dislike" column="dislike" />
         <result property="nickname" column="nickname" />
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
     </resultMap>
 
 
@@ -21,6 +23,7 @@
         <result property="webtoonNo" column="webtoon_no"/>
         <result property="userNo" column="user_no"/>
         <result property="count" column="count"/>
+        <result property="createdAt" column="created_at" />
     </resultMap>
 
     <resultMap id="wtUserSavetMap" type="com.multi.toonGather.webtoon.model.dto.WtUserSaveDTO">
@@ -52,7 +55,8 @@
 
 
     <select id="Commentlist" parameterType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO" resultMap="commentResultMap">
-        SELECT c.comment_no, c.webtoon_no, c.user_no, u.nickname, c.content, c.liked, c.dislike
+        SELECT c.comment_no, c.webtoon_no, c.user_no,
+        u.nickname, c.content, c.liked, c.dislike,c.created_at,updated_at
         FROM wt_comment c
         INNER JOIN users u ON c.user_no = u.user_no
         WHERE
@@ -201,5 +205,11 @@
         AND (c.liked - c.dislike) >= 10
         ORDER BY c.liked - c.dislike DESC
         LIMIT 3;
+    </select>
+
+    <select id="webtoonBest">
+        select * from webtoon
+        ORDER BY count DESC
+        LIMIT 5;
     </select>
 </mapper>

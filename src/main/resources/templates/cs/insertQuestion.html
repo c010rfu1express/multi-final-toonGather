@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>툰게더 toonGather | 문의글 작성</title>
     <link rel="stylesheet" th:href="@{/css/social-styles.css}">
     <style>
         body {
@@ -56,6 +56,28 @@
             cursor: pointer;
             border-radius: 5px;
         }
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .image-preview img {
+            max-width: 150px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .image-preview .remove-button {
+            display: block;
+            background-color: #ff0000;
+            color: white;
+            text-align: center;
+            margin-top: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            padding: 2px 5px;
+        }
     </style>
 </head>
 <body>
@@ -83,7 +105,8 @@
             </div>
             <div class="form-group">
                 <label>이미지 첨부</label>
-                <input type="file" name="images" multiple>
+                <input type="file" id="imageUpload" name="images" multiple>
+                <div class="image-preview" id="imagePreview"></div>
             </div>
             <div class="form-group">
                 <label>내용</label>
@@ -96,5 +119,21 @@
     </div>
 </div>
 <div th:replace="common/footer.html"></div>
+<script>
+    document.getElementById('imageUpload').addEventListener('change', function(event) {
+        const files = event.target.files;
+        const imagePreview = document.getElementById('imagePreview');
+        imagePreview.innerHTML = '';
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgElement = document.createElement('img');
+                imgElement.src = e.target.result;
+                imagePreview.appendChild(imgElement);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+</script>
 </body>
 </html>
