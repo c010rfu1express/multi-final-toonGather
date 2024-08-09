@@ -94,6 +94,9 @@
     width : 100%;
     bottom: 0%;
     }
+    .nav-link {
+            color: #828282;
+    }
 </style>
 <div class="jumbotron">
     <div class="row">
@@ -103,7 +106,7 @@
         <div class="col-md-9">
             <nav class="navbar navbar-expand-md">
                 <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-                    <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">좋아요한 웹툰소식</a></li>
+                    <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2" style="color: #000;">좋아요한 웹툰소식</a></li>
                     <li><a th:href="@{/user/my/in/event}" class="nav-link px-2">좋아요한 행사</a></li>
                     <li><a th:href="@{/user/my/in/merchan}" class="nav-link px-2">좋아요한 굿즈</a></li>
                 </ul>
@@ -118,7 +121,7 @@
                 <li><a th:href="@{/user/my}" class="nav-link px-2">나의 웹툰</a></li>
                 <li><a th:href="@{/user/my/so/review}" class="nav-link px-2">나의 소셜</a></li>
                 <li><a th:href="@{/user/my/rct/job}" class="nav-link px-2">나의 채용</a></li>
-                <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">나의 소식</a></li>
+                <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2" style="color: #03C75A;">나의 소식</a></li>
                 <li><a th:href="@{/user/my/editprofile}" class="nav-link px-2">프로필 수정</a></li>
                 <li><a th:href="@{/user/my/cs}" class="nav-link px-2">나의 문의</a></li>
             </ul>

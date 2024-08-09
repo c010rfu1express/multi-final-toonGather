@@ -95,6 +95,10 @@
     width : 100%;
     bottom: 0%;
     }
+
+    .nav-link {
+            color: #828282;
+    }
 </style>
 <div class="jumbotron">
     <div class="row">
@@ -105,7 +109,7 @@
             <nav class="navbar navbar-expand-md">
                 <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
                     <li><a th:href="@{/user/my}" class="nav-link px-2">북마크한 웹툰</a></li>
-                    <li><a th:href="@{/user/my/wt/comment}" class="nav-link px-2">내가 남긴 코멘트</a></li>
+                    <li><a th:href="@{/user/my/wt/comment}" class="nav-link px-2" style="color: #000;">내가 남긴 코멘트</a></li>
                 </ul>
             </nav>
         </div>
@@ -115,7 +119,7 @@
     <aside class="col-md-3">
         <div class="panel">
             <ul class="list-group">
-                <li><a th:href="@{/user/my}" class="nav-link px-2">나의 웹툰</a></li>
+                <li><a th:href="@{/user/my}" class="nav-link px-2" style="color: #03C75A;">나의 웹툰</a></li>
                 <li><a th:href="@{/user/my/so/review}" class="nav-link px-2">나의 소셜</a></li>
                 <li><a th:href="@{/user/my/rct/job}" class="nav-link px-2">나의 채용</a></li>
                 <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">나의 소식</a></li>
