@@ -30,4 +30,10 @@ public class UserDTO {
    private LocalDateTime termsAgreementDatetime;
    private LocalDateTime registrationDatetime;
    private LocalDateTime lastModifiedDatetime;
+
+   //DB 외 영역 (생년월일 처리를 위함)
+   private String year;
+   private String month;
+   private String day;
+   private String confirmPassword;
 }
