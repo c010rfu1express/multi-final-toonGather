@@ -134,7 +134,7 @@
             </div>
             <div class="user-review-list">
                 <div th:unless="${#lists.isEmpty(reviews)}">
-                    <div th:each="review, iterStat : ${reviews}" class="user-review-item" th:attr="data-href=@{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})}">
+                    <div th:each="review, iterStat : ${reviews}" class="user-review-item" th:attr="data-href=@{/social/users/__${userId}__/reviews/{reviewNo}(reviewNo=${review.reviewNo})}">
                         <div class="user-review-number" th:text="${(currentPage - 1) * 10 + iterStat.count}"></div>
                         <img class="user-review-webtoon-thumbnail" th:src="${review.webtoon.thumbnail_url}" alt="웹툰 썸네일">
                         <div class="user-review-webtoon-info">
@@ -205,11 +205,8 @@
                 type: 'POST',
                 success: function(response) {
                     if (response.success) {
-                        if (response.isFollowing) {
-                            btn.text('팔로잉').removeClass('btn-primary').addClass('btn-secondary');
-                        } else {
-                            btn.text('팔로우').removeClass('btn-secondary').addClass('btn-primary');
-                        }
+                        // 팔로우 상태 변경 성공 시 페이지 새로고침
+                        location.reload();
                     } else {
                         alert('팔로우 상태를 변경하는데 실패했습니다.');
                     }

@@ -60,7 +60,7 @@
                 </div>
                 <hr>
                 <div th:if="${not #lists.isEmpty(favoriteWebtoons)}" class="user-webtoon-slider">
-                    <div th:each="review : ${favoriteWebtoons}" class="webtoon-card" th:onclick="'location.href=\'' + @{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})} + '\''">
+                    <div th:each="review : ${favoriteWebtoons}" class="webtoon-card" th:onclick="'location.href=\'' + @{/social/users/__${userId}__/reviews/{reviewNo}(reviewNo=${review.reviewNo})} + '\''">
                         <img th:src="${review.webtoon.thumbnail_url}" th:alt="${review.webtoon.webtoon_name}">
                         <div class="webtoon-info">
                             <div class="webtoon-title" th:text="${review.webtoon.webtoon_name}"></div>
@@ -89,7 +89,7 @@
                 </div>
                 <hr>
                 <div th:if="${not #lists.isEmpty(popularReviews)}" class="user-review-slider">
-                    <div th:each="review : ${popularReviews}" class="review-card" th:onclick="'location.href=\'' + @{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})} + '\''">
+                    <div th:each="review : ${popularReviews}" class="review-card" th:onclick="'location.href=\'' + @{/social/users/__${userId}__/reviews/{reviewNo}(reviewNo=${review.reviewNo})} + '\''">
                         <img th:src="${review.webtoon.thumbnail_url}" th:alt="${review.webtoon.webtoon_name}">
                         <div class="review-info">
                             <div class="review-webtoon">
@@ -132,19 +132,19 @@
                             <span class="activity-content" th:switch="${activity.activityType}">
                             <span th:case="'REVIEW_LIKE'" th:if="${activity.review != null}">
                                 <a th:href="@{/social/users/{userId}/profile(userId=${activity.writer.userId})}" class="user-link" th:text="${activity.writer.nickname}"></a>님의 리뷰
-                                "<a th:href="@{/social/reviews/{reviewNo}(reviewNo=${activity.review.reviewNo})}" class="review-link" th:text="${activity.review.title}"></a>"에 좋아요 💓
+                                "<a th:href="@{/social/users/__${activity.writer.userId}__/reviews/{reviewNo}(reviewNo=${activity.review.reviewNo})}" class="review-link" th:text="${activity.review.title}"></a>"에 좋아요 💓
                             </span>
                             <span th:case="'DIARY_COMMENT'" th:if="${activity.diary != null}">
                                 <a th:href="@{/social/users/{userId}/profile(userId=${activity.writer.userId})}" class="user-link" th:text="${activity.writer.nickname}"></a>님의 다이어리
-                                "<a th:href="@{/social/diaries/{diaryNo}(diaryNo=${activity.diary.diaryNo})}" class="diary-link" th:text="${activity.diary.title}"></a>"에 댓글 💬
+                                "<a th:href="@{/social/users/__${activity.writer.userId}__/diaries/{diaryNo}(diaryNo=${activity.diary.diaryNo})}" class="diary-link" th:text="${activity.diary.title}"></a>"에 댓글 💬
                             </span>
                             <span th:case="'REVIEW_CREATE'" th:if="${activity.review != null and activity.webtoon != null}">
                                 <a th:href="@{/webtoon/one(webtoon_id=${(activity.webtoon.platform == 1 ? 'naver' : 'kakao') + '_' + activity.webtoon.webtoon_id}, webtoon_name=${activity.webtoon.webtoon_name})}" class="webtoon-link" th:text="${activity.webtoon.webtoon_name}"></a>의 리뷰
-                                "<a th:href="@{/social/reviews/{reviewNo}(reviewNo=${activity.review.reviewNo})}" class="review-link" th:text="${activity.review.title}"></a>" 작성 ✏️
+                                "<a th:href="@{/social/users/__${activity.writer.userId}__/reviews/{reviewNo}(reviewNo=${activity.review.reviewNo})}" class="review-link" th:text="${activity.review.title}"></a>" 작성 ✏️
                             </span>
                             <span th:case="'DIARY_CREATE'" th:if="${activity.diary != null and activity.webtoon != null}">
                                 <a th:href="@{/webtoon/one(webtoon_id=${(activity.webtoon.platform == 1 ? 'naver' : 'kakao') + '_' + activity.webtoon.webtoon_id}, webtoon_name=${activity.webtoon.webtoon_name})}" class="webtoon-link" th:text="${activity.webtoon.webtoon_name}"></a>의 다이어리
-                                "<a th:href="@{/social/diaries/{diaryNo}(diaryNo=${activity.diary.diaryNo})}" class="diary-link" th:text="${activity.diary.title}"></a>" 작성 🖊️
+                                "<a th:href="@{/social/users/__${activity.writer.userId}__/diaries/{diaryNo}(diaryNo=${activity.diary.diaryNo})}" class="diary-link" th:text="${activity.diary.title}"></a>" 작성 🖊️
                             </span>
                         </span>
                         </li>
@@ -203,11 +203,8 @@
                 type: 'POST',
                 success: function(response) {
                     if (response.success) {
-                        if (response.isFollowing) {
-                            btn.text('팔로잉').removeClass('btn-primary').addClass('btn-secondary');
-                        } else {
-                            btn.text('팔로우').removeClass('btn-secondary').addClass('btn-primary');
-                        }
+                        // 팔로우 상태 변경 성공 시 페이지 새로고침
+                        location.reload();
                     } else {
                         alert('팔로우 상태를 변경하는데 실패했습니다.');
                     }
