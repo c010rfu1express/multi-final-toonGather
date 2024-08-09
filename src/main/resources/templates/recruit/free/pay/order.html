@@ -233,9 +233,7 @@
       merchant_uid: "kakao_" + new Date().getTime(), // 가맹점 주문번호
       name: "[[${free.title}]]", // 결제창에 노출될 상품명
       amount: hiddenPriceInput.value, // 가격
-      buyer_email: document.getElementById('email').value,
-      buyer_name: document.getElementById('name').value,
-      buyer_tel: document.getElementById('phone').value
+      buyer_name: document.getElementById('name').value
     }, function (rsp) { // 콜백 함수
       if (rsp.success) {
         alert("결제 성공");
@@ -255,9 +253,7 @@
       merchant_uid: "kgini_" + new Date().getTime(), // 고유한 주문번호 생성
       name: "[[${free.title}]]", // 결제창에 노출될 상품명
       amount: hiddenPriceInput.value, // 가격
-      buyer_email: document.getElementById('email').value,
-      buyer_name: document.getElementById('name').value,
-      buyer_tel: document.getElementById('phone').value
+      buyer_name: document.getElementById('name').value
     }, function (rsp) { // 콜백 함수
       if (rsp.success) {
         alert("결제 성공");
