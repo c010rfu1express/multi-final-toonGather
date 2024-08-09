@@ -179,10 +179,18 @@
     object-fit: cover;
     margin-right: 15px;
     }
+
+     .nav-link {
+            color: #828282;
+    }
+    ul {
+  list-style: none;
+  padding-left : 0px;
+  }
 </style>
 <div class="jumbotron">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3 px-4">
             <h3>회원 관리</h3>
         </div>
         <div class="col-md-9">
@@ -198,12 +206,17 @@
     </div>
 </div>
 <div class="row">
-    <aside class="col-md-3">
-        <div class="panel">
-            <ul class="list-group">
-                <li><a th:href="@{/user/admin/userlist}" class="nav-link px-2">회원 관리</a></li>
-                <li><a th:href="@{/recruit/free/report/list}" class="nav-link px-2">신고 관리</a></li>
-            </ul>
+    <aside class="col-md-3 px-4">
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-6">
+                <div class="panel">
+                    <ul class="list-group">
+                        <li><a th:href="@{/user/admin/userlist}" class="nav-link px-2" style="color: #03C75A;">회원 관리</a></li>
+                        <li><a th:href="@{/recruit/free/report/list}" class="nav-link px-2">신고 관리</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </aside>
     <script>
