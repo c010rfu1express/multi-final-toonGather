@@ -1,37 +1,116 @@
 package com.multi.toonGather.webtoon;
 
+import com.multi.toonGather.webtoon.model.dto.WebtoonDTO;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.format.TextStyle;
-import java.util.Locale;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Test {
 
     public static void main(String[] args) throws IOException {
-        // 현재 날짜 가져오기
-        // 현재 날짜 가져오기
-        LocalDate currentDate = LocalDate.now();
+        String apiUrl = "https://gateway-kw.kakao.com/section/v2/timetables/days?placement=" + "timetable_completed";
+        WebtoonDTO kkao = new WebtoonDTO();
+        kkao.setWebtoon_id("4166");
+        // URL 객체 생성
+        URL url = new URL(apiUrl);
 
-        // 현재 날짜의 요일 가져오기
-        DayOfWeek dayOfWeek = currentDate.getDayOfWeek();
+        // HTTP 연결 설정
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
 
-        // 요일을 영어로 출력하기 (대문자)
-        String dayOfWeekString = dayOfWeek.getDisplayName(
-                TextStyle.FULL_STANDALONE, // FULL_STANDALONE을 사용하여 단독으로 요일 이름을 가져옵니다.
-                Locale.ENGLISH              // 영어 Locale을 사용합니다.
-        ).toUpperCase();               // 대문자로 변환합니다.
-
-        // 출력
-
-
-        // 출력
-        System.out.println("오늘은 " + dayOfWeekString + "입니다.");
-        String sp="삼각관계#";
-        String[]s =sp.split("#");
-
-        for (String tag : s) {
-            System.out.println(tag+s.length);
+        // 응답 코드 확인
+        int responseCode = conn.getResponseCode();
+        if (responseCode != HttpURLConnection.HTTP_OK) {
+            System.out.println("HTTP 요청 실패: " + responseCode);
+            throw new IOException("HTTP 요청 실패: " + responseCode);
         }
+
+        // 응답 데이터 읽기
+        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        StringBuilder response = new StringBuilder();
+        String inputLine;
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+
+        // JSON 데이터를 JSONObject로 파싱
+        JSONObject jsonObject = new JSONObject(response.toString());
+
+        // 웹툰 데이터 추출
+        JSONArray data = jsonObject.getJSONArray("data");
+
+        // content.id가 2043인 경우만 필터링하여 데이터 추출
+        JSONObject webtoonData = null;
+        String g = "";
+        for (int i = 0; i < data.length(); i++) {
+            JSONArray cardGroups = data.getJSONObject(i).getJSONArray("cardGroups");
+            for (int j = 0; j < cardGroups.length(); j++) {
+                JSONArray cards = cardGroups.getJSONObject(j).getJSONArray("cards");
+                for (int k = 0; k < cards.length(); k++) {
+                    JSONObject content = cards.getJSONObject(k).getJSONObject("content");
+                    JSONArray genreFilters = cards.getJSONObject(k).getJSONArray("genreFilters");
+                    if (content.getInt("id") == Integer.parseInt(kkao.getWebtoon_id())) {
+                        webtoonData = content;
+                        g = genreFilters.getString(1);
+                        break;
+                    }
+                }
+                if (webtoonData != null) {
+                    break;
+                }
+            }
+            if (webtoonData != null) {
+                break;
+            }
+        }
+
+        // 필요한 데이터 추출
+        if (webtoonData != null) {
+            String title = webtoonData.getString("title");
+
+            JSONArray authorsArray = webtoonData.getJSONArray("authors");
+            List<String> authors = new ArrayList<>();
+            for (int i = 0; i < authorsArray.length(); i++) {
+                authors.add(authorsArray.getJSONObject(i).getString("name"));
+            }
+
+            String thumbnailUrl = webtoonData.getString("featuredCharacterImageA");
+
+            JSONArray seoKeywordsArray = webtoonData.getJSONArray("seoKeywords");
+            List<String> tags = new ArrayList<>();
+            for (int i = 0; i < seoKeywordsArray.length(); i++) {
+                tags.add(seoKeywordsArray.getString(i));
+            }
+            String tagsString = String.join("#", tags);
+
+            // WebtoonDTO 객체에 데이터 설정
+            WebtoonDTO webtoonDTO = new WebtoonDTO();
+            webtoonDTO.setWebtoon_id(kkao.getWebtoon_id()); // 예시로 2043을 설정
+            webtoonDTO.setPlatform(2); // 예시로 플랫폼 2를 설정
+            webtoonDTO.setThumbnail_url(thumbnailUrl + ".png");
+            webtoonDTO.setWebtoon_name(title);
+            webtoonDTO.setAuthor(String.join("/", authors));
+            webtoonDTO.setTags(tagsString);
+            webtoonDTO.setGenre(g);
+            System.out.println(webtoonDTO);
+            System.out.println(webtoonDTO);
+            System.out.println(webtoonDTO);
+            System.out.println(webtoonDTO);
+
+            System.out.println(webtoonDTO);
+            System.out.println(webtoonDTO);
+
+
+            // 데이터 출력 (옵션)
+            System.out.println("WebtoonDTO: " + webtoonDTO);
         }
     }
+}
