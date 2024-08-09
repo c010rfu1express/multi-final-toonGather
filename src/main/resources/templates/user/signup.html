@@ -125,7 +125,7 @@
 
             // 비밀번호 일치 여부 검증
             if (!validatePasswordMatch()) {
-            alert('비밀번호를 다시 확인해주세요.'); // 비밀번호 불일치 시 경고
+            //alert('비밀번호를 다시 확인해주세요.'); // 비밀번호 불일치 시 경고
             return; // 폼 제출을 막음
             }
 
@@ -156,15 +156,22 @@
 
         // 비밀번호 일치 여부를 검증하는 함수
     function validatePasswordMatch() {
-        const password = document.querySelector('input[name="password"]').value;
-        const confirmPassword = document.querySelector('input[name="confirmPassword"]').value;
+    const password = document.querySelector('input[name="password"]').value;
+    const confirmPassword = document.querySelector('input[name="confirmPassword"]').value;
 
-        if (password !== confirmPassword) {
-            alert('비밀번호를 다시 확인해주세요.');
-            return false; // 비밀번호가 일치하지 않으면 폼 제출을 막음
-        }
-        return true; // 비밀번호가 일치하면 폼 제출을 진행
+    if (!password || !confirmPassword) {
+        alert('비밀번호와 비밀번호 확인란 모두 입력해 주세요.');
+        return false; // 비밀번호가 입력되지 않으면 폼 제출을 막음
     }
+
+    if (password !== confirmPassword) {
+        alert('비밀번호를 다시 확인해주세요.');
+        return false; // 비밀번호가 일치하지 않으면 폼 제출을 막음
+    }
+
+    return true; // 비밀번호가 일치하고 둘 다 입력되었으면 폼 제출을 진행
+}
+
 
 async function checkDuplicates(userId, nickname, email) {
     try {

@@ -320,7 +320,7 @@ public class UserController {
         System.out.println("adminUpdateUser @RequestParam userNo: "+userNo);
         //회원 정보 수정 처리
         userService.updateProfileAdmin(userNo, userDTO, image, request);
-        return "redirect:/user/admin/userdetails?userNo=" + userNo;
+        return "redirect:/user/admin/userlist";
     }
 
     //KHG81-(3)POST
