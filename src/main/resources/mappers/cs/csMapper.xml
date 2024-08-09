@@ -68,7 +68,7 @@
         LEFT JOIN cs_category c ON q.cs_q_category_code = c.cs_category_code
         LEFT JOIN cs_status s ON q.cs_q_status_code = s.cs_status_code
         LEFT JOIN users u ON q.cs_q_writer_no = u.user_no
-        WHERE q.cs_q_writer_no = #{userNo}
+        WHERE q.cs_q_writer_no = #{userNo} AND u.withdrawn = 'N'
         ORDER BY cs_q_no DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
@@ -93,7 +93,7 @@
         LEFT JOIN cs_category c ON q.cs_q_category_code = c.cs_category_code
         LEFT JOIN cs_status s ON q.cs_q_status_code = s.cs_status_code
         LEFT JOIN users u ON q.cs_q_writer_no = u.user_no
-        WHERE q.cs_q_no = #{csQNo}
+        WHERE q.cs_q_no = #{csQNo} AND u.withdrawn = 'N'
     </select>
 
     <select id="getQuestionFilesByQuestionId" parameterType="int" resultMap="questionFilesResultMap">
@@ -127,6 +127,7 @@
         LEFT JOIN cs_category c ON q.cs_q_category_code = c.cs_category_code
         LEFT JOIN cs_status s ON q.cs_q_status_code = s.cs_status_code
         LEFT JOIN users u ON q.cs_q_writer_no = u.user_no
+        WHERE u.withdrawn = 'N'
         ORDER BY cs_q_no DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
@@ -135,7 +136,7 @@
         SELECT a.*, u.nickname
         FROM cs_answer a
         LEFT JOIN users u ON a.cs_a_writer_no = u.user_no
-        WHERE cs_q_no = #{csQNo}
+        WHERE cs_q_no = #{csQNo} AND u.withdrawn = 'N'
     </select>
 
     <insert id="insertAnswer" parameterType="com.multi.toonGather.cs.model.dto.AnswerDTO">
@@ -158,7 +159,7 @@
         SELECT f.*, u.nickname
         FROM cs_faq f
         LEFT JOIN users u ON f.cs_faq_writer_no = u.user_no
-        WHERE cs_faq_no = #{csFaqNo}
+        WHERE cs_faq_no = #{csFaqNo} AND u.withdrawn = 'N'
     </select>
 
     <update id="updateFaq" parameterType="com.multi.toonGather.cs.model.dto.FaqDTO">
@@ -182,16 +183,16 @@
         FROM cs_question q
         LEFT JOIN users u ON q.cs_q_writer_no = u.user_no
         LEFT JOIN cs_category c ON q.cs_q_category_code = c.cs_category_code
-        WHERE
+        WHERE u.withdrawn = 'N'
         <choose>
             <when test="searchType == 'title'">
-                q.cs_q_title LIKE CONCAT('%', #{keyword}, '%')
+                AND q.cs_q_title LIKE CONCAT('%', #{keyword}, '%')
             </when>
             <when test="searchType == 'author'">
-                u.nickname LIKE CONCAT('%', #{keyword}, '%')
+                AND u.nickname LIKE CONCAT('%', #{keyword}, '%')
             </when>
             <when test="searchType == 'category'">
-                c.cs_category_desc LIKE CONCAT('%', #{keyword}, '%')
+                AND c.cs_category_desc LIKE CONCAT('%', #{keyword}, '%')
             </when>
         </choose>
     </select>
@@ -207,16 +208,16 @@
         LEFT JOIN cs_category c ON q.cs_q_category_code = c.cs_category_code
         LEFT JOIN cs_status s ON q.cs_q_status_code = s.cs_status_code
         LEFT JOIN users u ON q.cs_q_writer_no = u.user_no
-        WHERE
+        WHERE u.withdrawn = 'N'
         <choose>
             <when test="searchType == 'title'">
-                q.cs_q_title LIKE CONCAT('%', #{keyword}, '%')
+                AND q.cs_q_title LIKE CONCAT('%', #{keyword}, '%')
             </when>
             <when test="searchType == 'author'">
-                u.nickname LIKE CONCAT('%', #{keyword}, '%')
+                AND u.nickname LIKE CONCAT('%', #{keyword}, '%')
             </when>
             <when test="searchType == 'category'">
-                c.cs_category_desc LIKE CONCAT('%', #{keyword}, '%')
+                AND c.cs_category_desc LIKE CONCAT('%', #{keyword}, '%')
             </when>
         </choose>
         ORDER BY cs_q_no DESC
