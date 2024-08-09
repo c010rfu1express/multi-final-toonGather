@@ -136,13 +136,60 @@
 <div th:replace="~{common/menubar}"></div>
 <style>
   .jumbotron {
-  position : relative;
-  }
-  .jumbotron .row {
-  position : absolute;
-  width : 100%;
-  bottom: 0%;
-  }
+    position : relative;
+    background-color : #EEEEEE;
+    }
+    .jumbotron .row {
+    position : absolute;
+    width : 100%;
+    bottom: 0%;
+    }
+
+    #loginbox {
+    border-radius : 5%;
+    border-color : #F2F2F2;
+    }
+
+    #loginbox2 {
+    border-radius : 5%;
+    border-color : #F2F2F2;
+    }
+
+    .form-control {
+    background-color : #FCFCFC;
+    border : none;
+    width : 100%;
+    height : 50px;
+    }
+
+    .logininput {
+    background-color : #FCFCFC;
+    border : none;
+    height : 50px;
+    }
+
+    .logininput::placeholder {
+    color : #BBBBBB;
+    }
+
+    button {
+    background-color : #03C75A;
+    }
+
+    #ban {
+    background-color : red;
+    }
+
+    .form-select {
+    background-color : #FCFCFC;
+    border : none;
+    width : 100%;
+    height : 50px;
+    }
+
+    .form-check-input {
+    accent-color: #03C75A;
+    }
 </style>
 <div class="jumbotron">
   <div class="row">
@@ -220,48 +267,169 @@
                 });
         } //checkEmailDuplicate()
   </script>
+
+
+
+
   <div class="col-md-9">
-    <form th:action="@{/user/my/editprofile}" th:object="${user}" method="post" enctype="multipart/form-data" onsubmit="validateForm(event)" id="editProfileForm">
-      프로필 사진<br>
-      <img th:if="${user.profileImagePath == null}" src="/images/defaultprofileimage.png" style="width: 100px; height: auto;"/>
-      <img th:if="${user.profileImagePath != null}" th:src="@{/uploadFiles/{fileName}(fileName=${user.profileImagePath})}" style="width: 100px; height: auto;"/><br>
-      <input type="file" name="image"><br>
-      아이디 * : <input type="text" th:field="*{userId}" maxlength="20" minlength="4" readonly/><br>
-      비밀번호 * : <input type="password" th:field="*{password}" maxlength="30" minlength="8"/><br>
-      비밀번호 확인 * : <input type="password" th:field="*{confirmPassword}" maxlength="30" minlength="8"/><br>
-      닉네임 * : <input type="text" th:field="*{nickname}" maxlength="20" minlength="4"/>
-      <button type="button" onclick="checkNicknameDuplicate()">중복확인</button>
-      <br>
-      연락처 : <input type="text" th:field="*{contactNumber}" oninput="autoFormatPhoneNumber(this)" placeholder="000-0000-0000"/><br>
-      성별 : <select th:field="*{gender}">
-      <option value="P">성별을 공개하지 않습니다
-      <option value="F">여
-      <option value="M">남</select><br>
-      <!-- 생년월일을 연도, 월, 일로 나누어 드롭다운 박스 형태로 입력 -->
-      생년월일 :
-      <select id="year" name="year" th:field="*{year}">
-        <option th:each="y : ${years}" th:value="${y}" th:text="${y}">연도</option>
-      </select>
-      <select id="month" name="month" th:field="*{month}">
-        <option th:each="m : ${months}" th:value="${m}" th:text="${m}">월</option>
-      </select>
-      <select id="day" name="day" th:field="*{day}">
-        <option th:each="d : ${days}" th:value="${d}" th:text="${d}">일</option>
-      </select>
-      <br>
-      실명 : <input type="text" th:field="*{realName}" maxlength="20"/><br>
-      이메일 * : <input type="text" th:field="*{email}"/>
-      <button type="button" onclick="checkEmailDuplicate()">중복확인</button>
-      <br>
-      자기소개(선택사항) :
-      <textarea class="form-control" rows="3" maxlength="150" th:field="*{bio}"></textarea><br>
+    <div class="row justify-content-start" style="color: #828282;">
+      <div class="col-6 p-3" id="loginbox">
+        <form th:action="@{/user/my/editprofile}" th:object="${user}" method="post" enctype="multipart/form-data" onsubmit="validateForm(event)" id="editProfileForm">
+          <div class="row p-2">
+            <div class="col-3">
+              <img th:if="${user.profileImagePath == null}" src="/images/defaultprofileimage.png" style="width: 100px; height: auto;"/>
+              <img th:if="${user.profileImagePath != null}" th:src="@{/uploadFiles/{fileName}(fileName=${user.profileImagePath})}" style="width: 100px; height: auto;"/>
+            </div>
+            <div class="col-9"></div>
+            <div class="col-3">
+              <input type="file" name="image">
+            </div>
+          </div>
+          <div class="row p-2">
+            <div class="col-3">
+              아이디 *
+            </div>
+            <div class="col-6">
+              <input class="form-control px-3" type="text" th:field="*{userId}" maxlength="20" minlength="4" readonly/>
+            </div>
+            <div class="col-3">
+            </div>
+          </div>
+          <div class="row p-2">
+            <div class="col-3">
+              비밀번호 *
+            </div>
+            <div class="col-6">
+              <input class="form-control px-3" type="password" th:field="*{password}" maxlength="30" minlength="8"/>
+            </div>
+            <div class="col-3">
+            </div>
+          </div>
+          <div class="row p-2">
+            <div class="col-3">
+              비밀번호 확인 *
+            </div>
+            <div class="col-6">
+              <input class="form-control px-3" type="password" th:field="*{confirmPassword}" maxlength="30" minlength="8"/>
+            </div>
+            <div class="col-3">
+            </div>
+          </div>
+          <div class="row p-2">
+            <div class="col-3">
+              닉네임 *
+            </div>
+            <div class="col-6">
+              <input class="form-control px-3" type="text" th:field="*{nickname}" maxlength="20" minlength="4"/>
+            </div>
+            <div class="col-3">
+              <button type="button" class="btn btn-primary btn-block" style="background-color:#03C75A;" onclick="checkNicknameDuplicate()">중복확인</button>
+            </div>
+          </div>
+          <div class="row p-2">
+            <div class="col-3">
+              연락처
+            </div>
+            <div class="col-6">
+              <input class="form-control px-3" type="text" th:field="*{contactNumber}" oninput="autoFormatPhoneNumber(this)" placeholder="000-0000-0000"/>
+            </div>
+            <div class="col-3">
+            </div>
+          </div>
+          <div class="row p-2">
+            <div class="col-3">
+              성별
+            </div>
+            <div class="col-6">
+              <select class="form-select px-3" th:field="*{gender}">
+                <option value="P">성별을 공개하지 않습니다</option>
+                <option value="F">여</option>
+                <option value="M">남</option>
+              </select>
+            </div>
+            <div class="col-3">
+            </div>
+          </div>
+          <div class="row p-2">
+            <div class="col-3">
+              <!-- 생년월일을 연도, 월, 일로 나누어 드롭다운 박스 형태로 입력 -->
+              생년월일
+            </div>
+            <div class="col-6">
+              <div class="row">
+                <div class="col-4">
+                  <select class="form-select" id="year" name="year" th:field="*{year}" style="text-align:center;">
+                    <option th:each="y : ${years}" th:value="${y}" th:text="${y}">연도</option>
+                  </select>
+                </div>
+                <div class="col-4">
+                  <select class="form-select" id="month" name="month" th:field="*{month}" style="text-align:center;">
+                    <option th:each="m : ${months}" th:value="${m}" th:text="${m}">월</option>
+                  </select>
+                </div>
+                <div class="col-4">
+                  <select class="form-select" id="day" name="day" th:field="*{day}" style="text-align:center;">
+                    <option th:each="d : ${days}" th:value="${d}" th:text="${d}">일</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-3">
+            </div>
+          </div>
+          <div class="row p-2">
+            <div class="col-3">
+              실명
+            </div>
+            <div class="col-6">
+              <input class="form-control" type="text" th:field="*{realName}" maxlength="10"/>
+            </div>
+            <div class="col-3">
+            </div>
+          </div>
+          <div class="row p-2">
+            <div class="col-3">
+              이메일 *
+            </div>
+            <div class="col-6">
+              <input class="form-control" type="text" th:field="*{email}"/>
+            </div>
+            <div class="col-3">
+              <button type="button" class="btn btn-primary btn-block" style="background-color:#03C75A;" onclick="checkEmailDuplicate()">중복확인</button>
+            </div>
+          </div>
+          <div class="row p-2">
+            <div class="col-6">
+              자기소개(선택사항)
+            </div>
+            <div class="col-6">
+            </div>
+            <div class="col-12">
+              <textarea class="form-control" rows="3" maxlength="150" th:field="*{bio}"></textarea>
+            </div>
+          </div>
+          <div class="col-12 p-2">
+          </div>
+          <div class="row">
+            <div class="col-3 p-2">
+              <button type="submit" class="btn btn-primary btn-block" style="background-color:#03C75A; height:50px;">수정하기</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
 
-      <input type="submit">수정확인<br>
-    </form>
+    <div class="row justify-content-start" style="color: #828282;">
+      <div class="col-6" id="loginbox2">
+            <form id="deleteUserForm" th:action="@{/user/my/deleteprofile}" method="post">
+                <div class="row px-3">
+                    <a href="javascript:void(0);" onclick="document.getElementById('deleteUserForm').submit();" style="color: #828282;">탈퇴하기</a>
+                </div>
+            </form>
+      </div>
+    </div>
 
-    <form th:action="@{/user/my/deleteprofile}" method="post">
-      <button type="submit">탈퇴하기(누르면 바로 삭제되니 조심!)</button>
-    </form>
+
   <!--    <form th:action="@{/user/signup}" th:object="${user}" method="post">-->
   <!--        아이디 : <input type="text" name="userId"><br>-->
   <!--        비밀번호 : <input type="password" name="password"><br>-->
