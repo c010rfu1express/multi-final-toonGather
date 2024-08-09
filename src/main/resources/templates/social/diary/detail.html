@@ -295,134 +295,91 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script th:inline="javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-        const commentForm = document.querySelector('.diary-comment-form');
-        let commentsList = document.querySelector('.diary-comments-list');
-        const commentContent = document.getElementById('diaryCommentContent');
-        const charCount = document.getElementById('diaryCharCount');
-        const submitButton = commentForm.querySelector('button[type="submit"]');
-
-        if (commentForm) {
-            submitButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                const content = commentContent.value;
-                const diaryNo = [[${diary.diaryNo}]];
-
-                fetch(`/social/diaries/${diaryNo}/comments`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ content: content })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('서버 응답이 올바르지 않습니다.');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        const newComment = createCommentElement(data.comment);
-                        if (!commentsList) {
-                            // 댓글 목록이 없으면 새로 생성
-                            commentsList = document.createElement('div');
-                            commentsList.className = 'diary-comments-list';
-                            commentForm.parentNode.insertBefore(commentsList, commentForm);
-                        }
-                        if (commentsList.querySelector('.diary-no-comments')) {
-                            commentsList.innerHTML = '';
-                        }
-                        commentsList.appendChild(newComment);
-                        commentContent.value = '';
-                        charCount.textContent = '0';
-
-                        // 댓글 수 업데이트
-                        const commentCountSpan = document.querySelector('.diary-comment-count span');
-                        if (commentCountSpan) {
-                            commentCountSpan.textContent = parseInt(commentCountSpan.textContent) + 1;
-                        }
-
-                        // 새 댓글로 스크롤
-                        newComment.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    } else {
-                        alert('댓글 작성에 실패했습니다: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('오류가 발생했습니다: ' + error.message);
-                });
-            });
+    document.getElementById('diaryCommentContent').addEventListener('input', function() {
+        var diaryCharCount = this.value.length;
+        document.getElementById('diaryCharCount').textContent = diaryCharCount;
+        if (diaryCharCount > 140) {
+            this.value = this.value.slice(0, 140);
+            document.getElementById('diaryCharCount').textContent = 140;
         }
+    });
 
-            // 댓글 삭제 이벤트 리스너
-            if (commentsList) {
-                commentsList.addEventListener('click', function(e) {
-                    if (e.target.classList.contains('diary-delete-comment')) {
-                        const commentId = e.target.getAttribute('data-comment-id');
-                        if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
-                            deleteComment(commentId, e.target.closest('.diary-comment'));
-                        }
-                    }
-                });
-            }
+document.addEventListener('DOMContentLoaded', function() {
+    const commentForm = document.querySelector('.diary-comment-form');
+    let commentsList = document.querySelector('.diary-comments-list');
+    const commentContent = document.getElementById('diaryCommentContent');
+    const charCount = document.getElementById('diaryCharCount');
+    const submitButton = commentForm.querySelector('button[type="submit"]');
 
-            function createCommentElement(comment) {
-                const commentDiv = document.createElement('div');
-                commentDiv.className = 'diary-comment';
-                commentDiv.innerHTML = `
-                    <a href="/social/users/${comment.commenter.userId}/profile">
-                        <img class="diary-comment-profile-img" src="/uploadFiles/${comment.commenter.profileImagePath}" alt="프로필 이미지">
-                    </a>
-                    <div class="diary-comment-content-wrapper">
-                        <div class="diary-comment-meta">
-                            <span class="diary-comment-author">${comment.commenter.nickname}</span>
-                            <span class="diary-comment-date">${formatDate(comment.createdDate)}</span>
-                        </div>
-                        <div class="diary-comment-content">${comment.content.replace(/\n/g, '<br>')}</div>
-                    </div>
-                    <button class="btn btn-sm btn-danger diary-delete-comment" data-comment-id="${comment.commentNo}">삭제</button>
-                `;
-                return commentDiv;
-            }
+    if (commentForm) {
+        submitButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            const content = commentContent.value;
+            const diaryNo = [[${diary.diaryNo}]];
+            const userId = [[${diary.writer.userId}]];
 
-            function formatDate(dateString) {
-                const date = new Date(dateString);
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                const hours = String(date.getHours()).padStart(2, '0');
-                const minutes = String(date.getMinutes()).padStart(2, '0');
-                const seconds = String(date.getSeconds()).padStart(2, '0');
+            fetch(`/social/diaries/${diaryNo}/comments`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ content: content })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('서버 응답이 올바르지 않습니다.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // 댓글 추가 성공 시 페이지 새로고침
+                    window.location.href = `/social/users/${userId}/diaries/${diaryNo}`;
+                } else {
+                    alert('댓글 작성에 실패했습니다: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('오류가 발생했습니다: ' + error.message);
+            });
+        });
+    }
 
-                return `${year}. ${month}. ${day}. ${hours}:${minutes}:${seconds}`;
-            }
-
-            function deleteComment(commentId, commentElement) {
-                fetch(`/social/diaries/comments/${commentId}`, {
-                    method: 'DELETE'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        commentElement.remove();
-
-                        // 댓글 수 업데이트
-                        const commentCountSpan = document.querySelector('.diary-comment-count span');
-                        if (commentCountSpan) {
-                            commentCountSpan.textContent = parseInt(commentCountSpan.textContent) - 1;
-                        }
-                    } else {
-                        alert('댓글 삭제에 실패했습니다.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('오류가 발생했습니다.');
-                });
+    // 댓글 삭제 이벤트 리스너
+    if (commentsList) {
+        commentsList.addEventListener('click', function(e) {
+            if (e.target.classList.contains('diary-delete-comment')) {
+                const commentId = e.target.getAttribute('data-comment-id');
+                if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+                    deleteComment(commentId, e.target.closest('.diary-comment'));
+                }
             }
         });
+    }
+
+    function deleteComment(commentId, commentElement) {
+        const diaryNo = [[${diary.diaryNo}]];
+        const userId = [[${diary.writer.userId}]];
+
+        fetch(`/social/diaries/comments/${commentId}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // 댓글 삭제 성공 시 페이지 새로고침
+                window.location.href = `/social/users/${userId}/diaries/${diaryNo}`;
+            } else {
+                alert('댓글 삭제에 실패했습니다.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('오류가 발생했습니다.');
+        });
+    }
+});
 </script>
 <script th:inline="javascript">
     $(document).ready(function() {
@@ -435,11 +392,8 @@
                 type: 'POST',
                 success: function(response) {
                     if (response.success) {
-                        if (response.isFollowing) {
-                            btn.text('팔로잉').removeClass('btn-primary').addClass('btn-secondary');
-                        } else {
-                            btn.text('팔로우').removeClass('btn-secondary').addClass('btn-primary');
-                        }
+                        // 팔로우 상태 변경 성공 시 페이지 새로고침
+                        location.reload();
                     } else {
                         alert('팔로우 상태를 변경하는데 실패했습니다.');
                     }
@@ -450,7 +404,6 @@
             });
         });
     });
-</script>
 </script>
 </body>
 </html>

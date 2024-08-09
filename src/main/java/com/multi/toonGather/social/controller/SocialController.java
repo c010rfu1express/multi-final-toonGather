@@ -199,10 +199,9 @@ public class SocialController {
      */
     @GetMapping("/users/{userId}/follows")
     public String userFollows(@PathVariable("userId") String userId,
+                              @AuthenticationPrincipal CustomUserDetails currentUser,
                               @RequestParam(name = "type", required = false, defaultValue = "following") String type,
                               Model model) throws Exception {
-
-        System.out.println("userId: "+userId+" type: "+ type);
 
         // 프로필 사용자 정보 조회
         UserDTO profileUser = socialService.selectUserProfile(userId);
@@ -222,6 +221,26 @@ public class SocialController {
         model.addAttribute("follows", follows);
         model.addAttribute("type", type);
         model.addAttribute("userId", userId);
+
+        boolean isOwnProfile = false;
+        boolean isFollowing = false;
+
+        // 현재 로그인한 사용자 정보 처리
+        if (currentUser != null) {
+            UserDTO currentUserDTO = currentUser.getUserDTO();
+            model.addAttribute("currentUser", currentUserDTO);
+
+            // 자신의 프로필인지 확인
+            isOwnProfile = currentUserDTO.getUserId().equals(userId);
+
+            // 다른 사용자의 프로필일 경우 팔로우 여부 확인
+            if (!isOwnProfile) {
+                isFollowing = socialService.isFollowing(currentUserDTO.getUserNo(), profileUser.getUserNo());
+            }
+        }
+
+        model.addAttribute("isOwnProfile", isOwnProfile);
+        model.addAttribute("isFollowing", isFollowing);
 
         return "social/user/follows";
     }
@@ -335,13 +354,15 @@ public class SocialController {
      * 리뷰 상세 페이지를 처리하는 컨트롤러 메서드
      *
      * @param reviewNo    조회할 리뷰의 번호
+     * @param userId      리뷰 작성자의 ID
      * @param currentUser 현재 로그인한 사용자 정보
      * @param model       the model
      * @return the string
      * @throws Exception the exception
      */
-    @GetMapping("/reviews/{reviewNo}")
+    @GetMapping("/users/{userId}/reviews/{reviewNo}")
     public String reviewDetail(@PathVariable("reviewNo") int reviewNo,
+                               @PathVariable("userId") String userId,
                                @AuthenticationPrincipal CustomUserDetails currentUser,
                                Model model) throws Exception {
         // 리뷰 조회수 증가
@@ -349,10 +370,17 @@ public class SocialController {
 
         // 리뷰 정보 조회
         ReviewDTO review = socialService.getReviewByNo(reviewNo);
+
+        // URL의 userId와 리뷰 작성자의 userId가 일치하는지 확인
+        if (!review.getWriter().getUserId().equals(userId)) {
+            // 일치하지 않을 경우 에러 페이지로 리다이렉트 또는 예외 처리
+            throw new Exception("Invalid user ID for this review");
+        }
+
         // 리뷰 작성자 정보 조회
-        UserDTO profileUser = socialService.selectUserProfile(review.getWriter().getUserId());
-        int followingCount = socialService.getFollowingCount(review.getWriter().getUserId());
-        int followerCount = socialService.getFollowerCount(review.getWriter().getUserId());
+        UserDTO profileUser = socialService.selectUserProfile(userId);
+        int followingCount = socialService.getFollowingCount(userId);
+        int followerCount = socialService.getFollowerCount(userId);
 
         model.addAttribute("review", review);
         model.addAttribute("profileUser", profileUser);
@@ -369,11 +397,11 @@ public class SocialController {
             model.addAttribute("currentUser", currentUserDTO);
 
             // 자신의 리뷰인지 확인
-            isOwnReview = currentUserDTO.getUserNo() == review.getWriter().getUserNo();
+            isOwnReview = currentUserDTO.getUserId().equals(userId);
 
             // 다른 사용자의 리뷰일 경우 팔로우 여부와 좋아요 여부 확인
             if (!isOwnReview) {
-                isFollowing = socialService.isFollowing(currentUserDTO.getUserNo(), review.getWriter().getUserNo());
+                isFollowing = socialService.isFollowing(currentUserDTO.getUserNo(), profileUser.getUserNo());
                 isLiked = socialService.isReviewLikedByUser(reviewNo, currentUserDTO.getUserNo());
             }
         }
@@ -442,7 +470,7 @@ public class SocialController {
         reviewDTO.setWriter(currentUser.getUserDTO());  // 현재 로그인한 사용자 정보 설정
         // 리뷰 업데이트 서비스 호출
         socialService.updateReview(reviewDTO);
-        return "redirect:/social/reviews/" + reviewNo;
+        return "redirect:/social/users/" + currentUser.getUserDTO().getUserId() + "/reviews/" + reviewNo;
     }
 
     /**
@@ -585,7 +613,7 @@ public class SocialController {
 
         // 리뷰 생성 서비스 호출
         socialService.createReview(review);
-        return "redirect:/social/reviews/" + review.getReviewNo();
+        return "redirect:/social/users/" + currentUser.getUserDTO().getUserId() + "/reviews/" + review.getReviewNo();
     }
 
     /**
@@ -634,7 +662,8 @@ public class SocialController {
         diary.setWebtoon(webtoon);
 
         int diaryNo = socialService.createDiary(diary);
-        return "redirect:/social/diaries/" + diaryNo;
+
+        return "redirect:/social/users/" + currentUser.getUserDTO().getUserId() + "/diaries/" + diary.getDiaryNo();
     }
 
     /**
@@ -704,17 +733,25 @@ public class SocialController {
      * @return the string
      * @throws Exception the exception
      */
-    @GetMapping("/diaries/{diaryNo}")
-    public String diaryDetail(@PathVariable("diaryNo") int diaryNo,
+    @GetMapping("/users/{userId}/diaries/{diaryNo}")
+    public String diaryDetail(@PathVariable("userId") String userId,
+                              @PathVariable("diaryNo") int diaryNo,
                               @AuthenticationPrincipal CustomUserDetails currentUser,
                               Model model) throws Exception {
         socialService.incrementDiaryViewCount(diaryNo);
 
         DiaryDTO diary = socialService.getDiaryByNo(diaryNo);
+
+        // URL의 userId와 다이어리 작성자의 userId가 일치하는지 확인
+        if (!diary.getWriter().getUserId().equals(userId)) {
+            // 일치하지 않을 경우 에러 페이지로 리다이렉트 또는 예외 처리
+            throw new Exception("Invalid user ID for this diary");
+        }
+
         List<DiaryCommentDTO> comments = socialService.getDiaryComments(diaryNo);
-        UserDTO profileUser = socialService.selectUserProfile(diary.getWriter().getUserId());
-        int followingCount = socialService.getFollowingCount(diary.getWriter().getUserId());
-        int followerCount = socialService.getFollowerCount(diary.getWriter().getUserId());
+        UserDTO profileUser = socialService.selectUserProfile(userId);
+        int followingCount = socialService.getFollowingCount(userId);
+        int followerCount = socialService.getFollowerCount(userId);
 
         model.addAttribute("diary", diary);
         model.addAttribute("profileUser", profileUser);
@@ -728,10 +765,10 @@ public class SocialController {
         if (currentUser != null) {
             UserDTO currentUserDTO = currentUser.getUserDTO();
             model.addAttribute("currentUser", currentUserDTO);
-            isOwnDiary = currentUserDTO.getUserNo() == diary.getWriter().getUserNo();
+            isOwnDiary = currentUserDTO.getUserId().equals(userId);
 
             if (!isOwnDiary) {
-                isFollowing = socialService.isFollowing(currentUserDTO.getUserNo(), diary.getWriter().getUserNo());
+                isFollowing = socialService.isFollowing(currentUserDTO.getUserNo(), profileUser.getUserNo());
             }
         }
 
@@ -788,7 +825,8 @@ public class SocialController {
         diaryDTO.setDiaryNo(diaryNo);
         diaryDTO.setWriter(currentUser.getUserDTO());
         socialService.updateDiary(diaryDTO);
-        return "redirect:/social/diaries/" + diaryNo;
+
+        return "redirect:/social/users/" + currentUser.getUserDTO().getUserId() + "/diaries/" + diaryNo;
     }
 
     /**

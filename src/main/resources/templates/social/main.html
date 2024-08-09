@@ -19,7 +19,8 @@
             <h2>지금 핫한 리뷰🔥</h2>
             <hr>
             <div class="hot-review-slider">
-                <div class="hot-review-card" th:each="review : ${popularReviews}" th:onclick="'location.href=\'' + @{/social/reviews/{reviewNo}(reviewNo=${review.reviewNo})} + '\''">
+                <div class="hot-review-card" th:each="review : ${popularReviews}"
+                     th:onclick="'location.href=\'' + @{/social/users/{userId}/reviews/{reviewNo}(userId=${review.writer.userId},reviewNo=${review.reviewNo})} + '\''">
                     <img th:src="${review.webtoon.thumbnail_url}" th:alt="${review.webtoon.webtoon_name}">
                     <div class="hot-review-info">
                         <div class="hot-review-webtoon">
@@ -57,7 +58,7 @@
                         <option value="diary">다이어리</option>
                         <option value="user">사용자</option>
                     </select>
-                    <input type="text" class="form-control" placeholder="검색어를 입력하세요" name="keyword" id="searchKeyword">
+                    <input type="text" class="form-control" placeholder="검색어를 입력하세요" name="keyword" id="searchKeyword" maxlength="50" required>
                     <button class="btn btn-primary" type="submit">검색</button>
                 </div>
             </form>
@@ -173,7 +174,7 @@
         function displayReviewResults(reviews) {
             return reviews.map(function(review) {
                 return `
-                    <div class="search-result-item" onclick="location.href='/social/reviews/${review.reviewNo}'">
+                    <div class="search-result-item" onclick="location.href='/social/users/${review.writer.userId}/reviews/${review.reviewNo}'">
                         <div>
                             <span class="webtoon-title">${review.webtoon.webtoon_name}</span>
                             <span class="result-title">"${review.title}"</span>
@@ -193,7 +194,7 @@
         function displayDiaryResults(diaries) {
             return diaries.map(function(diary) {
                 return `
-                    <div class="search-result-item" onclick="location.href='/social/diaries/${diary.diaryNo}'">
+                    <div class="search-result-item" onclick="location.href='/social/users/${diary.writer.userId}/diaries/${diary.diaryNo}'">
                         <div>
                             <span class="webtoon-title">${diary.webtoon.webtoon_name}</span>
                             <span class="result-title">"${diary.title}"</span>

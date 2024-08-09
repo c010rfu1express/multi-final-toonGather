@@ -46,4 +46,6 @@ public interface WebToonService {
     int dislikeDelete(CommentLikeDTO commentLikeDTO);
 
     List<CommentDTO> CommentBestList(WebtoonDTO webtoonDTO);
+
+    List<WebtoonDTO> webtoonBest();
 }
