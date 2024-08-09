@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -244,26 +243,27 @@ public class EventController {
         String eventCategoryTitle = (eventCategoryDTO != null) ? eventCategoryDTO.getEventCategoryTitle() : "미정";
         System.out.println("Retrieved event eventCategoryTitle : " + eventCategoryTitle);
 
-        // 날짜 포맷터 설정
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String formattedPostingDate = eventDTO.getPostingDate().format(formatter);
-        String formattedStartDate = eventDTO.getStartDate().format(formatter);
+//        // 날짜 포맷터 설정
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//        String formattedPostingDate = eventDTO.getPostingDate().format(formatter);
+//        String formattedStartDate = eventDTO.getStartDate().format(formatter);
+//
+//        String formattedEndDate;
+//        if (eventDTO.getEndDate() != null) {
+//            formattedEndDate = eventDTO.getEndDate().format(formatter);
+//        } else {
+//            formattedEndDate = ""; // or any default value you want to set
+//        }
+//        System.out.println("Formatted End Date: " + formattedEndDate);
 
-        String formattedEndDate;
-        if (eventDTO.getEndDate() != null) {
-            formattedEndDate = eventDTO.getEndDate().format(formatter);
-        } else {
-            formattedEndDate = ""; // or any default value you want to set
-        }
-        System.out.println("Formatted End Date: " + formattedEndDate);
 
 
-        // 모델에 포맷된 날짜 추가
         model.addAttribute("event", eventDTO);
-        model.addAttribute("formattedPostingDate", formattedPostingDate);
-        model.addAttribute("formattedStartDate", formattedStartDate);
-        model.addAttribute("formattedEndDate", formattedEndDate);
         model.addAttribute("eventCategoryTitle", eventCategoryTitle);
+//        model.addAttribute("formattedPostingDate", formattedPostingDate);
+//        model.addAttribute("formattedStartDate", formattedStartDate);
+//        model.addAttribute("formattedEndDate", formattedEndDate);
+
 
 
         // 좋아요 수를 계산합니다.
