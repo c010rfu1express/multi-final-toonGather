@@ -182,7 +182,7 @@ public class UserController {
         System.out.println("deleteProfileReq @RequestParam userNo: "+userNo);
         //회원 정보 삭제 처리
         userService.deleteProfile(userNo);
-        return "redirect:/";
+        return "redirect:/logout";
     }
 
     //KHG80
