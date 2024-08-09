@@ -175,10 +175,11 @@
                     <th>다이어리 작성일시</th>
                     <th>다이어리 수정일시</th>
                     <th>조회수</th>
+                    <th>*작성자ID</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="mySoDiary : ${mySoDiaries}" class="clickable-row" th:attr="data-href=@{/social/diaries/{diaryNo}(diaryNo=${mySoDiary.diaryNo})}">
+                <tr th:each="mySoDiary : ${mySoDiaries}" class="clickable-row" th:attr="data-href=@{/social/users/{userId}/diaries/{diaryNo}(userId=${mySoDiary.writerUserId},diaryNo=${mySoDiary.diaryNo})}">
                     <td th:text="${mySoDiary.commentNo}">댓글 번호</td>
                     <td th:text="${mySoDiary.diaryNo}">다이어리 번호</td>
                     <td th:text="${mySoDiary.commenterNo}">댓글 작성자</td>
@@ -192,6 +193,7 @@
                     <td th:text="${mySoDiary.diaryCreatedDate}">다이어리 작성일시</td>
                     <td th:text="${mySoDiary.diaryModifiedDate}">다이어리 수정일시</td>
                     <td th:text="${mySoDiary.viewCnt}">조회수</td>
+                    <td th:text="${mySoDiary.writerUserId}">*작성자ID</td>
                 </tr>
                 </tbody>
             </table>

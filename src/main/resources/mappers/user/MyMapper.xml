@@ -321,7 +321,6 @@
         <include refid="pagingQuery"/>
     </select>
 
-
     <resultMap type="MySoDiaryDTO" id="MySoDiaryResultMap">
         <id property="commentNo" column="comment_no"/>
         <result property="diaryNo" column="diary_no"/>
@@ -337,7 +336,10 @@
         <result property="diaryCreatedDate" column="diary_created_date"/>
         <result property="diaryModifiedDate" column="diary_modified_date"/>
         <result property="viewCnt" column="view_cnt"/>
+
+        <result property="writerUserId" column="writer_user_id"/> <!-- 추가된 부분 -->
     </resultMap>
+
     <sql id="MySoDiaryQueryA">
         SELECT
         sdc.comment_no AS commentNo,
@@ -353,15 +355,18 @@
         sd.status_code AS statusCode,
         sd.created_date AS diaryCreatedDate,
         sd.modified_date AS diaryModifiedDate,
-        sd.view_cnt AS viewCnt
+        sd.view_cnt AS viewCnt,
+
+        u.user_id AS writerUserId <!-- 추가된 부분 -->
     </sql>
+
     <sql id="MySoDiaryQueryB">
         FROM
         so_diary sd
         INNER JOIN
-        so_diary_comments sdc
-        ON
-        sd.diary_no = sdc.diary_no
+        so_diary_comments sdc ON sd.diary_no = sdc.diary_no
+        INNER JOIN
+        users u ON sd.writer_no = u.user_no <!-- 추가된 부분 -->
         WHERE
         sdc.commenter_no = #{userNo}
         <if test="searchBy != null and searchTerm != null and searchTerm != ''">
@@ -401,15 +406,109 @@
             </otherwise>
         </choose>
     </sql>
+
     <select id="selectCountMySoDiary" resultType="int">
         SELECT COUNT(*)
         <include refid="MySoDiaryQueryB"/>
     </select>
+
     <select id="selectListMySoDiary" resultType="MySoDiaryDTO">
         <include refid="MySoDiaryQueryA"/>
         <include refid="MySoDiaryQueryB"/>
         <include refid="pagingQuery"/>
     </select>
+
+<!--    <resultMap type="MySoDiaryDTO" id="MySoDiaryResultMap">-->
+<!--        <id property="commentNo" column="comment_no"/>-->
+<!--        <result property="diaryNo" column="diary_no"/>-->
+<!--        <result property="commenterNo" column="commenter_no"/>-->
+<!--        <result property="commentContent" column="comment_content"/>-->
+<!--        <result property="commentCreatedDate" column="comment_created_date"/>-->
+
+<!--        <result property="webtoonNo" column="webtoon_no"/>-->
+<!--        <result property="writerNo" column="writer_no"/>-->
+<!--        <result property="title" column="title"/>-->
+<!--        <result property="diaryContent" column="diary_content"/>-->
+<!--        <result property="statusCode" column="status_code"/>-->
+<!--        <result property="diaryCreatedDate" column="diary_created_date"/>-->
+<!--        <result property="diaryModifiedDate" column="diary_modified_date"/>-->
+<!--        <result property="viewCnt" column="view_cnt"/>-->
+
+<!--        <result property="writerUserId" column="writer_user_id"/>-->
+
+<!--    </resultMap>-->
+<!--    <sql id="MySoDiaryQueryA">-->
+<!--        SELECT-->
+<!--        sdc.comment_no AS commentNo,-->
+<!--        sdc.diary_no AS diaryNo,-->
+<!--        sdc.commenter_no AS commenterNo,-->
+<!--        sdc.content AS commentContent,-->
+<!--        sdc.created_date AS commentCreatedDate,-->
+
+<!--        sd.webtoon_no AS webtoonNo,-->
+<!--        sd.writer_no AS writerNo,-->
+<!--        sd.title AS title,-->
+<!--        sd.content AS diaryContent,-->
+<!--        sd.status_code AS statusCode,-->
+<!--        sd.created_date AS diaryCreatedDate,-->
+<!--        sd.modified_date AS diaryModifiedDate,-->
+<!--        sd.view_cnt AS viewCnt-->
+<!--    </sql>-->
+<!--    <sql id="MySoDiaryQueryB">-->
+<!--        FROM-->
+<!--        so_diary sd-->
+<!--        INNER JOIN-->
+<!--        so_diary_comments sdc-->
+<!--        ON-->
+<!--        sd.diary_no = sdc.diary_no-->
+<!--        WHERE-->
+<!--        sdc.commenter_no = #{userNo}-->
+<!--        <if test="searchBy != null and searchTerm != null and searchTerm != ''">-->
+<!--            <choose>-->
+<!--                <when test="searchBy == 'comment'">-->
+<!--                    AND sdc.content LIKE CONCAT('%', #{searchTerm}, '%')-->
+<!--                </when>-->
+<!--                <when test="searchBy == 'dTitle'">-->
+<!--                    AND sd.title LIKE CONCAT('%', #{searchTerm}, '%')-->
+<!--                </when>-->
+<!--                <when test="searchBy == 'dContent'">-->
+<!--                    AND sd.content LIKE CONCAT('%', #{searchTerm}, '%')-->
+<!--                </when>-->
+<!--            </choose>-->
+<!--        </if>-->
+<!--        <choose>-->
+<!--            <when test="orderBy == 'recentposted'">-->
+<!--                ORDER BY sdc.comment_no DESC-->
+<!--            </when>-->
+<!--            <when test="orderBy == 'oldestposted'">-->
+<!--                ORDER BY sdc.comment_no ASC-->
+<!--            </when>-->
+<!--            <when test="orderBy == 'recentadded'">-->
+<!--                ORDER BY sdc.diary_no DESC-->
+<!--            </when>-->
+<!--            <when test="orderBy == 'oldestadded'">-->
+<!--                ORDER BY sdc.diary_no ASC-->
+<!--            </when>-->
+<!--            <when test="orderBy == 'views'">-->
+<!--                ORDER BY sd.view_cnt DESC-->
+<!--            </when>-->
+<!--            <when test="orderBy == 'title'">-->
+<!--                ORDER BY sd.title ASC-->
+<!--            </when>-->
+<!--            <otherwise>-->
+<!--                ORDER BY sdc.comment_no DESC-->
+<!--            </otherwise>-->
+<!--        </choose>-->
+<!--    </sql>-->
+<!--    <select id="selectCountMySoDiary" resultType="int">-->
+<!--        SELECT COUNT(*)-->
+<!--        <include refid="MySoDiaryQueryB"/>-->
+<!--    </select>-->
+<!--    <select id="selectListMySoDiary" resultType="MySoDiaryDTO">-->
+<!--        <include refid="MySoDiaryQueryA"/>-->
+<!--        <include refid="MySoDiaryQueryB"/>-->
+<!--        <include refid="pagingQuery"/>-->
+<!--    </select>-->
 
 
     <resultMap type="MyInEventDTO" id="MyInEventResultMap">
