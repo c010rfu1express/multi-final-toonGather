@@ -176,10 +176,11 @@
                     <th>작성일시</th>
                     <th>수정일시</th>
                     <th>조회수</th>
+                    <th>*리뷰작성자ID</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="mySoReview : ${mySoReviews}" class="clickable-row" th:attr="data-href=@{/social/reviews/{reviewNo}(reviewNo=${mySoReview.reviewNo})}">
+                <tr th:each="mySoReview : ${mySoReviews}" class="clickable-row" th:attr="data-href=@{/social/users/{userId}/reviews/{reviewNo}(userId=${mySoReview.writerUserId},reviewNo=${mySoReview.reviewNo})}">
                     <td th:text="${mySoReview.likeNo}">좋아요 번호</td>
                     <td th:text="${mySoReview.reviewNo}">리뷰 번호</td>
                     <td th:text="${mySoReview.likedUser}">좋아요 한 회원</td>
@@ -191,6 +192,7 @@
                     <td th:text="${mySoReview.createdDate}">작성일시</td>
                     <td th:text="${mySoReview.modifiedDate}">수정일시</td>
                     <td th:text="${mySoReview.viewCnt}">조회수</td>
+                    <td th:text="${mySoReview.writerUserId}">*리뷰작성자ID</td>
                 </tr>
                 </tbody>
             </table>

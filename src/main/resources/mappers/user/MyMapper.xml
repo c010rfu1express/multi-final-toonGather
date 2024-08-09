@@ -246,7 +246,10 @@
         <result property="createdDate" column="created_date" />
         <result property="modifiedDate" column="modified_date" />
         <result property="viewCnt" column="view_cnt" />
+
+        <result property="writerUserId" column="writer_user_id"/>  <!-- 추가된 부분 -->
     </resultMap>
+
     <sql id="MySoReviewQueryA">
         SELECT
         srl.like_no AS likeNo,
@@ -260,15 +263,18 @@
         sr.star_rating AS starRating,
         sr.created_date AS createdDate,
         sr.modified_date AS modifiedDate,
-        sr.view_cnt AS viewCnt
+        sr.view_cnt AS viewCnt,
+
+        u.user_id AS writerUserId  <!-- 추가된 부분 -->
     </sql>
+
     <sql id="MySoReviewQueryB">
         FROM
         so_review sr
         INNER JOIN
-        so_review_likes srl
-        ON
-        sr.review_no = srl.review_no
+        so_review_likes srl ON sr.review_no = srl.review_no
+        INNER JOIN
+        users u ON sr.writer_no = u.user_no  <!-- 추가된 부분 -->
         WHERE
         srl.liked_user = #{userNo}
         <if test="searchBy != null and searchTerm != null and searchTerm != ''">
@@ -311,15 +317,107 @@
             </otherwise>
         </choose>
     </sql>
+
     <select id="selectCountMySoReview" resultType="int">
         SELECT COUNT(*)
         <include refid="MySoReviewQueryB"/>
     </select>
+
     <select id="selectListMySoReview" resultType="MySoReviewDTO">
         <include refid="MySoReviewQueryA"/>
         <include refid="MySoReviewQueryB"/>
         <include refid="pagingQuery"/>
     </select>
+
+    <!--    <resultMap type="MySoReviewDTO" id="MySoReviewResultMap">-->
+<!--        <id property="likeNo" column="like_no" />-->
+<!--        <result property="reviewNo" column="review_no" />-->
+<!--        <result property="likedUser" column="liked_user" />-->
+<!--        <result property="likedDate" column="liked_date" />-->
+
+<!--        <result property="webtoonNo" column="webtoon_no" />-->
+<!--        <result property="title" column="title" />-->
+<!--        <result property="content" column="content" />-->
+<!--        <result property="starRating" column="star_rating" />-->
+<!--        <result property="createdDate" column="created_date" />-->
+<!--        <result property="modifiedDate" column="modified_date" />-->
+<!--        <result property="viewCnt" column="view_cnt" />-->
+<!--        -->
+<!--        <result property="writerUserId" column="writer_user_id" />-->
+<!--    </resultMap>-->
+<!--    <sql id="MySoReviewQueryA">-->
+<!--        SELECT-->
+<!--        srl.like_no AS likeNo,-->
+<!--        srl.review_no AS reviewNo,-->
+<!--        srl.liked_user AS likedUser,-->
+<!--        srl.liked_date AS likedDate,-->
+
+<!--        sr.webtoon_no AS webtoonNo,-->
+<!--        sr.title AS title,-->
+<!--        sr.content AS content,-->
+<!--        sr.star_rating AS starRating,-->
+<!--        sr.created_date AS createdDate,-->
+<!--        sr.modified_date AS modifiedDate,-->
+<!--        sr.view_cnt AS viewCnt-->
+<!--    </sql>-->
+<!--    <sql id="MySoReviewQueryB">-->
+<!--        FROM-->
+<!--        so_review sr-->
+<!--        INNER JOIN-->
+<!--        so_review_likes srl-->
+<!--        ON-->
+<!--        sr.review_no = srl.review_no-->
+<!--        WHERE-->
+<!--        srl.liked_user = #{userNo}-->
+<!--        <if test="searchBy != null and searchTerm != null and searchTerm != ''">-->
+<!--            <choose>-->
+<!--                <when test="searchBy == 'rTitle'">-->
+<!--                    AND sr.title LIKE CONCAT('%', #{searchTerm}, '%')-->
+<!--                </when>-->
+<!--                <when test="searchBy == 'rContent'">-->
+<!--                    AND sr.content LIKE CONCAT('%', #{searchTerm}, '%')-->
+<!--                </when>-->
+<!--            </choose>-->
+<!--        </if>-->
+<!--        <choose>-->
+<!--            <when test="orderBy == 'recentliked'">-->
+<!--                ORDER BY srl.like_no DESC-->
+<!--            </when>-->
+<!--            <when test="orderBy == 'oldestliked'">-->
+<!--                ORDER BY srl.like_no ASC-->
+<!--            </when>-->
+<!--            <when test="orderBy == 'recentadded'">-->
+<!--                ORDER BY sr.created_date DESC-->
+<!--            </when>-->
+<!--            <when test="orderBy == 'oldestadded'">-->
+<!--                ORDER BY sr.created_date ASC-->
+<!--            </when>-->
+<!--            <when test="orderBy == 'highrated'">-->
+<!--                ORDER BY sr.star_rating DESC-->
+<!--            </when>-->
+<!--            <when test="orderBy == 'lowrated'">-->
+<!--                ORDER BY sr.star_rating ASC-->
+<!--            </when>-->
+<!--            <when test="orderBy == 'views'">-->
+<!--                ORDER BY sr.view_cnt DESC-->
+<!--            </when>-->
+<!--            <when test="orderBy == 'title'">-->
+<!--                ORDER BY sr.title ASC-->
+<!--            </when>-->
+<!--            <otherwise>-->
+<!--                ORDER BY srl.like_no DESC-->
+<!--            </otherwise>-->
+<!--        </choose>-->
+<!--    </sql>-->
+<!--    <select id="selectCountMySoReview" resultType="int">-->
+<!--        SELECT COUNT(*)-->
+<!--        <include refid="MySoReviewQueryB"/>-->
+<!--    </select>-->
+<!--    <select id="selectListMySoReview" resultType="MySoReviewDTO">-->
+<!--        <include refid="MySoReviewQueryA"/>-->
+<!--        <include refid="MySoReviewQueryB"/>-->
+<!--        <include refid="pagingQuery"/>-->
+<!--    </select>-->
 
     <resultMap type="MySoDiaryDTO" id="MySoDiaryResultMap">
         <id property="commentNo" column="comment_no"/>
