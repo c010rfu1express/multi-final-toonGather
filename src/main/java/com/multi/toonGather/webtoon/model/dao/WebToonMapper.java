@@ -55,4 +55,6 @@ public interface WebToonMapper {
  int dislikeUpdateDown(CommentLikeDTO commentLikeDTO);
 
  List<CommentDTO> CommentBestList(WebtoonDTO webtoonDTO);
+
+ List<WebtoonDTO> webtoonBest();
 }
