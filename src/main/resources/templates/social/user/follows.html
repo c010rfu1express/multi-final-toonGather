@@ -6,57 +6,99 @@
     <title>툰게더 toonGather | 툰투게더</title>
     <link rel="stylesheet" th:href="@{/css/social-styles.css}">
     <style>
-        .follow-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .follow-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100px;
-            text-decoration: none;
-            color: inherit;
-        }
-        .follow-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 10px;
-        }
-        .follow-nickname {
-            text-align: center;
-            word-break: break-word;
-        }
+            .follow-count {
+                color: #007bff;
+                text-decoration: none;
+                transition: color 0.3s;
+            }
+            .follow-count:hover {
+                text-decoration: underline;
+            }
+            .follow-count-separator {
+                color: #333;
+            }
+            .follow-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+            .follow-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100px;
+                text-decoration: none;
+                color: inherit;
+            }
+            .follow-avatar {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                object-fit: cover;
+                margin-bottom: 10px;
+            }
+            .follow-nickname {
+                text-align: center;
+                word-break: break-word;
+            }
     </style>
 </head>
 <body>
-
 <div th:replace="common/menubar.html"></div>
 
 <div class="content-wrapper">
     <div class="container mt-4">
-        <div th:replace="social/user/profile-menubar :: profile-menubar"></div>
+
+        <div class="profile-menubar">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="user-profile-info" th:if="${profileUser != null}" style="display: flex; flex-direction: row; align-items: center; width: 100%; margin-bottom: 15px;">
+                        <img th:src="${'/uploadFiles/' + profileUser.profileImagePath}" alt="프로필 사진" class="profile-image" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-right: 20px; flex-shrink: 0;">
+                        <div class="profile-text" style="display: flex; flex-direction: column; justify-content: center;">
+                            <h2 th:text="${profileUser.nickname}" style="margin: 0 0 5px 0; font-weight: bold;">사용자 닉네임</h2>
+                            <p th:text="${profileUser.bio}" style="margin: 0;">사용자 자기소개</p>
+                            <p style="font-size: 0.8em; margin: 0;">
+                                <a th:href="@{'/social/users/' + ${profileUser.userId} + '/follows?type=following'}" class="follow-count">
+                                    팔로잉 <span th:text="${followingCount}">0</span>
+                                </a>
+                                <span class="follow-count-separator">|</span>
+                                <a th:href="@{'/social/users/' + ${profileUser.userId} + '/follows?type=followers'}" class="follow-count">
+                                    팔로워 <span th:text="${followerCount}">0</span>
+                                </a>
+                            </p>
+                        </div>
+                        <button th:if="${#authentication.principal != null and #authentication.principal.userDTO.userId != profileUser.userId}"
+                                th:class="${isFollowing != null and isFollowing ? 'btn btn-secondary follow-btn' : 'btn btn-primary follow-btn'}"
+                                th:text="${isFollowing != null and isFollowing ? '팔로잉' : '팔로우'}"
+                                th:data-user-id="${profileUser.userId}">팔로우</button>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="social-user-profile-placeholder"></div>
+                    <nav class="social-user-menu">
+                        <ul>
+                            <li><a th:href="@{'/social/users/' + ${profileUser.userId} + '/profile'}" th:class="${currentUri.endsWith('/profile')} ? 'active' : ''">홈</a></li>
+                            <li><a th:href="@{'/social/users/' + ${profileUser.userId} + '/reviews'}" th:class="${currentUri.endsWith('/reviews')} ? 'active' : ''">리뷰</a></li>
+                            <li><a th:href="@{'/social/users/' + ${profileUser.userId} + '/diaries'}" th:class="${currentUri.endsWith('/diaries')} ? 'active' : ''">다이어리</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
 
         <div class="row mt-4">
             <div class="col-12">
                 <h2 th:text="${type == 'followers' ? '팔로워' : '팔로잉'}">팔로우 목록</h2>
-                <div class="mb-3">
-                    <a th:href="@{'/social/users/' + ${userId} + '/follows?type=following'}"
-                       th:class="${type == 'following' ? 'active' : ''}">팔로잉 ([[${followingCount}]])</a> |
-                    <a th:href="@{'/social/users/' + ${userId} + '/follows?type=followers'}"
-                       th:class="${type == 'followers' ? 'active' : ''}">팔로워 ([[${followerCount}]])</a>
-                </div>
                 <div class="follow-list">
-                    <a th:each="user : ${follows}"
-                       th:href="@{'/social/users/' + ${user.userId} + '/profile'}"
-                       class="follow-item">
-                        <img th:src="${user.profileImagePath != null ? '/uploadFiles/' + user.profileImagePath : '/img/default-profile.png'}"
-                             alt="프로필 사진" class="follow-avatar">
-                        <span class="follow-nickname" th:text="${user.nickname}">사용자 닉네임</span>
-                    </a>
+                    <div th:each="user : ${follows}" class="follow-item-container">
+                        <a th:href="@{'/social/users/' + ${user.userId} + '/profile'}"
+                           class="follow-item">
+                            <img th:src="${user.profileImagePath != null ? '/uploadFiles/' + user.profileImagePath : '/img/default-profile.png'}"
+                                 alt="프로필 사진" class="follow-avatar">
+                            <span class="follow-nickname" th:text="${user.nickname}">사용자 닉네임</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -64,6 +106,30 @@
 </div>
 <div th:replace="common/footer.html"></div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script th:inline="javascript">
+    $(document).ready(function() {
+        $('.follow-btn').click(function() {
+            var userId = $(this).data('user-id');
+            var btn = $(this);
 
+            $.ajax({
+                url: '/social/users/' + userId + '/follow',
+                type: 'POST',
+                success: function(response) {
+                    if (response.success) {
+                        // 팔로우 상태 변경 성공 시 페이지 새로고침
+                        location.reload();
+                    } else {
+                        alert('팔로우 상태를 변경하는데 실패했습니다.');
+                    }
+                },
+                error: function() {
+                    alert('서버와의 통신에 실패했습니다.');
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

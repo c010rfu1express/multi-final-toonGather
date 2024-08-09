@@ -117,7 +117,7 @@
         <div class="col-12">
             <div class="user-diary-list">
                 <div th:unless="${#lists.isEmpty(diaries)}">
-                    <div th:each="diary : ${diaries}" class="user-diary-item" th:attr="data-href=@{/social/diaries/{diaryNo}(diaryNo=${diary.diaryNo})}">
+                    <div th:each="diary : ${diaries}" class="user-diary-item" th:attr="data-href=@{/social/users/__${userId}__/diaries/{diaryNo}(diaryNo=${diary.diaryNo})}">
                         <div class="user-diary-date">
                             <div class="user-diary-date-box">
                                 <div class="user-diary-date-month" th:text="${#temporals.format(diary.createdDate, 'MM')}+'월'">월</div>
@@ -188,11 +188,8 @@
                 type: 'POST',
                 success: function(response) {
                     if (response.success) {
-                        if (response.isFollowing) {
-                            btn.text('팔로잉').removeClass('btn-primary').addClass('btn-secondary');
-                        } else {
-                            btn.text('팔로우').removeClass('btn-secondary').addClass('btn-primary');
-                        }
+                        // 팔로우 상태 변경 성공 시 페이지 새로고침
+                        location.reload();
                     } else {
                         alert('팔로우 상태를 변경하는데 실패했습니다.');
                     }
@@ -203,7 +200,6 @@
             });
         });
     });
-</script>
 </script>
 </body>
 </html>
