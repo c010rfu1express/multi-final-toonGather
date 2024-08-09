@@ -89,8 +89,8 @@
     </insert>
 
     <insert id="insertEventFile" parameterType="com.multi.toonGather.introduction.model.dto.EventFileDTO">
-        INSERT INTO in_event_files (event_no, file_name, file_path, file_size, file_type)
-        VALUES (#{eventNo}, #{fileName}, #{filePath}, #{fileSize}, #{fileType});
+        INSERT INTO in_event_files (event_no, file_name, file_path, file_type, upload_date)
+        VALUES (#{eventNo}, #{fileName}, #{filePath}, #{fileType}, NOW());
     </insert>
 
     <!-- 번호로 행사 가져오기 -->
@@ -145,5 +145,26 @@
         INSERT INTO in_event_like (event_no, user_no, liked_date)
         VALUES (#{eventNo}, #{userNo}, NOW())
     </insert>
+
+    <!-- Update a event entry -->
+    <update id="updateEvent" parameterType="com.multi.toonGather.introduction.model.dto.EventDTO">
+        UPDATE in_event
+        SET title = #{title},
+        content = #{content},
+        event_category_code = #{eventCategoryCode},
+        cost = #{cost},
+        address = #{address},
+        place = #{place},
+        coordinates = #{coordinates},
+        start_date = #{startDate},
+        end_date = #{endDate},
+        site = #{site}
+        WHERE event_no = #{eventNo}
+    </update>
+
+    <delete id="deleteEventFileBySavedName" parameterType="String">
+        DELETE FROM in_event_files
+        WHERE file_name = #{savedName}
+    </delete>
 
 </mapper>

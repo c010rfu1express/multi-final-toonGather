@@ -18,7 +18,7 @@ public interface EventService {
 
     List<EventCategoryDTO> getAllEventCategories();
 
-    void insertEvent(EventDTO eventDTO, MultipartFile file, HttpServletRequest request) throws Exception;
+    boolean insertEvent(EventDTO eventDTO, MultipartFile[] images, HttpServletRequest request) throws Exception;
 
     EventDTO getEventByNoWithFiles(int eventNo);
 
@@ -29,4 +29,6 @@ public interface EventService {
     EventCategoryDTO getEventCategoryByCode(int eventCategoryCode);
 
     boolean toggleLike(int eventNo, int userNo);
+
+    boolean updateEvent(EventDTO event, List<String> existingImages, List<String> removedImages, MultipartFile[] images, HttpServletRequest request) throws Exception;
 }

@@ -70,16 +70,16 @@ public class EventController {
     }
 
     @PostMapping(value = {"introduction/event/eventInsert"})
-    public String journalInsert(@RequestParam("title") String title,
+    public String eventInsert(@RequestParam("title") String title,
                                 @RequestParam("content") String content,
-                                @RequestParam("file") MultipartFile file,
+                                @RequestParam("images") MultipartFile[] images,
                                 @RequestParam("eventCategoryCode") int eventCategoryCode,
-                                @RequestParam("cost") int cost,
+                                @RequestParam("cost") String cost,
                                 @RequestParam("address") String address,
                                 @RequestParam("place") String place,
                                 @RequestParam("coordinates") String coordinates,
                                 @RequestParam("startDate") String startDate,
-                                @RequestParam("endDate") String endDate,
+                                @RequestParam(value = "endDate", required = false) String endDate,
                                 @RequestParam("site") String site,
                                 HttpServletRequest request) {
         try {
@@ -87,18 +87,45 @@ public class EventController {
             eventDTO.setTitle(title);
             eventDTO.setContent(content);
             eventDTO.setEventCategoryCode(eventCategoryCode);
-            eventDTO.setCost(cost);
+
+
+            System.out.println("cost : " + cost);
+            int costInt;
+            if (cost == null || cost.trim().isEmpty()) {
+                // costStr이 null이거나 비어 있거나 공백 문자로만 이루어진 경우
+                costInt = 0;
+            } else{
+                costInt = Integer.parseInt(cost);
+            }
+            System.out.println("costInt : " + costInt);
+            eventDTO.setCost(costInt);
+
+
             eventDTO.setAddress(address);
             eventDTO.setPlace(place);
             eventDTO.setCoordinates(coordinates);
             eventDTO.setStartDate(LocalDate.parse(startDate));
-            eventDTO.setEndDate(LocalDate.parse(endDate));
+
+
+            // endDate가 빈 문자열인지 확인
+            System.out.println("endDate : " + endDate);
+            if (endDate == null || endDate.trim().isEmpty()) {
+                eventDTO.setEndDate(null); // endDate가 빈 문자열인 경우 null로 설정
+            } else {
+                eventDTO.setEndDate(LocalDate.parse(endDate));
+            }
+
+
             eventDTO.setSite(site);
-
-            eventService.insertEvent(eventDTO, file, request);
-
+            System.out.println("event dto 확인 : " + eventDTO.toString());
             System.out.println("이거확인111");
-            return "redirect:/introduction/event/eventList";
+            boolean isSuccess = eventService.insertEvent(eventDTO, images, request);
+            if (isSuccess) {
+                return "redirect:/introduction/event/eventList";
+            }else{
+                return "introduction/event/eventInsert";
+            }
+
         } catch (Exception e) {
             // 에러 처리
             e.printStackTrace();
@@ -110,18 +137,82 @@ public class EventController {
     public String eventUpdateForm(@RequestParam(value = "eventNo", required = true) int eventNo, Model model){
 
         EventDTO eventDTO = eventService.getEventByNoWithFiles(eventNo);
-
         System.out.println("Retrieved event 수정페이지 : " + eventDTO);
 
         List<EventCategoryDTO> eventCategories = eventService.getAllEventCategories();
         System.out.println("Event Categories: " + eventCategories);
 
-
-        model.addAttribute("eventCategories", eventCategories);
         model.addAttribute("event", eventDTO);
+        model.addAttribute("eventCategories", eventCategories);
 
         return "introduction/event/eventUpdate";
     }
+
+    @PostMapping(value = {"introduction/event/eventUpdate"})
+    public String eventUpdate(@RequestParam("eventNo") int eventNo,
+                              @RequestParam("title") String title,
+                              @RequestParam("content") String content,
+                              @RequestParam("images") MultipartFile[] images,
+                              @RequestParam("eventCategoryCode") int eventCategoryCode,
+                              @RequestParam("cost") String cost,
+                              @RequestParam("address") String address,
+                              @RequestParam("place") String place,
+                              @RequestParam("coordinates") String coordinates,
+                              @RequestParam("startDate") String startDate,
+                              @RequestParam("endDate") String endDate,
+                              @RequestParam("site") String site,
+                              @RequestParam(value = "existingImages", required = false) List<String> existingImages,
+                              @RequestParam(value = "removedImages", required = false) List<String> removedImages,
+                              HttpServletRequest request) throws Exception {
+
+        System.out.println("update post 확인 : " + eventNo);
+        EventDTO event = eventService.getEventByNoWithFiles(eventNo);
+        event.setTitle(title);
+        event.setContent(content);
+        event.setEventCategoryCode(eventCategoryCode);
+
+
+        System.out.println("cost : " + cost);
+        int costInt;
+        if (cost == null || cost.trim().isEmpty()) {
+            // costStr이 null이거나 비어 있거나 공백 문자로만 이루어진 경우
+            costInt = 0;
+        } else{
+            costInt = Integer.parseInt(cost);
+        }
+        System.out.println("costInt : " + costInt);
+        event.setCost(costInt);
+
+
+        event.setAddress(address);
+        event.setPlace(place);
+        event.setCoordinates(coordinates);
+        event.setStartDate(LocalDate.parse(startDate));
+
+
+        // endDate가 빈 문자열인지 확인
+        System.out.println("endDate : " + endDate);
+        if (endDate == null || endDate.trim().isEmpty()) {
+            event.setEndDate(null); // endDate가 빈 문자열인 경우 null로 설정
+        } else {
+            event.setEndDate(LocalDate.parse(endDate));
+        }
+
+
+        event.setSite(site);
+
+
+        System.out.println(existingImages);
+        System.out.println(removedImages);
+
+
+        boolean isSuccess = eventService.updateEvent(event, existingImages, removedImages, images, request);
+        System.out.println("확인 55");
+        if(isSuccess) return "redirect:/introduction/event/eventList";
+        else return "introduction/event/eventUpdate/" + event.getEventNo();
+    }
+
+
 
     @PostMapping(value = {"/introduction/deleteEvent"})
     public String deleteEvent(@RequestBody Map<String, Integer> requestBody) {
@@ -157,7 +248,15 @@ public class EventController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedPostingDate = eventDTO.getPostingDate().format(formatter);
         String formattedStartDate = eventDTO.getStartDate().format(formatter);
-        String formattedEndDate = eventDTO.getEndDate().format(formatter);
+
+        String formattedEndDate;
+        if (eventDTO.getEndDate() != null) {
+            formattedEndDate = eventDTO.getEndDate().format(formatter);
+        } else {
+            formattedEndDate = ""; // or any default value you want to set
+        }
+        System.out.println("Formatted End Date: " + formattedEndDate);
+
 
         // 모델에 포맷된 날짜 추가
         model.addAttribute("event", eventDTO);
