@@ -348,7 +348,7 @@ async function checkDuplicates(userId, nickname, email) {
     </script>
     <div class="col-md-9">
         <div class="row justify-content-start" style="color: #828282;">
-            <div class="col-6 p-3" id="loginbox">
+            <div class="col-8 p-3" id="loginbox">
                 <form th:action="@{/user/signup}" th:object="${user}" method="post" onsubmit="validateForm(event)">
                     <div class="row p-2">
                         <div class="col-3">
