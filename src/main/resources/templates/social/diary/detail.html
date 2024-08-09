@@ -295,82 +295,91 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script th:inline="javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-        const commentForm = document.querySelector('.diary-comment-form');
-        let commentsList = document.querySelector('.diary-comments-list');
-        const commentContent = document.getElementById('diaryCommentContent');
-        const charCount = document.getElementById('diaryCharCount');
-        const submitButton = commentForm.querySelector('button[type="submit"]');
-
-        if (commentForm) {
-            submitButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                const content = commentContent.value;
-                const diaryNo = [[${diary.diaryNo}]];
-                const userId = [[${diary.writer.userId}]];
-
-                fetch(`/social/diaries/${diaryNo}/comments`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ content: content })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('서버 응답이 올바르지 않습니다.');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        // 댓글 추가 성공 시 페이지 새로고침
-                        window.location.href = `/social/users/${userId}/diaries/${diaryNo}`;
-                    } else {
-                        alert('댓글 작성에 실패했습니다: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('오류가 발생했습니다: ' + error.message);
-                });
-            });
+    document.getElementById('diaryCommentContent').addEventListener('input', function() {
+        var diaryCharCount = this.value.length;
+        document.getElementById('diaryCharCount').textContent = diaryCharCount;
+        if (diaryCharCount > 140) {
+            this.value = this.value.slice(0, 140);
+            document.getElementById('diaryCharCount').textContent = 140;
         }
+    });
 
-        // 댓글 삭제 이벤트 리스너
-        if (commentsList) {
-            commentsList.addEventListener('click', function(e) {
-                if (e.target.classList.contains('diary-delete-comment')) {
-                    const commentId = e.target.getAttribute('data-comment-id');
-                    if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
-                        deleteComment(commentId, e.target.closest('.diary-comment'));
-                    }
-                }
-            });
-        }
+document.addEventListener('DOMContentLoaded', function() {
+    const commentForm = document.querySelector('.diary-comment-form');
+    let commentsList = document.querySelector('.diary-comments-list');
+    const commentContent = document.getElementById('diaryCommentContent');
+    const charCount = document.getElementById('diaryCharCount');
+    const submitButton = commentForm.querySelector('button[type="submit"]');
 
-        function deleteComment(commentId, commentElement) {
+    if (commentForm) {
+        submitButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            const content = commentContent.value;
             const diaryNo = [[${diary.diaryNo}]];
             const userId = [[${diary.writer.userId}]];
 
-            fetch(`/social/diaries/comments/${commentId}`, {
-                method: 'DELETE'
+            fetch(`/social/diaries/${diaryNo}/comments`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ content: content })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('서버 응답이 올바르지 않습니다.');
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
-                    // 댓글 삭제 성공 시 페이지 새로고침
+                    // 댓글 추가 성공 시 페이지 새로고침
                     window.location.href = `/social/users/${userId}/diaries/${diaryNo}`;
                 } else {
-                    alert('댓글 삭제에 실패했습니다.');
+                    alert('댓글 작성에 실패했습니다: ' + data.message);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('오류가 발생했습니다.');
+                alert('오류가 발생했습니다: ' + error.message);
             });
-        }
-    });
+        });
+    }
+
+    // 댓글 삭제 이벤트 리스너
+    if (commentsList) {
+        commentsList.addEventListener('click', function(e) {
+            if (e.target.classList.contains('diary-delete-comment')) {
+                const commentId = e.target.getAttribute('data-comment-id');
+                if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+                    deleteComment(commentId, e.target.closest('.diary-comment'));
+                }
+            }
+        });
+    }
+
+    function deleteComment(commentId, commentElement) {
+        const diaryNo = [[${diary.diaryNo}]];
+        const userId = [[${diary.writer.userId}]];
+
+        fetch(`/social/diaries/comments/${commentId}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // 댓글 삭제 성공 시 페이지 새로고침
+                window.location.href = `/social/users/${userId}/diaries/${diaryNo}`;
+            } else {
+                alert('댓글 삭제에 실패했습니다.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('오류가 발생했습니다.');
+        });
+    }
+});
 </script>
 <script th:inline="javascript">
     $(document).ready(function() {
