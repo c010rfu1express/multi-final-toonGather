@@ -4,7 +4,7 @@
 <html layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>툰게더 toonGather</title>
+    <title>툰게더 toonGather | 프리랜서</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/starRating.css}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -37,6 +37,55 @@
           font-size: 14px;
         }
     </style>
+    <script>
+        $(document).ready(function () {
+            // 폼 제출 시 공백 확인
+            $('#form').on('submit', function (e) {
+                var isValid = true;
+                var errorMessage = "리뷰 내용을 입력해야 합니다."; // 오류 메시지
+
+                // 필수 입력 필드
+                var requiredFields = ['#reply'];
+
+                for (var i = 0; i < requiredFields.length; i++) {
+                    var value = $(requiredFields[i]).val().trim();
+
+                    if (value === '') {
+                        isValid = false;
+                        break; // 첫 번째 공백 필드를 발견하면 반복문 종료
+                    }
+                }
+
+                if (!isValid) {
+                    alert(errorMessage);
+                    e.preventDefault(); // 폼 제출 중지
+                }
+            });
+
+            // 모달 창 열릴 때 유효성 검사 설정
+            $('#reviewModal').on('shown.bs.modal', function () {
+                $('#reviewModal form').on('submit', function (e) {
+                    var replyValue = $('#update-reply').val().trim();
+
+                    if (replyValue === '') {
+                        alert("리뷰 내용을 입력해야 합니다.");
+                        e.preventDefault(); // 폼 제출 중지
+                    }
+                });
+            });
+
+            $('#reportModal').on('shown.bs.modal', function () {
+                $('#reportModal form').on('submit', function (e) {
+                    var replyValue = $('#report-reply').val().trim();
+
+                    if (replyValue === '') {
+                        alert("신고 내용을 입력해야 합니다.");
+                        e.preventDefault(); // 폼 제출 중지
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
 <div th:replace="~{common/menubar}"></div>
@@ -92,10 +141,10 @@
                 </div>
                 <br>
                 <div class="mt-4 text-right">
-                    <a href="/recruit/free/list" class="btn btn-outline-primary">목록으로</a>
+                    <a href="/recruit/free/list" class="btn btn-secondary">목록으로</a>
                     <div th:if="${member_no == free.member.userNo}">
                         <br>
-                        <a th:href="@{/recruit/free/update(no=${free.board_no})}" class="btn btn-primary">수정</a>
+                        <a th:href="@{/recruit/free/update(no=${free.board_no})}" class="btn btn-warning">수정</a>
                         <a th:href="@{/recruit/free/delete(no=${free.board_no})}" class="btn btn-danger">삭제</a>
                     </div>
                 </div>
@@ -133,6 +182,9 @@
                         <!-- 리뷰 입력 필드 -->
                         <textarea id="reply" name="reply" class="form-control" style="height:100px;" maxlength='500' required></textarea>
                         <input type="hidden" id="board_no" name="board_no" th:value="${free.board_no}"/>
+                        <small class="form-text text-muted">
+                            별점은 최소 1점부터 선택할 수 있으며, 별점과 리뷰 내용이 모두 작성되어야만 리뷰가 등록됩니다.
+                        </small>
                         <br>
                         <button type="submit" id="b2" class="btn btn-primary">입력</button>
                     </div>
@@ -213,7 +265,7 @@
 
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">수정</button>
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
                         </div>
                     </form>
                 </div>
@@ -248,7 +300,7 @@
 
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">신고</button>
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
                         </div>
                     </form>
                 </div>

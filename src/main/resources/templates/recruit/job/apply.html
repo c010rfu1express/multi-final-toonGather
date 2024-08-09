@@ -3,7 +3,7 @@
 <html layout:decorate="~{layout}">
 <head>
   <meta charset="UTF-8">
-  <title>툰게더 toonGather</title>
+  <title>툰게더 toonGather | 구인/구직</title>
   <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -32,6 +32,32 @@
       font-size: 14px;
     }
   </style>
+  <script>
+    $(document).ready(function () {
+      // 폼 제출 시 공백 확인
+      $('#form').on('submit', function (e) {
+        var isValid = true;
+        var errorMessage = "필수 항목이 공백으로만 입력되었습니다."; // 오류 메시지
+
+        // 필수 입력 필드
+        var requiredFields = ['#title', '#content', '#contact'];
+
+        for (var i = 0; i < requiredFields.length; i++) {
+          var value = $(requiredFields[i]).val().trim();
+
+          if (value === '') {
+            isValid = false;
+            break; // 첫 번째 공백 필드를 발견하면 반복문 종료
+          }
+        }
+
+        if (!isValid) {
+          alert(errorMessage);
+          e.preventDefault(); // 폼 제출 중지
+        }
+      });
+    });
+  </script>
 </head>
 <body>
 <div th:replace="~{common/menubar}"></div>
