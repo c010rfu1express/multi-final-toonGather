@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Controller
@@ -119,6 +120,7 @@ public class AuthController {
                 userDTO.setAuthCode('B');
                 userDTO.setPassword("BASEDNAVERLOGINAPIS@");  //고민해보기1
                 userDTO.setEmail("BASEDNAVERLOGINAPIS@");     //고민해보기1
+                userDTO.setDateOfBirth(LocalDate.now());     //고민해보기3_웹툰 성인인증 관련해서 문제 해결
                 userDTO.setTermsAgreement(true);            //고민해보기2 추가수집?
 
                 //from naverapi
@@ -239,6 +241,7 @@ public class AuthController {
                 userDTO.setPassword("BASEDKAKAOLOGINAPIS@");  //고민해보기1
                 userDTO.setEmail("BASEDKAKAOLOGINAPIS@");     //고민해보기1
                 userDTO.setGender('P');                     //고민해보기2 추가수집해볼?
+                userDTO.setDateOfBirth(LocalDate.now());     //고민해보기3_웹툰 성인인증 관련해서 문제 해결
                 userDTO.setTermsAgreement(true);            //고민해보기2
 
                 //from kakaoapi
