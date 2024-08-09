@@ -394,7 +394,7 @@
                        <span th:text="${#dates.format(comment.createdAt, 'yyyy-MM-dd')}"></span>
                      </span>
                     <span class="author" th:if="${comment.createdAt != comment.updatedAt}">수정일:
-                       <span th:text="${#dates.format(comment.createdAt, 'yyyy-MM-dd')}"></span>
+                       <span th:text="${#dates.format(comment.updatedAt, 'yyyy-MM-dd')}"></span>
                      </span>
                     <th:block th:if="${user.userNo == comment.userNo}">
                         <button type="button" class="btn btn-primary btn-edit" th:data-comment-no="${comment.commentNo}">수정</button>
