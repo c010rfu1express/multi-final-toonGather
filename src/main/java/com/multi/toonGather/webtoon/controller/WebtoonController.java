@@ -50,6 +50,8 @@ public class WebtoonController {
             model.addAttribute("isLoggedAge",Period.between(dateOfBirth, today).getYears());
         }else {
             model.addAttribute("isLoggedAge",0);
+           List<WebtoonDTO> webtoonDTOList=webToonService.webtoonBest();
+            model.addAttribute("webtoonSelect",webtoonDTOList);
         }
 
         // 현재 날짜의 요일 가져오기
@@ -122,6 +124,7 @@ public class WebtoonController {
                     .filter(comment -> !bestCommentNos.contains(comment.getCommentNo()))
                     .collect(Collectors.toList());
 
+            System.out.println(comments.toArray());
             model.addAttribute("comments",comments);
             model.addAttribute("bestComments",bestComments);
         }catch (Exception e){
@@ -167,6 +170,9 @@ public class WebtoonController {
                                 TagPageDTO tagPageDTO,
                                 @AuthenticationPrincipal CustomUserDetails c,
                                 Model model) throws UnsupportedEncodingException {
+        search=search.replace("#", "");
+
+
         if(c!=null){
             LocalDate today = LocalDate.now();
             LocalDate dateOfBirth= c.getUserDTO().getDateOfBirth();
@@ -401,7 +407,7 @@ public class WebtoonController {
 
     public static WebtoonDTO kkao(WebtoonDTO kkao) throws IOException {
         String[]week= new String[]{"timetable_mon","timetable_tue","timetable_wed","timetable_thu"
-                ,"timetable_fri","timetable_sat","timetable_sun"};
+                ,"timetable_fri","timetable_sat","timetable_sun","timetable_completed"};
         // API 엔드포인트 URL 설정
         for(String x:week){
 
@@ -472,7 +478,7 @@ public class WebtoonController {
                     authors.add(authorsArray.getJSONObject(i).getString("name"));
                 }
 
-                String thumbnailUrl = webtoonData.getString("titleImageA");
+                String thumbnailUrl = webtoonData.getString("featuredCharacterImageA");
 
                 JSONArray seoKeywordsArray = webtoonData.getJSONArray("seoKeywords");
                 List<String> tags = new ArrayList<>();
@@ -485,11 +491,18 @@ public class WebtoonController {
                 WebtoonDTO webtoonDTO = new WebtoonDTO();
                 webtoonDTO.setWebtoon_id(kkao.getWebtoon_id()); // 예시로 2043을 설정
                 webtoonDTO.setPlatform(2); // 예시로 플랫폼 2를 설정
-                webtoonDTO.setThumbnail_url(thumbnailUrl);
+                webtoonDTO.setThumbnail_url(thumbnailUrl+".png");
                 webtoonDTO.setWebtoon_name(title);
                 webtoonDTO.setAuthor(String.join("/", authors));
                 webtoonDTO.setTags(tagsString);
                 webtoonDTO.setGenre(g);
+                System.out.println(webtoonDTO);
+                System.out.println(webtoonDTO);
+                System.out.println(webtoonDTO);System.out.println(webtoonDTO);
+
+                System.out.println(webtoonDTO);
+                System.out.println(webtoonDTO);
+
 
                 // 데이터 출력 (옵션)
                 System.out.println("WebtoonDTO: " + webtoonDTO);
