@@ -335,6 +335,12 @@ async function checkDuplicates(userId, nickname, email) {
                 return;
             }
 
+            // 이메일 검증
+            if (!validateEmail(email)) {
+                alert("이메일 형식이 올바르지 않습니다. 예: example@example.com");
+                return;
+            }
+
             fetch(`/user/checkEmailDuplicate?email=${encodeURIComponent(email)}`)
                 .then(response => response.json())
                 .then(data => {
