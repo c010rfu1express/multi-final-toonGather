@@ -169,6 +169,7 @@ public class UserController {
         System.out.println("editProfileReq @RequestParam userNo: "+userNo);
         System.out.println("editProfileReq userDTO: "+userDTO);
 
+
         //회원 정보 수정 처리
         userService.updateProfile(userNo, userDTO, image, request);
         return "redirect:/user/my/editprofile";

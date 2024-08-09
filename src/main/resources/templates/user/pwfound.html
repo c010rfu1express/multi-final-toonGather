@@ -31,12 +31,29 @@
 <style>
     .jumbotron {
     position : relative;
+    background-color : #EEEEEE;
     }
     .jumbotron .row {
     position : absolute;
     width : 100%;
     bottom: 0%;
     }
+
+    #loginbox {
+    border-radius : 5%;
+    border-color : #F2F2F2;
+    }
+
+    .logininput {
+    background-color : #FCFCFC;
+    border : none;
+    height : 50px;
+    }
+
+    .logininput::placeholder {
+    color : #BBBBBB;
+    }
+
 </style>
 <div class="jumbotron">
     <div class="row">
@@ -65,44 +82,41 @@
         </div>
     </aside>
     <div class="col-md-9">
-        <div>
-            비밀번호 찾기<br>
+        <div class="row justify-content-center">
+            <div class="col-6 border" id="loginbox" style="text-align:center;">
+                <div class="px-3 py-4" style="text-align: center; ">
+                    <h2>비밀번호 찾기</h2>
+                </div>
+                <div class="px-3 py-2" style="text-align:center;">
+                    <a href="/user/findid" style="color: black;">아이디 찾기</a> | <a href="/user/findpw" style="color: black;">비밀번호 찾기</a>
+                </div>
 
-            <a href="#">아이디 찾기</a><br>
-            <a href="/user/findpw">비밀번호 찾기</a><br>
+                <div class="row px-3 py-2">
+                    <div class="col-12"><hr></div>
+                </div>
 
-            <div th:if="${password != null}">
-                임시 비밀번호를<br>
-                회원정보에 등록된 이메일 주소로<br>
-                발송하였습니다.<br>
-                메일함을 확인해 주세요.<br>
-        <!--        (추후 수정예정)찾으시는 비밀번호는<br>-->
-        <!--        <span th:text="${password}"></span><br>-->
-        <!--        입니다.<br>-->
+                <div th:if="${password != null}">
+                    임시 비밀번호를<br>
+                    회원정보에 등록된 이메일 주소로<br>
+                    발송하였습니다.<br>
+                    메일함을 확인해 주세요.<br>
+                    <!--        (추후 수정예정)찾으시는 비밀번호는<br>-->
+                    <!--        <span th:text="${password}"></span><br>-->
+                    <!--        입니다.<br>-->
+                </div>
+
+                <div th:if="${password == null}">
+                    비밀번호 찾기에 실패했습니다.<br>
+                    다시 시도해주세요.<br>
+                </div>
+
+                <div class="col-12 pt-3 pb-4">
+                    <button type="submit" class="btn btn-primary btn-block" onclick="location.href='/user/login'" style="background-color:grey; height:50px;">로그인</button>
+                </div>
+
+
+
             </div>
-            <div th:if="${password == null}">
-                비밀번호 찾기에 실패했습니다.<br>
-                다시 시도해주세요.<br>
-            </div>
-
-            <a href="/user/login">로그인</a>
-            <!--    <form th:action="@{/user/signup}" th:object="${user}" method="post">-->
-            <!--        아이디 : <input type="text" name="userId"><br>-->
-            <!--        비밀번호 : <input type="password" name="password"><br>-->
-            <!--        비밀번호 확인 : <br>-->
-            <!--        닉네임 : <input type="text" name="nickname"><br>-->
-            <!--        연락처 : <input type="text" name="contactNumber"><br>-->
-            <!--        성별 : <select name="gender">-->
-            <!--        <option>성별을 공개하지 않습니다-->
-            <!--        <option>여-->
-            <!--        <option>남</select><br>-->
-            <!--        생년월일 : <input type="text" name="dateOfBirth"><br>-->
-            <!--        이메일 : <input type="text" name="email"><br>-->
-            <!--        자기소개(선택사항) : <input type="text" name="bio"><br>-->
-            <!--        <input type="checkbox" name="termsAgreement">본인은 툰게더 회원 약관에 동의합니다.<br>-->
-
-            <!--        <input type="submit">가입하기-->
-            <!--    </form>-->
         </div>
     </div>
 </div>
