@@ -118,7 +118,7 @@
                 <option value="author" th:selected="${searchType == 'author'}">작성자</option>
                 <option value="category" th:selected="${searchType == 'category'}">카테고리</option>
             </select>
-            <input type="text" name="keyword" placeholder="검색어 입력" th:value="${keyword}" />
+            <input type="text" name="keyword" placeholder="검색어 입력" th:value="${keyword}" maxlength="10"/>
             <button type="submit">검색</button>
         </form>
         <div th:if="${questions != null && !questions.isEmpty()}">

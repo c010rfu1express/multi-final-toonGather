@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>툰게더 toonGather</title>
+    <link rel="stylesheet" th:href="@{/css/social-styles.css}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .chat-container {
+            width: 360px;
+            height: 640px;
+            background-color: #ddd;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .scenario {
+            background-color: #888;
+            color: white;
+            flex: 1;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-y: auto;
+        }
+        .input-box {
+            display: flex;
+            align-items: center;
+        }
+        .input-box input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+        .input-box button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+    </style>
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", async function() {
+            const scenarioBox = document.querySelector('.scenario');
+            const csrfToken = /*[[${_csrf.token}]]*/ '';
+            const csrfHeader = /*[[${_csrf.headerName}]]*/ '';
+
+            try {
+                const response = await fetch('/cs/chatbot/welcome', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        [csrfHeader]: csrfToken
+                    }
+                });
+                const data = await response.text(); // 웰컴 메시지를 받아옵니다.
+
+                // Log the response to the console
+                console.log('Response from server:', data);
+
+                const botMessage = document.createElement('div');
+                botMessage.textContent = data;
+                botMessage.style.textAlign = 'left';
+                scenarioBox.appendChild(botMessage);
+            } catch (error) {
+                console.error('Error:', error);
+                const botMessage = document.createElement('div');
+                botMessage.textContent = 'Failed to get welcome message from the chatbot.';
+                botMessage.style.textAlign = 'left';
+                scenarioBox.appendChild(botMessage);
+            }
+        });
+
+        async function sendMessage() {
+            const inputBox = document.getElementById('messageInput');
+            const message = inputBox.value;
+            if (!message) return;
+
+            const scenarioBox = document.querySelector('.scenario');
+            const userMessage = document.createElement('div');
+            userMessage.textContent = message;
+            userMessage.style.textAlign = 'right';
+            scenarioBox.appendChild(userMessage);
+
+            inputBox.value = '';
+
+            const csrfToken = /*[[${_csrf.token}]]*/ '';
+            const csrfHeader = /*[[${_csrf.headerName}]]*/ '';
+
+            try {
+                const response = await fetch('/cs/chatbot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        [csrfHeader]: csrfToken
+                    },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await response.json();
+
+                // Log the response to the console
+                console.log('Response from server:', data);
+
+                const botMessage = document.createElement('div');
+                if (data.error) {
+                    botMessage.textContent = data.error;
+                } else {
+                    botMessage.textContent = data;
+                }
+                botMessage.style.textAlign = 'left';
+                scenarioBox.appendChild(botMessage);
+
+                scenarioBox.scrollTop = scenarioBox.scrollHeight;
+            } catch (error) {
+                console.error('Error:', error);
+                const botMessage = document.createElement('div');
+                botMessage.textContent = 'Failed to communicate with the chatbot.';
+                botMessage.style.textAlign = 'left';
+                scenarioBox.appendChild(botMessage);
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="chat-container">
+    <div class="header">툰게더 toonGather</div>
+    <div class="scenario"></div>
+    <div class="input-box">
+        <input type="text" id="messageInput" placeholder="메시지를 입력하세요...">
+        <button onclick="sendMessage()">&gt;</button>
+    </div>
+</div>
+</body>
+</html>

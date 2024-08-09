@@ -29,3 +29,16 @@ logging:
     com:
       .zaxxer: TRACE
     sql: TRACE
+
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 5000
+        read-timeout: 5000
+
+naver:
+  clova:
+    chatbot:
+      url: "https://47rv9xlkxz.apigw.ntruss.com/custom/v1/15453/1d0c6942878611a5035ae2c26a030d4ad5cf83dd80bae0be2465b367c583b806"
+      secret: "b2hFQ2VzeVpqU0txdHp0dWFDd1J4Q2x1R3pHVXRmSEc="
