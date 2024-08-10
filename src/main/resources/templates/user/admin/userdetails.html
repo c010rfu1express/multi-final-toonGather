@@ -187,6 +187,9 @@
   list-style: none;
   padding-left : 0px;
   }
+     .required-star {
+        color: #03C75A;
+    }
 </style>
 <div class="jumbotron">
     <div class="row">
@@ -312,7 +315,7 @@
                     </div>
                     <div class="row p-2">
                         <div class="col-3">
-                            아이디 *
+                            아이디 <span class="required-star">*</span>
                         </div>
                         <div class="col-6">
                             <input class="form-control px-3" type="text" th:field="*{userId}" maxlength="20" minlength="4" readonly/>
@@ -322,7 +325,7 @@
                     </div>
                     <div class="row p-2">
                         <div class="col-3">
-                            닉네임 *
+                            닉네임 <span class="required-star">*</span>
                         </div>
                         <div class="col-6">
                             <input class="form-control px-3" type="text" th:field="*{nickname}" maxlength="20" minlength="4"/>
@@ -394,7 +397,7 @@
                     </div>
                     <div class="row p-2">
                         <div class="col-3">
-                            이메일 *
+                            이메일 <span class="required-star">*</span>
                         </div>
                         <div class="col-6">
                             <input class="form-control" type="text" th:field="*{email}"/>
