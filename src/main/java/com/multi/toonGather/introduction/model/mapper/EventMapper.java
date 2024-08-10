@@ -42,4 +42,8 @@ public interface EventMapper {
     void updateEvent(EventDTO event);
 
     void deleteEventFileBySavedName(String savedName);
+
+    int countEventsByTitleKeyword(String s);
+
+    List<EventDTO> selectEventsByTitleKeyword(@Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit    );
 }

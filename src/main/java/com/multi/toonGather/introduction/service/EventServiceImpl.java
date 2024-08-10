@@ -29,12 +29,20 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public int countEventsByTitleKeyword(String keyword) {
-        return 0;
+        return eventMapper.countEventsByTitleKeyword("%" + keyword + "%");
     }
 
     @Override
-    public List<EventDTO> searchEventsByTitle(String keyword, int offset, int pageSize) {
-        return List.of();
+    public List<EventDTO> searchEventsByTitle(String keyword, int offset, int limit) {
+        List<EventDTO> events =  eventMapper.selectEventsByTitleKeyword("%" + keyword + "%", offset, limit);
+
+        // 각 소식에 대한 첨부파일 가져오기
+        for (EventDTO event : events) {
+            List<EventFileDTO> eventFiles = eventMapper.selectFilesByEventNo(event.getEventNo());
+            event.setEventFiles(eventFiles); // JournalDTO에 파일 리스트 설정
+        }
+
+        return events;
     }
 
 
