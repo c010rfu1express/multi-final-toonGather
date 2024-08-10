@@ -177,9 +177,11 @@
         <div class="content" th:text="${journal.content}">내용</div>
 
         <!-- 좋아요 기능 추가 -->
-        <div>
+        <div style="margin-bottom: 20px;">
             <button onclick="toggleLike()" class="btn btn-primary">좋아요 <span id="likeCount" th:text="${likeCount}">0</span></button>
         </div>
+
+        <a href="/introduction/journalList" class="btn btn-secondary">돌아가기</a>
     </div>
 </div>
 

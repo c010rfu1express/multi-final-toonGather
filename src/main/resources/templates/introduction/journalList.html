@@ -207,7 +207,7 @@
     <div class="row" th:if="${journals != null && !journals.isEmpty()}">
         <!-- 각 소식 항목을 카드로 표시 -->
         <div class="col-md-4" th:each="journal : ${journals}">
-            <div class="card">
+            <div class="card" th:attr="onclick=|window.location.href='/introduction/journal/journalDetail?journalNo=' + ${journal.journalNo};|" style="cursor: pointer;">
                 <!-- journal넘버 히든으로 넣어둠. 혹시나 -->
                 <input type="hidden" name="journalNo" th:value="${journal.journalNo}">
                 <!-- 썸네일 이미지 없을때 : 기본 썸네일 이미지 -->
