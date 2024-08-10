@@ -34,13 +34,33 @@
             margin-bottom: 20px;
         }
         .scenario {
-            background-color: #888;
-            color: white;
+            background-color: #f5f5f5;
             flex: 1;
             margin-bottom: 10px;
             padding: 10px;
             border-radius: 5px;
             overflow-y: auto;
+        }
+        .message {
+            display: flex;
+            margin-bottom: 10px;
+            max-width: 80%;
+        }
+        .bot-message {
+            background-color: #888;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            align-self: flex-start;
+            text-align: left;
+        }
+        .user-message {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            margin-left: auto;
+            text-align: right;
         }
         .input-box {
             display: flex;
@@ -63,85 +83,90 @@
         }
     </style>
     <script th:inline="javascript">
-        document.addEventListener("DOMContentLoaded", async function() {
+        document.addEventListener("DOMContentLoaded", function() {
             const scenarioBox = document.querySelector('.scenario');
-            const csrfToken = /*[[${_csrf.token}]]*/ '';
-            const csrfHeader = /*[[${_csrf.headerName}]]*/ '';
+            const inputBox = document.getElementById('messageInput');
 
-            try {
-                const response = await fetch('/cs/chatbot/welcome', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        [csrfHeader]: csrfToken
-                    }
-                });
-                const data = await response.text(); // 웰컴 메시지를 받아옵니다.
+            inputBox.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    sendMessage();
+                }
+            });
 
-                // Log the response to the console
-                console.log('Response from server:', data);
-
+            fetch('/chatbot/welcome', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                return response.json(); // JSON 응답 처리
+            })
+            .then(data => {
                 const botMessage = document.createElement('div');
-                botMessage.textContent = data;
-                botMessage.style.textAlign = 'left';
+                botMessage.textContent = data.description; // description만 출력
+                botMessage.className = 'message bot-message'; // 챗봇 메시지 스타일 적용
                 scenarioBox.appendChild(botMessage);
-            } catch (error) {
+            })
+            .catch(error => {
                 console.error('Error:', error);
                 const botMessage = document.createElement('div');
-                botMessage.textContent = 'Failed to get welcome message from the chatbot.';
-                botMessage.style.textAlign = 'left';
+                botMessage.textContent = 'Failed to get welcome message from the chatbot: ' + error.message;
+                botMessage.className = 'message bot-message';
                 scenarioBox.appendChild(botMessage);
-            }
+            });
         });
 
-        async function sendMessage() {
+        function sendMessage() {
             const inputBox = document.getElementById('messageInput');
-            const message = inputBox.value;
+            const message = inputBox.value.trim();
             if (!message) return;
 
             const scenarioBox = document.querySelector('.scenario');
             const userMessage = document.createElement('div');
             userMessage.textContent = message;
-            userMessage.style.textAlign = 'right';
+            userMessage.className = 'message user-message'; // 사용자 메시지 스타일 적용
             scenarioBox.appendChild(userMessage);
 
             inputBox.value = '';
 
-            const csrfToken = /*[[${_csrf.token}]]*/ '';
-            const csrfHeader = /*[[${_csrf.headerName}]]*/ '';
-
-            try {
-                const response = await fetch('/cs/chatbot', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        [csrfHeader]: csrfToken
-                    },
-                    body: JSON.stringify({ message })
-                });
-
-                const data = await response.json();
-
-                // Log the response to the console
-                console.log('Response from server:', data);
-
-                const botMessage = document.createElement('div');
-                if (data.error) {
-                    botMessage.textContent = data.error;
-                } else {
-                    botMessage.textContent = data;
+            fetch('/chatbot/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
                 }
-                botMessage.style.textAlign = 'left';
+                return response.json();
+            })
+            .then(data => {
+                const botMessage = document.createElement('div');
+
+                // 단순히 description 필드만 출력
+                if (data.description) {
+                    botMessage.textContent = data.description;
+                } else {
+                    botMessage.textContent = 'No valid response from chatbot';
+                }
+                botMessage.className = 'message bot-message'; // 챗봇 메시지 스타일 적용
                 scenarioBox.appendChild(botMessage);
 
                 scenarioBox.scrollTop = scenarioBox.scrollHeight;
-            } catch (error) {
+            })
+            .catch(error => {
                 console.error('Error:', error);
                 const botMessage = document.createElement('div');
-                botMessage.textContent = 'Failed to communicate with the chatbot.';
-                botMessage.style.textAlign = 'left';
+                botMessage.textContent = 'Failed to communicate with the chatbot: ' + error.message;
+                botMessage.className = 'message bot-message';
                 scenarioBox.appendChild(botMessage);
-            }
+            });
         }
     </script>
 </head>
