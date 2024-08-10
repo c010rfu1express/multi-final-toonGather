@@ -87,7 +87,7 @@
                 <div sec:authorize="hasRole('ROLE_ADMIN')" style="display: flex; align-items: center; width: 100%;">
                     <form th:action="@{'/cs/insertAnswer/' + ${question.csQNo}}" method="post" style="display: flex; align-items: center; width: 100%;">
                         <textarea name="answer" th:placeholder="'답변을 입력하세요'" style="flex-grow: 1; resize: vertical; height: 30px; margin-right: 10px;" maxlength="1000"></textarea>
-                        <button type="submit" style="height: 30px; width: 50px;">등록</button>
+                        <button type="submit" class="btn btn-primary">등록</button>
                     </form>
                 </div>
             </div>
