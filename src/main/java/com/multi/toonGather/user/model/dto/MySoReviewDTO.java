@@ -24,4 +24,7 @@ public class MySoReviewDTO {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
     private int viewCnt;
+
+    //새로 필요해서 가져온 컬럼
+    private String writerUserId;    //from users
 }
