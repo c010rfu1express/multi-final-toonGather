@@ -44,6 +44,11 @@ public class UserController {
     @GetMapping("/signup")
     public String signUp(Model model){
         UserDTO userDTO = new UserDTO();
+        //생년월일폼 준비
+        model.addAttribute("years", userService.generateYears());
+        model.addAttribute("months", userService.generateMonths());
+        model.addAttribute("days", userService.generateDays());
+
         model.addAttribute("user", userDTO);
         return "/user/signup";
     }
@@ -87,7 +92,7 @@ public class UserController {
             //step N+1) Service.insertUser(userDTO)
             userService.insertUser(userDTO);
         } catch (Exception e) {
-            return "redireect:/user/signup";
+            throw new Exception("[ERROR] insertUser 실패. 비밀번호 불일치");
         }
         // 남은것들 : typecode, authcode 제약조건 바꾸기, 빈칸으로 두면 ""으로 제출됨(심지어 타임스탬프도 안찍힘)
 
@@ -156,6 +161,11 @@ public class UserController {
         int userNo = c.getUserDTO().getUserNo();
         UserDTO userDTO = userService.getProfile(userNo);
 
+        //생년월일폼 준비
+        model.addAttribute("years", userService.generateYears());
+        model.addAttribute("months", userService.generateMonths());
+        model.addAttribute("days", userService.generateDays());
+
         model.addAttribute("user", userDTO);
         model.addAttribute("userNo", userNo);
         return "/user/mypage_editprofile";
@@ -173,6 +183,7 @@ public class UserController {
         //회원 정보 수정 처리
         userService.updateProfile(userNo, userDTO, image, request);
         return "redirect:/user/my/editprofile";
+
     }
 
     //KHG70-(3)POST
@@ -182,7 +193,7 @@ public class UserController {
         System.out.println("deleteProfileReq @RequestParam userNo: "+userNo);
         //회원 정보 삭제 처리
         userService.deleteProfile(userNo);
-        return "redirect:/";
+        return "redirect:/logout";
     }
 
     //KHG80
@@ -293,6 +304,11 @@ public class UserController {
     @GetMapping("/admin/userdetails")
     public String adminUserDetails(@RequestParam("userNo") int userNo, Model model) throws Exception {
         UserDTO userDTO = userService.getProfile(userNo);
+        //생년월일폼 준비
+        model.addAttribute("years", userService.generateYears());
+        model.addAttribute("months", userService.generateMonths());
+        model.addAttribute("days", userService.generateDays());
+
         model.addAttribute("user", userDTO);
         return "/user/admin/userdetails";
 
@@ -304,7 +320,7 @@ public class UserController {
         System.out.println("adminUpdateUser @RequestParam userNo: "+userNo);
         //회원 정보 수정 처리
         userService.updateProfileAdmin(userNo, userDTO, image, request);
-        return "redirect:/user/admin/userdetails?userNo=" + userNo;
+        return "redirect:/user/admin/userlist";
     }
 
     //KHG81-(3)POST
