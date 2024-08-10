@@ -27,4 +27,10 @@ public interface UserService {
     List<UserDTO> getUsers(String toggle, String orderBy, String searchBy, String searchTerm, PageDTO pageDTO) throws Exception;
 //    List<UserDTO> getUsers(PageDTO pageDTO) throws Exception;
     int selectUserCount(String toggle, String orderBy, String searchBy, String searchTerm) throws Exception;
+
+
+    // 생년월일 인풋폼 생성 관련
+    List<String> generateYears();
+    List<String> generateMonths();
+    List<String> generateDays();
 }
