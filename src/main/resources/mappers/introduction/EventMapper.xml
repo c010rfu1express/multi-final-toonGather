@@ -167,4 +167,19 @@
         WHERE file_name = #{savedName}
     </delete>
 
+    <select id="countEventsByTitleKeyword" parameterType="String" resultType="int">
+        SELECT COUNT(*)
+        FROM in_event
+        WHERE title LIKE #{keyword}
+    </select>
+
+    <select id="selectEventsByTitleKeyword" parameterType="map" resultMap="eventResultMap">
+        SELECT e.*, c.event_category_title
+        FROM in_event e
+        LEFT JOIN in_event_category c ON e.event_category_code = c.event_category_code
+        WHERE e.title LIKE #{keyword}
+        ORDER BY e.posting_date DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
 </mapper>
