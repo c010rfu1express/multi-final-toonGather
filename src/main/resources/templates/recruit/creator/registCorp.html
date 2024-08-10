@@ -3,7 +3,7 @@
 <html layout:decorate="~{layout}">
 <head>
   <meta charset="UTF-8">
-  <title>툰게더 toonGather</title>
+  <title>툰게더 toonGather | 창작자 등록</title>
   <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
@@ -55,6 +55,9 @@
           사업자 등록증 이미지를 제출해 주세요. <br>
           사업자 등록증에 기재된 사업자 등록 번호를 정확히 입력해 주셔야 합니다. <br>
           제출된 정보는 자동으로 확인되어 등록이 완료됩니다.
+        </p>
+        <p class="info-text" style="text-align: left;">
+          ※ 회원정보에 실명을 등록하신 후 진행해 주시기 바랍니다.
         </p>
         <form action="#" th:action="@{/recruit/creator/naverocr_result}" id="form" method="post" enctype="multipart/form-data">
           <div class="form-group">
