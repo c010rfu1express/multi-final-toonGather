@@ -332,7 +332,7 @@
               비밀번호 <span class="required-star">*</span>
             </div>
             <div class="col-6">
-              <input class="form-control px-3" type="password" th:field="*{password}" maxlength="30" minlength="8" placeholder="회원정보 수정을 위해 비밀번호를 입력해주세요."/>
+              <input class="form-control px-3 logininput" type="password" th:field="*{password}" maxlength="30" minlength="8" placeholder="회원정보 수정을 위해 비밀번호를 입력해주세요."/>
             </div>
             <div class="col-3">
             </div>
@@ -342,7 +342,7 @@
               비밀번호 확인 <span class="required-star">*</span>
             </div>
             <div class="col-6">
-              <input class="form-control px-3" type="password" th:field="*{confirmPassword}" maxlength="30" minlength="8" placeholder="회원정보 수정을 위해 비밀번호를 입력해주세요."/>
+              <input class="form-control px-3 logininput" type="password" th:field="*{confirmPassword}" maxlength="30" minlength="8" placeholder="회원정보 수정을 위해 비밀번호를 입력해주세요."/>
             </div>
             <div class="col-3">
             </div>
@@ -363,7 +363,7 @@
               연락처
             </div>
             <div class="col-6">
-              <input class="form-control px-3" type="text" th:field="*{contactNumber}" oninput="autoFormatPhoneNumber(this)" placeholder="000-0000-0000"/>
+              <input class="form-control px-3 logininput" type="text" th:field="*{contactNumber}" oninput="autoFormatPhoneNumber(this)" placeholder="000-0000-0000"/>
             </div>
             <div class="col-3">
             </div>
@@ -437,7 +437,7 @@
             <div class="col-6">
             </div>
             <div class="col-12">
-              <textarea class="form-control" rows="3" maxlength="150" th:field="*{bio}" placeholder="본인을 자유롭게 표현해주세요.&#13;&#10;소개 내용은 소셜 페이지에 활용됩니다!"></textarea>
+              <textarea class="form-control logininput" rows="3" maxlength="150" th:field="*{bio}" placeholder="본인을 자유롭게 표현해주세요.&#13;&#10;소개 내용은 소셜 페이지에 활용됩니다!"></textarea>
             </div>
           </div>
           <div class="col-12 p-2">
