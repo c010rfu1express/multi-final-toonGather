@@ -794,6 +794,10 @@
         <result property="content" column="content"/>
         <result property="liked" column="liked"/>
         <result property="dislike" column="dislike"/>
+
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+
         <result property="webtoonId" column="webtoon_id"/>
         <result property="platform" column="platform"/>
         <result property="webtoonName" column="webtoon_name"/>
@@ -812,6 +816,9 @@
         c.content AS content,
         c.liked AS liked,
         c.dislike AS dislike,
+
+        c.created_at AS createdAt,
+        c.updated_at AS updatedAt,
 
         w.webtoon_id AS webtoonId,
         w.platform AS platform,

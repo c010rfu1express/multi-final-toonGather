@@ -177,6 +177,8 @@
                     <th>내용</th>
                     <th>좋아요</th>
                     <th>싫어요</th>
+                    <th>생성일시*</th>
+                    <th>수정일시*</th>
                     <th>웹툰아이디</th>
                     <th>플렛폼</th>
                     <th>제목</th>
@@ -200,6 +202,8 @@
                     <td th:text="${myWtComment.content}">내용</td>
                     <td th:text="${myWtComment.liked}">좋아요</td>
                     <td th:text="${myWtComment.dislike}">싫어요</td>
+                    <td th:text="${myWtComment.createdAt}">생성일시*</td>
+                    <td th:text="${myWtComment.updatedAt}">수정일시*</td>
                     <td th:text="${myWtComment.webtoonId}">웹툰아이디</td>
                     <td th:text="${myWtComment.platform}">플렛폼</td>
                     <td th:text="${myWtComment.webtoonName}">제목</td>
