@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품 상세 정보</title>
+    <style>
+        #merchan-details-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .merchan-header {
+            margin-top: 20px;
+            margin-bottom: 50px;
+            text-align: left;
+        }
+
+        #merchan-details {
+            display: flex;
+            gap: 20px;
+        }
+
+        #merchan-left {
+            width: 40%;
+        }
+
+        #merchan-right {
+            width: 60%;
+        }
+
+        .merchan-title {
+            color: #445566;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .like-button {
+            background-color: #fef4c3;
+            color: #333;
+            border: 1px solid #ddd;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .like-button:hover {
+            background-color: #e0e0e0;
+        }
+
+        .like-button:focus {
+            box-shadow: 0 0 0 0.2rem rgba(240, 212, 182, 0.5);
+        }
+
+        .image-gallery img {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .content-text {
+            white-space: pre-line;
+            line-height: 1.6;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .merchan-info {
+            margin-top: 1px;
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 10px;
+        }
+
+        .merchan-info dt {
+            color: #445566;
+            font-weight: bold;
+            grid-column: 1;
+            text-align: left;
+            padding-right: 10px;
+        }
+
+        .merchan-info dd {
+            grid-column: 2;
+            margin: 0;
+        }
+
+        .merchan-info dt, .merchan-info dd {
+            margin-bottom: 20px;
+        }
+
+        .merchan-content {
+            margin: 0;
+            padding: 0;
+            white-space: pre-line;
+            line-height: 1.3;
+            font-size: 14px;
+        }
+
+        .category {
+            font-size: 12px;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 15px;
+            text-align: center;
+            display: inline-block;
+            color: #333;
+            background-color: #fef4c3;
+            border: 1px solid #fef4c3;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{common/menubar}"></div>
+<div th:replace="~{introduction/inMenubar}"></div>
+
+<div class="d-flex justify-content-between mb-3">
+    <div class="d-flex align-items-center">
+        <h2 class="mr-3">상품</h2>
+        <form class="search-container" th:action="@{/introduction/merchan/merchanList}" method="get">
+            <input type="text" placeholder="검색어 입력" name="keyword" th:value="${keyword}" maxlength="20">
+            <button type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- 전체 컨텐츠 컨테이너 -->
+<div id="merchan-details-container">
+    <!-- 제목 영역 -->
+    <div class="merchan-header">
+        <h1 class="merchan-title" th:text="${merchan.title}">제목</h1>
+    </div>
+
+    <!-- 상세 페이지 컨텐츠 -->
+    <div id="merchan-details">
+
+        <!-- 왼쪽 영역: 이미지, 좋아요 버튼 -->
+        <div id="merchan-left">
+            <!-- 이미지 갤러리 -->
+            <div th:if="${#lists.size(merchan.merchanFiles) > 0}" class="image-gallery">
+                <img th:each="file : ${merchan.merchanFiles}" th:if="${file.fileType.startsWith('image/')}" th:src="@{'/uploadFiles/' + ${file.fileName}}" alt="파일 이미지" />
+            </div>
+            <div th:unless="${#lists.size(merchan.merchanFiles) > 0}" class="image-gallery">
+                <img src="/images/introduction/default-thumbnail.png" alt="기본 썸네일 이미지" />
+            </div>
+
+            <!-- 좋아요 버튼-->
+            <button class="like-button">좋아요 <span id="likeCount" th:text="${likeCount}">0</span></button>
+        </div>
+
+        <!-- 오른쪽 영역: 상품 정보, 내용 -->
+        <div id="merchan-right">
+            <!-- 상품 상세 내용 -->
+            <div class="merchan-body">
+
+                <span class="category" th:text="${merchanCategoryTitle}"></span>
+
+                <dl class="merchan-info">
+                    <dt>정가</dt>
+                    <dd th:text="${#numbers.formatInteger(merchan.regularPrice)} + '원'">0원</dd>
+
+                    <dt>할인가</dt>
+                    <dd th:text="${#numbers.formatInteger(merchan.discountPrice)} + '원'">0원</dd>
+
+                    <dt>배송비</dt>
+                    <dd th:text="${#numbers.formatInteger(merchan.shippingCost)} + '원'">0원</dd>
+
+                    <dt>상품 정보</dt>
+                    <dd th:text="${merchan.merchanInfo}" class="merchan-content"></dd>
+
+                    <dt>상품 내용</dt>
+                    <dd th:text="${merchan.content}" class="merchan-content"></dd>
+
+                    <dt>게시 일시</dt>
+                    <dd th:text="${#temporals.format(merchan.postingDate, 'yyyy.MM.dd HH:mm:ss')}">날짜 시간</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <a href="/introduction/merchan/merchanList" class="btn btn-secondary" id="back" style="margin-top: 20px;">돌아가기</a>
+</div>
+
+<!-- 푸터 -->
+<footer>
+    <div th:replace="common/footer.html"></div>
+</footer>
+
+</body>
+</html>

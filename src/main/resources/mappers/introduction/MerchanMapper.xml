@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.multi.toonGather.introduction.model.mapper.MerchanMapper">
+
+    <!-- Result map for MerchanDTO -->
+    <resultMap id="merchanResultMap" type="com.multi.toonGather.introduction.model.dto.MerchanDTO">
+        <id property="merchanNo" column="merchan_no"/>
+        <result property="title" column="title"/>
+        <result property="regularPrice" column="regular_price"/>
+        <result property="discountPrice" column="discount_price"/>
+        <result property="shippingCost" column="shipping_cost"/>
+        <result property="merchanInfo" column="merchan_info"/>
+        <result property="content" column="content"/>
+        <result property="postingDate" column="posting_date"/>
+        <collection property="merchanFiles" ofType="com.multi.toonGather.introduction.model.dto.MerchanFileDTO">
+            <id property="merchanFileNo" column="merchan_file_no"/>
+            <result property="merchanNo" column="merchan_no"/>
+            <result property="fileName" column="file_name"/>
+            <result property="filePath" column="file_path"/>
+            <result property="fileType" column="file_type"/>
+            <result property="uploadDate" column="upload_date"/>
+        </collection>
+    </resultMap>
+
+    <!-- Result map for MerchanFileDTO -->
+    <resultMap id="merchanFileResultMap" type="com.multi.toonGather.introduction.model.dto.MerchanFileDTO">
+        <id property="merchanFileNo" column="merchan_file_no"/>
+        <result property="merchanNo" column="merchan_no"/>
+        <result property="fileName" column="file_name"/>
+        <result property="filePath" column="file_path"/>
+        <result property="fileType" column="file_type"/>
+        <result property="uploadDate" column="upload_date"/>
+    </resultMap>
+
+    <!-- Result map for MerchanLikeDTO -->
+    <resultMap id="merchanLikeResultMap" type="com.multi.toonGather.introduction.model.dto.MerchanLikeDTO">
+        <id property="likedNo" column="liked_no"/>
+        <result property="merchanNo" column="merchan_no"/>
+        <result property="userNo" column="user_no"/>
+        <result property="likedDate" column="liked_date"/>
+    </resultMap>
+
+    <!-- Select all merchans with pagination -->
+    <select id="selectAllMerchans" parameterType="map" resultMap="merchanResultMap">
+        SELECT merchan_no, title, regular_price, discount_price, shipping_cost, merchan_info, content, posting_date
+        FROM in_merchan
+        ORDER BY posting_date DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- Select files associated with a specific merchan -->
+    <select id="selectFilesByMerchanNo" parameterType="int" resultMap="merchanFileResultMap">
+        SELECT merchan_file_no, merchan_no, file_name, file_path, file_type, upload_date
+        FROM in_merchan_files
+        WHERE merchan_no = #{merchanNo}
+    </select>
+
+    <select id="getTotalCount" resultType="int">
+        SELECT COUNT(*)
+        FROM in_merchan
+    </select>
+
+    <insert id="insertMerchan" parameterType="com.multi.toonGather.introduction.model.dto.MerchanDTO" useGeneratedKeys="true" keyProperty="merchanNo">
+        INSERT INTO in_merchan (title, content, regular_price, discount_price, shipping_cost, merchan_info, posting_date)
+        VALUES (#{title}, #{content}, #{regularPrice}, #{discountPrice}, #{shippingCost}, #{merchanInfo}, NOW());
+    </insert>
+
+    <insert id="insertMerchanFile" parameterType="com.multi.toonGather.introduction.model.dto.MerchanFileDTO">
+        INSERT INTO in_merchan_files (merchan_no, file_name, file_path, file_type, upload_date)
+        VALUES (#{merchanNo}, #{fileName}, #{filePath}, #{fileType}, NOW());
+    </insert>
+
+    <!-- Select a specific merchan by number -->
+    <select id="selectMerchanByNo" parameterType="int" resultMap="merchanResultMap">
+        SELECT merchan_no, title, regular_price, discount_price, shipping_cost, merchan_info, content, posting_date
+        FROM in_merchan
+        WHERE merchan_no = #{merchanNo}
+    </select>
+
+    <!-- Delete files associated with a specific merchan -->
+    <delete id="deleteFiles" parameterType="int">
+        DELETE FROM in_merchan_files
+        WHERE merchan_no = #{merchanNo}
+    </delete>
+
+    <!-- Delete a specific merchan -->
+    <delete id="deleteMerchan" parameterType="int">
+        DELETE FROM in_merchan
+        WHERE merchan_no = #{merchanNo}
+    </delete>
+
+    <select id="countLikesByMerchanNo" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM in_merchan_like
+        WHERE merchan_no = #{merchanNo}
+    </select>
+
+    <!-- Check if like exists -->
+    <select id="existsByMerchanNoAndUserNo" parameterType="map" resultType="boolean">
+        SELECT EXISTS(SELECT 1
+        FROM in_merchan_like
+        WHERE merchan_no = #{merchanNo} AND user_no = #{userNo})
+    </select>
+
+    <!-- Delete like -->
+    <delete id="deleteLike" parameterType="map">
+        DELETE FROM in_merchan_like
+        WHERE merchan_no = #{merchanNo} AND user_no = #{userNo}
+    </delete>
+
+    <!-- Insert like -->
+    <insert id="insertLike" parameterType="com.multi.toonGather.introduction.model.dto.MerchanLikeDTO">
+        INSERT INTO in_merchan_like (merchan_no, user_no, liked_date)
+        VALUES (#{merchanNo}, #{userNo}, NOW())
+    </insert>
+
+    <!-- Update a merchan entry -->
+    <update id="updateMerchan" parameterType="com.multi.toonGather.introduction.model.dto.MerchanDTO">
+        UPDATE in_merchan
+        SET title = #{title},
+        content = #{content},
+        regular_price = #{regularPrice},
+        discount_price = #{discountPrice},
+        shipping_cost = #{shippingCost},
+        merchan_info = #{merchanInfo},
+        posting_date = #{postingDate}
+        WHERE merchan_no = #{merchanNo}
+    </update>
+
+    <delete id="deleteMerchanFileBySavedName" parameterType="String">
+        DELETE FROM in_merchan_files
+        WHERE file_name = #{savedName}
+    </delete>
+
+    <select id="countMerchansByTitleKeyword" parameterType="String" resultType="int">
+        SELECT COUNT(*)
+        FROM in_merchan
+        WHERE title LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <select id="selectMerchansByTitleKeyword" parameterType="map" resultMap="merchanResultMap">
+        SELECT merchan_no, title, regular_price, discount_price, shipping_cost, merchan_info, content, posting_date
+        FROM in_merchan
+        WHERE title LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY posting_date DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+</mapper>
