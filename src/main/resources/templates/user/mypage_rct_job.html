@@ -207,16 +207,82 @@
     font-size: 0.65rem; /* yyyy의 크기를 설정 */
     font-weight: 350;
 }
+:root {
+    --background-color-light: #FFFFFF;
+    --text-color-light: #000000;
+    --toggle-background-light: #CCCCCC;
+    --toggle-ball-light: #FFFFFF;
 
-    #cblabel {
-      display: block;
-      position: relative;
-      width: 100px;
-      height: 45px;
-      background: #d3d3d3;
-      border-radius: 60px;
-      transition: background 0.4s;
-    }
+    --background-color-dark: #333333;
+    --text-color-dark: #FFFFFF;
+    --toggle-background-dark: #4D4D4D;
+    --toggle-ball-dark: #FFFFFF;
+
+    --font-size-base: 32px; /* 기본 텍스트 크기 */
+    --font-size-large: 52px; /* 제목 등 큰 텍스트용 폰트 크기 */
+}
+
+
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 62px; /* 너비 조정 */
+    height: 38px; /* 높이 조정 */
+}
+
+.toggle-switch .checkbox {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+#isToggledCheckbox {
+     opacity: 0;
+        width: 0;
+        height: 0;
+}
+
+.toggle-switch .label {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--toggle-background-light);
+    transition: background-color 0.4s;
+    border-radius: 38px; /* 둥근 모서리 반경 조정 */
+}
+
+.toggle-switch .label:before {
+    position: absolute;
+    content: "";
+    height: 30px; /* 내부 원 높이 조정 */
+    width: 30px; /* 내부 원 너비 조정 */
+    left: 2px;
+    bottom: 0px;
+    background-color: var(--toggle-ball-light);
+    transition: transform 0.4s;
+    border-radius: 50%;
+}
+
+.toggle-switch input:checked + .label {
+    background-color: var(--toggle-background-dark);
+}
+
+.toggle-switch input:checked + .label:before {
+    transform: translateX(28px); /* 내부 원 이동 거리 조정 */
+}
+
+         #absdiv {
+            position: relative;
+            top: 60px; /* Move down by 20px from its current position */
+            z-index : 1000;
+        }
+
+        .btn {
+            background-color: #828282;
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <div class="col-md-9">
@@ -226,8 +292,8 @@
                     <div class="col-12">
                         <form id="filter-and-sort-form" th:action="@{/user/my/rct/job}" method="get">
                             <div class="row">
-                                <div class="col-6">
-                                    <div class="row">
+                                <div class="col-7">
+                                    <div class="row justify-content-start m-0">
                                         <div class="col-4">
                                             <!-- 검색 조건 -->
                                             <label>
@@ -243,11 +309,11 @@
                                         </div>
                                         <div class="col-2">
                                             <!-- 검색 버튼 -->
-                                            <button type="submit">검색</button>
+                                            <button type="submit" class="btn btn-primary">검색</button>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-2" style=""></div>
+                                <div class="col-1" style=""></div>
                                 <div class="col-4">
                                     <div class="row justify-content-end">
                                         <!-- 정렬 또는 토글2 -->
@@ -263,16 +329,21 @@
                                     </div>
                                 </div>
                             </div> <!--검색, 소팅 (토글X)-->
-                            <div class="row">
-                                <div class="col-8"></div>
-                                <div class="col-4">
-                                    <div class="row justify-content-end">
-                                        <div class="form-check form-switch" style="background-color:red;">
-                                            <!-- 정렬 또는 토글1 -->
-                                            <label>
-                                                <input type="checkbox" name="isToggled" id="isToggledCheckbox" value="Y" th:checked="${isToggled == 'Y'}" onchange="updateCheckboxValueAndSubmit()">마감된 공고
-                                            </label>
+                            <div class="row justify-content-around">
+                                <div class="col-3" style="padding: 0 1.2rem;"></div>
+                                <div class="col-3" style="padding: 0 1.2rem;"></div>
+                                <div class="col-3" style="padding: 0 1.2rem;">
+                                    <div id="absdiv" class="row justify-content-end">
+                                        <div class="col-3">
+                                            <div class="toggle-switch">
+                                                <!-- 정렬 또는 토글1 -->
+                                                <input type="checkbox" name="isToggled" id="isToggledCheckbox" value="Y" th:checked="${isToggled == 'Y'}" onchange="updateCheckboxValueAndSubmit()">
+                                                <label for="isToggledCheckbox" class="label">
+                                                    <div class="ball"></div>
+                                                </label>
+                                            </div>
                                         </div>
+                                        <div class="col-8" style="text-align: right; padding: 0px; margin : 0px;">마감된 공고</div>
                                     </div>
                                 </div>
                             </div> <!--토글-->
@@ -280,7 +351,7 @@
                     </div>
                 </div>
                 <div class="row justify-content-around">
-                    <div class="col-12" style="background-color: #F9F9F9; border-radius: 15px;">
+                    <div class="col-12 py-4" style="background-color: #F9F9F9; border-radius: 15px;">
                         <div class="row justify-content-around mt-5 mb-5" style="background-color:  #F9F9F9;">
                             <div class="col-3 clickable-row" style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;" th:each="myRctJob, iterStat : ${myRctJobs}" th:attr="data-href=@{/user/my/rct/job/apply(boardNo=${myRctJob.boardNo})}" th:if="${iterStat.index < 3}">
                                 <div class="row justify-content-center">
@@ -314,7 +385,7 @@
                             <div class="col-3" th:if="${myRctJobs.size() == 0 || myRctJobs.size() == 1}"></div>
                             <div class="col-3" th:if="${myRctJobs.size() == 0 || myRctJobs.size() == 1 || myRctJobs.size() == 2}"></div>
                         </div>
-                        <div class="row justify-content-around mt-3 mb-5" style="background-color: #F9F9F9;">
+                        <div class="row justify-content-around mt-2 mb-5" style="background-color: #F9F9F9;">
                             <div class="col-3 clickable-row" style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;" th:each="myRctJob, iterStat : ${myRctJobs}" th:attr="data-href=@{/user/my/rct/job/apply(boardNo=${myRctJob.boardNo})}" th:if="${iterStat.index >= 3}">
                                 <div class="row justify-content-center">
                                     <div class="col-2 p-0 d-flex align-items-center justify-content-center" style="aspect-ratio: 1; border-radius: 5px;">
