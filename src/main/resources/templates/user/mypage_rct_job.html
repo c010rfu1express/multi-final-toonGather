@@ -192,7 +192,7 @@
     justify-content: center;
     background-color: #8E4B6E;
     color: white;
-    border-radius: 5px;
+    border-radius: 10px;
     text-align:center;
     font-family: "Work Sans", sans-serif;
 }
@@ -280,7 +280,7 @@
             z-index : 1000;
         }
 
-        .btn {
+        #searchbutton {
             background-color: #828282;
         }
     </style>
@@ -310,7 +310,7 @@
                                         </div>
                                         <div class="col-2">
                                             <!-- 검색 버튼 -->
-                                            <button type="submit" class="btn btn-primary">검색</button>
+                                            <button id="searchbutton" type="submit" class="btn btn-primary">검색</button>
                                         </div>
                                     </div>
                                 </div>
@@ -419,62 +419,63 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="review-list">
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>게시글 번호</th>
-                                <th>작성자</th>
-                                <th>제목</th>
-                                <th>내용</th>
-                                <th>근무지</th>
-                                <th>이미지</th>
-                                <th>작성 일자</th>
-                                <th>수정 일자</th>
-                                <th>마감 일자</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="myRctJob : ${myRctJobs}" class="clickable-row" th:attr="data-href=@{/user/my/rct/job/apply(boardNo=${myRctJob.boardNo})}">
-                                <td th:text="${myRctJob.boardNo}">게시글 번호</td>
-                                <td th:text="${myRctJob.writer}">작성자</td>
-                                <td th:text="${myRctJob.title}">제목</td>
-                                <td th:text="${myRctJob.content}">내용</td>
-                                <td th:text="${myRctJob.location}">근무지</td>
-                                <td th:text="${myRctJob.img}">이미지</td>
-                                <td th:text="${myRctJob.createdDate}">작성 일자</td>
-                                <td th:text="${myRctJob.modifiedDate}">수정 일자</td>
-                                <td th:text="${myRctJob.deadLine}">마감 일자</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <!-- 페이징 -->
-                        <th:block th:if="${pages != null}">
-                            <div class="d-flex justify-content-center">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-sm previous" th:onclick="|location.href='@{/user/my/rct/job(isToggled=${isToggled}, orderBy=${orderBy}, searchBy=${searchBy}, searchTerm=${searchTerm}, page=${currentPage - 1})}'|" th:disabled="${currentPage == 1}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
-                                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
-                                        </svg>
-                                    </button>
-                                    <th:block th:each="p : ${#numbers.sequence(1, pages)}">
-                                        <button type="button" class="btn btn-sm me-2 pages"
-                                                th:text="${p}" th:onclick="|location.href='@{/user/my/rct/job(isToggled=${isToggled}, orderBy=${orderBy}, searchBy=${searchBy}, searchTerm=${searchTerm}, page=${p})}'|"></button>
-                                    </th:block>
-                                    <button type="button" class="btn btn-sm  next" th:onclick="|location.href='@{/user/my/rct/job(isToggled=${isToggled}, orderBy=${orderBy}, searchBy=${searchBy}, searchTerm=${searchTerm}, page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
-                                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
-                                        </svg>
-                                    </button>
-                                </div>
+                <div class="row justify-content-center">
+                    <!-- 페이징 -->
+                    <th:block th:if="${pages != null}">
+                        <div class="d-flex justify-content-center">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm previous" th:onclick="|location.href='@{/user/my/rct/job(isToggled=${isToggled}, orderBy=${orderBy}, searchBy=${searchBy}, searchTerm=${searchTerm}, page=${currentPage - 1})}'|" th:disabled="${currentPage == 1}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                                    </svg>
+                                </button>
+                                <th:block th:each="p : ${#numbers.sequence(1, pages)}">
+                                    <button type="button" class="btn btn-sm me-2 pages"
+                                            th:text="${p}" th:onclick="|location.href='@{/user/my/rct/job(isToggled=${isToggled}, orderBy=${orderBy}, searchBy=${searchBy}, searchTerm=${searchTerm}, page=${p})}'|"></button>
+                                </th:block>
+                                <button type="button" class="btn btn-sm  next" th:onclick="|location.href='@{/user/my/rct/job(isToggled=${isToggled}, orderBy=${orderBy}, searchBy=${searchBy}, searchTerm=${searchTerm}, page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                                    </svg>
+                                </button>
                             </div>
-                        </th:block>
-                    </div>
-                </div> <!--테이블과 페이징-->
+                        </div>
+                    </th:block>
+                </div>
+<!--                <div class="row">-->
+<!--                    <div class="review-list">-->
+<!--                        <table>-->
+<!--                            <thead>-->
+<!--                            <tr>-->
+<!--                                <th>게시글 번호</th>-->
+<!--                                <th>작성자</th>-->
+<!--                                <th>제목</th>-->
+<!--                                <th>내용</th>-->
+<!--                                <th>근무지</th>-->
+<!--                                <th>이미지</th>-->
+<!--                                <th>작성 일자</th>-->
+<!--                                <th>수정 일자</th>-->
+<!--                                <th>마감 일자</th>-->
+<!--                            </tr>-->
+<!--                            </thead>-->
+<!--                            <tbody>-->
+<!--                            <tr th:each="myRctJob : ${myRctJobs}" class="clickable-row" th:attr="data-href=@{/user/my/rct/job/apply(boardNo=${myRctJob.boardNo})}">-->
+<!--                                <td th:text="${myRctJob.boardNo}">게시글 번호</td>-->
+<!--                                <td th:text="${myRctJob.writer}">작성자</td>-->
+<!--                                <td th:text="${myRctJob.title}">제목</td>-->
+<!--                                <td th:text="${myRctJob.content}">내용</td>-->
+<!--                                <td th:text="${myRctJob.location}">근무지</td>-->
+<!--                                <td th:text="${myRctJob.img}">이미지</td>-->
+<!--                                <td th:text="${myRctJob.createdDate}">작성 일자</td>-->
+<!--                                <td th:text="${myRctJob.modifiedDate}">수정 일자</td>-->
+<!--                                <td th:text="${myRctJob.deadLine}">마감 일자</td>-->
+<!--                            </tr>-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                    </div>-->
+<!--                </div> &lt;!&ndash;테이블&ndash;&gt;-->
             </div><!--테이블 및 페이징 포함-->
-
-        </div>
+        </div> <!--본화면-->
     </div> <!--본화면-->
 </div> <!--aside와 본화면-->
 <div th:replace="common/footer.html"></div>
