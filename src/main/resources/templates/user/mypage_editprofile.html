@@ -211,6 +211,19 @@
    .required-star {
         color: #03C75A;
     }
+
+  #image {
+    display: none;
+  }
+
+  #profileimagebox {
+    position : relative;
+  }
+  #profileuploadbutton {
+    position : absolute;
+    bottom : -10%;
+    right : 25%;
+  }
 </style>
 <div class="jumbotron">
   <div class="row">
@@ -308,14 +321,23 @@
       <div class="col-8 p-3" id="loginbox">
         <form th:action="@{/user/my/editprofile}" th:object="${user}" method="post" enctype="multipart/form-data" onsubmit="validateForm(event)" id="editProfileForm">
           <div class="row p-2">
-            <div class="col-3">
+            <div class="col-3 m-0 p-0" id="profileimagebox">
               <img th:if="${user.profileImagePath == null}" src="/images/defaultprofileimage.png" style="width: 100px; height: auto;" class="profile-image"/>
               <img th:if="${user.profileImagePath != null}" th:src="@{/uploadFiles/{fileName}(fileName=${user.profileImagePath})}" style="width: 100px; height: auto;" class="profile-image"/>
+              <div id="profileuploadbutton">
+                <label for="image">
+                  <div class="btn-upload" style="width: 30px; height: 30px; background-color: #828282; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <div style="z-index:100;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FFFFFF" class="bi bi-plus" viewBox="0 0 16 16">
+                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                      </svg>
+                    </div>
+                  </div>
+                </label>
+                <input type="file" name="image" id="image">
+              </div>
             </div>
             <div class="col-9"></div>
-            <div class="col-3">
-              <input type="file" name="image">
-            </div>
           </div>
           <div class="row p-2">
             <div class="col-3">
