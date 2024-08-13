@@ -110,7 +110,12 @@
         </div>
     </section>
     <section class="my-questions">
-        <h2>내가 쓴 문의글</h2>
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <h2>내가 쓴 문의글</h2>
+            <div class="create-button-container">
+                <button><a th:href="@{${#authorization.expression('isAuthenticated()') ? '/cs/insertQuestion' : '/user/login'}}" class="create-button">문의글 작성</a></button>
+            </div>
+        </div>
         <div th:if="${questions != null && !questions.isEmpty()}">
             <table>
                 <thead>
@@ -150,9 +155,6 @@
             <div th:if="${!#authorization.expression('isAuthenticated()')}">
                 <p>문의글 조회는 로그인을 해야 볼 수 있습니다.</p>
             </div>
-        </div>
-        <div class="create-button-container">
-            <a th:href="@{${#authorization.expression('isAuthenticated()') ? '/cs/insertQuestion' : '/user/login'}}" class="create-button">문의글 작성</a>
         </div>
     </section>
 </main>
