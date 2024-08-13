@@ -60,6 +60,7 @@
     <div class="detail-header">
         <div>작성자 | <span th:text="${question.nickname}"></span></div>
         <div>작성일 | <span th:text="${#dates.format(question.createdDate, 'yyyy-MM-dd')}"></span></div>
+        <div>조회수 | <span th:text="${question.csQViewCount}"></span></div>
     </div>
     <div class="detail-header">
         <div>카테고리 | <span th:text="${question.csQCategory.csCategoryDesc}"></span></div>
@@ -94,7 +95,7 @@
             <hr>
             <div class="reply-content" style="margin-top: 20px;">
                 <div th:each="answer : ${answers}">
-                    <p th:text="${answer.csAContent != null ? answer.csAContent : '관리자 답변 내용 없음'}"></p>
+                    <p th:text="${answer.csAContent != null ? '관리자 | ' + answer.csAContent : '관리자 답변 내용 없음'}"></p>
                 </div>
             </div>
         </div>

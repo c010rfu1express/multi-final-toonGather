@@ -75,7 +75,8 @@ public class CsController {
     public String csAdmin(Model model,
                           @RequestParam(value = "page", defaultValue = "0") int page,
                           @RequestParam(value = "searchType", required = false) String searchType,
-                          @RequestParam(value = "keyword", required = false) String keyword) throws Exception {
+                          @RequestParam(value = "keyword", required = false) String keyword,
+                          @RequestParam(value = "status", required = false) String status) throws Exception {
 
         int pageSize = 10;
         int offset = page * pageSize;
@@ -83,10 +84,14 @@ public class CsController {
         int totalRows;
         List<QuestionDTO> questions;
 
-        if (keyword != null && !keyword.isEmpty()) {
-            totalRows = csService.countSearchQuestions(searchType, keyword);
-            questions = csService.searchQuestions(searchType, keyword, offset, pageSize);
+        if ((keyword != null && !keyword.isEmpty()) || (status != null && !status.isEmpty())) {
+            System.out.println("CsController : " + searchType + keyword + status + offset + pageSize);
+            // 검색어와 상태값이 모두 있거나, 하나라도 있을 경우 검색 수행
+            totalRows = csService.countSearchQuestionsWithStatus(searchType, keyword, status);
+            System.out.println("CsController2 : " + searchType + keyword + status + offset + pageSize);
+            questions = csService.searchQuestionsWithStatus(searchType, keyword, status, offset, pageSize);
         } else {
+            // 검색어와 상태값이 모두 없을 경우 전체 목록 조회
             totalRows = csService.getTotalCount();
             questions = csService.questionList(offset, pageSize);
         }
@@ -95,14 +100,13 @@ public class CsController {
 
         List<FaqDTO> faqList = csService.faqList();
 
-        System.out.println(questions);
-
         model.addAttribute("questions", questions);
         model.addAttribute("faqList", faqList);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("currentPage", page);
         model.addAttribute("searchType", searchType);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("status", status);
 
         return "/cs/csAdmin";
     }
@@ -158,8 +162,18 @@ public class CsController {
 
     @GetMapping("/questionDetail/{csQNo}")
     public String questionDetail(@PathVariable("csQNo") int csQNo, Model model) throws Exception {
+        csService.updateCsQViewCount(csQNo);
         QuestionDTO question = csService.getQuestionById(csQNo);
         List<QuestionFilesDTO> questionFiles = csService.getQuestionByQuestionId(question.getCsQNo());
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        char userAuthCode = userDetails.getAuthCode();
+        if (userAuthCode == 'A' && question.getCsQStatus().getCsStatusCode().equals("N")) {
+            csService.setCsQStatus(csQNo);
+            question = csService.getQuestionById(csQNo);
+        }
+
         model.addAttribute("question", question);
         model.addAttribute("questionFiles", questionFiles);
 
@@ -235,6 +249,7 @@ public class CsController {
 
         boolean isSuccess = csService.insertAnswer(answerDTO);
         if (isSuccess) {
+            csService.setCsQStatus(csQNo);
             return "redirect:/cs/questionDetail/" + csQNo;
         } else {
             return "/cs/csAdmin";
