@@ -628,7 +628,31 @@
         <result property="coordinates" column="coordinates" />
         <result property="content" column="content" />
         <result property="postingDate" column="posting_date" />
+
+        <result property="eventCategoryTitle" column="event_category_title" />
     </resultMap>
+
+    <resultMap id="eventFileResultMap" type="com.multi.toonGather.introduction.model.dto.EventFileDTO">
+        <id property="eventFileNo" column="event_file_no"/>
+        <result property="eventNo" column="event_no"/>
+        <result property="fileName" column="file_name"/>
+        <result property="filePath" column="file_path"/>
+        <result property="fileType" column="file_type"/>
+        <result property="uploadDate" column="upload_date"/>
+    </resultMap>
+
+    <select id="selectFilesByEventNo" parameterType="int" resultType="com.multi.toonGather.introduction.model.dto.EventFileDTO">
+        SELECT
+        event_file_no AS eventFileNo,
+        event_no AS eventNo,
+        file_name AS fileName,
+        file_path AS filePath,
+        file_type AS fileType,
+        upload_date AS uploadDate
+        FROM in_event_files
+        WHERE event_no = #{eventNo}
+    </select>
+
     <sql id="MyInEventQueryA">
         SELECT
         iel.liked_no AS likedNo,
@@ -645,13 +669,17 @@
         ie.address AS address,
         ie.coordinates AS coordinates,
         ie.content AS content,
-        ie.posting_date AS postingDate
+        ie.posting_date AS postingDate,
+
+        iec.event_category_title AS eventCategoryTitle
     </sql>
     <sql id="MyInEventQueryB">
         FROM
         in_event ie
         INNER JOIN
         in_event_like iel ON ie.event_no = iel.event_no
+        INNER JOIN
+        in_event_category iec ON ie.event_category_code = iec.event_category_code
         WHERE
         iel.user_no = #{userNo}
         <if test="searchBy != null and searchTerm != null and searchTerm != ''">
@@ -1311,6 +1339,27 @@
         <result property="content" column="content"/>
         <result property="postingDate" column="posting_date"/>
     </resultMap>
+
+    <resultMap id="merchanFileResultMap" type="com.multi.toonGather.user.model.dto.MyInMerchanFileDTO">
+        <id property="merchanFileNo" column="merchan_file_no"/>
+        <result property="merchanNo" column="merchan_no"/>
+        <result property="fileName" column="file_name"/>
+        <result property="filePath" column="file_path"/>
+        <result property="fileType" column="file_type"/>
+        <result property="uploadDate" column="upload_date"/>
+    </resultMap>
+
+    <select id="selectFilesByMerchanNo" parameterType="int" resultType="com.multi.toonGather.user.model.dto.MyInMerchanFileDTO">
+        SELECT
+        merchan_file_no AS merchanFileNo,
+        merchan_no AS merchanNo,
+        file_name AS fileName,
+        file_path AS filePath,
+        file_type AS fileType,
+        upload_date AS uploadDate
+        FROM in_merchan_files
+        WHERE merchan_no = #{merchanNo}
+    </select>
 
     <sql id="MyInMerchanQueryA">
         SELECT

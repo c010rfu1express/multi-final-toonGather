@@ -31,6 +31,9 @@ public interface MyService {
 
     List<MyInEventDTO> getMyInEvents(int userNo, String toggle, String orderBy, String searchBy, String searchTerm, PageNDTO pageNDTO) throws Exception;
 
+    //동현님 파트 추가
+    List<MyInEventDTO> getMyInEventFiles(List<MyInEventDTO> response) throws Exception;
+
     List<MyRctApplicationDTO> getMyRctApplications(int userNo, String toggle, String orderBy, String searchBy, String searchTerm, PageNDTO pageNDTO) throws Exception;
 
     List<MyRctOrderDTO> getMyRctOrders(int userNo, String toggle, String orderBy, String searchBy, String searchTerm, PageNDTO pageNDTO) throws Exception;
@@ -38,6 +41,8 @@ public interface MyService {
     List<MyRctApplicationDTO> getMyRctJobApplications(int boardNo, String toggle, String orderBy, String searchBy, String searchTerm, PageNDTO pageNDTO) throws Exception;
 
     List<MyInMerchanDTO> getMyInMerchans(int userNo, String toggle, String orderBy, String searchBy, String searchTerm, PageNDTO pageNDTO) throws Exception;
+    //동현님 파트 추가
+    List<MyInMerchanDTO> getMyInMerchanFiles(List<MyInMerchanDTO> response) throws Exception;
 
 
     //// countMy (14개)
