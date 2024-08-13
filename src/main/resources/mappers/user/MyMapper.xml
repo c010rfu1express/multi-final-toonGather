@@ -96,6 +96,27 @@
         <result property="postingDate" column="posting_date" />
     </resultMap>
 
+    <resultMap id="journalFileResultMap" type="com.multi.toonGather.introduction.model.dto.JournalFileDTO">
+        <id property="journalFileNo" column="journal_file_no"/>
+        <result property="journalNo" column="journal_no"/>
+        <result property="fileName" column="file_name"/>
+        <result property="filePath" column="file_path"/>
+        <result property="fileType" column="file_type"/>
+        <result property="uploadDate" column="upload_date"/>
+    </resultMap>
+
+    <select id="selectFilesByJournalNo" parameterType="int" resultType="com.multi.toonGather.introduction.model.dto.JournalFileDTO">
+        SELECT
+        journal_file_no AS journalFileNo,
+        journal_no AS journalNo,
+        file_name AS fileName,
+        file_path AS filePath,
+        file_type AS fileType,
+        upload_date AS uploadDate
+        FROM in_journal_files
+        WHERE journal_no = #{journalNo}
+    </select>
+
     <sql id="MyInJournalQueryA">
         SELECT
         ijl.liked_no AS likedNo,

@@ -2,6 +2,7 @@ package com.multi.toonGather.user.model.mapper;
 
 import com.multi.toonGather.common.model.dto.PageNDTO;
 import com.multi.toonGather.introduction.model.dto.EventFileDTO;
+import com.multi.toonGather.introduction.model.dto.JournalFileDTO;
 import com.multi.toonGather.user.model.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -14,6 +15,7 @@ public interface MyMapper {
     //eventfiles, merchanfiles
     List<EventFileDTO> selectFilesByEventNo(@Param("eventNo") int eventNo);
     List<MyInMerchanFileDTO> selectFilesByMerchanNo(@Param("merchanNo") int merchanNo);
+    List<JournalFileDTO> selectFilesByJournalNo(@Param("journalNo") int journalNo);
 
     //1(1개)
     List<MyRctCreatorDTO> selectListMyRctCreator(@Param("userNo") int userNo) throws Exception;

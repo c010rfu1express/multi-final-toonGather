@@ -2,6 +2,7 @@ package com.multi.toonGather.user.service;
 
 import com.multi.toonGather.common.model.dto.PageNDTO;
 import com.multi.toonGather.introduction.model.dto.EventFileDTO;
+import com.multi.toonGather.introduction.model.dto.JournalFileDTO;
 import com.multi.toonGather.user.model.dto.*;
 import com.multi.toonGather.user.model.mapper.MyMapper;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,18 @@ public class MyServiceImpl implements MyService {
 
     public List<MyInJournalDTO> getMyInJournals(int userNo, String orderBy, String searchBy, String searchTerm, PageNDTO pageNDTO) throws Exception {
         List<MyInJournalDTO> response = myMapper.selectListMyInJournal(userNo, orderBy, searchBy, searchTerm, pageNDTO);
+        //사진 리스트 추가를 위해서는 같은 myService.getMyInJournalFiles() 메서드 필요
+        //순환참조를 피하기 위해 다음과 같이 리턴
+        return getMyInJournalFiles(response);
+    }
+
+    public List<MyInJournalDTO> getMyInJournalFiles(List<MyInJournalDTO> response) throws Exception {
+        for (MyInJournalDTO myInJournalDTO : response) {
+            //journalNo에 대응되는 ResponseFiles 반환
+            int journalNo = myInJournalDTO.getJournalNo();
+            List<JournalFileDTO> responseFiles = myMapper.selectFilesByJournalNo(journalNo);
+            myInJournalDTO.setJournalFiles(responseFiles);
+        }
         return response;
     }
 
