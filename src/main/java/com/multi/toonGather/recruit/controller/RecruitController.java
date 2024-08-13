@@ -533,9 +533,11 @@ public class RecruitController {
             model.addAttribute("list", list);
 
             double avg = freeService.getAverage(no);
+            avg = Math.round(avg * 100.0) / 100.0;
             model.addAttribute("avg", avg);
 
             double writerAvg = freeService.getWriterAvg(freeDTO.getWriter());
+            writerAvg = Math.round(writerAvg * 100.0) / 100.0;
             model.addAttribute("writerAvg", writerAvg);
 
             int review = freeService.selectCountReview(freeDTO.getBoard_no());

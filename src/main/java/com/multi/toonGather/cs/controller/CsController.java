@@ -1,16 +1,12 @@
 package com.multi.toonGather.cs.controller;
 
 import com.multi.toonGather.cs.model.dto.*;
-import com.multi.toonGather.cs.service.ChatbotServiceImpl;
 import com.multi.toonGather.cs.service.CsService;
 import com.multi.toonGather.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,61 +28,10 @@ public class CsController {
 
     // csService 선언 및 연결 부분
     private final CsService csService;
-    private final ChatbotServiceImpl chatbotService;
 
     @Autowired
-    public CsController(CsService csService, ChatbotServiceImpl chatbotService) {
+    public CsController(CsService csService) {
         this.csService = csService;
-        this.chatbotService = chatbotService;
-    }
-
-    @GetMapping("/chatbot")
-    public String chatbotPage(HttpServletRequest request, Model model) {
-        CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
-        model.addAttribute("csrfToken", csrfToken);
-        return "cs/chatbotPage";
-    }
-
-    @GetMapping("/welcome")
-    public ResponseEntity<ChatbotResponse> getWelcomeMessage(@AuthenticationPrincipal CustomUserDetails c) {
-
-        String userId;
-
-        if (c != null && "" + c.getUserDTO().getUserNo() != null) {
-            userId = String.valueOf(c.getUserDTO().getUserNo());
-        } else {
-            userId = "0";
-        }
-
-        String welcomeMessage = chatbotService.getWelcomeMessage(userId);
-        ChatbotResponse response = new ChatbotResponse();
-        response.setMessage(welcomeMessage);
-
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/send")
-    public ResponseEntity<ChatbotResponse> sendMessage(@AuthenticationPrincipal CustomUserDetails c,
-                                                       @RequestBody ChatbotRequest request) {
-
-        System.out.println("request : " + request);
-
-        String userId;
-
-        if (c != null && "" + c.getUserDTO().getUserNo() != null) {
-            userId = String.valueOf(c.getUserDTO().getUserNo());
-        } else {
-            userId = "0";
-        }
-
-        String chatbotResponse = chatbotService.sendMessage(userId, request.getMessage());
-
-        System.out.println("chatbotResponse : " + chatbotResponse);
-
-        ChatbotResponse response = new ChatbotResponse();
-        response.setMessage(chatbotResponse);
-
-        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/csMain")

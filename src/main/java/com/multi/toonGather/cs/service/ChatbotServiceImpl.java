@@ -82,13 +82,6 @@ public class ChatbotServiceImpl implements ChatbotService{
         return chatbotClient.chatbotRequest(signature, request);
     }
 
-    /**
-     * Convert to json string string.
-     *
-     * @param request the request
-     * @return the string
-     * @since 2024 -08-05
-     */
     public String convertToJsonString(ChatbotRequest request) {
         try {
             return objectMapper.writeValueAsString(request);
@@ -97,17 +90,8 @@ public class ChatbotServiceImpl implements ChatbotService{
         }
     }
 
-    /**
-     * Generate signature string.
-     *
-     * @param requestBody the request body
-     * @return the string
-     * @since 2024 -08-05
-     */
     public String generateSignature(String requestBody) {
-
         try {
-
             byte[] secretKeyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
             SecretKeySpec secretKeySpec = new SecretKeySpec(secretKeyBytes, "HmacSHA256");
             Mac mac = Mac.getInstance("HmacSHA256");
@@ -120,5 +104,3 @@ public class ChatbotServiceImpl implements ChatbotService{
         }
     }
 }
-
-
