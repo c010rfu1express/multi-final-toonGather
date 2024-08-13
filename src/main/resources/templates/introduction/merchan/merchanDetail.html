@@ -161,27 +161,27 @@
             <!-- 상품 상세 내용 -->
             <div class="merchan-body">
 
-                <span class="category" th:text="${merchanCategoryTitle}"></span>
 
                 <dl class="merchan-info">
-                    <dt>정가</dt>
-                    <dd th:text="${#numbers.formatInteger(merchan.regularPrice)} + '원'">0원</dd>
+                    <dt th:if="${merchan.regularPrice != null}">정가</dt>
+                    <dd th:if="${merchan.regularPrice != null}" th:text="${#numbers.formatInteger(merchan.regularPrice) + '원'} ?: '가격 정보 없음'"></dd>
 
-                    <dt>할인가</dt>
-                    <dd th:text="${#numbers.formatInteger(merchan.discountPrice)} + '원'">0원</dd>
+                    <dt th:if="${merchan.discountPrice != null}">할인가</dt>
+<!--                    <dd th:if="${merchan.discountPrice != null}" th:text="${#numbers.formatInteger(merchan.discountPrice)} + '원'">0원</dd>-->
 
-                    <dt>배송비</dt>
-                    <dd th:text="${#numbers.formatInteger(merchan.shippingCost)} + '원'">0원</dd>
+                    <dt th:if="${merchan.shippingCost != null}">배송비</dt>
+<!--                    <dd th:if="${merchan.shippingCost != null}" th:text="${#numbers.formatInteger(merchan.shippingCost)} + '원'">0원</dd>-->
 
-                    <dt>상품 정보</dt>
-                    <dd th:text="${merchan.merchanInfo}" class="merchan-content"></dd>
+                    <dt th:if="${merchan.merchanInfo != null and merchan.merchanInfo != ''}">상품 정보</dt>
+<!--                    <dd th:if="${merchan.merchanInfo != null and merchan.merchanInfo != ''}" th:text="${merchan.merchanInfo}" class="merchan-content"></dd>-->
 
-                    <dt>상품 내용</dt>
-                    <dd th:text="${merchan.content}" class="merchan-content"></dd>
+                    <dt th:if="${merchan.content != null and merchan.content != ''}">상품 내용</dt>
+<!--                    <dd th:if="${merchan.content != null and merchan.content != ''}" th:text="${merchan.content}" class="merchan-content"></dd>-->
 
-                    <dt>게시 일시</dt>
-                    <dd th:text="${#temporals.format(merchan.postingDate, 'yyyy.MM.dd HH:mm:ss')}">날짜 시간</dd>
+                    <dt th:if="${merchan.postingDate != null}">게시 일시</dt>
+<!--                    <dd th:if="${merchan.postingDate != null}" th:text="${#temporals.format(merchan.postingDate, 'yyyy.MM.dd HH:mm:ss')}">날짜 시간</dd>-->
                 </dl>
+
             </div>
         </div>
     </div>
@@ -190,7 +190,7 @@
 
 <!-- 푸터 -->
 <footer>
-    <div th:replace="common/footer.html"></div>
+    <div th:replace="~{common/footer.html}"></div>
 </footer>
 
 </body>
