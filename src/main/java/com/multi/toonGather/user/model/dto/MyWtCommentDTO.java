@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,6 +19,8 @@ public class MyWtCommentDTO {
     private String content;
     private int liked;
     private int dislike;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     // webtoon 테이블의 컬럼
     private String webtoonId;
