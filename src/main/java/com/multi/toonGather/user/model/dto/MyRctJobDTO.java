@@ -24,6 +24,7 @@ public class MyRctJobDTO {
 
     //시간 view에 뿌려줄 때
     public String getFormattedDeadLine() {
+        if(deadLine == null) return "미정";
         return TimeAgoUtils.formatTimeAgo(deadLine);
     }
 
