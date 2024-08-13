@@ -85,10 +85,8 @@ public class CsController {
         List<QuestionDTO> questions;
 
         if ((keyword != null && !keyword.isEmpty()) || (status != null && !status.isEmpty())) {
-            System.out.println("CsController : " + searchType + keyword + status + offset + pageSize);
             // 검색어와 상태값이 모두 있거나, 하나라도 있을 경우 검색 수행
             totalRows = csService.countSearchQuestionsWithStatus(searchType, keyword, status);
-            System.out.println("CsController2 : " + searchType + keyword + status + offset + pageSize);
             questions = csService.searchQuestionsWithStatus(searchType, keyword, status, offset, pageSize);
         } else {
             // 검색어와 상태값이 모두 없을 경우 전체 목록 조회
@@ -209,9 +207,6 @@ public class CsController {
         question.setCsQTitle(title);
         question.setCsQCategory(categoryDTO);
         question.setCsQContent(content);
-
-        System.out.println(existingImages);
-        System.out.println(removedImages);
 
         boolean isSuccess = csService.updateQuestion(question, existingImages, removedImages, images, request);
         if (isSuccess) {
