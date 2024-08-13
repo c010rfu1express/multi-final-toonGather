@@ -60,6 +60,7 @@
     <div class="detail-header">
         <div>작성자 | <span th:text="${faq.nickname}"></span></div>
         <div>작성일 | <span th:text="${#dates.format(faq.createdDate, 'yyyy-MM-dd')}"></span></div>
+        <div>조회수 | <span th:text="${faq.csFaqViewCount}"></span></div>
     </div>
     <div class="detail-header">
         <div>제목 | <span th:text="${faq.csFaqTitle}"></span></div>
