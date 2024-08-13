@@ -16,4 +16,7 @@ public interface PageMapper {
 
     @Select("SELECT COUNT(*) FROM rct_free_review_report")
     int selectReportCount() throws Exception;
+
+    @Select("SELECT COUNT(*) FROM rct_job WHERE dead_line IS NULL OR dead_line >= CURDATE()")
+    int selectOpenCount() throws Exception;
 }

@@ -831,5 +831,40 @@ public class RecruitController {
 
     }
 
+    @GetMapping("/job/open")
+    public String listOpen(@RequestParam(value = "page", required = false, defaultValue = "1")  int page, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
+            model.addAttribute("auth_code", String.valueOf(userDetails.getAuthCode()));
+        } else {
+            model.addAttribute("auth_code", "");  // 인증되지 않은 사용자의 경우
+        }
+
+        PageDTO pageDTO = new PageDTO();
+        pageDTO.setPage(page);
+        pageDTO.setStartEnd(pageDTO.getPage());
+        try {
+            int count = pageService.selectOpenCount(pageDTO);
+            int pages = count > 0 ? (int) Math.ceil((double) count / 10) : 1;
+
+            List<JobDTO> jobs = jobService.selectOpenAll(pageDTO);
+
+            model.addAttribute("count", count);
+            model.addAttribute("pages", pages);
+            model.addAttribute("jobs", jobs);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("filter", "open");
+
+            for (JobDTO job : jobs) {
+                System.out.println(job);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("job list error : " + e);
+        }
+
+        return "recruit/job/open";
+    }
+
 
 }
