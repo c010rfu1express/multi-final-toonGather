@@ -1201,27 +1201,68 @@
         <result property="price" column="price"/>
         <result property="orderedDate" column="ordered_date"/>
         <result property="status" column="status"/>
+
+        <result property="bankName" column="bank_name"/>
+        <result property="account" column="account"/>
+        <result property="buyerName" column="buyer_name"/>
+        <result property="contact" column="contact"/>
+        <result property="typeCode" column="type_code"/>
+
+        <result property="writer" column="writer"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="img" column="img"/>
+        <result property="totalPrice" column="total_price"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="modifiedDate" column="modified_date"/>
+
+        <result property="nickname" column="nickname"/>
+
+
     </resultMap>
 
     <sql id="MyRctOrderQueryA">
         SELECT
-        order_no AS orderNo,
-        member_no AS memberNo,
-        board_no AS boardNo,
-        quantity AS quantity,
-        price AS price,
-        ordered_date AS orderedDate,
-        status AS status
+        rfp.order_no AS orderNo,
+        rfp.member_no AS memberNo,
+        rfp.board_no AS boardNo,
+        rfp.quantity AS quantity,
+        rfp.price AS price,
+        rfp.ordered_date AS orderedDate,
+        rfp.status AS status,
+
+        rfp.bank_name AS bankName,
+        rfp.account AS account,
+        rfp.buyer_name AS buyerName,
+        rfp.contact AS contact,
+        rfp.type_code AS typeCode,
+
+        rf.writer AS writer,
+        rf.title AS title,
+        rf.content AS content,
+        rf.img AS img,
+        rf.price AS totalPrice,
+        rf.created_date AS createdDate,
+        rf.modified_date AS modifiedDate,
+
+        u.nickname AS nickname
     </sql>
     <sql id="MyRctOrderQueryB">
         FROM
-        rct_free_pay
+        rct_free_pay rfp
+        INNER JOIN
+        rct_free rf ON rfp.board_no = rf.board_no
+        INNER JOIN
+        users u ON rf.writer = u.user_no  <!-- 추가된 부분 -->
         WHERE
-        member_no = #{userNo}
+        rfp.member_no = #{userNo}
         <if test="searchBy != null and searchTerm != null and searchTerm != ''">
             <choose>
-                <when test="searchBy == 'boardNo'">
-                    AND board_no LIKE CONCAT('%', #{searchTerm}, '%')
+                <when test="searchBy == 'title'">
+                    AND rf.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'nickname'">
+                    AND u.nickname LIKE CONCAT('%', #{searchTerm}, '%')
                 </when>
             </choose>
         </if>
