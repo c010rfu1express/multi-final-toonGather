@@ -140,6 +140,13 @@ public class MyServiceImpl implements MyService {
         return response;
     }
 
+    public List<MyRctOrderDTO> getMyRctFreeOrders(int boardNo, String toggle, String orderBy, String searchBy, String searchTerm, PageNDTO pageNDTO) throws Exception {
+        char toggleValue = toggle.charAt(0);
+        System.out.println("[MyService.getMyRctFreeOrders] toggleValue: "+ toggleValue);
+        List<MyRctOrderDTO> response = myMapper.selectListMyRctFreeOrder(boardNo, toggleValue, orderBy, searchBy, searchTerm, pageNDTO);
+        return response;
+    }
+
     //// countMy (14개)
     //1
     public int countMyRctCreators(int userNo) throws Exception {
@@ -228,6 +235,14 @@ public class MyServiceImpl implements MyService {
         int count = myMapper.selectCountMyInMerchan(userNo, toggleValue, orderBy, searchBy, searchTerm);
         return count;
     }
+
+    public int countMyRctFreeOrders(int boardNo, String toggle, String orderBy, String searchBy, String searchTerm) throws Exception {
+        char toggleValue = toggle.charAt(0);
+        System.out.println("[MyService.countMyRctFreeOrders] toggleValue: "+ toggleValue);
+        int count = myMapper.selectCountMyRctFreeOrder(boardNo, toggleValue, orderBy, searchBy, searchTerm);
+        return count;
+    }
+
 
 
 }

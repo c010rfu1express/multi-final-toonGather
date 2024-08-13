@@ -1121,6 +1121,7 @@
 
     <!--    MyRctApplicationDTO 클래스를 사용하는 경우가 2가지임을 체크하기 (1)내가지원한목록 (2)내가올린공고_지원서 끝-->
 
+
     <resultMap type="MyRctFreeDTO" id="MyRctFreeResultMap">
         <id property="boardNo" column="board_no"/>
         <result property="writer" column="writer"/>
@@ -1255,6 +1256,7 @@
         <include refid="MyRctCreatorQueryB"/>
     </select>
 
+    <!--    MyRctOrderDTO 클래스를 사용하는 경우가 2가지임을 체크하기 (1)프리랜서게시글관리 (2)프리랜서구매목록 시작-->
     <resultMap type="MyRctOrderDTO" id="MyRctOrderResultMap">
         <id property="orderNo" column="order_no"/>
         <result property="memberNo" column="member_no"/>
@@ -1358,6 +1360,84 @@
         <include refid="MyRctOrderQueryB"/>
         <include refid="pagingQuery"/>
     </select>
+
+    <sql id="MyRctFreeOrderQueryA">
+        SELECT
+        rfp.order_no AS orderNo,
+        rfp.member_no AS memberNo,
+        rfp.board_no AS boardNo,
+        rfp.quantity AS quantity,
+        rfp.price AS price,
+        rfp.ordered_date AS orderedDate,
+        rfp.status AS status,
+
+        rfp.bank_name AS bankName,
+        rfp.account AS account,
+        rfp.buyer_name AS buyerName,
+        rfp.contact AS contact,
+        rfp.type_code AS typeCode,
+
+        rf.writer AS writer,
+        rf.title AS title,
+        rf.content AS content,
+        rf.img AS img,
+        rf.price AS totalPrice,
+        rf.created_date AS createdDate,
+        rf.modified_date AS modifiedDate,
+
+        u.nickname AS nickname
+    </sql>
+    <sql id="MyRctFreeOrderQueryB">
+        FROM
+        rct_free_pay rfp
+        INNER JOIN
+        rct_free rf ON rfp.board_no = rf.board_no
+        INNER JOIN
+        users u ON rf.writer = u.user_no  <!-- 추가된 부분 -->
+        WHERE
+        rfp.board_no = #{boardNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND rf.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'nickname'">
+                    AND u.nickname LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
+        <if test="toggleValue == 'Y'">
+            AND status = 'C'
+        </if>
+        <choose>
+            <when test="orderBy == 'recent'">
+                ORDER BY order_no DESC
+            </when>
+            <when test="orderBy == 'oldest'">
+                ORDER BY order_no ASC
+            </when>
+            <when test="orderBy == 'expensive'">
+                ORDER BY price DESC
+            </when>
+            <when test="orderBy == 'cheap'">
+                ORDER BY price ASC
+            </when>
+            <otherwise>
+                ORDER BY order_no DESC
+            </otherwise>
+        </choose>
+    </sql>
+    <select id="selectCountMyRctFreeOrder" resultType="int">
+        SELECT COUNT(*)
+        <include refid="MyRctFreeOrderQueryB"/>
+    </select>
+    <select id="selectListMyRctFreeOrder" resultType="MyRctOrderDTO">
+        <include refid="MyRctFreeOrderQueryA"/>
+        <include refid="MyRctFreeOrderQueryB"/>
+        <include refid="pagingQuery"/>
+    </select>
+
+    <!--    MyRctOrderDTO 클래스를 사용하는 경우가 2가지임을 체크하기 (1)프리랜서게시글관리 (2)프리랜서구매목록 끝-->
 
     <resultMap type="MyInMerchanDTO" id="MyInMerchanResultMap">
         <id property="likedNo" column="liked_no"/>

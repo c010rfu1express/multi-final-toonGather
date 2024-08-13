@@ -46,6 +46,8 @@ public interface MyMapper {
 
     List<MyInMerchanDTO> selectListMyInMerchan(@Param("userNo") int userNo, @Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy, @Param("searchBy") String searchBy, @Param("searchTerm") String searchTerm, @Param("pageNDTO") PageNDTO pageNDTO) throws Exception;
 
+    List<MyRctOrderDTO> selectListMyRctFreeOrder(@Param("boardNo") int boardNo, @Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy, @Param("searchBy") String searchBy, @Param("searchTerm") String searchTerm, @Param("pageNDTO") PageNDTO pageNDTO) throws Exception;
+
 
 
 
@@ -76,6 +78,8 @@ public interface MyMapper {
     int selectCountMyRctJobApplication(@Param("boardNo") int boardNo, @Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy, @Param("searchBy") String searchBy, @Param("searchTerm") String searchTerm) throws Exception;
 
     int selectCountMyInMerchan(@Param("userNo") int userNo, @Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy, @Param("searchBy") String searchBy, @Param("searchTerm") String searchTerm) throws Exception;
+
+    int selectCountMyRctFreeOrder(@Param("boardNo") int boardNo, @Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy, @Param("searchBy") String searchBy, @Param("searchTerm") String searchTerm) throws Exception;
 
 }
 

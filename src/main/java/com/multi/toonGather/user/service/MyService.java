@@ -44,6 +44,8 @@ public interface MyService {
     //동현님 파트 추가
     List<MyInMerchanDTO> getMyInMerchanFiles(List<MyInMerchanDTO> response) throws Exception;
 
+    List<MyRctOrderDTO> getMyRctFreeOrders(int userNo, String toggle, String orderBy, String searchBy, String searchTerm, PageNDTO pageNDTO) throws Exception;
+
 
     //// countMy (14개)
     //1
@@ -78,5 +80,6 @@ public interface MyService {
 
     int countMyInMerchans(int userNo, String toggle, String orderBy, String searchBy, String searchTerm) throws Exception;
 
+    int countMyRctFreeOrders(int boardNo, String toggle, String orderBy, String searchBy, String searchTerm) throws Exception;
 
 }

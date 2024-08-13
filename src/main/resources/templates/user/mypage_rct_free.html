@@ -351,7 +351,7 @@
                 <div class="row justify-content-around mt-4">
                     <div class="col-12 py-4" style="background-color: #F9F9F9; border-radius: 15px;">
                         <div class="row justify-content-around mt-5 mb-5" style="background-color:  #F9F9F9;">
-                            <div class="col-3 clickable-row" style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;" th:each="myRctFree, iterStat : ${myRctFrees}" th:attr="data-href=@{/recruit/free/view(no=${myRctFree.boardNo})}" th:if="${iterStat.index < 3}">
+                            <div class="col-3 clickable-row" style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;" th:each="myRctFree, iterStat : ${myRctFrees}" th:attr="data-href=@{/user/my/rct/free/order(boardNo=${myRctFree.boardNo})}" th:if="${iterStat.index < 3}">
                                 <div class="row justify-content-center">
                                     <div class="col-2 p-0 d-flex align-items-center justify-content-center" style="aspect-ratio: 1; border-radius: 5px;">
                                         <div class="date-container px-2 py-1">
@@ -392,7 +392,7 @@
                             <div class="col-3" th:if="${myRctFrees.size() == 0 || myRctFrees.size() == 1 || myRctFrees.size() == 2}"></div>
                         </div>
                         <div class="row justify-content-around mt-2 mb-5" style="background-color: #F9F9F9;">
-                            <div class="col-3 clickable-row" style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;" th:each="myRctFree, iterStat : ${myRctFrees}" th:attr="data-href=@{/recruit/free/view(no=${myRctFree.boardNo})}" th:if="${iterStat.index >= 3}">
+                            <div class="col-3 clickable-row" style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;" th:each="myRctFree, iterStat : ${myRctFrees}" th:attr="data-href=@{/user/my/rct/free/order(boardNo=${myRctFree.boardNo})}" th:if="${iterStat.index >= 3}">
                                 <div class="row justify-content-center">
                                     <div class="col-2 p-0 d-flex align-items-center justify-content-center" style="aspect-ratio: 1; border-radius: 5px;">
                                         <div class="date-container px-2 py-1">
