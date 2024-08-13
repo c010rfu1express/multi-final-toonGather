@@ -44,4 +44,12 @@ public interface CsService {
     int countSearchQuestions(String searchType, String keyword) throws Exception;
 
     List<QuestionDTO> searchQuestions(String searchType, String keyword, int offset, int pageSize) throws Exception;
+
+    void setCsQStatus(int csQNo);
+
+    void updateCsQViewCount(int csQNo);
+
+    int countSearchQuestionsWithStatus(String searchType, String keyword, String status);
+
+    List<QuestionDTO> searchQuestionsWithStatus(String searchType, String keyword, String status, int offset, int pageSize);
 }

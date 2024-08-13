@@ -21,4 +21,10 @@ public class MyRctJobDTO {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
     private LocalDateTime deadLine;
+
+    //시간 view에 뿌려줄 때
+    public String getFormattedDeadLine() {
+        return TimeAgoUtils.formatTimeAgo(deadLine);
+    }
+
 }
