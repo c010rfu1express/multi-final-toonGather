@@ -15,6 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.Year;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,16 +34,42 @@ public class UserServiceImpl implements UserService {
     @Override   //이것은 UserService Interface에서 가져온거임 : 예전부터 Service의 존재의 이유가 와닿지 않음..
                 //UserMapper Interface의 insertUser()와 혼동 노노 : Mapper가 DB와 관련있는거.
     public void insertUser(UserDTO userDTO) throws Exception {
+        int result = 0;
+        // 가장 먼저: password, confirmPassword의 일치여부 확인
+        if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
+            throw new Exception("[ERROR] insertUser 실패. 비밀번호 불일치");
+        }
+
+        // 그다음: passwordEncoder.encode()
         String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
         userDTO.setPassword(encodedPassword);
-        int result = 0;
+
+
+        //생년월일 저장
+        try { //일반 회원가입에서 가져올 때
+            if (!"년".equals(userDTO.getYear()) && !"월".equals(userDTO.getMonth()) && !"일".equals(userDTO.getDay())) {
+                // 처리할 로직
+                String dateString = userDTO.getYear() + "-" + userDTO.getMonth() + "-" + userDTO.getDay();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                userDTO.setDateOfBirth(LocalDate.parse(dateString, formatter));
+            }
+            else userDTO.setDateOfBirth(LocalDate.now());
+        } catch(Exception e) {
+            if(userDTO.getYear() == null || userDTO.getMonth() == null || userDTO.getDay() == null)
+                userDTO.setDateOfBirth(LocalDate.now());
+        }
+
+        //소셜 로그인 관련(typecode가 'K', 'N', or 'G'여야 하는 제약조건 존재하므로)
         if(userDTO.getTypeCode() == 'K' || userDTO.getTypeCode() == 'N')
         result = userMapper.insertUser(userDTO);
         else {
             userDTO.setTypeCode('G');
             result = userMapper.insertUser(userDTO);
         }
-        if(result == 0) new Exception("[ERROR] insertUser 실패");
+
+        if (result == 0) {
+            throw new Exception("[ERROR] insertUser 실패");
+        }
     }
 
     public String findId(UserDTO userDTO) throws Exception{
@@ -76,6 +106,13 @@ public class UserServiceImpl implements UserService {
     public UserDTO getProfile(int userNo) throws Exception {
         try {
             UserDTO response = userMapper.selectOneByUserNo(Integer.toString(userNo));
+
+            // response의 year, month, day를 쪼개어 담기.
+            // (주의: year, month, day는 DB에 있는 값이 아님)
+            response.setYear(String.valueOf(response.getDateOfBirth().getYear()));
+            response.setMonth(String.format("%02d", response.getDateOfBirth().getMonthValue()));
+            response.setDay(String.format("%02d", response.getDateOfBirth().getDayOfMonth()));
+
             System.out.println("Service_getProfile userNo: " + userNo);
             System.out.println("Service_getProfile response: " + response);
 
@@ -91,6 +128,10 @@ public class UserServiceImpl implements UserService {
     }
 
     public void updateProfile(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception {
+        // 가장 먼저: password, confirmPassword의 일치여부 확인
+        if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
+            throw new Exception("[ERROR] insertUser 실패. 비밀번호 불일치");
+        }
 
         if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
 //            String currentPassword = userMapper.selectOneByUserNo(Integer.toString(userNo)).getPassword();
@@ -98,9 +139,6 @@ public class UserServiceImpl implements UserService {
             System.out.println("UserService.updateProfile(): 비밀번호를 변경하지 않았음.");
         }
         else {
-            System.out.println("userNo: " + userNo);
-            System.out.println("userDTO: " + userDTO);
-
             //임시 설정... 널문자 처리할 방법 고민하기
 //        System.out.println("UserService.updateProfile에서 userDTO.getAuthCode(): "+userDTO.getAuthCode());
 //        if(userDTO.getAuthCode() == '\0'){
@@ -110,6 +148,15 @@ public class UserServiceImpl implements UserService {
             // 비밀번호 암호화
             String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
             userDTO.setPassword(encodedPassword);
+
+            //생년월일 저장
+            if (!"년".equals(userDTO.getYear()) && !"월".equals(userDTO.getMonth()) && !"일".equals(userDTO.getDay())) {
+                // 처리할 로직
+                String dateString = userDTO.getYear() + "-" + userDTO.getMonth() + "-" + userDTO.getDay();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                userDTO.setDateOfBirth(LocalDate.parse(dateString, formatter));
+            }
+            else userDTO.setDateOfBirth(LocalDate.now());
 
             // 파일 처리 추가!
             String root = request.getSession().getServletContext().getRealPath("/");
@@ -148,7 +195,7 @@ public class UserServiceImpl implements UserService {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            if(result == 0) new Exception("[ERROR] updateUser 실패. [userNo: " + userNo + "]");
+            if(result == 0) throw new Exception("[ERROR] updateUser 실패. [userNo: " + userNo + "]");
         }
 
     }
@@ -174,6 +221,15 @@ public class UserServiceImpl implements UserService {
 //            String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
 //            userDTO.setPassword(encodedPassword);
 
+
+            //생년월일 저장
+            if (!"년".equals(userDTO.getYear()) && !"월".equals(userDTO.getMonth()) && !"일".equals(userDTO.getDay())) {
+                // 처리할 로직
+                String dateString = userDTO.getYear() + "-" + userDTO.getMonth() + "-" + userDTO.getDay();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                userDTO.setDateOfBirth(LocalDate.parse(dateString, formatter));
+            }
+            else userDTO.setDateOfBirth(LocalDate.now());
 
             // 파일 처리 추가!
             String root = request.getSession().getServletContext().getRealPath("/");
@@ -277,5 +333,41 @@ public class UserServiceImpl implements UserService {
         char toggleValue = toggle.charAt(0);
         int count = userMapper.selectUserCount(toggleValue, orderBy, searchBy, searchTerm);
         return count;
+    }
+
+
+    // 생년월일 생성 관련
+    public List<String> generateYears() {
+        List<String> years = new ArrayList<>();
+        // "년" 항목 추가
+        years.add("년");
+        int currentYear = Year.now().getValue(); // 현재 연도 가져오기
+        // 현재 연도를 가장 먼저 추가
+        years.add(String.valueOf(currentYear));
+        // 현재 연도 이전 연도부터 1900년까지 추가
+        for (int i = currentYear - 1; i >= 1900; i--) {
+            years.add(String.valueOf(i));
+        }
+        return years;
+    }
+
+    public List<String> generateMonths() {
+        List<String> months = new ArrayList<>();
+        // "월" 항목 추가
+        months.add("월");
+        for (int i = 1; i <= 12; i++) {
+            months.add(String.format("%02d", i)); // 두 자리 숫자로 포맷
+        }
+        return months;
+    }
+
+    public List<String> generateDays() {
+        List<String> days = new ArrayList<>();
+        // "일" 항목 추가
+        days.add("일");
+        for (int i = 1; i <= 31; i++) {
+            days.add(String.format("%02d", i)); // 두 자리 숫자로 포맷
+        }
+        return days;
     }
 }
