@@ -19,7 +19,7 @@ public interface FreeMapper {
 
     FreeDTO selectBoard(int no) throws Exception;
 
-    @Update("UPDATE rct_free SET title = #{title}, content = #{content}, img = #{img}, price = #{price}, kakao_pg = #{kakao_pg}, inicis_pg = #{inicis_pg}, bank_name = #{bank_name}, account = #{account}, contact = #{contact} WHERE board_no = #{board_no}")
+    @Update("UPDATE rct_free SET title = #{title}, content = #{content}, img = #{img}, price = #{price}, contact = #{contact} WHERE board_no = #{board_no}")
     int updateBoard(FreeDTO freeDTO) throws Exception;
 
     @Delete("DELETE FROM rct_free WHERE board_no = #{no}")
@@ -64,4 +64,6 @@ public interface FreeMapper {
     int selectCountReview(int boardNo) throws Exception;
 
     int order(FreePayDTO payDTO) throws Exception;
+
+    boolean payInfo(int memNo) throws Exception;
 }

@@ -146,6 +146,12 @@ public class FreeServiceImpl implements FreeService {
     @Override
     public void order(FreePayDTO payDTO) throws Exception {
         int result = freeMapper.order(payDTO);
-        if (result == 0) new Exception("주문 등록 실");
+        if (result == 0) new Exception("주문 등록 실패");
+    }
+
+    @Override
+    public boolean payInfo(int memNo) throws Exception {
+        boolean result = freeMapper.payInfo(memNo);
+        return result;
     }
 }

@@ -13,10 +13,6 @@ public class FreeDTO {
     private String content;
     private String img;
     private int price;
-    private String kakao_pg;
-    private String inicis_pg;
-    private String bank_name;
-    private String account;
     private String contact;
     private Date created_date;
     private Date modified_date;

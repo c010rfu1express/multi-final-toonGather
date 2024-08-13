@@ -448,9 +448,15 @@ public class RecruitController {
     }
 
     @GetMapping("/free/insert")
-    public String showInsert(Model model) {
+    public String showInsert(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
         FreeDTO freeDTO = new FreeDTO();
         freeDTO.setMember(new UserDTO());
+
+        boolean isAccountNull = freeService.payInfo(userDetails.getMemNo());
+
+        if(isAccountNull) {
+            return "recruit/free/pay/info";
+        }
 
         model.addAttribute("free", freeDTO);
         return "recruit/free/insert";
@@ -458,8 +464,6 @@ public class RecruitController {
 
     @PostMapping("/free/insert")
     public String insertFree(@ModelAttribute FreeDTO freeDTO, @RequestParam("price") int price,
-                             @RequestParam("kakao") String kakao, @RequestParam("inicis") String inicis,
-                             @RequestParam("bank_name") String bank_name, @RequestParam("account") String account,
                              HttpServletRequest request, @RequestPart("singleFile") MultipartFile singleFile, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         // 작성자의 memberNo와 userName을 설정
@@ -490,10 +494,6 @@ public class RecruitController {
                 model.addAttribute("savedName", savedName);
                 freeDTO.setImg(savedName);
                 freeDTO.setPrice(price);
-                freeDTO.setKakao_pg(kakao);
-                freeDTO.setInicis_pg(inicis);
-                freeDTO.setBank_name(bank_name);
-                freeDTO.setAccount(account);
                 freeService.insertBoard(freeDTO);
             } catch (Exception e) {
                 System.out.println("free insert error : " + e);
@@ -509,6 +509,35 @@ public class RecruitController {
                 System.out.println("free insert error : " + e);
             }
         }
+
+
+        // 서비스 계층에 게시글 저장 요청
+        return "redirect:/recruit/free/list";
+    }
+
+    @GetMapping("/free/pay/info")
+    public String showInfo(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+        CreatorDTO creatorDTO = new CreatorDTO();
+        creatorDTO.setMember_no(userDetails.getMemNo());
+
+        model.addAttribute("creator", creatorDTO);
+        return "recruit/free/pay/info";
+    }
+
+    @PostMapping("/free/pay/info")
+    public String insertFree(@ModelAttribute CreatorDTO creatorDTO,
+                             @RequestParam("kakao") String kakao, @RequestParam("inicis") String inicis,
+                             @RequestParam("bank_name") String bank_name, @RequestParam("account") String account,
+                             HttpServletRequest request, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+
+
+        creatorDTO.setMember_no(userDetails.getMemNo());
+        creatorDTO.setKakao_pg(kakao);
+        creatorDTO.setInicis_pg(inicis);
+        creatorDTO.setBank_name(bank_name);
+        creatorDTO.setAccount(account);
+
+        creatorService.updateInfo(creatorDTO);
 
 
         // 서비스 계층에 게시글 저장 요청
@@ -743,10 +772,12 @@ public class RecruitController {
     @GetMapping("/free/pay/order")
     public String order(@RequestParam("no") int no, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
         FreeDTO freeDTO = freeService.findBoardByNo(no);
+        CreatorDTO creatorDTO = creatorService.findInfo(freeDTO.getWriter());
         String name = userDetails.getRealName();
 
         model.addAttribute("free", freeDTO);
         model.addAttribute("name", name);
+        model.addAttribute("creator", creatorDTO);
         return "recruit/free/pay/order";
     }
 
@@ -774,7 +805,8 @@ public class RecruitController {
     @GetMapping("/free/pay/bank")
     public String bank(@RequestParam("no") int no, Model model) throws Exception {
         FreeDTO freeDTO = freeService.findBoardByNo(no);
-        model.addAttribute("free", freeDTO);
+        CreatorDTO creatorDTO = creatorService.findInfo(freeDTO.getWriter());
+        model.addAttribute("creator", creatorDTO);
         return "recruit/free/pay/bank";
     }
 
