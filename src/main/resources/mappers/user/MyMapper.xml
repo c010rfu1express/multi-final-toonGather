@@ -269,6 +269,8 @@
         <result property="viewCnt" column="view_cnt" />
 
         <result property="writerUserId" column="writer_user_id"/>  <!-- 추가된 부분 -->
+        <result property="writerNickname" column="writer_nickname"/>  <!-- 추가된 부분 -->
+        <result property="thumbnailUrl" column="thumbnail_url"/> <!-- 추가된 부분 -->
     </resultMap>
 
     <sql id="MySoReviewQueryA">
@@ -286,7 +288,10 @@
         sr.modified_date AS modifiedDate,
         sr.view_cnt AS viewCnt,
 
-        u.user_id AS writerUserId  <!-- 추가된 부분 -->
+        u.user_id AS writerUserId,  <!-- 추가된 부분 -->
+        u.nickname AS writerNickname,  <!-- 추가된 부분 -->
+
+        w.thumbnail_url AS thumbnailUrl
     </sql>
 
     <sql id="MySoReviewQueryB">
@@ -296,6 +301,8 @@
         so_review_likes srl ON sr.review_no = srl.review_no
         INNER JOIN
         users u ON sr.writer_no = u.user_no  <!-- 추가된 부분 -->
+        INNER JOIN
+        webtoon w ON sr.webtoon_no = w.webtoon_no
         WHERE
         srl.liked_user = #{userNo}
         <if test="searchBy != null and searchTerm != null and searchTerm != ''">
@@ -457,6 +464,8 @@
         <result property="viewCnt" column="view_cnt"/>
 
         <result property="writerUserId" column="writer_user_id"/> <!-- 추가된 부분 -->
+        <result property="writerNickname" column="writer_nickname"/> <!-- 추가된 부분 -->
+        <result property="thumbnailUrl" column="thumbnail_url"/> <!-- 추가된 부분 -->
     </resultMap>
 
     <sql id="MySoDiaryQueryA">
@@ -476,7 +485,9 @@
         sd.modified_date AS diaryModifiedDate,
         sd.view_cnt AS viewCnt,
 
-        u.user_id AS writerUserId <!-- 추가된 부분 -->
+        u.user_id AS writerUserId, <!-- 추가된 부분 -->
+        u.nickname AS writerNickname,
+        w.thumbnail_url AS thumbnailUrl
     </sql>
 
     <sql id="MySoDiaryQueryB">
@@ -486,6 +497,8 @@
         so_diary_comments sdc ON sd.diary_no = sdc.diary_no
         INNER JOIN
         users u ON sd.writer_no = u.user_no <!-- 추가된 부분 -->
+        INNER JOIN
+        webtoon w ON sd.webtoon_no = w.webtoon_no
         WHERE
         sdc.commenter_no = #{userNo}
         <if test="searchBy != null and searchTerm != null and searchTerm != ''">
