@@ -123,128 +123,195 @@
 
 <div th:replace="common/footer.html"></div>
 <script>
-         let currentPage = 1; // 초기 페이지 번호
-         const isLoggedAge=[[${isLoggedAge}]];
+    let currentPage = 1; // 초기 페이지 번호
+const isLoggedAge = [[${isLoggedAge}]];
+
+const urlParams = new URLSearchParams(window.location.search);
+let provider = urlParams.get('provider');
+let updateDay = urlParams.get('updateDay');
+
+if (provider === null) {
+    provider = 'KAKAO'; // 원하는 값으로 초기화
+}
+
+if (provider === 'ALL') {
+    provider = ''; // 원하는 값으로 초기화
+}
+
+if (updateDay === null) {
+    updateDay = '[[ ${day} ]]'; // 원하는 값으로 초기화
+}
+
+function fetchWebtoons(page) {
+    let apiUrl = `https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/webtoons?provider=${provider}&page=${page}&perPage=100&sort=ASC&updateDay=${updateDay}`;
+
+    if (updateDay === "COM") {
+        apiUrl = `https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/webtoons?provider=${provider}&page=${page}&perPage=100&sort=ASC`;
+    }
+
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            const webtoons = data.webtoons.filter(webtoon => {
+                if (updateDay === "COM") {
+                    return webtoon.provider !== "KAKAO_PAGE" && webtoon.isEnd;
+                } else {
+                    return webtoon.provider === "NAVER" || webtoon.provider === "KAKAO";
+                }
+            });
+
+            const webtoonContainer = document.getElementById('webtoonContainer');
+            webtoonContainer.innerHTML = ''; // 기존 웹툰 카드 초기화
+
+            webtoons.forEach(webtoon => {
+                const { id, title, thumbnail, authors, ageGrade } = webtoon;
+                const thumbnailUrl = thumbnail[0]; // 첫 번째 썸네일 이미지만 사용
+
+                // 웹툰 카드 생성
+                const webtoonCard = document.createElement('div');
+                webtoonCard.classList.add('webtoon-card');
+
+                // 썸네일 이미지 추가
+                const webtoonImage = document.createElement('img');
+                if (ageGrade > 18 && isLoggedAge < 19) {
+                    webtoonImage.src = '/images/19.jpg'; // 로그인하지 않은 경우 표시할 제한 이미지
+                    webtoonImage.alt = '19금 콘텐츠';
+                } else {
+                    webtoonImage.src = thumbnailUrl;
+                    webtoonImage.alt = `${title} 썸네일`;
+                }
+                webtoonImage.classList.add('webtoon-thumbnail');
+                webtoonCard.appendChild(webtoonImage);
+
+                // 웹툰 정보 추가
+                const webtoonInfo = document.createElement('div');
+                webtoonInfo.classList.add('webtoon-info');
+
+                // 제목 추가 (링크)
+                const webtoonTitle = document.createElement('a');
+                webtoonTitle.textContent = title;
+                webtoonTitle.classList.add('webtoon-title');
+                webtoonTitle.addEventListener('click', (event) => {
+                    event.preventDefault(); // 기본 동작 중단
+                    const queryString = `webtoon_id=${id}&webtoon_name=${encodeURIComponent(title)}`;
+                    window.location.href = `/webtoon/one?${queryString}`;
+                });
+                webtoonInfo.appendChild(webtoonTitle);
+
+                // 작가 정보 추가
+                const webtoonAuthors = document.createElement('div');
+                webtoonAuthors.textContent = `작가: ${authors.join(', ')}`;
+                webtoonAuthors.classList.add('webtoon-authors');
+                webtoonInfo.appendChild(webtoonAuthors);
+
+                webtoonCard.appendChild(webtoonInfo);
+
+                // 웹툰 카드를 컨테이너에 추가
+                webtoonContainer.appendChild(webtoonCard);
+            });
+
+            // 페이지 버튼 추가
+            updatePageButtons(Math.ceil(data.total / 100), page);
+        })
+        .catch(error => {
+            console.error('웹툰을 불러오는 중 오류가 발생했습니다:', error);
+        });
+         const url = new URL(window.location.href);
+            url.searchParams.set('page', page);
+            window.history.replaceState({}, '', url);
+
+    window.scrollTo(0, 0);
+}
+
+function updatePageButtons(totalPages, currentPage) {
+    const pageButtons = document.getElementById('pageButtons');
+    pageButtons.innerHTML = '';
+
+    const visibleRange = 5; // 표시할 페이지 버튼 수
+
+    // 첫 페이지 버튼
+    if (currentPage > 1) {
+        const firstPageBtn = document.createElement('button');
+        firstPageBtn.textContent = '<<';
+        firstPageBtn.classList.add('page-btn');
+        firstPageBtn.addEventListener('click', () => {
+            currentPage = 1;
+            fetchWebtoons(currentPage);
+        });
+        pageButtons.appendChild(firstPageBtn);
+    }
+
+    // 이전 페이지 버튼
+    if (currentPage > 1) {
+        const prevPageBtn = document.createElement('button');
+        prevPageBtn.textContent = '<';
+        prevPageBtn.classList.add('page-btn');
+        prevPageBtn.addEventListener('click', () => {
+            currentPage--;
+            fetchWebtoons(currentPage);
+        });
+        pageButtons.appendChild(prevPageBtn);
+    }
+
+    let startPage = Math.max(1, currentPage - Math.floor(visibleRange / 2));
+    let endPage = Math.min(totalPages, currentPage + Math.floor(visibleRange / 2));
+
+    // 페이지 버튼이 전체 범위를 초과하지 않도록 조정
+    if (endPage - startPage + 1 < visibleRange) {
+        if (startPage === 1) {
+            endPage = Math.min(totalPages, startPage + visibleRange - 1);
+        } else {
+            startPage = Math.max(1, endPage - visibleRange + 1);
+        }
+    }
 
 
-         const urlParams = new URLSearchParams(window.location.search);
-         let provider=urlParams.get('provider');
-         let updateDay=urlParams.get('updateDay');
-         if (provider ===null) {
-         provider = 'KAKAO'; // 원하는 값으로 초기화
-         }
 
-         if (provider ==='ALL') {
-         provider = ''; // 원하는 값으로 초기화
-         }
-         if (updateDay === null) {
-         updateDay = '[[ ${day} ]]'; // 원하는 값으로 초기화
-         }
+    // 범위 내 페이지 버튼 추가
+    for (let i = startPage; i <= endPage; i++) {
+        const pageBtn = document.createElement('button');
+        pageBtn.textContent = i;
+        pageBtn.classList.add('page-btn');
+        if (i === currentPage) {
+            pageBtn.disabled = true; // 현재 페이지 버튼 비활성화
+        }
+        pageBtn.addEventListener('click', () => {
+            currentPage = i;
+            fetchWebtoons(currentPage);
+        });
+        pageButtons.appendChild(pageBtn);
+    }
 
-         function fetchWebtoons(page) {
-             let apiUrl = `https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/webtoons?provider=${provider}&page=${page}&perPage=100&sort=ASC&updateDay=${updateDay}`;
+    // 다음 페이지 버튼
+    if (currentPage < totalPages) {
+        const nextPageBtn = document.createElement('button');
+        nextPageBtn.textContent = '>';
+        nextPageBtn.classList.add('page-btn');
+        nextPageBtn.addEventListener('click', () => {
+            currentPage++;
+            fetchWebtoons(currentPage);
+        });
+        pageButtons.appendChild(nextPageBtn);
+    }
 
-             if (updateDay === "COM") {
-             apiUrl = `https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/webtoons?provider=${provider}&page=${page}&perPage=100&sort=ASC`; // 원하는 값으로 초기화
-             }
-             fetch(apiUrl)
-                 .then(response => response.json())
-                 .then(data => {
+    // 마지막 페이지 버튼
+    if (currentPage < totalPages) {
+        const lastPageBtn = document.createElement('button');
+        lastPageBtn.textContent = '>>';
+        lastPageBtn.classList.add('page-btn');
+        lastPageBtn.addEventListener('click', () => {
+            currentPage = totalPages;
+            fetchWebtoons(currentPage);
+        });
+        pageButtons.appendChild(lastPageBtn);
+    }
+}
 
-                       const webtoons = data.webtoons.filter(webtoon => {
-                        if (updateDay === "COM") {
-                             return webtoon.provider !== "KAKAO_PAGE" && webtoon.isEnd;
-                         } else {
-                           return webtoon.provider === "NAVER" || webtoon.provider === "KAKAO";
-                             }
-                       }
+// 페이지 로드 시 첫 번째 페이지의 웹툰을 불러옴
+document.addEventListener('DOMContentLoaded', function() {
+    fetchWebtoons(currentPage);
+});
 
-                       );
-
-                     const webtoonContainer = document.getElementById('webtoonContainer');
-                     webtoonContainer.innerHTML = ''; // 기존 웹툰 카드 초기화
-
-                     webtoons.forEach(webtoon => {
-                         const { id, title, thumbnail, authors,ageGrade } = webtoon;
-                         const thumbnailUrl = thumbnail[0]; // 첫 번째 썸네일 이미지만 사용
-
-                         // 웹툰 카드 생성
-                         const webtoonCard = document.createElement('div');
-                         webtoonCard.classList.add('webtoon-card');
-
-                         // 썸네일 이미지 추가
-                         const webtoonImage = document.createElement('img');
-
-                         if (ageGrade> 18 && isLoggedAge<19) {
-                             webtoonImage.src = '/images/19.jpg'; // 로그인하지 않은 경우 표시할 제한 이미지
-                             webtoonImage.alt = '19금 콘텐츠';
-                         } else {
-                             webtoonImage.src = thumbnailUrl;
-                             webtoonImage.alt = `${title} 썸네일`;
-                         }
-
-                         webtoonImage.classList.add('webtoon-thumbnail');
-                         webtoonCard.appendChild(webtoonImage);
-
-                         // 웹툰 정보 추가
-                         const webtoonInfo = document.createElement('div');
-                         webtoonInfo.classList.add('webtoon-info');
-
-                         // 제목 추가 (링크)
-                         const webtoonTitle = document.createElement('a');
-                         webtoonTitle.textContent = title;
-                         webtoonTitle.classList.add('webtoon-title');
-                         webtoonTitle.addEventListener('click', (event) => {
-                         event.preventDefault(); // 기본 동작 중단
-
-
-                             const queryString = `webtoon_id=${id}&webtoon_name=${encodeURIComponent(title)}`;
-                             window.location.href = `/webtoon/one?${queryString}`
-
-                         });
-                         webtoonInfo.appendChild(webtoonTitle);
-
-                         // 작가 정보 추가
-                         const webtoonAuthors = document.createElement('div');
-                         webtoonAuthors.textContent = `작가: ${authors.join(', ')}`;
-                         webtoonAuthors.classList.add('webtoon-authors');
-                         webtoonInfo.appendChild(webtoonAuthors);
-
-                         webtoonCard.appendChild(webtoonInfo);
-
-                         // 웹툰 카드를 컨테이너에 추가
-                         webtoonContainer.appendChild(webtoonCard);
-                     });
-
-                     // 페이지 버튼 추가
-                     const pageButtons = document.getElementById('pageButtons');
-                     pageButtons.innerHTML = '';
-                     const total = data.total;
-                     const totalPages = Math.ceil(total / 100); // 총 페이지 수 계산
-                     for (let i = 1; i <= totalPages; i++) {
-                         const pageBtn = document.createElement('button');
-                         pageBtn.textContent = i;
-                         pageBtn.classList.add('page-btn');
-                         if (i === currentPage) {
-                             pageBtn.disabled = true; // 현재 페이지 버튼 비활성화
-                         }
-                         pageBtn.addEventListener('click', () => {
-                             currentPage = i;
-                             fetchWebtoons(currentPage); // 페이지 버튼 클릭 시 해당 페이지의 웹툰을 불러옴
-                         });
-                         pageButtons.appendChild(pageBtn);
-                     }
-                 })
-                 .catch(error => {
-                     console.error('웹툰을 불러오는 중 오류가 발생했습니다:', error);
-                 });
-                 window.scrollTo(0, 0);
-         }
-
-         // 페이지 로드 시 첫 번째 페이지의 웹툰을 불러옴
-         document.addEventListener('DOMContentLoaded', function() {
-             fetchWebtoons(currentPage);
-         });
 </script>
 </body>
 </html>
