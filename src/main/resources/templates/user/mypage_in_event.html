@@ -220,7 +220,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="myInEvent : ${myInEvents}" class="clickable-row" th:attr="data-href=@{/introduction/eventDetail(id=${myInEvent.eventNo})}">
+                <tr th:each="myInEvent : ${myInEvents}" class="clickable-row" th:attr="data-href=@{/introduction/event/eventDetail(eventNo=${myInEvent.eventNo})}">
                     <td th:text="${myInEvent.likedNo}">좋아요 번호</td>
                     <td th:text="${myInEvent.eventNo}">행사 게시글 번호</td>
                     <td th:text="${myInEvent.userNo}">회원번호</td>
