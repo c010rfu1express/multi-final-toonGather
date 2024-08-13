@@ -37,7 +37,6 @@
         }
         .webtoon-info {
             padding: 10px;
-            background-color: #ffffff;
         }
         .webtoon-title {
             font-size: 16px;
@@ -72,7 +71,6 @@
 /* 웹툰 카드들을 감싸는 컨테이너 */
 #webtoon-cards-container {
             display: flex;
-
             gap: 10px;
             justify-content: center;
             max-width: 1200px;
@@ -178,7 +176,7 @@
                          const webtoonImage = document.createElement('img');
 
                          if (ageGrade> 18 && isLoggedAge<19) {
-                             webtoonImage.src = '/images/error_logo.png'; // 로그인하지 않은 경우 표시할 제한 이미지
+                             webtoonImage.src = '/images/19.jpg'; // 로그인하지 않은 경우 표시할 제한 이미지
                              webtoonImage.alt = '19금 콘텐츠';
                          } else {
                              webtoonImage.src = thumbnailUrl;

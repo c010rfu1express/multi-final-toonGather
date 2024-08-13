@@ -113,6 +113,10 @@
        // 페이지 로드 시 URL에서 provider 값을 읽어와서 플랫폼 드롭다운을 설정하는 함수
        function setPlatformFromUrl() {
            var provider = getUrlParameter('provider');
+           if(provider==null){
+           provider='ALL';
+
+           }
            if (provider) {
                // provider 값에 따라 플랫폼 선택
                $('.dropdown-item').each(function() {

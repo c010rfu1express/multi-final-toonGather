@@ -210,6 +210,6 @@
     <select id="webtoonBest">
         select * from webtoon
         ORDER BY count DESC
-        LIMIT 5;
+        LIMIT 4;
     </select>
 </mapper>
