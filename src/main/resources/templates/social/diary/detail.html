@@ -310,13 +310,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const commentContent = document.getElementById('diaryCommentContent');
     const charCount = document.getElementById('diaryCharCount');
     const submitButton = commentForm.querySelector('button[type="submit"]');
+    const commentCountSpan = document.querySelector('.diary-comment-count span');
 
     if (commentForm) {
         submitButton.addEventListener('click', function(e) {
             e.preventDefault();
             const content = commentContent.value;
             const diaryNo = [[${diary.diaryNo}]];
-            const userId = [[${diary.writer.userId}]];
 
             fetch(`/social/diaries/${diaryNo}/comments`, {
                 method: 'POST',
@@ -333,8 +333,10 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(data => {
                 if (data.success) {
-                    // 댓글 추가 성공 시 페이지 새로고침
-                    window.location.href = `/social/users/${userId}/diaries/${diaryNo}`;
+                    addNewComment(data.comment);
+                    commentContent.value = '';
+                    charCount.textContent = '0';
+                    updateCommentCount(1);
                 } else {
                     alert('댓글 작성에 실패했습니다: ' + data.message);
                 }
@@ -359,17 +361,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function deleteComment(commentId, commentElement) {
-        const diaryNo = [[${diary.diaryNo}]];
-        const userId = [[${diary.writer.userId}]];
-
         fetch(`/social/diaries/comments/${commentId}`, {
             method: 'DELETE'
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // 댓글 삭제 성공 시 페이지 새로고침
-                window.location.href = `/social/users/${userId}/diaries/${diaryNo}`;
+                commentElement.remove();
+                updateCommentCount(-1);
+                if (commentsList.children.length === 0) {
+                    showNoCommentsMessage();
+                }
             } else {
                 alert('댓글 삭제에 실패했습니다.');
             }
@@ -377,6 +379,61 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('Error:', error);
             alert('오류가 발생했습니다.');
+        });
+    }
+
+    function addNewComment(comment) {
+        const newCommentHtml = `
+            <div class="diary-comment">
+                <a href="/social/users/${comment.commenter.userId}/profile">
+                    <img class="diary-comment-profile-img" src="/uploadFiles/${comment.commenter.profileImagePath}" alt="프로필 이미지">
+                </a>
+                <div class="diary-comment-content-wrapper">
+                    <div class="diary-comment-meta">
+                        <span class="diary-comment-author">${comment.commenter.nickname}</span>
+                        <span class="diary-comment-date">${formatDate(comment.createdDate)}</span>
+                    </div>
+                    <div class="diary-comment-content">${comment.content.replace(/\n/g, '<br/>')}</div>
+                </div>
+                <button class="btn btn-sm btn-danger diary-delete-comment" data-comment-id="${comment.commentNo}">삭제</button>
+            </div>
+        `;
+
+        if (!commentsList) {
+            commentsList = document.createElement('div');
+            commentsList.className = 'diary-comments-list';
+            const noCommentsDiv = document.querySelector('.diary-no-comments');
+            if (noCommentsDiv) {
+                noCommentsDiv.remove();
+            }
+            document.querySelector('.diary-comments-section').insertBefore(commentsList, commentForm);
+        }
+
+        commentsList.insertAdjacentHTML('afterbegin', newCommentHtml);
+    }
+
+    function updateCommentCount(increment) {
+        const currentCount = parseInt(commentCountSpan.textContent);
+        commentCountSpan.textContent = currentCount + increment;
+    }
+
+    function showNoCommentsMessage() {
+        const noCommentsHtml = '<div class="diary-no-comments">첫 번째 댓글을 작성해보세요! 😎</div>';
+        commentsList.insertAdjacentHTML('beforebegin', noCommentsHtml);
+        commentsList.remove();
+        commentsList = null;
+    }
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
         });
     }
 });

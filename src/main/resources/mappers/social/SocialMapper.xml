@@ -601,7 +601,7 @@
         WHERE c.diary_no = #{diaryNo}
         AND u.withdrawn = 'N'
         AND diary_writer.withdrawn = 'N'
-        ORDER BY c.created_date ASC
+        ORDER BY c.created_date DESC
     </select>
     <!-- 다이어리 댓글 조회: 특정 댓글 번호 -->
     <select id="selectDiaryCommentByNo" parameterType="int" resultMap="diaryCommentResultMap">
