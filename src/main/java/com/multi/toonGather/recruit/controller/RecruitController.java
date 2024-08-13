@@ -810,4 +810,26 @@ public class RecruitController {
         return "recruit/free/pay/bank";
     }
 
+    @GetMapping("/creator/mypage_editCreator")
+    public String editCreator(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) throws Exception {
+        CreatorDTO creatorDTO = creatorService.findInfo(userDetails.getMemNo());
+
+        if (creatorDTO == null) {
+            return "redirect:/recruit/creator/choice";
+        }
+
+        model.addAttribute("creator", creatorDTO);
+        return "recruit/creator/mypage_editCreator";
+    }
+
+    @PostMapping("/creator/mypage_editCreator")
+    public String updateCreator(@AuthenticationPrincipal CustomUserDetails userDetails, @ModelAttribute CreatorDTO creatorDTO) throws Exception {
+        creatorDTO.setMember_no(userDetails.getMemNo());
+        creatorService.updateInfo(creatorDTO);
+
+        return "redirect:/user/my/rct/job";
+
+    }
+
+
 }
