@@ -21,4 +21,9 @@ public class MyCsQuestionDTO {
     private int csQViewCount;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
+
+    //시간 view에 뿌려줄 때
+    public String getFormattedCreatedDate() {
+        return TimeAgoUtils.formatTimeAgo(createdDate);
+    }
 }
