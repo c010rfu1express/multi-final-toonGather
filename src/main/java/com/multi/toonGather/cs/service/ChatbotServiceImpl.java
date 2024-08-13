@@ -27,13 +27,6 @@ public class ChatbotServiceImpl implements ChatbotService{
     @Value("${naver.clova.chatbot.secret}")
     private String secretKey;
 
-    /**
-     * Get welcome message.
-     *
-     * @param userId the member id
-     * @return string string
-     * @since 2024 -08-05
-     */
     @Override
     public String getWelcomeMessage(String userId) {
 
@@ -50,12 +43,6 @@ public class ChatbotServiceImpl implements ChatbotService{
         return chatbotClient.chatbotRequest(signature, request);
     }
 
-    /**
-     * Send message.
-     *
-     * @param userId the user id
-     * @since 2024 -08-05
-     */
     @Override
     public String sendMessage(String userId, String message) {
 

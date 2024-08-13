@@ -87,6 +87,12 @@
         VALUES (#{csQNo}, #{originName}, #{savedName}, NOW(), NOW())
     </insert>
 
+    <update id="updateCsQViewCount" parameterType="int">
+        UPDATE cs_question
+        SET cs_q_view_count = cs_q_view_count + 1
+        WHERE cs_q_no = #{csQNo}
+    </update>
+
     <select id="getQuestionById" parameterType="int" resultMap="questionResultMap">
         SELECT q.*, c.cs_category_desc, s.cs_status_desc, u.nickname
         FROM cs_question q
@@ -95,6 +101,17 @@
         LEFT JOIN users u ON q.cs_q_writer_no = u.user_no
         WHERE q.cs_q_no = #{csQNo} AND u.withdrawn = 'N'
     </select>
+
+    <update id="setCsQStatus" parameterType="int">
+        UPDATE cs_question
+        SET cs_q_status_code =
+            CASE
+                WHEN cs_q_status_code = 'N' THEN 'P'
+                WHEN cs_q_status_code = 'P' THEN 'S'
+                ELSE cs_q_status_code
+            END
+        WHERE cs_q_no = #{csQNo}
+    </update>
 
     <select id="getQuestionFilesByQuestionId" parameterType="int" resultMap="questionFilesResultMap">
         SELECT * FROM cs_question_files WHERE cs_q_no = #{csQNo}
@@ -155,6 +172,12 @@
         VALUES (#{csFaqTitle}, #{csFaqContent}, #{csFaqWriterNo})
     </insert>
 
+    <update id="updateFaqViewCount" parameterType="int">
+        UPDATE cs_faq
+        SET cs_faq_view_count = cs_faq_view_count + 1
+        WHERE cs_faq_no = #{csFaqNo}
+    </update>
+
     <select id="getFaqById" parameterType="int" resultMap="faqResultMap">
         SELECT f.*, u.nickname
         FROM cs_faq f
@@ -178,23 +201,28 @@
         SELECT COUNT(*) FROM cs_question
     </select>
 
-    <select id="countSearchQuestions" resultType="int">
+    <select id="countSearchQuestionsWithStatus" resultType="int">
         SELECT COUNT(*)
         FROM cs_question q
         LEFT JOIN users u ON q.cs_q_writer_no = u.user_no
         LEFT JOIN cs_category c ON q.cs_q_category_code = c.cs_category_code
         WHERE u.withdrawn = 'N'
-        <choose>
+        <if test="searchType != null and searchType != ''">
+            AND <choose>
             <when test="searchType == 'title'">
-                AND q.cs_q_title LIKE CONCAT('%', #{keyword}, '%')
+                q.cs_q_title LIKE CONCAT('%', #{keyword}, '%')
             </when>
             <when test="searchType == 'author'">
-                AND u.nickname LIKE CONCAT('%', #{keyword}, '%')
+                u.nickname LIKE CONCAT('%', #{keyword}, '%')
             </when>
             <when test="searchType == 'category'">
-                AND c.cs_category_desc LIKE CONCAT('%', #{keyword}, '%')
+                c.cs_category_desc LIKE CONCAT('%', #{keyword}, '%')
             </when>
         </choose>
+        </if>
+        <if test="status != null and status != ''">
+            AND q.cs_q_status_code = #{status}
+        </if>
     </select>
 
     <select id="getTotalCountById" parameterType="int" resultType="int">
@@ -202,25 +230,30 @@
         WHERE cs_q_writer_no = #{userNo}
     </select>
 
-    <select id="searchQuestions" resultMap="questionResultMap">
+    <select id="searchQuestionsWithStatus" resultMap="questionResultMap">
         SELECT q.*, c.cs_category_desc, s.cs_status_desc, u.nickname
         FROM cs_question q
         LEFT JOIN cs_category c ON q.cs_q_category_code = c.cs_category_code
         LEFT JOIN cs_status s ON q.cs_q_status_code = s.cs_status_code
         LEFT JOIN users u ON q.cs_q_writer_no = u.user_no
         WHERE u.withdrawn = 'N'
-        <choose>
+        <if test="searchType != null and searchType != ''">
+            AND <choose>
             <when test="searchType == 'title'">
-                AND q.cs_q_title LIKE CONCAT('%', #{keyword}, '%')
+                q.cs_q_title LIKE CONCAT('%', #{keyword}, '%')
             </when>
             <when test="searchType == 'author'">
-                AND u.nickname LIKE CONCAT('%', #{keyword}, '%')
+                u.nickname LIKE CONCAT('%', #{keyword}, '%')
             </when>
             <when test="searchType == 'category'">
-                AND c.cs_category_desc LIKE CONCAT('%', #{keyword}, '%')
+                c.cs_category_desc LIKE CONCAT('%', #{keyword}, '%')
             </when>
         </choose>
-        ORDER BY cs_q_no DESC
+        </if>
+        <if test="status != null and status != ''">
+            AND q.cs_q_status_code = #{status}
+        </if>
+        ORDER BY q.cs_q_no DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
 </mapper>

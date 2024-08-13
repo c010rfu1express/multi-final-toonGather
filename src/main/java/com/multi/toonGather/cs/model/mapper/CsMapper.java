@@ -59,4 +59,20 @@ public interface CsMapper {
                                       @Param("limit") int limit);
 
     void deleteQuestionFileBySavedName(@Param("savedName") String savedName);
+
+    void updateCsQViewCount(int csQNo);
+
+    void updateFaqViewCount(int csFaqNo);
+
+    void setCsQStatus(int csQNo);
+
+    int countSearchQuestionsWithStatus(@Param("searchType") String searchType,
+                                       @Param("keyword") String keyword,
+                                       @Param("status") String status);
+
+    List<QuestionDTO> searchQuestionsWithStatus(@Param("searchType") String searchType,
+                                                @Param("keyword") String keyword,
+                                                @Param("status") String status,
+                                                @Param("offset") int offset,
+                                                @Param("limit") int limit);
 }

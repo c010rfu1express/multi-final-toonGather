@@ -193,6 +193,7 @@ public class CsServiceImpl implements CsService {
 
     @Override
     public FaqDTO getFaqById(int csFaqNo) throws Exception {
+        csMapper.updateFaqViewCount(csFaqNo);
         return csMapper.getFaqById(csFaqNo);
     }
 
@@ -224,5 +225,27 @@ public class CsServiceImpl implements CsService {
     @Override
     public List<QuestionDTO> searchQuestions(String searchType, String keyword, int offset, int pageSize) throws Exception {
         return csMapper.searchQuestions(searchType, keyword, offset, pageSize);
+    }
+
+    @Override
+    public void setCsQStatus(int csQNo) {
+        csMapper.setCsQStatus(csQNo);
+    }
+
+    @Override
+    public void updateCsQViewCount(int csQNo) {
+        csMapper.updateCsQViewCount(csQNo);
+    }
+
+    @Override
+    public int countSearchQuestionsWithStatus(String searchType, String keyword, String status) {
+        System.out.println("CsServiceImpl countSearchQuestionsWithStatus : " + searchType + keyword + status);
+        return csMapper.countSearchQuestionsWithStatus(searchType, keyword, status);
+    }
+
+    @Override
+    public List<QuestionDTO> searchQuestionsWithStatus(String searchType, String keyword, String status, int offset, int pageSize) {
+        System.out.println("CsServiceImpl searchQuestionsWithStatus : " + searchType + keyword + status + offset + pageSize);
+        return csMapper.searchQuestionsWithStatus(searchType, keyword, status, offset, pageSize);
     }
 }
