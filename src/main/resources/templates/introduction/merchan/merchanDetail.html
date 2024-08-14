@@ -48,7 +48,6 @@
             color: #333;
             border: 1px solid #ddd;
             margin-top: 20px;
-            width: 100%;
         }
 
         .like-button:hover {
@@ -116,104 +115,220 @@
             margin-bottom: 10px;
         }
 
+        .search-container {
+            position: relative;
+            width: 300px;
+        }
+        .search-container input[type="text"] {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s, background-color 0.3s;
+            color: #456;
+        }
+        .search-container input[type="text"]::placeholder {
+            color: #456;
+        }
+        .search-container input[type="text"]:focus {
+            border-color: #40bcf4;
+            background-color: #fef4c3;
+        }
+        .search-container button {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .search-container button i {
+            color: #666;
+        }
+        .search-container button:hover i {
+            color: #40bcf4;
+        }
+
+        .detail-images {
+            display: flex; /* 플렉스박스를 사용하여 정렬을 중앙으로 설정 */
+            justify-content: center; /* 중앙 정렬 */
+            flex-wrap: wrap; /* 이미지가 줄 바꿈되도록 설정 */
+            gap: 20px; /* 이미지 사이의 간격 설정 */
+            margin-top: 1px; /* 위쪽 여백 추가 */
+        }
+
+        .detail-images img {
+            max-width: 100%; /* 이미지가 컨테이너 너비를 초과하지 않도록 설정 */
+            height: auto; /* 이미지 비율 유지 */
+        }
+
+        .detail-images-section {
+            text-align: center; /* 중앙 정렬 */
+            margin-top: 40px; /* 제목과 내용 사이의 여백 */
+        }
+
+        .detail-images-title {
+            font-size: 1.5em; /* 제목 크기 조정 */
+            font-weight: bold; /* 제목을 굵게 */
+            color: #445566; /* 제목 색상 */
+            margin-bottom: 1px; /* 제목과 이미지 사이의 여백 */
+            border: 1px solid #445566; /* 테두리 색상과 두께 설정 */
+            display: block; /* 블록으로 표시하여 전체 너비를 차지하도록 함 */
+            width: 850px; /* 콘텐츠의 너비에 맞게 조정 */
+            padding: 10px; /* 테두리와 텍스트 사이의 여백 설정 */
+            border-radius: 1px; /* 테두리 모서리를 둥글게 설정 (옵션) */
+            margin-left: auto; /* 중앙 정렬을 위한 여백 설정 */
+            margin-right: auto; /* 중앙 정렬을 위한 여백 설정 */
+        }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var merchanNo = [[${merchan.merchanNo}]]; // Thymeleaf 변수 값을 JavaScript 변수에 저장
+        var userNo = [[${userNo} != null ? ${userNo} : 'null']]; // Thymeleaf 변수 값을 JavaScript 변수로 저장, userNo 값이 없을 경우 null으로 초기화
+
+        function toggleLike() {
+            if (userNo === null) {
+                alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
+                window.location.href = '/user/login'; // 로그인 페이지 URL로 리다이렉트
+                return;
+            }
+            $.ajax({
+                url: '/introduction/merchan/like',
+                type: 'POST',
+                data: {merchanNo: merchanNo, userNo: userNo},
+                success: function(response) {
+                    $('#likeCount').text(response.likeCount);
+                },
+                error: function(xhr, status, error) {
+                    console.error('좋아요 처리 중 오류가 발생했습니다:', status, error);
+                    alert('좋아요 처리 중 오류가 발생했습니다.');
+                }
+            });
+        }
+    </script>
 </head>
 <body>
 <div th:replace="~{common/menubar}"></div>
 <div th:replace="~{introduction/inMenubar}"></div>
 
-<div class="d-flex justify-content-between mb-3">
-    <div class="d-flex align-items-center">
-        <h2 class="mr-3">상품</h2>
-        <form class="search-container" th:action="@{/introduction/merchan/merchanList}" method="get">
-            <input type="text" placeholder="검색어 입력" name="keyword" th:value="${keyword}" maxlength="20">
-            <button type="submit">
-                <i class="fas fa-search"></i>
-            </button>
-        </form>
-    </div>
-</div>
-
-<!-- 전체 컨텐츠 컨테이너 -->
-<div id="merchan-details-container">
-    <!-- 제목 영역 -->
-    <div class="merchan-header">
-        <h1 class="merchan-title" th:text="${merchan.title}">제목</h1>
-    </div>
-
-    <!-- 상세 페이지 컨텐츠 -->
-    <div id="merchan-details">
-
-        <!-- 왼쪽 영역: 이미지, 좋아요 버튼 -->
-        <div id="merchan-left">
-            <!-- 이미지 갤러리 -->
-<!--            <div th:if="${#lists.size(merchan.merchanFiles) > 0}" class="image-gallery">-->
-<!--                <img th:each="file : ${merchan.merchanFiles}" th:if="${file.fileType.startsWith('image/')}" th:src="@{'/uploadFiles/' + ${file.fileName}}" alt="파일 이미지" />-->
-<!--            </div>-->
-            <!-- 이미지 갤러리 (Bootstrap Carousel) -->
-            <div th:if="${#lists.size(merchan.merchanFiles) > 0}" id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                <ol class="carousel-indicators">
-                    <li th:each="file, iterStat : ${merchan.merchanFiles}" th:classappend="${iterStat.index == 0} ? 'active' : ''" data-target="#carouselExampleIndicators" th:data-slide-to="${iterStat.index}"></li>
-                </ol>
-                <div class="carousel-inner">
-                    <div th:each="file, iterStat : ${merchan.merchanFiles}" th:classappend="${iterStat.index == 0} ? 'active' : ''" class="carousel-item">
-                        <img th:if="${file.fileType.startsWith('image/')}" th:src="@{'/uploadFiles/' + ${file.fileName}}" class="d-block w-100" alt="파일 이미지">
-                    </div>
-                </div>
-                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a>
-            </div>
-
-            <div th:unless="${#lists.size(merchan.merchanFiles) > 0}" class="image-gallery">
-                <img src="/images/introduction/default-thumbnail.png" alt="기본 썸네일 이미지" />
-            </div>
-
-            <!-- 좋아요 버튼-->
-            <button class="like-button">좋아요 <span id="likeCount" th:text="${likeCount}">0</span></button>
-        </div>
-
-        <!-- 오른쪽 영역: 상품 정보, 내용 -->
-        <div id="merchan-right">
-            <!-- 상품 상세 내용 -->
-            <div class="merchan-body">
-
-
-                <dl class="merchan-info">
-                    <dt th:if="${merchan.regularPrice != null}">정가</dt>
-                    <dd th:if="${merchan.regularPrice != null}" th:text="${merchan.formattedRegularPrice} + '원'"></dd>
-
-                    <dt th:if="${merchan.discountPrice != null}">할인가</dt>
-                    <dd th:if="${merchan.discountPrice != null}" th:text="${merchan.formattedDiscountPrice} + '원'"></dd>
-
-                    <dt th:if="${merchan.shippingCost != null}">배송비</dt>
-                    <dd th:if="${merchan.shippingCost != null}" th:text="${merchan.formattedShippingCost} + '원'"></dd>
-
-                    <dt th:if="${merchan.merchanInfo != null and merchan.merchanInfo != ''}">상품 정보</dt>
-                    <dd th:if="${merchan.merchanInfo != null and merchan.merchanInfo != ''}" th:text="${merchan.merchanInfo}" class="merchan-content"></dd>
-
-                    <dt th:if="${merchan.content != null and merchan.content != ''}">판매 사이트</dt>
-                    <dd th:if="${merchan.content != null and merchan.content != ''}" th:text="${merchan.content}" class="merchan-content"></dd>
-
-                    <dt>상세 정보</dt>
-                </dl>
-                <!-- 상세 이미지 표시 영역 -->
-                <div class="detail-images">
-                    <div th:each="file : ${merchan.merchanFiles}" th:if="${file.fileType eq 'detail'}">
-                        <img th:src="@{'/uploadFiles/' + ${file.fileName}}" class="img-fluid" alt="상세 파일 이미지">
-                    </div>
-                </div>
-            </div>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between mb-3">
+        <div class="d-flex align-items-center">
+            <h2 class="mr-3">굿즈&북즈</h2>
+            <form class="search-container" th:action="@{/introduction/merchan/merchanList}" method="get">
+                <input type="text" placeholder="검색어 입력" name="keyword" th:value="${keyword}" maxlength="20">
+                <button type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
         </div>
     </div>
-    <a href="/introduction/merchan/merchanList" class="btn btn-secondary" id="back" style="margin-top: 20px;">돌아가기</a>
-</div>
 
+    <!-- 전체 컨텐츠 컨테이너 -->
+    <div id="merchan-details-container">
+        <!-- 제목 영역 -->
+        <div class="merchan-header">
+            <h1 class="merchan-title" th:text="${merchan.title}">제목</h1>
+        </div>
+
+        <!-- 상세 페이지 컨텐츠 -->
+        <div id="merchan-details">
+
+            <!-- 왼쪽 영역: 이미지, 좋아요 버튼 -->
+            <div id="merchan-left">
+                <!-- 이미지 갤러리 (세로로 나열) -->
+    <!--            <div th:if="${#lists.size(merchan.merchanFiles) > 0}" class="image-gallery">-->
+    <!--                <img th:each="file : ${merchan.merchanFiles}" th:if="${file.fileType.startsWith('image/')}" th:src="@{'/uploadFiles/' + ${file.fileName}}" alt="파일 이미지" />-->
+    <!--            </div>-->
+                <!-- 이미지 갤러리 (Bootstrap Carousel) -->
+                <div th:if="${#lists.size(merchan.merchanFiles) > 0}" id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        <!-- 이미지 파일이 있는 경우에만 인디케이터를 생성 -->
+                        <li th:each="file, iterStat : ${merchan.merchanFiles}"
+                            th:if="${file.fileType.startsWith('image/png')}"
+                            th:classappend="${iterStat.index == 0} ? 'active' : ''"
+                            data-target="#carouselExampleIndicators"
+                            th:data-slide-to="${iterStat.index}"></li>
+                    </ol>
+                    <div class="carousel-inner">
+                        <!-- 이미지 파일이 있는 경우에만 슬라이드 아이템을 생성 -->
+                        <div th:each="file, iterStat : ${merchan.merchanFiles}"
+                             th:if="${file.fileType.startsWith('image/png')}"
+                             th:classappend="${iterStat.index == 0} ? 'active' : ''"
+                             class="carousel-item">
+                            <img th:src="@{'/uploadFiles/' + ${file.fileName}}" class="d-block w-100" alt="파일 이미지">
+                        </div>
+                    </div>
+                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+                <!-- 기본 썸네일 이미지 -->
+                <div th:unless="${#lists.size(merchan.merchanFiles) > 0}" class="image-gallery">
+                    <img src="/images/introduction/default-thumbnail.png" alt="기본 썸네일 이미지" />
+                </div>
+
+                <!-- 좋아요 버튼-->
+                <button onclick="toggleLike()" class="like-button">좋아요 <span id="likeCount" th:text="${likeCount}">0</span></button>
+            </div>
+
+            <!-- 오른쪽 영역: 상품 정보, 내용 -->
+            <div id="merchan-right">
+                <!-- 상품 상세 내용 -->
+                <div class="merchan-body">
+
+
+                    <dl class="merchan-info">
+                        <dt th:if="${merchan.regularPrice != null}">정가</dt>
+                        <dd th:if="${merchan.regularPrice != null}" th:text="${merchan.formattedRegularPrice} + '원'"></dd>
+
+                        <dt th:if="${merchan.discountPrice != null}">할인가</dt>
+                        <dd th:if="${merchan.discountPrice != null}" th:text="${merchan.formattedDiscountPrice} + '원'"></dd>
+
+                        <dt th:if="${merchan.shippingCost != null}">배송비</dt>
+                        <dd th:if="${merchan.shippingCost != null}" th:text="${merchan.formattedShippingCost} + '원'"></dd>
+
+                        <dt th:if="${merchan.merchanInfo != null and merchan.merchanInfo != ''}">상품 정보</dt>
+                        <dd th:if="${merchan.merchanInfo != null and merchan.merchanInfo != ''}" th:text="${merchan.merchanInfo}" class="merchan-content"></dd>
+
+                        <dt th:if="${merchan.content != null and merchan.content != ''}">상품 내용</dt>
+                        <dd th:if="${merchan.content != null and merchan.content != ''}" th:text="${merchan.content}" class="merchan-content"></dd>
+
+                        <dt th:if="${merchan.site != null and merchan.site != ''}">판매 사이트</dt>
+                        <dd th:if="${merchan.site != null and merchan.site != ''}">
+                            <a th:href="${merchan.site}" th:text="${merchan.site}"></a>
+                        </dd>
+
+                    </dl>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="detail-images-section">
+            <div class="detail-images-title">
+                <h2 >상세 정보</h2>
+            </div>
+            <!-- 상세 이미지 표시 영역 -->
+            <div class="detail-images">
+                <div th:each="file : ${merchan.merchanFiles}" th:if="${file.fileType eq 'detail'}">
+                    <img th:src="@{'/uploadFiles/' + ${file.fileName}}" class="img-fluid" alt="상세 파일 이미지">
+                </div>
+            </div>
+        </div>
+
+        <a href="/introduction/merchan/merchanList" class="btn btn-secondary" id="back" style="margin-top: 20px;">돌아가기</a>
+    </div>
+</div>
 <!-- 푸터 -->
 <footer>
     <div th:replace="~{common/footer.html}"></div>

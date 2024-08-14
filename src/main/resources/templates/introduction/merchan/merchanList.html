@@ -234,9 +234,8 @@
                             <a th:href="@{/introduction/merchan/merchanDetail(merchanNo=${merchan.merchanNo})}" class="card-title" th:text="${merchan.title}">상품명</a>
                         </div>
                     </div>
-                    <p class="card-text" th:attr="onclick=|window.location.href='/introduction/merchan/merchanDetail?merchanNo=' + ${merchan.merchanNo};|" style="cursor: pointer;"></p>
-                    <p class="bold-text inline-block" th:text="${merchan.formattedDiscountPrice} + '원'" style="margin-right: 7px;">할인가(판매가)</p>
-                    <p class="text-muted strikethrough inline-block" th:if="${merchan.regularPrice != null}" th:text="${merchan.formattedRegularPrice} + '원'">정가</p>
+                    <p class="bold-text inline-block" th:text="${merchan.formattedDiscountPrice} + '원'" style="margin-right: 7px; cursor: pointer; " th:attr="onclick=|window.location.href='/introduction/merchan/merchanDetail?merchanNo=' + ${merchan.merchanNo};|" >할인가(판매가)</p>
+                    <p class="text-muted strikethrough inline-block" th:if="${merchan.regularPrice != null}" th:text="${merchan.formattedRegularPrice} + '원'" th:attr="onclick=|window.location.href='/introduction/merchan/merchanDetail?merchanNo=' + ${merchan.merchanNo};|" style="cursor: pointer;">정가</p>
 
                 </div>
             </div>

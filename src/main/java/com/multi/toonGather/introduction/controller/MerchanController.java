@@ -67,6 +67,7 @@ public class MerchanController {
                                 @RequestParam(value = "shippingCost", required = false) Integer shippingCost,
                                 @RequestParam("merchanInfo") String merchanInfo,
                                 @RequestParam("content") String content,
+                                @RequestParam("site") String site,
                                 @RequestParam("images") MultipartFile[] images,
                                 @RequestParam("detailImages") MultipartFile[] detailImages,
                                 HttpServletRequest request) {
@@ -78,6 +79,7 @@ public class MerchanController {
             merchanDTO.setShippingCost(shippingCost);
             merchanDTO.setMerchanInfo(merchanInfo);
             merchanDTO.setContent(content);
+            merchanDTO.setSite(site);
             merchanDTO.setPostingDate(LocalDateTime.now());
 
             boolean isSuccess = merchanService.insertMerchan(merchanDTO, images, detailImages, request);
@@ -111,6 +113,7 @@ public class MerchanController {
                                 @RequestParam(value = "shippingCost", required = false) Integer shippingCost,
                                 @RequestParam("merchanInfo") String merchanInfo,
                                 @RequestParam("content") String content,
+                                @RequestParam("site") String site,
                                 @RequestParam("images") MultipartFile[] images,
                                 @RequestParam("detailImages") MultipartFile[] detailImages,
                                 @RequestParam(value = "existingImages", required = false) List<String> existingImages,
@@ -126,6 +129,7 @@ public class MerchanController {
         merchan.setShippingCost(shippingCost);
         merchan.setMerchanInfo(merchanInfo);
         merchan.setContent(content);
+        merchan.setSite(site);
 
         boolean isSuccess = merchanService.updateMerchan(merchan, existingImages, removedImages, images, existingDetailImages, removedDetailImages, detailImages, request);
         if (isSuccess) return "redirect:/introduction/merchan/merchanList";

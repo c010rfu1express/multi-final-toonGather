@@ -15,6 +15,7 @@ public class MerchanDTO {
     private Integer shippingCost;        // 배송비 (null 가능)
     private String merchanInfo;      // 상품 정보
     private String content;          // 상품 내용
+    private String site;             // 관련 웹사이트
     private LocalDateTime postingDate; // 게시 일시
 
     private List<MerchanFileDTO> merchanFiles;

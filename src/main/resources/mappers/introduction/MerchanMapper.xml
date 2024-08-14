@@ -12,6 +12,7 @@
         <result property="shippingCost" column="shipping_cost"/>
         <result property="merchanInfo" column="merchan_info"/>
         <result property="content" column="content"/>
+        <result property="site" column="site"/>
         <result property="postingDate" column="posting_date"/>
         <collection property="merchanFiles" ofType="com.multi.toonGather.introduction.model.dto.MerchanFileDTO">
             <id property="merchanFileNo" column="merchan_file_no"/>
@@ -43,7 +44,7 @@
 
     <!-- Select all merchans with pagination -->
     <select id="selectAllMerchans" parameterType="map" resultMap="merchanResultMap">
-        SELECT merchan_no, title, regular_price, discount_price, shipping_cost, merchan_info, content, posting_date
+        SELECT merchan_no, title, regular_price, discount_price, shipping_cost, merchan_info, content, site, posting_date
         FROM in_merchan
         ORDER BY posting_date DESC
         LIMIT #{limit} OFFSET #{offset}
@@ -62,8 +63,8 @@
     </select>
 
     <insert id="insertMerchan" parameterType="com.multi.toonGather.introduction.model.dto.MerchanDTO" useGeneratedKeys="true" keyProperty="merchanNo">
-        INSERT INTO in_merchan (title, content, regular_price, discount_price, shipping_cost, merchan_info, posting_date)
-        VALUES (#{title}, #{content}, #{regularPrice}, #{discountPrice}, #{shippingCost}, #{merchanInfo}, NOW());
+        INSERT INTO in_merchan (title, content, regular_price, discount_price, shipping_cost, merchan_info, site, posting_date)
+        VALUES (#{title}, #{content}, #{regularPrice}, #{discountPrice}, #{shippingCost}, #{merchanInfo}, #{site}, NOW());
     </insert>
 
     <insert id="insertMerchanFile" parameterType="com.multi.toonGather.introduction.model.dto.MerchanFileDTO">
@@ -73,7 +74,7 @@
 
     <!-- Select a specific merchan by number -->
     <select id="selectMerchanByNo" parameterType="int" resultMap="merchanResultMap">
-        SELECT merchan_no, title, regular_price, discount_price, shipping_cost, merchan_info, content, posting_date
+        SELECT merchan_no, title, regular_price, discount_price, shipping_cost, merchan_info, content, site, posting_date
         FROM in_merchan
         WHERE merchan_no = #{merchanNo}
     </select>
@@ -124,6 +125,7 @@
         discount_price = #{discountPrice},
         shipping_cost = #{shippingCost},
         merchan_info = #{merchanInfo},
+        site = #{site},
         posting_date = #{postingDate}
         WHERE merchan_no = #{merchanNo}
     </update>
