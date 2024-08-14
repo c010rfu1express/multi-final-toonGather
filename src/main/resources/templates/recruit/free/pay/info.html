@@ -67,30 +67,40 @@
   <div class="container mt-5">
     <div class="choice">
       <div class="text-header">
-        <h2 class="text-center mb-0">프리랜서 게시글 작성</h2>
+        <h2 class="text-center mb-0">창작자 정보 등록</h2>
       </div>
       <div class="text-body">
-        <form action="#" th:action="@{/recruit/free/insert}" th:object="${free}" id="form" method="post" enctype="multipart/form-data">
+        <form action="#" th:action="@{/recruit/free/pay/info}" th:object="${creator}" id="form" method="post">
           <div class="form-group">
-            <label for="title">제목 *</label>
-            <input type="text" id="title" name="title" th:field="*{title}" class="form-control" required maxlength='50'>
+            <label for="kakao">카카오페이</label>
+            <input id="kakao" name="kakao" type="text" class="form-control" placeholder="포트원 PG사명.CID 형식으로 입력해주세요">
           </div>
           <div class="form-group">
-            <label for="content">내용 *</label>
-            <textarea id="content" name="content" th:field="*{content}" class="form-control" rows="5" required maxlength="1000"></textarea>
+            <label for="inicis">KG이니시스</label>
+            <input id="inicis" name="inicis" type="text" class="form-control" placeholder="포트원 PG사명.CID 형식으로 입력해주세요">
           </div>
           <div class="form-group">
-            <label for="singleFile">이미지</label>
-            <input type="file" name="singleFile" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="price">가격 *</label>
-            <input id="price" name="price" type="number" class="form-control" required value="1" min="1">
-          </div>
-          <div class="form-group">
-            <label for="contact">판매자 연락처 *</label>
-            <input type="text" id="contact" name="contact" th:field="*{contact}" class="form-control" required>
-            <small class="form-text text-muted">전화번호 또는 이메일 중 선호하는 형식으로 작성해 주세요.</small>
+            <label for="bank_name">무통장 입금 *</label>
+            <div style="display: flex; align-items: center;">
+              <select id="bank_name" name="bank_name" class="form-control" style="width: 200px;" required>
+                <option value="" disabled selected>은행을 선택하세요</option>
+                <option value="국민은행">국민은행</option>
+                <option value="신한은행">신한은행</option>
+                <option value="우리은행">우리은행</option>
+                <option value="하나은행">하나은행</option>
+                <option value="기업은행">기업은행</option>
+                <option value="농협은행">농협은행</option>
+                <option value="대구은행">대구은행</option>
+                <option value="부산은행">부산은행</option>
+                <option value="광주은행">광주은행</option>
+                <option value="전북은행">전북은행</option>
+                <option value="제주은행">제주은행</option>
+                <option value="카카오뱅크">카카오뱅크</option>
+                <option value="토스뱅크">토스뱅크</option>
+                <option value="SC제일은행">SC제일은행</option>
+              </select>
+              <input id="account" name="account" type="text" class="form-control" required maxlength="20" placeholder="계좌번호를 입력해주세요">
+            </div>
           </div>
           <div class="form-group text-right">
             <br>
@@ -99,6 +109,11 @@
           </div>
         </form>
       </div>
+    </div>
+    <div class="info-text">
+      <br> <br>
+      창작자 정보를 등록하시면 프리랜서 게시판에서 새로운 글을 작성하실 수 있습니다. <br>
+      등록된 정보는 마이페이지에서 언제든지 수정 가능합니다.
     </div>
   </div>
 </div>

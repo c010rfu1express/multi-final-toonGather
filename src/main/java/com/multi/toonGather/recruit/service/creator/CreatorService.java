@@ -8,4 +8,8 @@ public interface CreatorService {
     void insertCreator(CreatorDTO creatorDTO) throws Exception;
 
     void updateMember(int member_no) throws Exception;
+
+    void updateInfo(CreatorDTO creatorDTO) throws Exception;
+
+    CreatorDTO findInfo(int writer) throws Exception;
 }

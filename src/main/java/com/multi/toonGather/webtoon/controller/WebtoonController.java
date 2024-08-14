@@ -48,6 +48,58 @@ public class WebtoonController {
             LocalDate today = LocalDate.now();
             LocalDate dateOfBirth= c.getUserDTO().getDateOfBirth();
             model.addAttribute("isLoggedAge",Period.between(dateOfBirth, today).getYears());
+            UserDTO userDTO=c.getUserDTO();
+
+            List<WebtoonDTO> webtoonDTOList=webToonService.webtoonUserBest(userDTO);
+
+            Map<String, Long> genreCountMap = webtoonDTOList.stream()
+                    .flatMap(webtoon -> Arrays.stream(webtoon.getGenre().split("_"))  // 장르 추출
+                            .filter(genre -> genre != null && !genre.isEmpty()&&!genre.equalsIgnoreCase("all")))  // 빈 문자열 필터링
+                    .collect(Collectors.groupingBy(genre -> genre, Collectors.counting()));  // 그룹화 및 개수 집계
+
+            // 가장 많이 나타나는 장르 찾기
+            List<Map.Entry<String, Long>> topGenres = genreCountMap.entrySet().stream()
+                    .sorted(Map.Entry.<String, Long>comparingByValue().reversed())  // 빈도 수 기준으로 내림차순 정렬
+                    .limit(2)  // 상위 두 개 항목 선택
+                    .collect(Collectors.toList());
+
+            Map<String, Long> tagCountMap = webtoonDTOList.stream()
+                    .flatMap(dto -> Arrays.stream(dto.getTags().split("[#/ ]")))  // 태그 문자열 분열
+                    .filter(tag -> !tag.isEmpty())  // 빈 문자열 필터링
+                    .collect(Collectors.groupingBy(tag -> tag, Collectors.counting()));  // 그룹화 및 개수 집계
+
+            // 빈도 수 기준으로 상위 두 개 태그 찾기
+            List<Map.Entry<String, Long>> topTags = tagCountMap.entrySet().stream()
+                    .sorted(Map.Entry.<String, Long>comparingByValue().reversed())  // 빈도 수 기준으로 내림차순 정렬
+                    .limit(2)  // 상위 두 개 항목 선택
+                    .collect(Collectors.toList());
+
+
+            if (topGenres.isEmpty()) {
+                webtoonDTOList=webToonService.webtoonBest();
+                model.addAttribute("webtoonSelect",webtoonDTOList);
+            } else {
+                TagPageDTO dto=new TagPageDTO();
+                for (int i = 0; i < topTags.size(); i++) {
+                    Map.Entry<String, Long> tage = topTags.get(i);
+                    Map.Entry<String, Long> Genre = topGenres.get(i);
+                    if(i==0){
+                        dto.setTag1(tage.getKey());
+                        dto.setGenre1(Genre.getKey());
+                    }
+                    if(i==1){
+                        dto.setTag2(tage.getKey());
+                        dto.setGenre2(Genre.getKey());
+                    }
+                    if(topGenres.size()<2)break;
+                }
+                webtoonDTOList=webToonService.recommendWebtoon(dto);
+
+                model.addAttribute("webtoonSelect",webtoonDTOList);
+            }
+
+
+
         }else {
             model.addAttribute("isLoggedAge",0);
            List<WebtoonDTO> webtoonDTOList=webToonService.webtoonBest();
@@ -90,8 +142,6 @@ public class WebtoonController {
 
 
         try {
-
-
             resultDTO=webToonService.WebToonSelectOne(webtoonDTO1);
             if(resultDTO==null){
                 if(webtoonDTO1.getPlatform()==1){
@@ -99,10 +149,8 @@ public class WebtoonController {
                 }else {
                     webtoonDTO1=kkao(webtoonDTO1);
                 }
-
                 webToonService.webToonInsert(webtoonDTO1);
                 resultDTO=webToonService.WebToonSelectOne(webtoonDTO1);
-
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -194,6 +242,24 @@ public class WebtoonController {
 
             int count=webToonService.countWebtoon(tagPageDTO);
             int totalPages=count/50+1;
+
+            int visibleRange = 10; // 표시할 페이지 버튼 수
+
+            // Calculate start and end page based on current page
+            int startPage = Math.max(1, tagPageDTO.getPage() - (visibleRange / 2));
+            int endPage = Math.min(totalPages, startPage+visibleRange-1);
+
+            if (endPage - startPage + 1 < visibleRange) {
+                if (startPage > 1) {
+                    endPage = Math.min(totalPages, endPage + (visibleRange - (endPage - startPage + 1)));
+                } else {
+                    startPage = Math.max(1, endPage - visibleRange + 1);
+                }
+            }
+
+            model.addAttribute("startPage", startPage);
+            model.addAttribute("endPage", endPage);
+
             model.addAttribute("totalPages", totalPages);
             model.addAttribute("currentPage", tagPageDTO.getPage());
             if(tagPageDTO.getPage()==0){

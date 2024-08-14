@@ -11,4 +11,6 @@ public interface PageService {
     int selectFreeCount(PageDTO pageDTO) throws Exception;
 
     int selectReportCount(PageDTO pageDTO) throws Exception;
+
+    int selectOpenCount(PageDTO pageDTO) throws Exception;
 }

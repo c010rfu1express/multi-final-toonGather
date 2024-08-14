@@ -11,4 +11,8 @@ public class CreatorDTO {
     private String status;
     private String type_code;
     private String regist_no;
+    private String kakao_pg;
+    private String inicis_pg;
+    private String bank_name;
+    private String account;
 }

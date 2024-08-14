@@ -114,4 +114,18 @@
 		WHERE b.apply_no = #{no}
 	</select>
 
+	<select id="selectOpenAll" parameterType="pageDTO" resultMap="JobResultMap">
+		SELECT
+		b.*
+		, m.user_no
+		, m.nickname
+		FROM rct_job b
+		JOIN users m ON b.writer = m.user_no
+		WHERE b.dead_line IS NULL OR b.dead_line >= CURDATE()
+		<if test="page != null">
+			ORDER BY b.board_no DESC
+			LIMIT #{start}, 10
+		</if>
+	</select>
+
 </mapper>
