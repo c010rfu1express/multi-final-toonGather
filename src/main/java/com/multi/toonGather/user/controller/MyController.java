@@ -5,6 +5,7 @@ import com.multi.toonGather.security.CustomUserDetails;
 import com.multi.toonGather.security.CustomUserDetailsService;
 import com.multi.toonGather.user.model.dto.*;
 import com.multi.toonGather.user.service.MyService;
+import com.multi.toonGather.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +24,7 @@ import java.util.List;
 public class MyController {
 
     private final MyService myService;
+    private final UserService userService;
     private final CustomUserDetailsService customUserDetailsService;
 
 //    //KHG20
@@ -32,10 +34,10 @@ public class MyController {
 //    }
 
     //DEFAULT
-    @GetMapping("")
-    public String redirectToMy() {
-        return "redirect:/user/my/wt/webtoon";
-    }
+//    @GetMapping("")
+//    public String redirectToMy() {
+//        return "redirect:/user/my/wt/webtoon";
+//    }
 
     //KHG20
     @GetMapping("/wt/webtoon")
@@ -674,5 +676,33 @@ public class MyController {
         model.addAttribute("searchBy", searchBy);
         model.addAttribute("searchTerm", searchTerm);
         return "/user/mypage_cs";
+    }
+
+    //KHG90 : 마이페이지 대시보드
+    @GetMapping("")
+    public String myDashboard(@AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
+        ///
+        int userNo = c.getUserDTO().getUserNo();
+        UserDTO userDTO = userService.getProfile(userNo);
+        model.addAttribute("user", userDTO);
+
+        //대시보드에 필요한 수치들 가지고오기
+        MyDashboardDTO myDashboardDTO = myService.getMyDashboard(userNo);
+        model.addAttribute("dashboard", myDashboardDTO);
+
+        // pageDTO 세팅(start, end, page) : RequestParam인 page에 의해 모든 것이 결정됨, N=10고정
+        int N = 6;
+        PageNDTO pageNDTO = new PageNDTO();
+        pageNDTO.setPage(1);
+        pageNDTO.setStartEnd(pageNDTO.getPage(), N);
+
+        List<MyWtWebtoonDTO> myWtWebtoons = myService.getMyWtWebtoons(userNo, "recent", "comment", "", pageNDTO);
+        List<MyWtCommentDTO> myWtComments = myService.getMyWtComments(userNo, "recent", "comment", "", pageNDTO);
+        model.addAttribute("myWtWebtoons", myWtWebtoons);
+        model.addAttribute("myWtComments", myWtComments);
+
+        ////////
+//        model.addAttribute("isToggled", toggle);
+        return "/user/mypage_dashboard";
     }
 }

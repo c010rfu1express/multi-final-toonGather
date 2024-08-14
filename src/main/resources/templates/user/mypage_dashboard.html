@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html layout:decorate="~{layout}">
+<head>
+    <title>KHG51: 마이페이지-나의소식-좋아요한행사</title>
+    <meta charset="UTF-8">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- 폰트: 'Noto Sans KR' 사용 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+    <!-- 프로젝트 툰게더 전용 css 스타일 시트 -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function($) {
+            $(".clickable-row").click(function() {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
+    <style>
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .review-list {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .webtoon-info {
+            display: flex;
+            align-items: center;
+        }
+        .webtoon-image {
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .webtoon-details {
+            display: flex;
+            flex-direction: column;
+        }
+        .rating {
+            color: #f39c12;
+        }
+        .clickable-row {
+            cursor: pointer;
+        }
+        .clickable-row:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
+    <style>
+        .navbar {
+          position: fixed;
+          z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+<div id="menubar" th:replace="~{common/menubar}"></div>
+<style>
+    .jumbotron {
+    position : relative;
+    background-color : #EEEEEE;
+    }
+    .jumbotron .row {
+    position : absolute;
+    width : 100%;
+    bottom: 0%;
+    }
+    .nav-link {
+            color: #828282;
+    }
+    ul {
+  list-style: none;
+  padding-left : 0px;
+  }
+
+    .profile-image {
+    width: 100px;
+    height: auto;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+    }
+</style>
+<div class="jumbotron mb-0">
+        <div class="row justify-content-center m-0" style="color: #828282;">
+            <div class="col-12 m-0">
+                <div class="row justify-content-center m-0">
+                    <div class="col-3">
+                        <div class="row p-2">
+                            <div class="col-4 m-0 p-0" id="profileimagebox">
+                                <img th:if="${user.profileImagePath == null}" th:src="/images/defaultprofileimage.png" style="width: 100px; height: auto;" class="profile-image"/>
+                                <img th:if="${user.profileImagePath != null}" th:src="@{/uploadFiles/{fileName}(fileName=${user.profileImagePath})}" style="width: 100px; height: auto;" class="profile-image"/>
+                            </div>
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="col-12"><h3 th:text="${user.getNickname()} + '님의 '"></h3></div>
+                                    <div class="col-12"><h3>툰게더 활동내역은?</h3></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <nav class="navbar navbar-expand-md">
+                            <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+                                <li><a th:href="@{/user/my/cs}" class="nav-link px-2">나의 문의</a></li>
+                                <li><a th:href="@{/user/my/editprofile}" class="nav-link px-2">프로필 수정</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+<div class="row m-0">
+    <style>
+        .form-select {
+        background-color : #FCFCFC;
+        border : none;
+        width : 100%;
+        height : 50px;
+        }
+        select {
+        color : #828282;
+        }
+        .form-control {
+        background-color : #FCFCFC;
+        border : none;
+        width : 100%;
+        height : 50px;
+        }
+
+
+        .form-control::placeholder {
+        color : #BBBBBB;
+        }
+
+        .date-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #8E4B6E;
+    color: white;
+    border-radius: 10px;
+    text-align:center;
+    font-family: "Work Sans", sans-serif;
+}
+
+.month {
+    font-size: 1.1rem; /* M의 크기를 설정 */
+    font-weight: 550;
+    line-height: 1;
+}
+
+.year {
+    font-size: 0.65rem; /* yyyy의 크기를 설정 */
+    font-weight: 400;
+}
+:root {
+    --background-color-light: #FFFFFF;
+    --text-color-light: #000000;
+    --toggle-background-light: #CCCCCC;
+    --toggle-ball-light: #FFFFFF;
+
+    --background-color-dark: #333333;
+    --text-color-dark: #FFFFFF;
+    --toggle-background-dark: #03C75A;
+    --toggle-ball-dark: #FFFFFF;
+
+    --font-size-base: 32px; /* 기본 텍스트 크기 */
+    --font-size-large: 52px; /* 제목 등 큰 텍스트용 폰트 크기 */
+}
+
+
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 62px; /* 너비 조정 */
+    height: 38px; /* 높이 조정 */
+}
+
+.toggle-switch .checkbox {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+#isToggledCheckbox {
+     opacity: 0;
+        width: 0;
+        height: 0;
+}
+
+.toggle-switch .label {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--toggle-background-light);
+    transition: background-color 0.4s;
+    border-radius: 38px; /* 둥근 모서리 반경 조정 */
+}
+
+.toggle-switch .label:before {
+    position: absolute;
+    content: "";
+    height: 30px; /* 내부 원 높이 조정 */
+    width: 30px; /* 내부 원 너비 조정 */
+    left: 2px;
+    bottom: 0px;
+    background-color: var(--toggle-ball-light);
+    transition: transform 0.4s;
+    border-radius: 50%;
+}
+
+.toggle-switch input:checked + .label {
+    background-color: var(--toggle-background-dark);
+}
+
+.toggle-switch input:checked + .label:before {
+    transform: translateX(28px); /* 내부 원 이동 거리 조정 */
+}
+
+         #absdiv {
+            position: relative;
+            top: 60px; /* Move down by 20px from its current position */
+            z-index : 1000;
+        }
+
+        #searchbutton {
+            background-color: #828282;
+        }
+
+        .card-img-top {
+                width: 100%;
+                height: 100px;
+                object-fit: cover;
+            }
+
+        #blockA .col-12 {background-color: rgb(255,240,245);}
+        #blockB .col-12 {background-color: rgb(237,254,223);}
+        #blockC .col-12 {background-color: rgb(234,248,255);}
+        #blockD .col-12 {background-color: rgb(255,250,227);}
+    </style>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <div class="col-md-12 m-0">
+        <div class="row justify-content-center m-0" style="color: #828282;">
+            <div class="col-12 m-0">
+                <div class="row justify-content-center m-0" style="">
+                    <div id="blockA" class="col-5 mx-3 my-1 p-3">
+                        <div class="row justify-content-center">
+                            <div class="col-12 py-4" style="border-radius: 15px;">
+                                <div class="row justify-content-around mt-2 mb-5" style="text-align: center;">
+                                    <h1>나의 웹툰</h1>
+                                    <h3 th:text="'북마크한 웹툰 ' + ${dashboard.wtWebtoon} + '개 '"></h3>
+                                    <h3 th:text="'웹툰 코멘트 ' + ${dashboard.wtComment} + '개 '"></h3>
+                                    <h3 th:text="'좋아요한 리뷰 ' + ${dashboard.soReview} + '개 '"></h3>
+                                    <h3 th:text="'다이어리 댓글 ' + ${dashboard.soDiary} + '개 '"></h3>
+                                    <h3 th:text="'지원 공고 ' + ${dashboard.rctJob} + '건 '"></h3>
+                                    <h3 th:text="'프리랜서 아이템 ' + ${dashboard.rctFree} + '개 '"></h3>
+                                    <h3 th:text="'좋아요한 소식 ' + ${dashboard.inJournal} + '개 '"></h3>
+                                    <h3 th:text="'좋아요한 행사 ' + ${dashboard.inEvent} + '개 '"></h3>
+                                    <h3 th:text="'좋아요한 굿즈 ' + ${dashboard.inMerchan} + '개 '"></h3>
+                                    <h3 th:text="'문의 ' + ${dashboard.cs} + '건 '"></h3>
+                                </div>
+                                <div class="row justify-content-around mt-5 mb-5">
+                                    <div class="col-5 clickable-row" th:style="|background-color: white; border-radius: 15px; padding: 1.5rem 1.2rem; background-image: url('${myWtWebtoons.get(0).thumbnailUrl}'); background-size: cover; background-position: center;|">
+                                        <div class="row justify-content-center">
+                                            <div class="col-2 p-0 d-flex align-items-center justify-content-center" style="aspect-ratio: 1; border-radius: 5px;">
+                                                <div class="date-container px-2 py-1">
+                                                    <div class="month">8</div>
+                                                    <div class="year" >2024</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-5" style="color: #333333; font-size: 0.8rem; font-weight: 530;">닉네임
+                                            </div>
+
+                                            <div class="col-3" style="padding: 0; font-size: 0.8rem; text-align: right; color: #BDBDBD;">시간</div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="col-12 my-3" style="">
+                                                <!-- 썸네일 이미지 없을때 : 기본 썸네일 이미지 -->
+                                                <!--                                        <img th:unless="${#lists.size(event.eventFiles) > 0}" src="/images/introduction/default-thumbnail.png" class="card-img-top" alt="기본 썸네일 이미지">-->
+                                                <!-- 썸네일 이미지 있을때  -->
+                                                <!--                                        <img th:if="${#lists.size(myInEvent.eventFiles) > 0}" th:src="@{/uploadFiles/{fileName}(fileName=${myInEvent.eventFiles.get(0).fileName})}" class="card-img-top" alt="썸네일 이미지">-->
+                                            </div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333333; font-size: 1.05rem; font-weight: 530;" >이름</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;"></div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; ">내용</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;"></div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; " >내용2</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;"></div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-5 clickable-row" th:style="|background-color: white; border-radius: 15px; padding: 1.5rem 1.2rem; background-image: url('${myWtComments.get(0).thumbnailUrl}'); background-size: cover; background-position: center;|">
+                                        <div class="row justify-content-center">
+                                            <div class="col-2 p-0 d-flex align-items-center justify-content-center" style="aspect-ratio: 1; border-radius: 5px;">
+                                                <div class="date-container px-2 py-1">
+                                                    <div class="month">8</div>
+                                                    <div class="year" >2024</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-5" style="color: #333333; font-size: 0.8rem; font-weight: 530;">닉네임
+                                            </div>
+
+                                            <div class="col-3" style="padding: 0; font-size: 0.8rem; text-align: right; color: #BDBDBD;">시간</div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="col-12 my-3" style="">
+                                                <!-- 썸네일 이미지 없을때 : 기본 썸네일 이미지 -->
+                                                <!--                                        <img th:unless="${#lists.size(event.eventFiles) > 0}" src="/images/introduction/default-thumbnail.png" class="card-img-top" alt="기본 썸네일 이미지">-->
+                                                <!-- 썸네일 이미지 있을때  -->
+                                                <!--                                        <img th:if="${#lists.size(myInEvent.eventFiles) > 0}" th:src="@{/uploadFiles/{fileName}(fileName=${myInEvent.eventFiles.get(0).fileName})}" class="card-img-top" alt="썸네일 이미지">-->
+                                            </div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333333; font-size: 1.05rem; font-weight: 530;" >이름</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;"></div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; ">내용</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;"></div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; " >내용2</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;"></div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- A BLOCK -->
+                    </div>
+                    <div id="blockB" class="col-5 mx-3 my-1 p-3">
+                        <div class="row justify-content-center">
+                            <div class="col-12 py-4" style="border-radius: 15px;">
+                                <div class="row justify-content-around mt-2 mb-5" style="text-align: center;">
+                                    <h1>나의 소셜</h1>
+                                </div>
+                                <div class="row justify-content-around mt-5 mb-5">
+                                    <div class="col-3 clickable-row" style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;">
+                                        <div class="row justify-content-center">
+                                            <div class="col-2 p-0 d-flex align-items-center justify-content-center" style="aspect-ratio: 1; border-radius: 5px;">
+                                                <div class="date-container px-2 py-1">
+                                                    <div class="month">8</div>
+                                                    <div class="year" >2024</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-5" style="color: #333333; font-size: 0.8rem; font-weight: 530;">닉네임
+                                            </div>
+
+                                            <div class="col-3" style="padding: 0; font-size: 0.8rem; text-align: right; color: #BDBDBD;">시간</div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="col-12 my-3" style="">
+                                                <!-- 썸네일 이미지 없을때 : 기본 썸네일 이미지 -->
+                                                <!--                                        <img th:unless="${#lists.size(event.eventFiles) > 0}" src="/images/introduction/default-thumbnail.png" class="card-img-top" alt="기본 썸네일 이미지">-->
+                                                <!-- 썸네일 이미지 있을때  -->
+                                                <!--                                        <img th:if="${#lists.size(myInEvent.eventFiles) > 0}" th:src="@{/uploadFiles/{fileName}(fileName=${myInEvent.eventFiles.get(0).fileName})}" class="card-img-top" alt="썸네일 이미지">-->
+                                            </div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333333; font-size: 1.05rem; font-weight: 530;" >이름</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;"></div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; ">내용</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;"></div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; " >내용2</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;">→</div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-3 clickable-row" style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;">
+                                        <div class="row justify-content-center">
+                                            <div class="col-2 p-0 d-flex align-items-center justify-content-center" style="aspect-ratio: 1; border-radius: 5px;">
+                                                <div class="date-container px-2 py-1">
+                                                    <div class="month">8</div>
+                                                    <div class="year" >2024</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-5" style="color: #333333; font-size: 0.8rem; font-weight: 530;">닉네임
+                                            </div>
+
+                                            <div class="col-3" style="padding: 0; font-size: 0.8rem; text-align: right; color: #BDBDBD;">시간</div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="col-12 my-3" style="">
+                                                <!-- 썸네일 이미지 없을때 : 기본 썸네일 이미지 -->
+                                                <!--                                        <img th:unless="${#lists.size(event.eventFiles) > 0}" src="/images/introduction/default-thumbnail.png" class="card-img-top" alt="기본 썸네일 이미지">-->
+                                                <!-- 썸네일 이미지 있을때  -->
+                                                <!--                                        <img th:if="${#lists.size(myInEvent.eventFiles) > 0}" th:src="@{/uploadFiles/{fileName}(fileName=${myInEvent.eventFiles.get(0).fileName})}" class="card-img-top" alt="썸네일 이미지">-->
+                                            </div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333333; font-size: 1.05rem; font-weight: 530;" >이름</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;"></div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; ">내용</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;"></div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; " >내용2</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;">→</div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-3 clickable-row" style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;">
+                                        <div class="row justify-content-center">
+                                            <div class="col-2 p-0 d-flex align-items-center justify-content-center" style="aspect-ratio: 1; border-radius: 5px;">
+                                                <div class="date-container px-2 py-1">
+                                                    <div class="month">8</div>
+                                                    <div class="year" >2024</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-5" style="color: #333333; font-size: 0.8rem; font-weight: 530;">닉네임
+                                            </div>
+
+                                            <div class="col-3" style="padding: 0; font-size: 0.8rem; text-align: right; color: #BDBDBD;">시간</div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="col-12 my-3" style="">
+                                                <!-- 썸네일 이미지 없을때 : 기본 썸네일 이미지 -->
+                                                <!--                                        <img th:unless="${#lists.size(event.eventFiles) > 0}" src="/images/introduction/default-thumbnail.png" class="card-img-top" alt="기본 썸네일 이미지">-->
+                                                <!-- 썸네일 이미지 있을때  -->
+                                                <!--                                        <img th:if="${#lists.size(myInEvent.eventFiles) > 0}" th:src="@{/uploadFiles/{fileName}(fileName=${myInEvent.eventFiles.get(0).fileName})}" class="card-img-top" alt="썸네일 이미지">-->
+                                            </div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333333; font-size: 1.05rem; font-weight: 530;" >이름</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;"></div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; ">내용</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;"></div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; " >내용2</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;">→</div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- A BLOCK -->
+                    </div>
+                </div> <!-- A ROW -->
+                <div class="row justify-content-center m-0" style="">
+                    <div id="blockC" class="col-5 mx-3 my-1 p-3">
+                        <div class="row justify-content-center">
+                            <div class="col-12 py-4" style="border-radius: 15px;">
+                                <div class="row justify-content-around mt-5 mb-5">
+                                    <div class="col-11 clickable-row" style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;">
+                                        <div class="row justify-content-center">
+                                            <div class="col-2 p-0 d-flex align-items-center justify-content-center" style="aspect-ratio: 1; border-radius: 5px;">
+                                                <div class="date-container px-2 py-1">
+                                                    <div class="month">8</div>
+                                                    <div class="year" >2024</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-5" style="color: #333333; font-size: 0.8rem; font-weight: 530;">닉네임
+                                            </div>
+
+                                            <div class="col-3" style="padding: 0; font-size: 0.8rem; text-align: right; color: #BDBDBD;">시간</div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="col-12 my-3" style="">
+                                                <!-- 썸네일 이미지 없을때 : 기본 썸네일 이미지 -->
+                                                <!--                                        <img th:unless="${#lists.size(event.eventFiles) > 0}" src="/images/introduction/default-thumbnail.png" class="card-img-top" alt="기본 썸네일 이미지">-->
+                                                <!-- 썸네일 이미지 있을때  -->
+                                                <!--                                        <img th:if="${#lists.size(myInEvent.eventFiles) > 0}" th:src="@{/uploadFiles/{fileName}(fileName=${myInEvent.eventFiles.get(0).fileName})}" class="card-img-top" alt="썸네일 이미지">-->
+                                            </div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333333; font-size: 1.05rem; font-weight: 530;" >이름</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;"></div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; ">내용</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;"></div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; " >내용2</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;">→</div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- A BLOCK -->
+                    </div>
+                    <div id="blockD" class="col-5 mx-3 my-1 p-3">
+                        <div class="row justify-content-center">
+                            <div class="col-12 py-4" style="border-radius: 15px;">
+                                <div class="row justify-content-around mt-5 mb-5">
+                                    <div class="col-11 clickable-row" style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;">
+                                        <div class="row justify-content-center">
+                                            <div class="col-2 p-0 d-flex align-items-center justify-content-center" style="aspect-ratio: 1; border-radius: 5px;">
+                                                <div class="date-container px-2 py-1">
+                                                    <div class="month">8</div>
+                                                    <div class="year" >2024</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-5" style="color: #333333; font-size: 0.8rem; font-weight: 530;">닉네임
+                                            </div>
+
+                                            <div class="col-3" style="padding: 0; font-size: 0.8rem; text-align: right; color: #BDBDBD;">시간</div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="col-12 my-3" style="">
+                                                <!-- 썸네일 이미지 없을때 : 기본 썸네일 이미지 -->
+                                                <!--                                        <img th:unless="${#lists.size(event.eventFiles) > 0}" src="/images/introduction/default-thumbnail.png" class="card-img-top" alt="기본 썸네일 이미지">-->
+                                                <!-- 썸네일 이미지 있을때  -->
+                                                <!--                                        <img th:if="${#lists.size(myInEvent.eventFiles) > 0}" th:src="@{/uploadFiles/{fileName}(fileName=${myInEvent.eventFiles.get(0).fileName})}" class="card-img-top" alt="썸네일 이미지">-->
+                                            </div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333333; font-size: 1.05rem; font-weight: 530;" >이름</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;"></div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; ">내용</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;"></div>
+                                        </div>
+                                        <div class="row" style="padding: 0; margin: 0;">
+                                            <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; " >내용2</div>
+                                            <div class="col-3" style="padding: 0; text-align: right;">→</div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- A BLOCK -->
+                    </div>
+                </div> <!-- A ROW -->
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="common/footer.html"></div>
+
+</body>
+</html>
