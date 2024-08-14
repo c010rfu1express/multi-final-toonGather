@@ -49,4 +49,6 @@ public interface FreeService {
     int selectCountReview(int boardNo) throws Exception;
 
     void order(FreePayDTO payDTO) throws Exception;
+
+    boolean payInfo(int memNo) throws Exception;
 }

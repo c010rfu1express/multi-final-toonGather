@@ -111,11 +111,11 @@
             <br>
             <h3 class="font-bold">결제 수단</h3>
             <br>
-            <div th:if="${free.kakao_pg != null and free.kakao_pg != ''}">
+            <div th:if="${creator.kakao_pg != null and creator.kakao_pg != ''}">
               <input type="radio" id="kakaopay" name="payment-method" value="kakaopay">
               <label for="kakaopay">카카오페이</label><br>
             </div>
-            <div th:if="${free.inicis_pg != null and free.inicis_pg != ''}">
+            <div th:if="${creator.inicis_pg != null and creator.inicis_pg != ''}">
               <input type="radio" id="kgini" name="payment-method" value="kgini">
               <label for="kgini">KG이니시스</label><br>
             </div>
@@ -228,7 +228,7 @@
   function payment() {
     IMP.init('imp86587478'); // 아임포트 관리자 콘솔에서 확인한 '가맹점 식별코드' 입력
     IMP.request_pay({
-      pg: "[[${free.kakao_pg}]]", // PG사명 또는 PG사명.CID
+      pg: "[[${creator.kakao_pg}]]", // PG사명 또는 PG사명.CID
       pay_method: "card", // 결제 방법
       merchant_uid: "kakao_" + new Date().getTime(), // 가맹점 주문번호
       name: "[[${free.title}]]", // 결제창에 노출될 상품명
@@ -248,7 +248,7 @@
    function paymentKgini() {
     IMP.init('imp86587478'); // 아임포트 관리자 콘솔에서 확인한 '가맹점 식별코드' 입력
     IMP.request_pay({
-      pg: "[[${free.inicis_pg}]]", // PG사명 또는 PG사명.CID (테스트 환경)
+      pg: "[[${creator.inicis_pg}]]", // PG사명 또는 PG사명.CID (테스트 환경)
       pay_method: "card", // 결제 방법
       merchant_uid: "kgini_" + new Date().getTime(), // 고유한 주문번호 생성
       name: "[[${free.title}]]", // 결제창에 노출될 상품명

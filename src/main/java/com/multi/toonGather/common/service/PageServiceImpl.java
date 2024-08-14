@@ -34,4 +34,10 @@ public class PageServiceImpl implements PageService{
         int count = pageMapper.selectReportCount();
         return count;
     }
+
+    @Override
+    public int selectOpenCount(PageDTO pageDTO) throws Exception {
+        int count = pageMapper.selectOpenCount();
+        return count;
+    }
 }

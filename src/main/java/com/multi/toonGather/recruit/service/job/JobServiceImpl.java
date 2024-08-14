@@ -67,5 +67,13 @@ public class JobServiceImpl implements JobService {
         return result;
     }
 
+    @Override
+    public List<JobDTO> selectOpenAll(PageDTO pageDTO) throws Exception {
+        List<JobDTO> listBoard = jobMapper.selectOpenAll(pageDTO);
+        if (listBoard == null) new Exception("게시글 리스트 조회 실패");
+
+        return listBoard;
+    }
+
 
 }
