@@ -545,7 +545,9 @@
             const newCommentHtml = `
                 <div class="diary-comment">
                     <a href="/social/users/${comment.commenter.userId}/profile">
-                        <img class="diary-comment-profile-img" src="/uploadFiles/${comment.commenter.profileImagePath}" alt="프로필 이미지">
+                        <img class="diary-comment-profile-img"
+                             src="${comment.commenter.profileImagePath && comment.commenter.profileImagePath !== '' ? `/uploadFiles/${comment.commenter.profileImagePath}` : '/images/defaultprofileimage.png'}"
+                             alt="프로필 이미지">
                     </a>
                     <div class="diary-comment-content-wrapper">
                         <div class="diary-comment-meta">
