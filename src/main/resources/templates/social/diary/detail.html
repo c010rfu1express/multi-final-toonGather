@@ -347,6 +347,12 @@
     </div>
     <div class="diary-comments-section">
         <span class="diary-comment-count">댓글: <span th:text="${diary.commentCount}"></span></span>
+        <!-- 댓글 작성 폼 -->
+        <div class="diary-comment-form" th:if="${#authorization.expression('isAuthenticated()')}">
+            <textarea class="form-control" id="diaryCommentContent" name="content" rows="1" required maxlength="140" placeholder="댓글을 입력하세요..."></textarea>
+            <p class="small">최대 140자까지 입력 가능합니다. (<span id="diaryCharCount">0</span>/140)</p>
+            <button type="submit" class="btn btn-primary">작성</button>
+        </div>
         <div th:if="${#lists.isEmpty(comments)}" class="diary-no-comments">
             첫 번째 댓글을 작성해보세요! 😎
         </div>
@@ -368,12 +374,6 @@
                         class="btn btn-sm btn-danger diary-delete-comment"
                         th:data-comment-id="${comment.commentNo}">삭제</button>
             </div>
-        </div>
-        <!-- 댓글 작성 폼 -->
-        <div class="diary-comment-form" th:if="${#authorization.expression('isAuthenticated()')}">
-            <textarea class="form-control" id="diaryCommentContent" name="content" rows="1" required maxlength="140" placeholder="댓글을 입력하세요..."></textarea>
-            <p class="small">최대 140자까지 입력 가능합니다. (<span id="diaryCharCount">0</span>/140)</p>
-            <button type="submit" class="btn btn-primary">작성</button>
         </div>
     </div>
 </div>
@@ -455,15 +455,6 @@
     }
 </script>
 <script th:inline="javascript">
-    document.getElementById('diaryCommentContent').addEventListener('input', function() {
-        var diaryCharCount = this.value.length;
-        document.getElementById('diaryCharCount').textContent = diaryCharCount;
-        if (diaryCharCount > 140) {
-            this.value = this.value.slice(0, 140);
-            document.getElementById('diaryCharCount').textContent = 140;
-        }
-    });
-
     document.addEventListener('DOMContentLoaded', function() {
         const commentForm = document.querySelector('.diary-comment-form');
         let commentsList = document.querySelector('.diary-comments-list');
@@ -493,10 +484,8 @@
                 })
                 .then(data => {
                     if (data.success) {
-                        addNewComment(data.comment);
-                        commentContent.value = '';
-                        charCount.textContent = '0';
-                        updateCommentCount(1);
+                        // 성공 시 페이지 새로고침
+                        window.location.reload();
                     } else {
                         alert('댓글 작성에 실패했습니다: ' + data.message);
                     }
@@ -527,11 +516,8 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    commentElement.remove();
-                    updateCommentCount(-1);
-                    if (commentsList.children.length === 0) {
-                        showNoCommentsMessage();
-                    }
+                    // 삭제 성공 시 페이지 새로고침
+                    window.location.reload();
                 } else {
                     alert('댓글 삭제에 실패했습니다.');
                 }
@@ -542,49 +528,15 @@
             });
         }
 
-        function addNewComment(comment) {
-            const newCommentHtml = `
-                <div class="diary-comment">
-                    <a href="/social/users/${comment.commenter.userId}/profile">
-                        <img class="diary-comment-profile-img"
-                             src="${comment.commenter.profileImagePath && comment.commenter.profileImagePath !== '' ? `/uploadFiles/${comment.commenter.profileImagePath}` : '/images/defaultprofileimage.png'}"
-                             alt="프로필 이미지">
-                    </a>
-                    <div class="diary-comment-content-wrapper">
-                        <div class="diary-comment-meta">
-                            <span class="diary-comment-author">${comment.commenter.nickname}</span>
-                            <span class="diary-comment-date">${formatDate(comment.createdDate)}</span>
-                        </div>
-                        <div class="diary-comment-content">${comment.content.replace(/\n/g, '<br/>')}</div>
-                    </div>
-                    <button class="btn btn-sm btn-danger diary-delete-comment" data-comment-id="${comment.commentNo}">삭제</button>
-                </div>
-            `;
-
-            if (!commentsList) {
-                commentsList = document.createElement('div');
-                commentsList.className = 'diary-comments-list';
-                const noCommentsDiv = document.querySelector('.diary-no-comments');
-                if (noCommentsDiv) {
-                    noCommentsDiv.remove();
-                }
-                document.querySelector('.diary-comments-section').insertBefore(commentsList, commentForm);
+        // 글자 수 카운트 기능
+        commentContent.addEventListener('input', function() {
+            var diaryCharCount = this.value.length;
+            charCount.textContent = diaryCharCount;
+            if (diaryCharCount > 140) {
+                this.value = this.value.slice(0, 140);
+                charCount.textContent = 140;
             }
-
-            commentsList.insertAdjacentHTML('afterbegin', newCommentHtml);
-        }
-
-        function updateCommentCount(increment) {
-            const currentCount = parseInt(commentCountSpan.textContent);
-            commentCountSpan.textContent = currentCount + increment;
-        }
-
-        function showNoCommentsMessage() {
-            const noCommentsHtml = '<div class="diary-no-comments">첫 번째 댓글을 작성해보세요! 😎</div>';
-            commentsList.insertAdjacentHTML('beforebegin', noCommentsHtml);
-            commentsList.remove();
-            commentsList = null;
-        }
+        });
 
         function formatDate(dateString) {
             const date = new Date(dateString);
