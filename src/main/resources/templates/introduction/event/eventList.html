@@ -34,7 +34,7 @@
             }
 
             .card-content {
-            margin-bottom: 15px; /* card-content 아래에 15px의 여백 추가 */
+                margin-bottom: 15px; /* card-content 아래에 15px의 여백 추가 */
                 display: flex;
             }
 
@@ -253,14 +253,16 @@
         <div class="row" th:if="${events != null && !events.isEmpty()}">
             <!-- 각 소식 항목을 카드로 표시 -->
             <div class="col-md-4" th:each="event : ${events}">
-                <div class="card">
+                <div class="card" >
+
+
                     <!-- event넘버 히든으로 넣어둠. 혹시나 -->
                     <input type="hidden" name="eventNo" th:value="${event.eventNo}">
                     <!-- 썸네일 이미지 없을때 : 기본 썸네일 이미지 -->
-                    <img th:unless="${#lists.size(event.eventFiles) > 0}" src="/images/introduction/default-thumbnail.png" class="card-img-top" alt="기본 썸네일 이미지">
+                    <img th:unless="${#lists.size(event.eventFiles) > 0}" src="/images/introduction/default-thumbnail.png" class="card-img-top" alt="기본 썸네일 이미지" th:attr="onclick=|window.location.href='/introduction/event/eventDetail?eventNo=' + ${event.eventNo};|" style="cursor: pointer;">
 
                     <!-- 썸네일 이미지 있을때  -->
-                    <img th:if="${#lists.size(event.eventFiles) > 0}" th:src="@{/uploadFiles/{fileName}(fileName=${event.eventFiles.get(0).fileName})}" class="card-img-top" alt="썸네일 이미지">
+                    <img th:if="${#lists.size(event.eventFiles) > 0}" th:src="@{/uploadFiles/{fileName}(fileName=${event.eventFiles.get(0).fileName})}" class="card-img-top" alt="썸네일 이미지" th:attr="onclick=|window.location.href='/introduction/event/eventDetail?eventNo=' + ${event.eventNo};|" style="cursor: pointer;">
 
                     <div class="card-body">
                         <div class="card-content">
@@ -272,9 +274,9 @@
                                 <a th:href="@{/introduction/event/eventDetail(eventNo=${event.eventNo})}" class="card-title" th:text="${event.title}">제목</a>
                             </div>
                         </div>
-                        <p class="card-text">
+                        <p class="card-text" th:attr="onclick=|window.location.href='/introduction/event/eventDetail?eventNo=' + ${event.eventNo};|" style="cursor: pointer;">
                             <!-- 상태 라벨을 표시할 부분 -->
-                            <span class="status-label"></span>
+                            <span class="status-label" ></span>
                             <small class="text-muted" th:text="${#temporals.format(event.startDate, 'yy년MM월dd일(E)')}">행사 시작일</small>
                             <span class="text-muted"> ~ </span>
                             <small class="text-muted" th:text="${#temporals.format(event.endDate, 'yy년MM월dd일(E)')}">행사 종료일</small>
@@ -292,14 +294,15 @@
         <!-- 페이징을 그리드 시스템 밖에 두고 조건문을 적용 -->
         <div th:if="${events != null && !events.isEmpty()}">
             <div class="pagination justify-content-center">
-                <a class="btn btn-custom" th:if="${currentPage > 0}" th:href="@{/introduction/eventList(page=${currentPage - 1}, searchType=${searchType}, keyword=${keyword})}">&laquo;</a>
+                <a class="btn btn-custom" th:if="${currentPage > 0}" th:href="@{/introduction/event/eventList(page=${currentPage - 1}, searchType=${searchType}, keyword=${keyword})}">&laquo;</a>
                 <a class="btn btn-custom" th:each="i : ${#numbers.sequence(1, totalPages)}"
                    th:href="@{/introduction/event/eventList(page=${i - 1}, keyword=${keyword})}"
                    th:text="${i}"
                    th:classappend="${currentPage + 1 == i} ? 'active' : ''"></a>
-                <a class="btn btn-custom" th:if="${currentPage < totalPages - 1}" th:href="@{/introduction/eventList(page=${currentPage + 1}, keyword=${keyword})}">&raquo;</a>
+                <a class="btn btn-custom" th:if="${currentPage < totalPages - 1}" th:href="@{/introduction/event/eventList(page=${currentPage + 1}, keyword=${keyword})}">&raquo;</a>
             </div>
         </div>
+
 
     </div>
     <div th:replace="common/footer.html"></div>
