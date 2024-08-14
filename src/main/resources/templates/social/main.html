@@ -73,7 +73,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const sliders = document.querySelectorAll('.webtoon-slider, .hot-review-slider, .user-review-slider');
+        const sliders = document.querySelectorAll('.hot-review-slider');
 
         sliders.forEach(slider => {
             slider.addEventListener('wheel', function(e) {
@@ -97,7 +97,7 @@
             currentKeyword = $('#searchKeyword').val();
             currentPage = 0;
 
-            searchAndDisplayResults(currentCategory, currentKeyword, currentPage, 10);
+            searchAndDisplayResults(currentCategory, currentKeyword, currentPage, 6);
         });
 
         // 카테고리 변경 시 placeholder 업데이트
@@ -215,9 +215,13 @@
 
         function displayUserResults(users) {
             return users.map(function(user) {
+                const profileImageSrc = user.profileImagePath && user.profileImagePath !== ''
+                    ? `/uploadFiles/${user.profileImagePath}`
+                    : '/images/defaultprofileimage.png';
+
                 return `
                     <div class="search-result-item user-result" onclick="location.href='/social/users/${user.userId}/profile'">
-                        <img src="/uploadFiles/${user.profileImagePath}" alt="${user.nickname}" class="profile-image">
+                        <img src="${profileImageSrc}" alt="${user.nickname}" class="profile-image">
                         <span class="user-nickname">${user.nickname}</span>
                         <span class="user-bio">${user.bio || ''}</span>
                     </div>
@@ -230,7 +234,7 @@
                 $('#searchResults').after('<button id="loadMoreBtn" class="load-more-btn">더 보기</button>');
                 $('#loadMoreBtn').click(function() {
                     currentPage++;
-                    searchAndDisplayResults(currentCategory, currentKeyword, currentPage, 10);
+                    searchAndDisplayResults(currentCategory, currentKeyword, currentPage, 6);
                 });
             }
         }
