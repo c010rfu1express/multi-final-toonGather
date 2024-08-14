@@ -15,6 +15,11 @@ import java.util.List;
 public class MyServiceImpl implements MyService {
     private final MyMapper myMapper;
 
+    //기타
+    public MyRctJobDTO getMyRctJobOne(int boardNo) throws Exception {
+        MyRctJobDTO response = myMapper.selectOneMyRctJob(boardNo);
+        return response;
+    }
 
     //1
     public List<MyRctCreatorDTO> getMyRctCreators(int userNo) throws Exception {

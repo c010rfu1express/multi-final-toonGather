@@ -283,8 +283,10 @@ public class MyController {
             System.out.println("user list error : " + e);
         }
 
-
+        //boardNo hidden input 전달
+        MyRctJobDTO board = myService.getMyRctJobOne(boardNo);
         model.addAttribute("boardNo", boardNo);
+        model.addAttribute("board", board);
 
         ///////
         model.addAttribute("isToggled", toggle);

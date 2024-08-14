@@ -361,22 +361,22 @@
                                 <div class="row justify-content-center mx-3">
                                     <div class="col-1 p-0 d-flex align-items-center justify-content-center" style="aspect-ratio: 1; border-radius: 5px;">
                                         <div class="date-container px-2 py-1">
-                                            <div class="month" >8</div>
-                                            <div class="year" >2024</div>
+                                            <div class="month" th:text="${T(java.time.format.DateTimeFormatter).ofPattern('M').format(board.createdDate)}"></div>
+                                            <div class="year" th:text="${T(java.time.format.DateTimeFormatter).ofPattern('yyyy').format(board.createdDate)}"></div>
                                         </div>
                                     </div>
-                                    <div class="col-5" style="color: white; ">닉네임</div>
-                                    <div class="col-6" style="padding:0; font-size: 1rem; text-align: right; color: #BDBDBD;">1주일 전</div>
+                                    <div class="col-5" style="color: white; " th:text="${board.boardNo}">닉네임</div>
+                                    <div class="col-6" style="padding:0; font-size: 1rem; text-align: right; color: #BDBDBD;" th:text="${board.formattedDeadLine}">1주일 전</div>
                                 </div>
                                 <div class="row justify-content-center mx-3">
                                     <div class="col-12" style="color: white;" >사진</div>
                                 </div>
                                 <div class="row justify-content-center mx-3">
-                                    <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333333; font-size: 1.05rem; font-weight: 530;" >이름</div>
+                                    <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333333; font-size: 1.05rem; font-weight: 530;" th:text="${board.title}">이름</div>
                                     <div class="col-3 clickable-row" style="padding: 0; text-align: right;" th:attr="data-href=@{/recruit/job/view(no=${boardNo})}">→</div>
                                 </div>
                                 <div class="row justify-content-center mx-3">
-                                    <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; ">내용</div>
+                                    <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; " th:text="${board.content}">내용</div>
                                     <div class="col-3 clickable-row" style="padding: 0; text-align: right;" th:attr="data-href=@{/recruit/job/view(no=${boardNo})}">공고 확인</div>
                                 </div>
                                 <div class="row justify-content-center mx-3 my-5">

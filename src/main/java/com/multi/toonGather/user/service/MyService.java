@@ -7,6 +7,9 @@ import java.util.List;
 
 public interface MyService {
 
+    //기타(지원서/주문 리스트 페이지에 보여질 것)
+    MyRctJobDTO getMyRctJobOne(int boardNo) throws Exception;
+
     //1
     List<MyRctCreatorDTO> getMyRctCreators(int userNo) throws Exception;
 

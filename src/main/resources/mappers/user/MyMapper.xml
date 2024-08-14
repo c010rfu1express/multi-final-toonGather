@@ -253,6 +253,22 @@
         <include refid="MyRctJobQueryB"/>
         <include refid="pagingQuery"/>
     </select>
+    <select id="selectOneMyRctJob" resultType="MyRctJobDTO">
+        SELECT
+        board_no AS boardNo,
+        writer AS writer,
+        title AS title,
+        content AS content,
+        location AS location,
+        img AS img,
+        created_date AS createdDate,
+        modified_date AS modifiedDate,
+        dead_line AS deadLine
+        FROM
+        rct_job
+        WHERE
+        board_no = #{boardNo}
+    </select>
 
     <resultMap type="MySoReviewDTO" id="MySoReviewResultMap">
         <id property="likeNo" column="like_no" />
