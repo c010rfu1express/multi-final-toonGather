@@ -404,6 +404,53 @@ public class MyController {
         return "/user/mypage_rct_free";
     }
 
+    //KHG45B
+    @GetMapping("/rct/free/order")
+    public String myRctFreeOrder(@RequestParam(value = "page", required = false, defaultValue = "1") int page, @RequestParam(value = "searchTerm", defaultValue = "") String searchTerm, @RequestParam(value = "searchBy", defaultValue = "title") String searchBy, @RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, @RequestParam("boardNo") int boardNo, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
+        ///
+//        int userNo = c.getUserDTO().getUserNo();
+
+        //pagination 추가( ref by RecruitController)
+        // pageDTO 세팅(start, end, page) : RequestParam인 page에 의해 모든 것이 결정됨, N=10고정
+        int N = 6;
+        PageNDTO pageNDTO = new PageNDTO();
+        pageNDTO.setPage(page);
+        pageNDTO.setStartEnd(pageNDTO.getPage(), N);
+
+
+        try {
+            // 실제 데이터는 pageDTO.start를 보고 N개를 추출한다. 즉, 모두 현재페이지에 종속된 변수들임
+            // 최후 미션) N=10에서 N=k로 일반화 해보기
+            List<MyRctOrderDTO> myRctOrders = myService.getMyRctFreeOrders(boardNo, toggle, orderBy, searchBy, searchTerm, pageNDTO);
+
+            //
+            // view) count: 전체 게시글의 수 / pages: 필요 페이지의 수 / users: 실제 전달 데이터 N개묶음 / page: 현재페이지(ReqParam)
+            int count = myService.countMyRctFreeOrders(boardNo, toggle, orderBy, searchBy, searchTerm);
+            int pages = count > 0 ? (int) Math.ceil((double) count / N) : 1;       //쓰임: view에
+
+            model.addAttribute("count", count);
+            model.addAttribute("pages", pages);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("myRctFreeOrders", myRctOrders);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("user list error : " + e);
+        }
+
+
+        model.addAttribute("boardNo", boardNo);
+
+        ///////
+        model.addAttribute("isToggled", toggle);
+        model.addAttribute("orderBy", orderBy);
+
+        model.addAttribute("searchBy", searchBy);
+        model.addAttribute("searchTerm", searchTerm);
+
+        return "/user/mypage_rct_free_orderlist";
+    }
+
     //KHG46
     @GetMapping("/rct/order")
     public String myRctOrder(@RequestParam(value = "page", required = false, defaultValue = "1") int page, @RequestParam(value = "searchTerm", defaultValue = "") String searchTerm, @RequestParam(value = "searchBy", defaultValue = "boardNo") String searchBy, @RequestParam(value = "orderBy", defaultValue = "recent") String orderBy, @RequestParam(value = "isToggled", defaultValue = "N") String toggle, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{

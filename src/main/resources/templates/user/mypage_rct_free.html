@@ -139,91 +139,415 @@
             </div>
         </div>
     </aside>
+    <style>
+        .form-select {
+        background-color : #FCFCFC;
+        border : none;
+        width : 100%;
+        height : 50px;
+        }
+        select {
+        color : #828282;
+        }
+        .form-control {
+        background-color : #FCFCFC;
+        border : none;
+        width : 100%;
+        height : 50px;
+        }
+
+
+        .form-control::placeholder {
+        color : #BBBBBB;
+        }
+
+        .date-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #8E4B6E;
+    color: white;
+    border-radius: 10px;
+    text-align:center;
+    font-family: "Work Sans", sans-serif;
+}
+
+.platform-1 {
+    background-color: #03C75A;
+}
+
+.platform-2 {
+    background-color: #F5BF41;
+}
+
+.month {
+    font-size: 1.1rem; /* M의 크기를 설정 */
+    font-weight: 550;
+    line-height: 1;
+}
+
+.year {
+    font-size: 0.65rem; /* yyyy의 크기를 설정 */
+    font-weight: 400;
+}
+:root {
+    --background-color-light: #FFFFFF;
+    --text-color-light: #000000;
+    --toggle-background-light: #CCCCCC;
+    --toggle-ball-light: #FFFFFF;
+
+    --background-color-dark: #333333;
+    --text-color-dark: #FFFFFF;
+    --toggle-background-dark: #03C75A;
+    --toggle-ball-dark: #FFFFFF;
+
+    --font-size-base: 32px; /* 기본 텍스트 크기 */
+    --font-size-large: 52px; /* 제목 등 큰 텍스트용 폰트 크기 */
+}
+
+
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 62px; /* 너비 조정 */
+    height: 38px; /* 높이 조정 */
+}
+
+.toggle-switch .checkbox {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+#isToggledCheckbox {
+     opacity: 0;
+        width: 0;
+        height: 0;
+}
+
+.toggle-switch .label {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--toggle-background-light);
+    transition: background-color 0.4s;
+    border-radius: 38px; /* 둥근 모서리 반경 조정 */
+}
+
+.toggle-switch .label:before {
+    position: absolute;
+    content: "";
+    height: 30px; /* 내부 원 높이 조정 */
+    width: 30px; /* 내부 원 너비 조정 */
+    left: 2px;
+    bottom: 0px;
+    background-color: var(--toggle-ball-light);
+    transition: transform 0.4s;
+    border-radius: 50%;
+}
+
+.toggle-switch input:checked + .label {
+    background-color: var(--toggle-background-dark);
+}
+
+.toggle-switch input:checked + .label:before {
+    transform: translateX(28px); /* 내부 원 이동 거리 조정 */
+}
+
+         #absdiv {
+            position: relative;
+            top: 60px; /* Move down by 20px from its current position */
+            z-index : 1000;
+        }
+
+        #searchbutton {
+            background-color: #828282;
+        }
+
+        .card-img-top {
+                width: 100%;
+                height: 100px;
+                object-fit: cover;
+            }
+
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+
     <div class="col-md-9">
-        <div class="review-list">
-            <h2>프리랜서 게시글 관리</h2>
-            <form id="sort-form" th:action="@{/user/my/rct/free}" method="get">
-                <!-- 검색 조건 -->
-                <label>
-                    <select name="searchBy">
-                        <option value="title" th:selected="${searchBy == 'title'}">제목</option>
-                        <option value="content" th:selected="${searchBy == 'content'}">내용</option>
-                    </select>
-                </label>
-                <input type="text" name="searchTerm" placeholder="검색어를 입력하세요" th:value="${searchTerm}" />
+        <div class="row" style="color: #828282;">
+            <div class="col-11">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <form id="sort-form" th:action="@{/user/my/rct/free}" method="get">
+                            <div class="row">
+                                <div class="col-7">
+                                    <div class="row justify-content-start m-0">
+                                        <div class="col-4">
+                                            <!-- 검색 조건 -->
+                                            <label>
+                                                <select class="form-select px-3" name="searchBy">
+                                                    <option value="title" th:selected="${searchBy == 'title'}">제목</option>
+                                                    <option value="content" th:selected="${searchBy == 'content'}">내용</option>
+                                                </select>
+                                            </label>
+                                        </div>
+                                        <div class="col-6">
+                                            <input class="form-control px-3" type="text" name="searchTerm" placeholder="검색어를 입력하세요" th:value="${searchTerm}" />
+                                        </div>
+                                        <div class="col-2">
+                                            <!-- 검색 버튼 -->
+                                            <button id="searchbutton" type="submit" class="btn btn-primary">검색</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-1" style=""></div>
+                                <div class="col-4">
+                                    <div class="row justify-content-end">
+                                        <!-- 정렬 또는 토글2 -->
+                                        <label>
+                                            <select class="form-select px-3" name="orderBy" onchange="this.form.submit()">
+                                                <option value="recentedited" th:selected="${orderBy == 'recentedited'}">최근수정순</option>
 
-                <!-- 검색 버튼 -->
-                <button type="submit">검색</button>
+                                                <option value="recent" th:selected="${orderBy == 'recent'}">최근작성순</option>
+                                                <option value="oldest" th:selected="${orderBy == 'oldest'}">오래된순</option>
 
-                <!-- 정렬 또는 토글 -->
-                <label>
-                    <select name="orderBy" onchange="this.form.submit()">
-                        <option value="recentedited" th:selected="${orderBy == 'recentedited'}">최근수정순</option>
+                                                <option value="topRated" th:selected="${orderBy == 'topRated'}">평점높은순</option>
+                                                <option value="lowRated" th:selected="${orderBy == 'lowRated'}">평점낮은순</option>
+                                                <option value="reviews" th:selected="${orderBy == 'reviews'}">리뷰많은순</option>
 
-                        <option value="recent" th:selected="${orderBy == 'recent'}">최근작성순</option>
-                        <option value="oldest" th:selected="${orderBy == 'oldest'}">오래된순</option>
-
-                        <option value="topRated" th:selected="${orderBy == 'topRated'}">평점높은순</option>
-                        <option value="lowRated" th:selected="${orderBy == 'lowRated'}">평점낮은순</option>
-                        <option value="reviews" th:selected="${orderBy == 'reviews'}">리뷰많은순</option>
-
-                        <option value="title" th:selected="${orderBy == 'title'}">제목가나다순</option>
-                    </select>
-                </label>
-            </form>
-            <table>
-                <thead>
-                <tr>
-                    <th>게시글 번호</th>
-                    <th>작성자</th>
-                    <th>제목</th>
-                    <th>내용</th>
-                    <th>이미지</th>
-                    <th>가격</th>
-                    <th>작성 일자</th>
-                    <th>수정 일자</th>
-                    <th>평점</th>
-                    <th>리뷰 개수</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="myRctFree : ${myRctFrees}" class="clickable-row" th:attr="data-href=@{/recruit/free/view(no=${myRctFree.boardNo})}">
-                    <td th:text="${myRctFree.boardNo}">게시글 번호</td>
-                    <td th:text="${myRctFree.writer}">작성자</td>
-                    <td th:text="${myRctFree.title}">제목</td>
-                    <td th:text="${myRctFree.content}">내용</td>
-                    <td th:text="${myRctFree.img}">이미지</td>
-                    <td th:text="${myRctFree.price}">가격</td>
-                    <td th:text="${myRctFree.createdDate}">작성 일자</td>
-                    <td th:text="${myRctFree.modifiedDate}">수정 일자</td>
-                    <td th:text="${myRctFree.averageRating}">평점</td>
-                    <td th:text="${myRctFree.reviewCount}">리뷰 개수</td>
-                </tr>
-                </tbody>
-            </table>
-            <!-- 페이징 -->
-            <th:block th:if="${pages != null}">
-                <div class="d-flex justify-content-center">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-sm previous" th:onclick="|location.href='@{/user/my/rct/free(orderBy=${orderBy}, searchBy=${searchBy}, searchTerm=${searchTerm}, page=${currentPage - 1})}'|" th:disabled="${currentPage == 1}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
-                            </svg>
-                        </button>
-                        <th:block th:each="p : ${#numbers.sequence(1, pages)}">
-                            <button type="button" class="btn btn-sm me-2 pages"
-                                    th:text="${p}" th:onclick="|location.href='@{/user/my/rct/free(orderBy=${orderBy}, searchBy=${searchBy}, searchTerm=${searchTerm}, page=${p})}'|"></button>
-                        </th:block>
-                        <button type="button" class="btn btn-sm  next" th:onclick="|location.href='@{/user/my/rct/free(orderBy=${orderBy}, searchBy=${searchBy}, searchTerm=${searchTerm}, page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
-                            </svg>
-                        </button>
+                                                <option value="title" th:selected="${orderBy == 'title'}">제목가나다순</option>
+                                            </select>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div> <!--검색, 소팅 (토글X)-->
+                            <div class="row justify-content-around">
+                                <div class="col-3" style="padding: 0 1.2rem;"></div>
+                                <div class="col-3" style="padding: 0 1.2rem;"></div>
+                                <div class="col-3" style="padding: 0 1.2rem;">
+                                    <div id="absdiv" class="row justify-content-end">
+                                        <!--                                        <div class="col-3">-->
+                                        <!--                                            <div class="toggle-switch">-->
+                                        <!--                                                &lt;!&ndash; 정렬 또는 토글1 &ndash;&gt;-->
+                                        <!--                                                <input type="checkbox" name="isToggled" id="isToggledCheckbox" value="Y" th:checked="${isToggled == 'Y'}" onchange="updateCheckboxValueAndSubmit()">-->
+                                        <!--                                                <label for="isToggledCheckbox" class="label">-->
+                                        <!--                                                    <div class="ball"></div>-->
+                                        <!--                                                </label>-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </div>-->
+                                        <!--                                        <div class="col-8" style="text-align: right; padding: 0px; margin : 0px;">진행중인 행사</div>-->
+                                    </div>
+                                </div>
+                            </div> <!--토글-->
+                        </form>
                     </div>
                 </div>
-            </th:block>
-        </div>
-    </div>
+                <div class="row justify-content-around mt-4">
+                    <div class="col-12 py-4" style="background-color: #F9F9F9; border-radius: 15px;">
+                        <div class="row justify-content-around mt-5 mb-5" style="background-color:  #F9F9F9;">
+                            <div class="col-3 clickable-row" style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;" th:each="myRctFree, iterStat : ${myRctFrees}" th:attr="data-href=@{/user/my/rct/free/order(boardNo=${myRctFree.boardNo})}" th:if="${iterStat.index < 3}">
+                                <div class="row justify-content-center">
+                                    <div class="col-2 p-0 d-flex align-items-center justify-content-center" style="aspect-ratio: 1; border-radius: 5px;">
+                                        <div class="date-container px-2 py-1">
+                                            <div class="month" th:text="${T(java.time.format.DateTimeFormatter).ofPattern('M').format(myRctFree.createdDate)}"></div>
+                                            <div class="year" th:text="${T(java.time.format.DateTimeFormatter).ofPattern('yyyy').format(myRctFree.createdDate)}"></div>
+                                        </div>
+                                    </div>
+                                    <!--                                    <div class="col-2 p-0 d-flex align-items-center justify-content-center" style="aspect-ratio: 1; border-radius: 5px;">-->
+                                    <!--                                        <div th:text="${T(java.time.format.DateTimeFormatter).ofPattern('MM월 yyyy').format(myRctJob.createdDate)}" style="background-color: #8E4B6E; color: white; border-radius: 5px; font-size: 0.8rem; text-align: center;"></div>-->
+                                    <!--                                    </div>-->
+                                    <div class="col-5" style="color: white; font-size: 0.8rem; font-weight: 530;"
+                                         th:text="${myRctFree.boardNo}">닉네임
+                                    </div>
+
+                                    <div class="col-3" style="padding: 0; font-size: 0.8rem; text-align: right; color: #BDBDBD;" th:text="${myRctFree.formattedCreatedDate}">시간</div>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <div class="col-12 my-3" style="">
+                                        <!-- 썸네일 이미지 없을때 : 기본 썸네일 이미지 -->
+                                        <!--                                        <img th:unless="${#lists.size(event.eventFiles) > 0}" src="/images/introduction/default-thumbnail.png" class="card-img-top" alt="기본 썸네일 이미지">-->
+                                        <!-- 썸네일 이미지 있을때  -->
+<!--                                        <img th:if="${mySoReview.thumbnailUrl != null}" th:src="${mySoReview.thumbnailUrl}" class="card-img-top" alt="썸네일 이미지">-->
+                                    </div>
+                                </div>
+                                <div class="row" style="padding: 0; margin: 0;">
+                                    <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333333; font-size: 1.05rem; font-weight: 530;" th:text="${myRctFree.title}">이름</div>
+                                    <div class="col-3" style="padding: 0; text-align: right;"></div>
+                                </div>
+                                <div class="row" style="padding: 0; margin: 0;">
+                                    <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; " th:text="${myRctFree.content}">내용</div>
+                                    <div class="col-3" style="padding: 0; text-align: right;">→</div>
+                                </div>
+
+                            </div>
+                            <!-- 아이템 수가 0개 1개 또는 2개일 때 더미 컬럼 추가 -->
+                            <div class="col-3" th:if="${myRctFrees.size() == 0}"></div>
+                            <div class="col-3" th:if="${myRctFrees.size() == 0 || myRctFrees.size() == 1}"></div>
+                            <div class="col-3" th:if="${myRctFrees.size() == 0 || myRctFrees.size() == 1 || myRctFrees.size() == 2}"></div>
+                        </div>
+                        <div class="row justify-content-around mt-2 mb-5" style="background-color: #F9F9F9;">
+                            <div class="col-3 clickable-row" style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;" th:each="myRctFree, iterStat : ${myRctFrees}" th:attr="data-href=@{/user/my/rct/free/order(boardNo=${myRctFree.boardNo})}" th:if="${iterStat.index >= 3}">
+                                <div class="row justify-content-center">
+                                    <div class="col-2 p-0 d-flex align-items-center justify-content-center" style="aspect-ratio: 1; border-radius: 5px;">
+                                        <div class="date-container px-2 py-1">
+                                            <div class="month" th:text="${T(java.time.format.DateTimeFormatter).ofPattern('M').format(myRctFree.createdDate)}"></div>
+                                            <div class="year" th:text="${T(java.time.format.DateTimeFormatter).ofPattern('yyyy').format(myRctFree.createdDate)}"></div>
+                                        </div>
+                                    </div>
+                                    <!--                                    <div class="col-2 p-0 d-flex align-items-center justify-content-center" style="aspect-ratio: 1; border-radius: 5px;">-->
+                                    <!--                                        <div th:text="${T(java.time.format.DateTimeFormatter).ofPattern('MM월 yyyy').format(myRctJob.createdDate)}" style="background-color: #8E4B6E; color: white; border-radius: 5px; font-size: 0.8rem; text-align: center;"></div>-->
+                                    <!--                                    </div>-->
+                                    <div class="col-5" style="color: white; font-size: 0.8rem; font-weight: 530;"
+                                         th:text="${myRctFree.boardNo}">닉네임
+                                    </div>
+
+                                    <div class="col-3" style="padding: 0; font-size: 0.8rem; text-align: right; color: #BDBDBD;" th:text="${myRctFree.formattedCreatedDate}">시간</div>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <div class="col-12 my-3" style="">
+                                        <!-- 썸네일 이미지 없을때 : 기본 썸네일 이미지 -->
+                                        <!--                                        <img th:unless="${#lists.size(event.eventFiles) > 0}" src="/images/introduction/default-thumbnail.png" class="card-img-top" alt="기본 썸네일 이미지">-->
+                                        <!-- 썸네일 이미지 있을때  -->
+                                        <!--                                        <img th:if="${mySoReview.thumbnailUrl != null}" th:src="${mySoReview.thumbnailUrl}" class="card-img-top" alt="썸네일 이미지">-->
+                                    </div>
+                                </div>
+                                <div class="row" style="padding: 0; margin: 0;">
+                                    <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #333333; font-size: 1.05rem; font-weight: 530;" th:text="${myRctFree.title}">이름</div>
+                                    <div class="col-3" style="padding: 0; text-align: right;"></div>
+                                </div>
+                                <div class="row" style="padding: 0; margin: 0;">
+                                    <div class="col-9" style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; " th:text="${myRctFree.content}">내용</div>
+                                    <div class="col-3" style="padding: 0; text-align: right;">→</div>
+                                </div>
+
+                            </div>
+
+                            <!-- 아이템 수가 3개 4개 또는 5개일 때 더미 컬럼 추가 -->
+                            <div class="col-3" th:if="${myRctFrees.size() <= 3}"></div>
+                            <div class="col-3" th:if="${myRctFrees.size() <= 3 || myRctFrees.size() == 4}"></div>
+                            <div class="col-3" th:if="${myRctFrees.size() <= 3 || myRctFrees.size() == 4 || myRctFrees.size() == 5}"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <!-- 페이징 -->
+                    <th:block th:if="${pages != null}">
+                        <div class="d-flex justify-content-center">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm previous" th:onclick="|location.href='@{/user/my/rct/free(orderBy=${orderBy}, searchBy=${searchBy}, searchTerm=${searchTerm}, page=${currentPage - 1})}'|" th:disabled="${currentPage == 1}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                                    </svg>
+                                </button>
+                                <th:block th:each="p : ${#numbers.sequence(1, pages)}">
+                                    <button type="button" class="btn btn-sm me-2 pages"
+                                            th:text="${p}" th:onclick="|location.href='@{/user/my/rct/free(orderBy=${orderBy}, searchBy=${searchBy}, searchTerm=${searchTerm}, page=${p})}'|"></button>
+                                </th:block>
+                                <button type="button" class="btn btn-sm  next" th:onclick="|location.href='@{/user/my/rct/free(orderBy=${orderBy}, searchBy=${searchBy}, searchTerm=${searchTerm}, page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div><!--테이블 및 페이징 포함-->
+        </div> <!--본화면-->
+    </div> <!--본화면-->
+
+    <!--수정전-->
+<!--    <div class="col-md-9">-->
+<!--        <div class="review-list">-->
+<!--            <h2>프리랜서 게시글 관리</h2>-->
+<!--            <form id="sort-form" th:action="@{/user/my/rct/free}" method="get">-->
+<!--                &lt;!&ndash; 검색 조건 &ndash;&gt;-->
+<!--                <label>-->
+<!--                    <select name="searchBy">-->
+<!--                        <option value="title" th:selected="${searchBy == 'title'}">제목</option>-->
+<!--                        <option value="content" th:selected="${searchBy == 'content'}">내용</option>-->
+<!--                    </select>-->
+<!--                </label>-->
+<!--                <input type="text" name="searchTerm" placeholder="검색어를 입력하세요" th:value="${searchTerm}" />-->
+
+<!--                &lt;!&ndash; 검색 버튼 &ndash;&gt;-->
+<!--                <button type="submit">검색</button>-->
+
+<!--                &lt;!&ndash; 정렬 또는 토글 &ndash;&gt;-->
+<!--                <label>-->
+<!--                    <select name="orderBy" onchange="this.form.submit()">-->
+<!--                        <option value="recentedited" th:selected="${orderBy == 'recentedited'}">최근수정순</option>-->
+
+<!--                        <option value="recent" th:selected="${orderBy == 'recent'}">최근작성순</option>-->
+<!--                        <option value="oldest" th:selected="${orderBy == 'oldest'}">오래된순</option>-->
+
+<!--                        <option value="topRated" th:selected="${orderBy == 'topRated'}">평점높은순</option>-->
+<!--                        <option value="lowRated" th:selected="${orderBy == 'lowRated'}">평점낮은순</option>-->
+<!--                        <option value="reviews" th:selected="${orderBy == 'reviews'}">리뷰많은순</option>-->
+
+<!--                        <option value="title" th:selected="${orderBy == 'title'}">제목가나다순</option>-->
+<!--                    </select>-->
+<!--                </label>-->
+<!--            </form>-->
+<!--            <table>-->
+<!--                <thead>-->
+<!--                <tr>-->
+<!--                    <th>게시글 번호</th>-->
+<!--                    <th>작성자</th>-->
+<!--                    <th>제목</th>-->
+<!--                    <th>내용</th>-->
+<!--                    <th>이미지</th>-->
+<!--                    <th>가격</th>-->
+<!--                    <th>작성 일자</th>-->
+<!--                    <th>수정 일자</th>-->
+<!--                    <th>평점</th>-->
+<!--                    <th>리뷰 개수</th>-->
+<!--                </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                <tr th:each="myRctFree : ${myRctFrees}" class="clickable-row" th:attr="data-href=@{/recruit/free/view(no=${myRctFree.boardNo})}">-->
+<!--                    <td th:text="${myRctFree.boardNo}">게시글 번호</td>-->
+<!--                    <td th:text="${myRctFree.writer}">작성자</td>-->
+<!--                    <td th:text="${myRctFree.title}">제목</td>-->
+<!--                    <td th:text="${myRctFree.content}">내용</td>-->
+<!--                    <td th:text="${myRctFree.img}">이미지</td>-->
+<!--                    <td th:text="${myRctFree.price}">가격</td>-->
+<!--                    <td th:text="${myRctFree.createdDate}">작성 일자</td>-->
+<!--                    <td th:text="${myRctFree.modifiedDate}">수정 일자</td>-->
+<!--                    <td th:text="${myRctFree.averageRating}">평점</td>-->
+<!--                    <td th:text="${myRctFree.reviewCount}">리뷰 개수</td>-->
+<!--                </tr>-->
+<!--                </tbody>-->
+<!--            </table>-->
+<!--            &lt;!&ndash; 페이징 &ndash;&gt;-->
+<!--            <th:block th:if="${pages != null}">-->
+<!--                <div class="d-flex justify-content-center">-->
+<!--                    <div class="btn-group">-->
+<!--                        <button type="button" class="btn btn-sm previous" th:onclick="|location.href='@{/user/my/rct/free(orderBy=${orderBy}, searchBy=${searchBy}, searchTerm=${searchTerm}, page=${currentPage - 1})}'|" th:disabled="${currentPage == 1}">-->
+<!--                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">-->
+<!--                                <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>-->
+<!--                            </svg>-->
+<!--                        </button>-->
+<!--                        <th:block th:each="p : ${#numbers.sequence(1, pages)}">-->
+<!--                            <button type="button" class="btn btn-sm me-2 pages"-->
+<!--                                    th:text="${p}" th:onclick="|location.href='@{/user/my/rct/free(orderBy=${orderBy}, searchBy=${searchBy}, searchTerm=${searchTerm}, page=${p})}'|"></button>-->
+<!--                        </th:block>-->
+<!--                        <button type="button" class="btn btn-sm  next" th:onclick="|location.href='@{/user/my/rct/free(orderBy=${orderBy}, searchBy=${searchBy}, searchTerm=${searchTerm}, page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">-->
+<!--                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">-->
+<!--                                <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>-->
+<!--                            </svg>-->
+<!--                        </button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </th:block>-->
+<!--        </div>-->
+<!--    </div>-->
 </div>
 <div th:replace="common/footer.html"></div>
 </body>
