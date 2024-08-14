@@ -129,9 +129,42 @@
         <if test="tag3 != null">
             AND tags LIKE CONCAT('%', #{tag3}, '%')
         </if>
+        <if test="Genre1 != null">
+            AND tags LIKE CONCAT('%', #{Genre1}, '%')
+        </if>
+        <if test="Genre2 != null">
+            AND tags LIKE CONCAT('%', #{Genre2}, '%')
+        </if>
         ORDER BY webtoon_name
         LIMIT #{start}, 50
     </select>
+
+    <select id="recommendWebtoon" resultType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO">
+        SELECT *
+        FROM webtoon
+        WHERE tags LIKE CONCAT('%', #{tag1}, '%')
+        <if test="platform == 'NAVER'">
+            AND platform = 1
+        </if>
+        <if test="platform == 'KAKAO'">
+            AND platform = 2
+        </if>
+        <if test="tag2 != null">
+            AND tags LIKE CONCAT('%', #{tag2}, '%')
+        </if>
+        <if test="tag3 != null">
+            AND tags LIKE CONCAT('%', #{tag3}, '%')
+        </if>
+        <if test="Genre1 != null">
+            AND genre LIKE CONCAT('%', #{Genre1}, '%')
+        </if>
+        <if test="Genre2 != null">
+            OR genre LIKE CONCAT('%', #{Genre2}, '%')
+        </if>
+        ORDER BY count DESC
+        LIMIT 12;
+    </select>
+
 
     <select id="WebToonSelectSave" resultMap="wtUserSavetMap">
         SELECT *
@@ -210,6 +243,25 @@
     <select id="webtoonBest">
         select * from webtoon
         ORDER BY count DESC
-        LIMIT 4;
+        LIMIT 12;
+    </select>
+
+    <select id="webtoonUserBest">
+        SELECT
+        w.*,
+        SUM(ul.count) AS user_count -- 각 웹툰의 총 조회수
+        FROM
+        webtoon w
+        JOIN
+        wt_user_log ul ON w.webtoon_no = ul.webtoon_no
+        WHERE
+        ul.user_no = #{userNo}  -- 사용자의 user_no
+        AND ul.created_at >= NOW() - INTERVAL 30 DAY  -- 최근 30일 동안의 로그
+        GROUP BY
+        w.webtoon_no
+        ORDER BY
+        SUM(ul.count) DESC  -- 총 조회수 기준으로 내림차순 정렬
+        ,w.count  DESC
+        LIMIT 10;
     </select>
 </mapper>
