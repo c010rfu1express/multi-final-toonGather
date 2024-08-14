@@ -5,22 +5,44 @@
 
     <title>툰게더 toonGather</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Slick Slider CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+
+    <!-- jQuery (Slick Slider의 의존성) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Slick Slider JS -->
+    <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
         }
+
         #webtoonList {
             display: flex;
             flex-direction: column; /* 세로 정렬 */
             align-items: center; /* 가운데 정렬 */
+        }
+
+        .slider-container {
+            width: 100%; /* 슬라이더 컨테이너가 전체 너비를 차지하도록 설정 */
+        }
+
+        #webtoon-cards-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            max-width: 1150px;
         }
         #webtoonContainer {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
             justify-content: center;
-            max-width: 1200px; /* 최대 너비 설정 */
+            max-width: 1150px; /* 최대 너비 설정 */
         }
         .webtoon-card {
             width: 200px; /* 카드의 가로 크기를 설정 */
@@ -30,10 +52,21 @@
             overflow: hidden;
             margin-bottom: 20px; /* 카드 사이 간격 설정 */
         }
+
+        .webtoonBest-card {
+            flex: 0 0 auto; /* 자동으로 크기 조정되지 않도록 설정 */
+            width: 250px; /* 각 카드의 고정 너비 */
+            margin-right: 20px; /* 카드 사이의 간격 */
+            background-color: #f0f0f0; /* 배경색 */
+            border: 1px solid #ccc; /* 테두리 */
+            border-radius: 5px; /* 모서리 둥글게 */
+            padding: 10px; /* 내부 여백 */
+            text-align: center; /* 텍스트 가운데 정렬 */
+        }
         .webtoon-thumbnail {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
+            width: 100%; /* 썸네일 이미지가 카드 너비에 맞게 조정됨 */
+            height: 200px; /* 고정 높이 설정 */
+
         }
         .webtoon-info {
             padding: 10px;
@@ -65,32 +98,41 @@
         .page-btn:hover {
             background-color: #0056b3;
         }
-        /* 포스트 슬라이더 컨테이너 */
-
-
-/* 웹툰 카드들을 감싸는 컨테이너 */
-#webtoon-cards-container {
-            display: flex;
-            gap: 10px;
+        .page-button.active {
+            background-color: #0056b3;
+            font-weight: bold;
+        }
+     .slick-prev,
+        .slick-next {
+            width: 40px; /* 화살표 너비 */
+            height: 40px; /* 화살표 높이 */
+            z-index: 1; /* 슬라이더 위에 위치하도록 설정 */
+            display: flex; /* 아이콘을 중앙에 배치 */
+            align-items: center;
             justify-content: center;
-            max-width: 1200px;
-}
+            font-size: 24px; /* 아이콘 크기 */
+            color: #888888; /* 회색 색상 */
+            background: transparent; /* 배경 투명 */
+            border: none; /* 기본 테두리 제거 */
+        }
 
+        .slick-prev {
+            left: 10px; /* 왼쪽 화살표 위치 */
+        }
 
+        .slick-next {
+            right: 10px; /* 오른쪽 화살표 위치 */
+        }
 
-.webtoonBest-card {
-    flex: 0 0 auto; /* 자동으로 크기 조정되지 않도록 설정 */
-    width: 250px; /* 각 카드의 고정 너비 */
-    margin-right: 20px; /* 카드 사이의 간격 */
-    background-color: #f0f0f0; /* 배경색 */
-    border: 1px solid #ccc; /* 테두리 */
-    border-radius: 5px; /* 모서리 둥글게 */
-    padding: 10px; /* 내부 여백 */
-    text-align: center; /* 텍스트 가운데 정렬 */
-}
+        .slick-prev::before {
+            content: '<'; /* 왼쪽 화살표 */
+            font-family: Arial, sans-serif;
+        }
 
-
-
+        .slick-next::before {
+            content: '>'; /* 오른쪽 화살표 */
+            font-family: Arial, sans-serif;
+        }
     </style>
 </head>
 <body>
@@ -100,11 +142,9 @@
 
 
 
-
-
 <div id="webtoonList">
 <div id="webtoon-cards-container">
-    <div th:each="webtoon : ${webtoonSelect}" class="webtoonBest-card">
+    <div th:each="webtoon : ${webtoonSelect}" class="webtoonBest-card" style="height: 333px; width: 380px">
         <img th:src="${webtoon.thumbnail_url}" class="webtoon-thumbnail">
         <div class="webtoon-info">
             <a th:text="${webtoon.webtoon_name}"
@@ -122,6 +162,45 @@
 </div>
 
 <div th:replace="common/footer.html"></div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Slick Slider JS -->
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#webtoon-cards-container').slick({
+            slidesToShow: 3, // 한 번에 보여줄 슬라이드 수
+            slidesToScroll: 3, // 한 번에 스크롤할 슬라이드 수
+            arrows: true, // 네비게이션 화살표 표시
+            dots: true, // 점 네비게이션 표시
+            infinite: true, // 무한 스크롤
+            responsive: [
+                {
+                    breakpoint: 1024,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 1
+                    }
+                },
+                {
+                    breakpoint: 768,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 1
+                    }
+                },
+                {
+                    breakpoint: 480,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1
+                    }
+                }
+            ]
+        });
+    });
+</script>
+
 <script>
     let currentPage = 1; // 초기 페이지 번호
 const isLoggedAge = [[${isLoggedAge}]];
@@ -154,9 +233,9 @@ function fetchWebtoons(page) {
         .then(data => {
             const webtoons = data.webtoons.filter(webtoon => {
                 if (updateDay === "COM") {
-                    return webtoon.provider !== "KAKAO_PAGE" && webtoon.isEnd;
+                    return webtoon.provider !== "KAKAO_PAGE" && webtoon.isEnd&& webtoon.id !== "naver_710769";
                 } else {
-                    return webtoon.provider === "NAVER" || webtoon.provider === "KAKAO";
+                    return webtoon.provider !== "KAKAO_PAGE";
                 }
             });
 
@@ -217,10 +296,9 @@ function fetchWebtoons(page) {
             console.error('웹툰을 불러오는 중 오류가 발생했습니다:', error);
         });
          const url = new URL(window.location.href);
-            url.searchParams.set('page', page);
-            window.history.replaceState({}, '', url);
-
-    window.scrollTo(0, 0);
+         url.searchParams.set('page', page);
+         window.history.replaceState({}, '', url);
+         window.scrollTo(0, 0);
 }
 
 function updatePageButtons(totalPages, currentPage) {
@@ -273,6 +351,7 @@ function updatePageButtons(totalPages, currentPage) {
         pageBtn.textContent = i;
         pageBtn.classList.add('page-btn');
         if (i === currentPage) {
+            pageBtn.classList.add('active');
             pageBtn.disabled = true; // 현재 페이지 버튼 비활성화
         }
         pageBtn.addEventListener('click', () => {

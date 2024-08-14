@@ -7,6 +7,8 @@ public class TagPageDTO {
 	private int start;
 	private int end;
 	private int page;
+	private String Genre1;
+	private String Genre2;
 	private String tag1;
 	private String tag2;
 	private String tag3;
