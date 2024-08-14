@@ -13,6 +13,7 @@ public class WebtoonDTO {
     private String genre;
     private String tags;
     private int count;
+    private int user_count;
 
 
 }

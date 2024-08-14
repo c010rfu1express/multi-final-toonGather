@@ -109,7 +109,7 @@
 #TagPageButtons {
             display: flex;
             justify-content: center; /* 버튼들을 가로로 중앙 정렬 */
-            gap: 10px; /* 버튼 간 간격 */
+            gap: 1px; /* 버튼 간 간격 */
         }
 
 
@@ -165,16 +165,54 @@
     </div>
 
 
-    <div id="TagPageButtons" th:if="${totalPages > 0}">
-        <div th:each="i : ${#numbers.sequence(1, totalPages)}">
-            <form th:action="@{/webtoon/search}" method="get">
+    <div id="TagPageButtons" th:if="${totalPages > 1}">
+
+            <!-- '<<' 버튼: 첫 페이지로 이동 -->
+            <form th:action="@{/webtoon/search}" method="get" th:if="${currentPage > 1}">
                 <input type="hidden" name="search" th:value="${search}"/>
                 <input type="hidden" name="Method" th:value="${Method}"/>
                 <input type="hidden" name="platform" th:value="${platform}"/>
-                <input type="hidden" name="page" th:value="${i}"/>
-                <button type="submit" class="page-button" th:classappend="${i == currentPage} ? 'active' : ''" th:text="${i}"></button>
+                <input type="hidden" name="page" value="1"/>
+                <button type="submit" class="page-button"><<</button>
             </form>
-        </div>
+
+            <!-- '<' 버튼: 이전 페이지로 이동 -->
+            <form th:action="@{/webtoon/search}" method="get" th:if="${currentPage > 1}">
+                <input type="hidden" name="search" th:value="${search}"/>
+                <input type="hidden" name="Method" th:value="${Method}"/>
+                <input type="hidden" name="platform" th:value="${platform}"/>
+                <input type="hidden" name="page" th:value="${currentPage - 1}"/>
+                <button type="submit" class="page-button"><</button>
+            </form>
+
+            <!-- 페이지 번호 버튼들 -->
+            <div th:each="i : ${#numbers.sequence(startPage, endPage)}">
+                <form th:action="@{/webtoon/search}" method="get">
+                    <input type="hidden" name="search" th:value="${search}"/>
+                    <input type="hidden" name="Method" th:value="${Method}"/>
+                    <input type="hidden" name="platform" th:value="${platform}"/>
+                    <input type="hidden" name="page" th:value="${i}"/>
+                    <button type="submit" class="page-button" th:classappend="${i == currentPage} ? 'active' : ''" th:text="${i}"></button>
+                </form>
+            </div>
+
+            <!-- '>' 버튼: 다음 페이지로 이동 -->
+            <form th:action="@{/webtoon/search}" method="get" th:if="${currentPage < totalPages}">
+                <input type="hidden" name="search" th:value="${search}"/>
+                <input type="hidden" name="Method" th:value="${Method}"/>
+                <input type="hidden" name="platform" th:value="${platform}"/>
+                <input type="hidden" name="page" th:value="${currentPage + 1}"/>
+                <button type="submit" class="page-button">></button>
+            </form>
+
+            <!-- '>>' 버튼: 마지막 페이지로 이동 -->
+            <form th:action="@{/webtoon/search}" method="get" th:if="${currentPage < totalPages}">
+                <input type="hidden" name="search" th:value="${search}"/>
+                <input type="hidden" name="Method" th:value="${Method}"/>
+                <input type="hidden" name="platform" th:value="${platform}"/>
+                <input type="hidden" name="page" th:value="${totalPages}"/>
+                <button type="submit" class="page-button">>></button>
+            </form>
     </div>
     <div th:replace="common/footer.html"></div>
 
@@ -200,6 +238,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('searchInput').value = search;
     });
+    const excludedIds = ["naver_710769"];
 
 
 
@@ -210,7 +249,7 @@
             .then(response => response.json())
             .then(data => {
                 const webtoons = data.webtoons.filter(webtoon => {
-                    return webtoon.provider === "NAVER" || webtoon.provider === "KAKAO";
+                    return webtoon.provider !== "KAKAO_PAGE" && !excludedIds.includes(webtoon.id);
                 });
 
                 const webtoonContainer = document.getElementById('webtoonContainer');
@@ -286,30 +325,102 @@
                     webtoonContainer.appendChild(webtoonCard);
                 });
 
-                // 페이지 버튼 추가
-                const pageButtons = document.getElementById('pageButtons');
-                pageButtons.innerHTML = '';
-                const total = data.total;
-                const totalPages = Math.ceil(total / 100); // 총 페이지 수 계산
-                for (let i = 1; i <= totalPages; i++) {
-                    const pageBtn = document.createElement('button');
-                    pageBtn.textContent = i;
-                    pageBtn.classList.add('page-button');
-                    if (i === currentPage) {
-                        pageBtn.disabled = true; // 현재 페이지 버튼 비활성화
-                    }
-                    pageBtn.addEventListener('click', () => {
-                        currentPage = i;
-                        fetchWebtoons(currentPage); // 페이지 버튼 클릭 시 해당 페이지의 웹툰을 불러옴
-                    });
-                    pageButtons.appendChild(pageBtn);
-                }
+               updatePageButtons(Math.ceil(data.total / 100), page);
             })
             .catch(error => {
                 console.error('웹툰을 불러오는 중 오류가 발생했습니다:', error);
             });
+        const url = new URL(window.location.href);
+            url.searchParams.set('page', page);
+            window.history.replaceState({}, '', url);
         window.scrollTo(0, 0);}
     }
+
+    function updatePageButtons(totalPages, currentPage) {
+    const pageButtons = document.getElementById('pageButtons');
+    pageButtons.innerHTML = '';
+
+    const visibleRange = 10; // 표시할 페이지 버튼 수
+
+    // 첫 페이지 버튼
+    if (currentPage > 1) {
+        const firstPageBtn = document.createElement('button');
+        firstPageBtn.textContent = '<<';
+        firstPageBtn.classList.add('page-button');
+        firstPageBtn.addEventListener('click', () => {
+            currentPage = 1;
+            fetchWebtoons(currentPage);
+        });
+        pageButtons.appendChild(firstPageBtn);
+    }
+
+    // 이전 페이지 버튼
+    if (currentPage > 1) {
+        const prevPageBtn = document.createElement('button');
+        prevPageBtn.textContent = '<';
+        prevPageBtn.classList.add('page-button');
+        prevPageBtn.addEventListener('click', () => {
+            currentPage--;
+            fetchWebtoons(currentPage);
+        });
+        pageButtons.appendChild(prevPageBtn);
+    }
+
+    let startPage = Math.max(1, currentPage - Math.floor(visibleRange / 2));
+    let endPage = Math.min(totalPages, currentPage + Math.floor(visibleRange / 2));
+
+    // 페이지 버튼이 전체 범위를 초과하지 않도록 조정
+    if (endPage - startPage + 1 < visibleRange) {
+        if (startPage === 1) {
+            endPage = Math.min(totalPages, startPage + visibleRange - 1);
+        } else {
+            startPage = Math.max(1, endPage - visibleRange + 1);
+        }
+    }
+
+
+
+    // 범위 내 페이지 버튼 추가
+    for (let i = startPage; i <= endPage; i++) {
+        const pageBtn = document.createElement('button');
+        pageBtn.textContent = i;
+        pageBtn.classList.add('page-button');
+        if (i === currentPage) {
+         pageBtn.classList.add('active');
+            pageBtn.disabled = true; // 현재 페이지 버튼 비활성화
+
+        }
+        pageBtn.addEventListener('click', () => {
+            currentPage = i;
+            fetchWebtoons(currentPage);
+        });
+        pageButtons.appendChild(pageBtn);
+    }
+
+    // 다음 페이지 버튼
+    if (currentPage < totalPages) {
+        const nextPageBtn = document.createElement('button');
+        nextPageBtn.textContent = '>';
+        nextPageBtn.classList.add('page-button');
+        nextPageBtn.addEventListener('click', () => {
+            currentPage++;
+            fetchWebtoons(currentPage);
+        });
+        pageButtons.appendChild(nextPageBtn);
+    }
+
+    // 마지막 페이지 버튼
+    if (currentPage < totalPages) {
+        const lastPageBtn = document.createElement('button');
+        lastPageBtn.textContent = '>>';
+        lastPageBtn.classList.add('page-button');
+        lastPageBtn.addEventListener('click', () => {
+            currentPage = totalPages;
+            fetchWebtoons(currentPage);
+        });
+        pageButtons.appendChild(lastPageBtn);
+    }
+}
 
     // 페이지 로드 시 첫 번째 페이지의 웹툰을 불러옴
     document.addEventListener('DOMContentLoaded', function() {
