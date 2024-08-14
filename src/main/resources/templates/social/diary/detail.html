@@ -354,7 +354,8 @@
         <div class="diary-comments-list" th:if="${not #lists.isEmpty(comments)}">
             <div class="diary-comment" th:each="comment : ${comments}">
                 <a th:href="@{'/social/users/' + ${comment.commenter.userId} + '/profile'}">
-                    <img class="diary-comment-profile-img" th:src="${'/uploadFiles/' + comment.commenter.profileImagePath}" alt="프로필 이미지">
+                    <img class="diary-comment-profile-img"
+                         th:src="${comment.commenter.profileImagePath != null and comment.commenter.profileImagePath != '' ? '/uploadFiles/' + comment.commenter.profileImagePath : '/images/defaultprofileimage.png'}" alt="프로필 이미지">
                 </a>
                 <div class="diary-comment-content-wrapper">
                     <div class="diary-comment-meta">
