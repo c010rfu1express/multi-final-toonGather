@@ -31,4 +31,11 @@ public class MySoDiaryDTO {
 
     //새로 필요해서 가져온 컬럼
     private String writerUserId;    //from users
+    private String writerNickname;    //from users
+    private String thumbnailUrl;    //from webtoon
+
+    public String getFormattedCommentCreatedDate() {
+        if(commentCreatedDate == null) return "언젠가";
+        return TimeAgoUtils.formatTimeAgo(commentCreatedDate);
+    }
 }
