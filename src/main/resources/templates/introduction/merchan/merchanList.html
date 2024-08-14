@@ -147,6 +147,21 @@
             display: inline-block;
             margin-right: 7px; /* 두 요소 사이의 여백 조정 */
         }
+        /* 푸터 하단 고정 */
+html, body {
+height: 100%;
+margin: 0;
+}
+body {
+display: flex;
+flex-direction: column;
+}
+.content-wrapper {
+flex: 1 0 auto;
+}
+footer {
+flex-shrink: 0;
+}
     </style>
     <script>
         // 선택된 상품의 ID를 가져와서 수정 페이지로 이동하는 함수
@@ -192,6 +207,7 @@
 <div th:replace="~{common/menubar}"></div>
 <div th:replace="~{introduction/inMenubar}"></div>
 
+<div class="content-wrapper">
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between mb-3">
@@ -256,8 +272,9 @@
             <a class="btn btn-custom" th:if="${currentPage < totalPages - 1}" th:href="@{/introduction/merchan/merchanList(page=${currentPage + 1}, keyword=${keyword})}">&raquo;</a>
         </div>
     </div>
-
 </div>
+</div>
+
 <div th:replace="~{common/footer.html}"></div>
 </body>
 </html>
