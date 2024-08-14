@@ -576,7 +576,8 @@ public class SocialController {
         if (existingReview != null) {
             // 이미 리뷰를 작성한 경우 에러 메시지를 추가하고 해당 리뷰 페이지로 리다이렉트
             redirectAttributes.addFlashAttribute("errorMessage", "이미 이 웹툰에 대한 리뷰를 작성하셨습니다.");
-            return "redirect:/social/reviews/" + existingReview.getReviewNo();
+
+            return "redirect:/social/users/" + currentUser.getUserDTO().getUserId() + "/reviews/" + existingReview.getReviewNo();
         }
 
         // 새 리뷰 객체 생성 및 웹툰 정보 설정

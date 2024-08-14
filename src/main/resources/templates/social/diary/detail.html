@@ -195,6 +195,88 @@
             right: 15px;
             top: 15px;
         }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 220px; /* 모달 창 너비 줄임 */
+            min-width: 200px; /* 최소 너비 설정 */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            position: relative; /* x 버튼 위치 지정을 위해 추가 */
+        }
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+        }
+        .share-options {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            margin-top: 20px;
+        }
+        .share-option {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+        .share-option:hover {
+            background-color: #f0f0f0;
+        }
+        .share-option i {
+            margin-right: 12px;
+            font-size: 20px;
+            width: 20px;
+            text-align: center;
+        }
+        .tooltiptext {
+            visibility: hidden;
+            width: 120px; /* 툴팁 너비 줄임 */
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .share-option:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -246,6 +328,10 @@
                 | 조회수: <span th:text="${diary.viewCnt}"></span>
             </div>
             <div class="diary-actions">
+                <!-- 공유하기 버튼 추가 -->
+                <div class="share-button-container">
+                    <button class="btn btn-primary" onclick="openShareModal()"><i class="fas fa-share-alt"></i> 공유하기</button>
+                </div>
                 <a th:href="@{/social/users/{userId}/diaries(userId=${profileUser.userId})}" class="btn btn-secondary">목록으로</a>
                 <th:block th:if="${#authentication.principal != null and #authentication.principal.userDTO.userId == diary.writer.userId}">
                     <a th:href="@{/social/diaries/{diaryNo}/edit(diaryNo=${diary.diaryNo})}" class="btn btn-warning">수정</a>
@@ -293,7 +379,80 @@
 </div>
 <div th:replace="common/footer.html"></div>
 
+<!-- 공유 모달 -->
+<div id="shareModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeShareModal()">&times;</span>
+        <h2>공유하기</h2>
+        <div class="share-options">
+            <div class="share-option" onclick="shareTo('twitter')">
+                <i class="fab fa-twitter"></i>
+                <span>Twitter</span>
+            </div>
+            <div class="share-option" onclick="shareTo('instagram')">
+                <i class="fab fa-instagram"></i>
+                <span>Instagram</span>
+            </div>
+            <div class="share-option" onclick="copyLink()">
+                <i class="fas fa-link"></i>
+                <span>링크 복사</span>
+                <span class="tooltiptext" id="myTooltip">링크 복사하기</span>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script th:inline="javascript">
+    function openShareModal() {
+        document.getElementById('shareModal').style.display = 'block';
+    }
+
+    function closeShareModal() {
+        document.getElementById('shareModal').style.display = 'none';
+    }
+
+    // 모달 외부 클릭 시 닫기
+    window.onclick = function(event) {
+        var modal = document.getElementById('shareModal');
+        if (event.target == modal) {
+            closeShareModal();
+        }
+    }
+
+    function shareTo(platform) {
+        const title = /*[[${diary != null ? diary.title : review.title}]]*/ 'Content Title';
+        const contentType = /*[[${diary != null ? '다이어리' : '리뷰'}]]*/ '컨텐츠';
+        const url = window.location.href;
+        let shareUrl;
+
+        switch(platform) {
+            case 'instagram':
+                copyLink();
+                alert('링크가 클립보드에 복사되었습니다. Instagram에 붙여넣기 해주세요.');
+                break;
+            case 'twitter':
+                const twitterText = `"${title}" - 툰투게더에서 작성한 웹툰 ${contentType}입니다. #툰투게더 #웹툰 #${contentType}`;
+                shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(url)}`;
+                window.open(shareUrl, '_blank');
+                break;
+        }
+        closeShareModal();
+    }
+
+    function copyLink() {
+        const diaryUrl = window.location.href;
+        navigator.clipboard.writeText(diaryUrl).then(function() {
+            var tooltip = document.getElementById("myTooltip");
+            tooltip.innerHTML = "복사 완료!";
+            setTimeout(function() {
+                tooltip.innerHTML = "링크 복사하기";
+            }, 1500);
+        }, function(err) {
+            console.error('링크 복사 실패: ', err);
+        });
+    }
+</script>
 <script th:inline="javascript">
     document.getElementById('diaryCommentContent').addEventListener('input', function() {
         var diaryCharCount = this.value.length;
@@ -304,82 +463,141 @@
         }
     });
 
-document.addEventListener('DOMContentLoaded', function() {
-    const commentForm = document.querySelector('.diary-comment-form');
-    let commentsList = document.querySelector('.diary-comments-list');
-    const commentContent = document.getElementById('diaryCommentContent');
-    const charCount = document.getElementById('diaryCharCount');
-    const submitButton = commentForm.querySelector('button[type="submit"]');
+    document.addEventListener('DOMContentLoaded', function() {
+        const commentForm = document.querySelector('.diary-comment-form');
+        let commentsList = document.querySelector('.diary-comments-list');
+        const commentContent = document.getElementById('diaryCommentContent');
+        const charCount = document.getElementById('diaryCharCount');
+        const submitButton = commentForm.querySelector('button[type="submit"]');
+        const commentCountSpan = document.querySelector('.diary-comment-count span');
 
-    if (commentForm) {
-        submitButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            const content = commentContent.value;
-            const diaryNo = [[${diary.diaryNo}]];
-            const userId = [[${diary.writer.userId}]];
+        if (commentForm) {
+            submitButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                const content = commentContent.value;
+                const diaryNo = [[${diary.diaryNo}]];
 
-            fetch(`/social/diaries/${diaryNo}/comments`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ content: content })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('서버 응답이 올바르지 않습니다.');
+                fetch(`/social/diaries/${diaryNo}/comments`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ content: content })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('서버 응답이 올바르지 않습니다.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        addNewComment(data.comment);
+                        commentContent.value = '';
+                        charCount.textContent = '0';
+                        updateCommentCount(1);
+                    } else {
+                        alert('댓글 작성에 실패했습니다: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('오류가 발생했습니다: ' + error.message);
+                });
+            });
+        }
+
+        // 댓글 삭제 이벤트 리스너
+        if (commentsList) {
+            commentsList.addEventListener('click', function(e) {
+                if (e.target.classList.contains('diary-delete-comment')) {
+                    const commentId = e.target.getAttribute('data-comment-id');
+                    if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+                        deleteComment(commentId, e.target.closest('.diary-comment'));
+                    }
                 }
-                return response.json();
+            });
+        }
+
+        function deleteComment(commentId, commentElement) {
+            fetch(`/social/diaries/comments/${commentId}`, {
+                method: 'DELETE'
             })
+            .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // 댓글 추가 성공 시 페이지 새로고침
-                    window.location.href = `/social/users/${userId}/diaries/${diaryNo}`;
+                    commentElement.remove();
+                    updateCommentCount(-1);
+                    if (commentsList.children.length === 0) {
+                        showNoCommentsMessage();
+                    }
                 } else {
-                    alert('댓글 작성에 실패했습니다: ' + data.message);
+                    alert('댓글 삭제에 실패했습니다.');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('오류가 발생했습니다: ' + error.message);
+                alert('오류가 발생했습니다.');
             });
-        });
-    }
+        }
 
-    // 댓글 삭제 이벤트 리스너
-    if (commentsList) {
-        commentsList.addEventListener('click', function(e) {
-            if (e.target.classList.contains('diary-delete-comment')) {
-                const commentId = e.target.getAttribute('data-comment-id');
-                if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
-                    deleteComment(commentId, e.target.closest('.diary-comment'));
+        function addNewComment(comment) {
+            const newCommentHtml = `
+                <div class="diary-comment">
+                    <a href="/social/users/${comment.commenter.userId}/profile">
+                        <img class="diary-comment-profile-img"
+                             src="${comment.commenter.profileImagePath && comment.commenter.profileImagePath !== '' ? `/uploadFiles/${comment.commenter.profileImagePath}` : '/images/defaultprofileimage.png'}"
+                             alt="프로필 이미지">
+                    </a>
+                    <div class="diary-comment-content-wrapper">
+                        <div class="diary-comment-meta">
+                            <span class="diary-comment-author">${comment.commenter.nickname}</span>
+                            <span class="diary-comment-date">${formatDate(comment.createdDate)}</span>
+                        </div>
+                        <div class="diary-comment-content">${comment.content.replace(/\n/g, '<br/>')}</div>
+                    </div>
+                    <button class="btn btn-sm btn-danger diary-delete-comment" data-comment-id="${comment.commentNo}">삭제</button>
+                </div>
+            `;
+
+            if (!commentsList) {
+                commentsList = document.createElement('div');
+                commentsList.className = 'diary-comments-list';
+                const noCommentsDiv = document.querySelector('.diary-no-comments');
+                if (noCommentsDiv) {
+                    noCommentsDiv.remove();
                 }
+                document.querySelector('.diary-comments-section').insertBefore(commentsList, commentForm);
             }
-        });
-    }
 
-    function deleteComment(commentId, commentElement) {
-        const diaryNo = [[${diary.diaryNo}]];
-        const userId = [[${diary.writer.userId}]];
+            commentsList.insertAdjacentHTML('afterbegin', newCommentHtml);
+        }
 
-        fetch(`/social/diaries/comments/${commentId}`, {
-            method: 'DELETE'
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // 댓글 삭제 성공 시 페이지 새로고침
-                window.location.href = `/social/users/${userId}/diaries/${diaryNo}`;
-            } else {
-                alert('댓글 삭제에 실패했습니다.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('오류가 발생했습니다.');
-        });
-    }
-});
+        function updateCommentCount(increment) {
+            const currentCount = parseInt(commentCountSpan.textContent);
+            commentCountSpan.textContent = currentCount + increment;
+        }
+
+        function showNoCommentsMessage() {
+            const noCommentsHtml = '<div class="diary-no-comments">첫 번째 댓글을 작성해보세요! 😎</div>';
+            commentsList.insertAdjacentHTML('beforebegin', noCommentsHtml);
+            commentsList.remove();
+            commentsList = null;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('ko-KR', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            });
+        }
+    });
 </script>
 <script th:inline="javascript">
     $(document).ready(function() {
