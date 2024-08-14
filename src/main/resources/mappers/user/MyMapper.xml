@@ -1379,10 +1379,10 @@
                 ORDER BY order_no ASC
             </when>
             <when test="orderBy == 'expensive'">
-                ORDER BY price DESC
+                ORDER BY rfp.price DESC
             </when>
             <when test="orderBy == 'cheap'">
-                ORDER BY price ASC
+                ORDER BY rfp.price ASC
             </when>
             <otherwise>
                 ORDER BY order_no DESC
@@ -1455,10 +1455,10 @@
                 ORDER BY order_no ASC
             </when>
             <when test="orderBy == 'expensive'">
-                ORDER BY price DESC
+                ORDER BY rfp.price DESC
             </when>
             <when test="orderBy == 'cheap'">
-                ORDER BY price ASC
+                ORDER BY rfp.price ASC
             </when>
             <otherwise>
                 ORDER BY order_no DESC
