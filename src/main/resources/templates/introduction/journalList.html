@@ -207,14 +207,14 @@
     <div class="row" th:if="${journals != null && !journals.isEmpty()}">
         <!-- 각 소식 항목을 카드로 표시 -->
         <div class="col-md-4" th:each="journal : ${journals}">
-            <div class="card">
+            <div class="card" >
                 <!-- journal넘버 히든으로 넣어둠. 혹시나 -->
                 <input type="hidden" name="journalNo" th:value="${journal.journalNo}">
                 <!-- 썸네일 이미지 없을때 : 기본 썸네일 이미지 -->
-                <img th:unless="${#lists.size(journal.journalFiles) > 0}" src="/images/introduction/default-thumbnail.png" class="card-img-top" alt="기본 썸네일 이미지">
+                <img th:unless="${#lists.size(journal.journalFiles) > 0}" src="/images/introduction/default-thumbnail.png" class="card-img-top" alt="기본 썸네일 이미지" th:attr="onclick=|window.location.href='/introduction/journal/journalDetail?journalNo=' + ${journal.journalNo};|" style="cursor: pointer;">
 
                 <!-- 썸네일 이미지 있을때  -->
-                <img th:if="${#lists.size(journal.journalFiles) > 0}" th:src="@{/uploadFiles/{fileName}(fileName=${journal.journalFiles.get(0).fileName})}" class="card-img-top" alt="썸네일 이미지">
+                <img th:if="${#lists.size(journal.journalFiles) > 0}" th:src="@{/uploadFiles/{fileName}(fileName=${journal.journalFiles.get(0).fileName})}" class="card-img-top" alt="썸네일 이미지" th:attr="onclick=|window.location.href='/introduction/journal/journalDetail?journalNo=' + ${journal.journalNo};|" style="cursor: pointer;">
 
                 <div class="card-body">
                     <div class="card-content">
@@ -227,7 +227,7 @@
                         </div>
                     </div>
                     <p class="card-text">
-                        <small class="text-muted" th:text="${#dates.format(journal.postingDate, 'yyyy-MM-dd')}">게시일시</small>
+                        <small class="text-muted" th:text="${#dates.format(journal.postingDate, 'yyyy-MM-dd')}" th:attr="onclick=|window.location.href='/introduction/journal/journalDetail?journalNo=' + ${journal.journalNo};|" style="cursor: pointer;">게시일시</small>
                     </p>
                 </div>
             </div>
