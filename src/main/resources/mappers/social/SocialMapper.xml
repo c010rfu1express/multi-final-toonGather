@@ -106,7 +106,7 @@
         </association>
     </resultMap>
 
-    <!-- 지금 핫한 리뷰: 조회수(0.3 가중치), 좋아요수(0.5 가중치), 작성일 추가점수  7일 이내(100점), 30일 이내(50점), 그 외(10점) -->
+    <!-- 지금 핫한 리뷰: 최근 6개월 이내, 조회수(0.3 가중치), 좋아요수(0.5 가중치), 작성일 추가점수  7일 이내(100점), 30일 이내(50점), 그 외(10점) -->
     <select id="selectPopularReviews" resultMap="reviewResultMap">
         SELECT r.*, u.user_no, u.user_id, u.nickname, u.profile_image_path,
         w.webtoon_no, w.webtoon_id, w.platform, w.webtoon_name, w.author, w.thumbnail_url, w.genre, w.tags,
@@ -123,7 +123,8 @@
         FROM so_review r
         JOIN users u ON r.writer_no = u.user_no
         JOIN webtoon w ON r.webtoon_no = w.webtoon_no
-        WHERE r.created_date AND u.withdrawn = 'N'
+        WHERE r.created_date >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+        AND u.withdrawn = 'N'
         ORDER BY popularity_score DESC
         LIMIT #{limit}
     </select>
@@ -601,7 +602,7 @@
         WHERE c.diary_no = #{diaryNo}
         AND u.withdrawn = 'N'
         AND diary_writer.withdrawn = 'N'
-        ORDER BY c.created_date ASC
+        ORDER BY c.created_date DESC
     </select>
     <!-- 다이어리 댓글 조회: 특정 댓글 번호 -->
     <select id="selectDiaryCommentByNo" parameterType="int" resultMap="diaryCommentResultMap">

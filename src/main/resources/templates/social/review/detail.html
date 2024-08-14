@@ -169,6 +169,88 @@
         .review-detail-page .like-button-container {
             margin-bottom: 30px;
         }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 220px; /* 모달 창 너비 줄임 */
+            min-width: 200px; /* 최소 너비 설정 */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            position: relative; /* x 버튼 위치 지정을 위해 추가 */
+        }
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+        }
+        .share-options {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            margin-top: 20px;
+        }
+        .share-option {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+        .share-option:hover {
+            background-color: #f0f0f0;
+        }
+        .share-option i {
+            margin-right: 12px;
+            font-size: 20px;
+            width: 20px;
+            text-align: center;
+        }
+        .tooltiptext {
+            visibility: hidden;
+            width: 120px; /* 툴팁 너비 줄임 */
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .share-option:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -221,17 +303,18 @@
             <div class="review-actions">
                 <div class="left-actions">
                     <div class="like-button-container" th:if="${currentUser != null and currentUser.userNo != review.writer.userNo}">
-            <span class="like-button">
-                <input type="checkbox" th:id="'like-' + ${review.reviewNo}" th:checked="${isLiked}">
-                <label th:for="'like-' + ${review.reviewNo}"></label>
-                <span class="like-count" th:text="${review.likeCount}">0</span>
-            </span>
+                        <span class="like-button">
+                            <input type="checkbox" th:id="'like-' + ${review.reviewNo}" th:checked="${isLiked}">
+                            <label th:for="'like-' + ${review.reviewNo}"></label>
+                            <span class="like-count" th:text="${review.likeCount}">0</span>
+                        </span>
                     </div>
                     <div class="like-count-only" th:if="${currentUser == null or currentUser.userNo == review.writer.userNo}">
                         좋아요 수: <span th:text="${review.likeCount}" style="font-weight: bold; color: #ff4081;">0</span>
                     </div>
                 </div>
                 <div class="right-actions">
+                    <button class="btn btn-primary" onclick="openShareModal()"><i class="fas fa-share-alt"></i> 공유하기</button>
                     <a th:href="@{/social/users/{userId}/reviews(userId=${profileUser.userId})}" class="btn btn-secondary">목록으로</a>
                     <th:block th:if="${#authentication.principal != null and #authentication.principal.userDTO.userId == review.writer.userId}">
                         <a th:href="@{/social/reviews/{reviewNo}/edit(reviewNo=${review.reviewNo})}" class="btn btn-warning">수정</a>
@@ -250,7 +333,80 @@
 </div>
 <div th:replace="common/footer.html"></div>
 
+<!-- 공유 모달 -->
+<div id="shareModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeShareModal()">&times;</span>
+        <h2>공유하기</h2>
+        <div class="share-options">
+            <div class="share-option" onclick="shareTo('twitter')">
+                <i class="fab fa-twitter"></i>
+                <span>Twitter</span>
+            </div>
+            <div class="share-option" onclick="shareTo('instagram')">
+                <i class="fab fa-instagram"></i>
+                <span>Instagram</span>
+            </div>
+            <div class="share-option" onclick="copyLink()">
+                <i class="fas fa-link"></i>
+                <span>링크 복사</span>
+                <span class="tooltiptext" id="myTooltip">링크 복사하기</span>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script th:inline="javascript">
+    function openShareModal() {
+        document.getElementById('shareModal').style.display = 'block';
+    }
+
+    function closeShareModal() {
+        document.getElementById('shareModal').style.display = 'none';
+    }
+
+    // 모달 외부 클릭 시 닫기
+    window.onclick = function(event) {
+        var modal = document.getElementById('shareModal');
+        if (event.target == modal) {
+            closeShareModal();
+        }
+    }
+
+    function shareTo(platform) {
+        const title = /*[[${diary != null ? diary.title : review.title}]]*/ 'Content Title';
+        const contentType = /*[[${diary != null ? '다이어리' : '리뷰'}]]*/ '컨텐츠';
+        const url = window.location.href;
+        let shareUrl;
+
+        switch(platform) {
+            case 'instagram':
+                copyLink();
+                alert('링크가 클립보드에 복사되었습니다. Instagram에 붙여넣기 해주세요.');
+                break;
+            case 'twitter':
+                const twitterText = `"${title}" - 툰투게더에서 작성한 웹툰 ${contentType}입니다. #툰투게더 #웹툰 #${contentType}`;
+                shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}&url=${encodeURIComponent(url)}`;
+                window.open(shareUrl, '_blank');
+                break;
+        }
+        closeShareModal();
+    }
+
+    function copyLink() {
+        const reviewUrl = window.location.href;
+        navigator.clipboard.writeText(reviewUrl).then(function() {
+            var tooltip = document.getElementById("myTooltip");
+            tooltip.innerHTML = "복사 완료!";
+            setTimeout(function() {
+                tooltip.innerHTML = "링크 복사하기";
+            }, 1500);
+        }, function(err) {
+            console.error('링크 복사 실패: ', err);
+        });
+    }
+</script>
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
         const likeButton = document.querySelector('.like-button input');
