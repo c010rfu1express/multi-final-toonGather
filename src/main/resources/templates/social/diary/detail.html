@@ -162,6 +162,7 @@
         }
         .diary-comment-content-wrapper {
             flex-grow: 1;
+            min-width: 0;
         }
         .diary-comment-meta {
             display: flex;
@@ -169,6 +170,13 @@
             margin-bottom: 5px;
             font-size: 14px;
             color: #6c757d;
+            flex-wrap: wrap;
+        }
+        .diary-comment-content {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            hyphens: auto;
         }
         .diary-delete-comment {
             position: absolute;
@@ -466,7 +474,11 @@
         if (commentForm) {
             submitButton.addEventListener('click', function(e) {
                 e.preventDefault();
-                const content = commentContent.value;
+                const content = commentContent.value.trim();
+                if (content === '') {
+                    alert('댓글 내용을 입력해주세요.');
+                    return;
+                }
                 const diaryNo = [[${diary.diaryNo}]];
 
                 fetch(`/social/diaries/${diaryNo}/comments`, {
@@ -484,7 +496,6 @@
                 })
                 .then(data => {
                     if (data.success) {
-                        // 성공 시 페이지 새로고침
                         window.location.reload();
                     } else {
                         alert('댓글 작성에 실패했습니다: ' + data.message);
@@ -497,60 +508,60 @@
             });
         }
 
-        // 댓글 삭제 이벤트 리스너
-        if (commentsList) {
-            commentsList.addEventListener('click', function(e) {
-                if (e.target.classList.contains('diary-delete-comment')) {
-                    const commentId = e.target.getAttribute('data-comment-id');
-                    if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
-                        deleteComment(commentId, e.target.closest('.diary-comment'));
+            // 댓글 삭제 이벤트 리스너
+            if (commentsList) {
+                commentsList.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('diary-delete-comment')) {
+                        const commentId = e.target.getAttribute('data-comment-id');
+                        if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+                            deleteComment(commentId, e.target.closest('.diary-comment'));
+                        }
                     }
+                });
+            }
+
+            function deleteComment(commentId, commentElement) {
+                fetch(`/social/diaries/comments/${commentId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // 삭제 성공 시 페이지 새로고침
+                        window.location.reload();
+                    } else {
+                        alert('댓글 삭제에 실패했습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('오류가 발생했습니다.');
+                });
+            }
+
+            // 글자 수 카운트 기능
+            commentContent.addEventListener('input', function() {
+                var diaryCharCount = this.value.trim().length;
+                charCount.textContent = diaryCharCount;
+                if (diaryCharCount > 140) {
+                    this.value = this.value.trim().slice(0, 140);
+                    charCount.textContent = 140;
                 }
             });
-        }
 
-        function deleteComment(commentId, commentElement) {
-            fetch(`/social/diaries/comments/${commentId}`, {
-                method: 'DELETE'
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // 삭제 성공 시 페이지 새로고침
-                    window.location.reload();
-                } else {
-                    alert('댓글 삭제에 실패했습니다.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('오류가 발생했습니다.');
-            });
-        }
-
-        // 글자 수 카운트 기능
-        commentContent.addEventListener('input', function() {
-            var diaryCharCount = this.value.length;
-            charCount.textContent = diaryCharCount;
-            if (diaryCharCount > 140) {
-                this.value = this.value.slice(0, 140);
-                charCount.textContent = 140;
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleString('ko-KR', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true
+                });
             }
         });
-
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleString('ko-KR', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: true
-            });
-        }
-    });
 </script>
 <script th:inline="javascript">
     $(document).ready(function() {
