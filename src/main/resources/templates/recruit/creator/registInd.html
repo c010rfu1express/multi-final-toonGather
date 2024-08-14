@@ -54,11 +54,11 @@
           본인의 전문 분야와 보유 기술을 포함하여 자신을 소개해 주세요. <br>
           이 정보는 사이트에서의 최소한의 인증 장치로 사용됩니다. <br>
         </p>
-        <form action="#" th:action="@{/recruit/creator/registInd}" id="form" method="post" enctype="multipart/form-data">
+        <form action="#" th:action="@{/recruit/creator/registInd}" id="form" method="post">
           <div class="form-group">
             <br>
             <label for="content">자기소개</label>
-            <textarea id="content" name="content" class="form-control" rows="5" required ></textarea>
+            <textarea id="content" name="content" class="form-control" rows="5" required maxlength="1000"></textarea>
           </div>
           <div class="form-group text-right">
             <button type="submit" class="btn btn-primary">등록</button>
