@@ -63,7 +63,7 @@ public class MerchanServiceImpl implements MerchanService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean insertMerchan(MerchanDTO merchanDTO, MultipartFile[] images, HttpServletRequest request) throws Exception {
+    public boolean insertMerchan(MerchanDTO merchanDTO, MultipartFile[] images, MultipartFile[] detailImages, HttpServletRequest request) throws Exception {
         try {
             // 1. 상품 정보 DB에 삽입 & merchanNo 가져오기
             merchanMapper.insertMerchan(merchanDTO);
@@ -90,6 +90,29 @@ public class MerchanServiceImpl implements MerchanService {
                         fileDTO.setFileName(savedName);
                         fileDTO.setFilePath(filePath);
                         fileDTO.setFileType(image.getContentType());
+
+                        // Insert the file information into the database
+                        merchanMapper.insertMerchanFile(fileDTO);
+                    } catch (IOException e) {
+                        new File(filePath + "/" + savedName).delete();
+                        throw new Exception("File upload failed, rolling back transaction.", e); // 예외를 던져 트랜잭션을 롤백함
+                    }
+                }
+            }
+            for (MultipartFile image : detailImages) {
+                String originName = image.getOriginalFilename();
+                if (originName != null && !originName.isEmpty()) {
+                    String ext = originName.substring(originName.lastIndexOf("."));
+                    String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
+
+                    // 파일 저장
+                    try {
+                        image.transferTo(new File(filePath + "/" + savedName));
+                        MerchanFileDTO fileDTO = new MerchanFileDTO();
+                        fileDTO.setMerchanNo(merchanDTO.getMerchanNo());
+                        fileDTO.setFileName(savedName);
+                        fileDTO.setFilePath(filePath);
+                        fileDTO.setFileType("detail");
 
                         // Insert the file information into the database
                         merchanMapper.insertMerchanFile(fileDTO);
@@ -164,9 +187,8 @@ public class MerchanServiceImpl implements MerchanService {
         }
     }
 
-    @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateMerchan(MerchanDTO merchan, List<String> existingImages, List<String> removedImages, MultipartFile[] images, HttpServletRequest request) throws Exception {
+    public boolean updateMerchan(MerchanDTO merchan, List<String> existingImages, List<String> removedImages, MultipartFile[] images, List<String> existingDetailImages, List<String> removedDetailImages, MultipartFile[] detailImages, HttpServletRequest request) throws Exception {
         try {
             // 상품 업데이트
             merchanMapper.updateMerchan(merchan);
@@ -174,7 +196,7 @@ public class MerchanServiceImpl implements MerchanService {
             String root = request.getSession().getServletContext().getRealPath("/");
             String filePath = root + "/uploadFiles";
 
-            // 기존 이미지 삭제 처리
+            // 기존 이미지 삭제 처리 (썸네일)
             if (removedImages != null && !removedImages.isEmpty()) {
                 for (String savedName : removedImages) {
                     File fileToDelete = new File(filePath + "/" + savedName);
@@ -185,7 +207,18 @@ public class MerchanServiceImpl implements MerchanService {
                 }
             }
 
-            // 새로운 이미지 저장
+            // 기존 이미지 삭제 처리 (상세정보)
+            if (removedDetailImages != null && !removedDetailImages.isEmpty()) {
+                for (String savedName : removedDetailImages) {
+                    File fileToDelete = new File(filePath + "/" + savedName);
+                    if (fileToDelete.exists()) {
+                        fileToDelete.delete();
+                    }
+                    merchanMapper.deleteMerchanFileBySavedName(savedName);
+                }
+            }
+
+            // 새로운 이미지 저장 (썸네일)
             if (images != null && images.length > 0) {
                 for (MultipartFile image : images) {
                     String originName = image.getOriginalFilename();
@@ -206,6 +239,32 @@ public class MerchanServiceImpl implements MerchanService {
                         fileDTO.setFileName(savedName);
                         fileDTO.setFilePath(filePath);
                         fileDTO.setFileType(image.getContentType());
+
+                        merchanMapper.insertMerchanFile(fileDTO);
+                    }
+                }
+            }
+            // 새로운 이미지 저장 (상세정보)
+            if (detailImages != null && detailImages.length > 0) {
+                for (MultipartFile image : detailImages) {
+                    String originName = image.getOriginalFilename();
+                    if (originName != null && !originName.isEmpty()) {
+                        String ext = originName.substring(originName.lastIndexOf("."));
+                        String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
+
+                        // 파일 저장
+                        try {
+                            image.transferTo(new File(filePath + "/" + savedName));
+                        } catch (IOException e) {
+                            new File(filePath + "/" + savedName).delete();
+                            throw new Exception("File upload error", e);
+                        }
+
+                        MerchanFileDTO fileDTO = new MerchanFileDTO();
+                        fileDTO.setMerchanNo(merchan.getMerchanNo());
+                        fileDTO.setFileName(savedName);
+                        fileDTO.setFilePath(filePath);
+                        fileDTO.setFileType("detail");
 
                         merchanMapper.insertMerchanFile(fileDTO);
                     }

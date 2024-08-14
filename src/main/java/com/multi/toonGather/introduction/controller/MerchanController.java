@@ -62,12 +62,13 @@ public class MerchanController {
     // 상품 추가 처리
     @PostMapping(value = {"introduction/merchan/merchanInsert"})
     public String merchanInsert(@RequestParam("title") String title,
-                                @RequestParam("regularPrice") int regularPrice,
-                                @RequestParam("discountPrice") int discountPrice,
-                                @RequestParam("shippingCost") int shippingCost,
+                                @RequestParam(value = "regularPrice", required = false) Integer regularPrice,
+                                @RequestParam(value = "discountPrice", required = false) Integer discountPrice,
+                                @RequestParam(value = "shippingCost", required = false) Integer shippingCost,
                                 @RequestParam("merchanInfo") String merchanInfo,
                                 @RequestParam("content") String content,
                                 @RequestParam("images") MultipartFile[] images,
+                                @RequestParam("detailImages") MultipartFile[] detailImages,
                                 HttpServletRequest request) {
         try {
             MerchanDTO merchanDTO = new MerchanDTO();
@@ -79,7 +80,7 @@ public class MerchanController {
             merchanDTO.setContent(content);
             merchanDTO.setPostingDate(LocalDateTime.now());
 
-            boolean isSuccess = merchanService.insertMerchan(merchanDTO, images, request);
+            boolean isSuccess = merchanService.insertMerchan(merchanDTO, images, detailImages, request);
             if (isSuccess) {
                 return "redirect:/introduction/merchan/merchanList";
             } else {
@@ -105,14 +106,17 @@ public class MerchanController {
     @PostMapping(value = {"introduction/merchan/merchanUpdate"})
     public String merchanUpdate(@RequestParam("merchanNo") int merchanNo,
                                 @RequestParam("title") String title,
-                                @RequestParam("regularPrice") int regularPrice,
-                                @RequestParam("discountPrice") int discountPrice,
-                                @RequestParam("shippingCost") int shippingCost,
+                                @RequestParam(value = "regularPrice", required = false) Integer regularPrice,
+                                @RequestParam(value = "discountPrice", required = false) Integer discountPrice,
+                                @RequestParam(value = "shippingCost", required = false) Integer shippingCost,
                                 @RequestParam("merchanInfo") String merchanInfo,
                                 @RequestParam("content") String content,
                                 @RequestParam("images") MultipartFile[] images,
+                                @RequestParam("detailImages") MultipartFile[] detailImages,
                                 @RequestParam(value = "existingImages", required = false) List<String> existingImages,
                                 @RequestParam(value = "removedImages", required = false) List<String> removedImages,
+                                @RequestParam(value = "existingDetailImages", required = false) List<String> existingDetailImages,
+                                @RequestParam(value = "removedDetailImages", required = false) List<String> removedDetailImages,
                                 HttpServletRequest request) throws Exception {
 
         MerchanDTO merchan = merchanService.getMerchanByNoWithFiles(merchanNo);
@@ -123,7 +127,7 @@ public class MerchanController {
         merchan.setMerchanInfo(merchanInfo);
         merchan.setContent(content);
 
-        boolean isSuccess = merchanService.updateMerchan(merchan, existingImages, removedImages, images, request);
+        boolean isSuccess = merchanService.updateMerchan(merchan, existingImages, removedImages, images, existingDetailImages, removedDetailImages, detailImages, request);
         if (isSuccess) return "redirect:/introduction/merchan/merchanList";
         else return "introduction/merchan/merchanUpdate/" + merchan.getMerchanNo();
     }
@@ -151,6 +155,7 @@ public class MerchanController {
 
         MerchanDTO merchanDTO = merchanService.getMerchanByNoWithFiles(merchanNo);
         model.addAttribute("merchan", merchanDTO);
+
 
         // 좋아요 수 계산
         int likeCount = merchanService.countLikesByMerchanNo(merchanDTO.getMerchanNo());

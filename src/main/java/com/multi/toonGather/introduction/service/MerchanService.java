@@ -16,7 +16,7 @@ public interface MerchanService {
 
     List<MerchanDTO> getAllMerchansWithFiles(int offset, int pageSize);
 
-    boolean insertMerchan(MerchanDTO merchanDTO, MultipartFile[] images, HttpServletRequest request) throws Exception;
+    boolean insertMerchan(MerchanDTO merchanDTO, MultipartFile[] images, MultipartFile[] detailImages, HttpServletRequest request) throws Exception;
 
     MerchanDTO getMerchanByNoWithFiles(int merchanNo);
 
@@ -26,5 +26,5 @@ public interface MerchanService {
 
     boolean toggleLike(int merchanNo, int userNo);
 
-    boolean updateMerchan(MerchanDTO merchan, List<String> existingImages, List<String> removedImages, MultipartFile[] images, HttpServletRequest request) throws Exception;
+    boolean updateMerchan(MerchanDTO merchan, List<String> existingImages, List<String> removedImages, MultipartFile[] images, List<String> existingDetailImages, List<String> removedDetailImages, MultipartFile[] detailImages, HttpServletRequest request) throws Exception;
 }

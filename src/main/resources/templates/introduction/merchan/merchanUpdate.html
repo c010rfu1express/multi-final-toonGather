@@ -66,7 +66,7 @@
 <div class="container mt-4">
     <div class="form-container">
         <h2 class="mb-4">상품 수정</h2>
-        <form th:action="@{/merchan/update}" method="post" enctype="multipart/form-data">
+        <form th:action="@{/introduction/merchan/merchanUpdate}" method="post" enctype="multipart/form-data">
             <input type="hidden" name="merchanNo" th:value="${merchan.merchanNo}">
 
             <div class="form-group">
@@ -76,9 +76,39 @@
             </div>
 
             <div class="form-group">
-                <label>첨부된 이미지</label>
+                <label for="regularPrice">정가</label>
+                <input type="number" class="form-control" id="regularPrice" name="regularPrice"
+                       th:value="${merchan.regularPrice}">
+            </div>
+
+            <div class="form-group">
+                <label for="discountPrice" class="required">할인가</label>
+                <input type="number" class="form-control" id="discountPrice" name="discountPrice"
+                       th:value="${merchan.discountPrice}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="shippingCost">배송비</label>
+                <input type="number" class="form-control" id="shippingCost" name="shippingCost"
+                       th:value="${merchan.shippingCost}">
+            </div>
+
+            <div class="form-group">
+                <label for="merchanInfo" class="required">상품 정보</label>
+                <textarea class="form-control" id="merchanInfo" name="merchanInfo" rows="3" maxlength="500"
+                          required th:text="${merchan.merchanInfo}"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="content" class="required">상품 내용</label>
+                <textarea class="form-control" id="content" name="content" rows="10" maxlength="1000"
+                          placeholder="1000자 이내로 입력하세요" required th:text="${merchan.content}"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>[썸네일] 첨부된 이미지</label>
                 <div class="image-preview" id="existingImagePreview">
-                    <div th:each="image : ${merchan.merchanFiles}">
+                    <div th:each="image : ${merchan.merchanFiles}" th:if="${image.fileType.startsWith('image/')}">
                         <img th:src="@{'/uploadFiles/' + ${image.fileName}}" alt="첨부된 이미지">
                         <div class="remove-button" th:attr="data-saved-name=${image.fileName}"
                              onclick="removeExistingImage(this)">삭제</div>
@@ -88,53 +118,38 @@
             </div>
 
             <div class="form-group">
-                <label for="imageUpload">이미지 추가</label>
+                <label for="imageUpload">[썸네일] 이미지 추가</label>
                 <input type="file" class="form-control-file" id="imageUpload" name="images" multiple>
                 <div class="image-preview" id="imagePreview"></div>
             </div>
 
             <div class="form-group">
-                <label for="categoryCode" class="required">카테고리</label>
-                <select class="custom-select" id="categoryCode" name="categoryCode" required>
-                    <option value="">카테고리 선택</option>
-                    <option th:each="category : ${categories}" th:value="${category.code}"
-                            th:text="${category.title}" th:selected="${category.code} == ${merchan.categoryCode}">
-                    </option>
-                </select>
+                <label>[상세정보] 첨부된 이미지</label>
+                <div class="image-preview" id="existingDetailImagePreview">
+                    <div th:each="image : ${merchan.merchanFiles}" th:if="${image.fileType eq 'detail'}">
+                        <img th:src="@{'/uploadFiles/' + ${image.fileName}}" alt="첨부된 이미지">
+                        <div class="remove-button" th:attr="data-saved-name=${image.fileName}"
+                             onclick="removeExistingImage(this)">삭제</div>
+                        <input type="hidden" name="existingImages" th:value="${image.fileName}">
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
-                <label for="price" class="required">가격</label>
-                <input type="number" class="form-control" id="price" name="price" th:value="${merchan.price}"
-                       required>
-            </div>
-
-            <div class="form-group">
-                <label for="description" class="required">상품 설명</label>
-                <textarea class="form-control" id="description" name="description" rows="10" maxlength="1000"
-                          placeholder="1000자 이내로 입력하세요" th:text="${merchan.description}" required></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="stock" class="required">재고</label>
-                <input type="number" class="form-control" id="stock" name="stock" th:value="${merchan.stock}"
-                       required>
-            </div>
-
-            <div class="form-group">
-                <label for="manufacturer">제조사</label>
-                <input type="text" class="form-control" id="manufacturer" name="manufacturer" maxlength="100"
-                       th:value="${merchan.manufacturer}">
+                <label for="detailImageUpload">[상세정보] 이미지 추가</label>
+                <input type="file" class="form-control-file" id="detailImageUpload" name="detailImages" multiple>
+                <div class="image-preview" id="detailImagePreview"></div>
             </div>
 
             <button type="submit" class="btn btn-warning">수정</button>
-            <a href="/merchan/list" class="btn btn-secondary">취소</a>
+            <a href="/introduction/merchan/merchanList" class="btn btn-secondary">취소</a>
         </form>
     </div>
 </div>
 
-<div th:replace="common/footer.html"></div>
+<div th:replace="~{common/footer.html}"></div>
 <script>
+    // [썸네일] 이미지 업로드 및 미리보기 기능
     document.getElementById('imageUpload').addEventListener('change', function (event) {
         const files = event.target.files;
         const imagePreview = document.getElementById('imagePreview');
@@ -158,6 +173,30 @@
         });
     });
 
+    // [상세정보] 이미지 업로드 및 미리보기 기능
+    document.getElementById('detailImageUpload').addEventListener('change', function (event) {
+        const files = event.target.files;
+        const imagePreview = document.getElementById('detailImagePreview');
+        imagePreview.innerHTML = '';
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const imgElement = document.createElement('img');
+                imgElement.src = e.target.result;
+                const removeButton = document.createElement('div');
+                removeButton.innerText = '삭제';
+                removeButton.classList.add('remove-button');
+                removeButton.onclick = function () {
+                    imgElement.remove();
+                    removeButton.remove();
+                };
+                imagePreview.appendChild(imgElement);
+                imagePreview.appendChild(removeButton);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+    // [썸네일]
     function removeExistingImage(element) {
         const imageName = element.getAttribute('data-saved-name');
         element.previousElementSibling.remove(); // 이미지 삭제
@@ -169,6 +208,8 @@
         document.querySelector('form').appendChild(hiddenInput);
         console.log("Removed image added to form: " + imageName); // 디버그 로그
     }
+
+    // [상세정보]
 </script>
 </body>
 
