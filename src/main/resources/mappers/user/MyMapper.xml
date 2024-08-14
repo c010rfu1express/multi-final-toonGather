@@ -1237,6 +1237,28 @@
         </if>
     </select>
 
+    <select id="selectOneMyRctFree" resultType="MyRctFreeDTO">
+        SELECT
+        rf.board_no AS boardNo,
+        rf.writer,
+        rf.title,
+        rf.content,
+        rf.img,
+        rf.price,
+        rf.created_date AS createdDate,
+        rf.modified_date AS modifiedDate,
+        COALESCE(AVG(rfr.star_rating), 0.0) AS averageRating,
+        COALESCE(COUNT(rfr.review_no), 0) AS reviewCount
+        FROM
+        rct_free rf
+        LEFT JOIN
+        rct_free_review rfr
+        ON
+        rf.board_no = rfr.board_no
+        WHERE
+        rf.board_no = #{boardNo}
+    </select>
+
     <resultMap type="MyRctCreatorDTO" id="MyRctCreatorResultMap">
         <id property="creatorNo" column="creator_no"/>
         <result property="memberNo" column="member_no"/>

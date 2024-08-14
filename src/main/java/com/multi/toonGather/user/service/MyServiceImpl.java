@@ -21,6 +21,11 @@ public class MyServiceImpl implements MyService {
         return response;
     }
 
+    public MyRctFreeDTO getMyRctFreeOne(int boardNo) throws Exception {
+        MyRctFreeDTO response = myMapper.selectOneMyRctFree(boardNo);
+        return response;
+    }
+
     //1
     public List<MyRctCreatorDTO> getMyRctCreators(int userNo) throws Exception {
         List<MyRctCreatorDTO> response = myMapper.selectListMyRctCreator(userNo);
