@@ -1,6 +1,8 @@
 package com.multi.toonGather.user.model.mapper;
 
 import com.multi.toonGather.common.model.dto.PageNDTO;
+import com.multi.toonGather.introduction.model.dto.EventFileDTO;
+import com.multi.toonGather.introduction.model.dto.JournalFileDTO;
 import com.multi.toonGather.user.model.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -9,6 +11,12 @@ import java.util.List;
 
 @Mapper
 public interface MyMapper {
+
+    //eventfiles, merchanfiles
+    List<EventFileDTO> selectFilesByEventNo(@Param("eventNo") int eventNo);
+    List<MyInMerchanFileDTO> selectFilesByMerchanNo(@Param("merchanNo") int merchanNo);
+    List<JournalFileDTO> selectFilesByJournalNo(@Param("journalNo") int journalNo);
+
     //1(1개)
     List<MyRctCreatorDTO> selectListMyRctCreator(@Param("userNo") int userNo) throws Exception;
 
@@ -37,6 +45,8 @@ public interface MyMapper {
     List<MyRctApplicationDTO> selectListMyRctJobApplication(@Param("boardNo") int boardNo, @Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy, @Param("searchBy") String searchBy, @Param("searchTerm") String searchTerm, @Param("pageNDTO") PageNDTO pageNDTO) throws Exception;
 
     List<MyInMerchanDTO> selectListMyInMerchan(@Param("userNo") int userNo, @Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy, @Param("searchBy") String searchBy, @Param("searchTerm") String searchTerm, @Param("pageNDTO") PageNDTO pageNDTO) throws Exception;
+
+    List<MyRctOrderDTO> selectListMyRctFreeOrder(@Param("boardNo") int boardNo, @Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy, @Param("searchBy") String searchBy, @Param("searchTerm") String searchTerm, @Param("pageNDTO") PageNDTO pageNDTO) throws Exception;
 
 
 
@@ -68,6 +78,8 @@ public interface MyMapper {
     int selectCountMyRctJobApplication(@Param("boardNo") int boardNo, @Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy, @Param("searchBy") String searchBy, @Param("searchTerm") String searchTerm) throws Exception;
 
     int selectCountMyInMerchan(@Param("userNo") int userNo, @Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy, @Param("searchBy") String searchBy, @Param("searchTerm") String searchTerm) throws Exception;
+
+    int selectCountMyRctFreeOrder(@Param("boardNo") int boardNo, @Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy, @Param("searchBy") String searchBy, @Param("searchTerm") String searchTerm) throws Exception;
 
 }
 

@@ -29,4 +29,10 @@ public class MyRctApplicationDTO {
     private LocalDateTime jobCreatedDate;
     private LocalDateTime jobModifiedDate;
     private LocalDateTime jobDeadLine;
+
+    //시간 view에 뿌려줄 때
+    public String getFormattedApplyCreatedDate() {
+        if(applyCreatedDate == null) return "미정";
+        return TimeAgoUtils.formatTimeAgo(applyCreatedDate);
+    }
 }

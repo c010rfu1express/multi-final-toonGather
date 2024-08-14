@@ -1,6 +1,8 @@
 package com.multi.toonGather.user.service;
 
 import com.multi.toonGather.common.model.dto.PageNDTO;
+import com.multi.toonGather.introduction.model.dto.EventFileDTO;
+import com.multi.toonGather.introduction.model.dto.JournalFileDTO;
 import com.multi.toonGather.user.model.dto.*;
 import com.multi.toonGather.user.model.mapper.MyMapper;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,18 @@ public class MyServiceImpl implements MyService {
 
     public List<MyInJournalDTO> getMyInJournals(int userNo, String orderBy, String searchBy, String searchTerm, PageNDTO pageNDTO) throws Exception {
         List<MyInJournalDTO> response = myMapper.selectListMyInJournal(userNo, orderBy, searchBy, searchTerm, pageNDTO);
+        //사진 리스트 추가를 위해서는 같은 myService.getMyInJournalFiles() 메서드 필요
+        //순환참조를 피하기 위해 다음과 같이 리턴
+        return getMyInJournalFiles(response);
+    }
+
+    public List<MyInJournalDTO> getMyInJournalFiles(List<MyInJournalDTO> response) throws Exception {
+        for (MyInJournalDTO myInJournalDTO : response) {
+            //journalNo에 대응되는 ResponseFiles 반환
+            int journalNo = myInJournalDTO.getJournalNo();
+            List<JournalFileDTO> responseFiles = myMapper.selectFilesByJournalNo(journalNo);
+            myInJournalDTO.setJournalFiles(responseFiles);
+        }
         return response;
     }
 
@@ -71,6 +85,18 @@ public class MyServiceImpl implements MyService {
         char toggleValue = toggle.charAt(0);
         System.out.println("[MyService.getMyInEvents] toggleValue: "+ toggleValue);
         List<MyInEventDTO> response = myMapper.selectListMyInEvent(userNo, toggleValue, orderBy, searchBy, searchTerm, pageNDTO);
+        //사진 리스트 추가를 위해서는 같은 myService.getMyInEventFiles() 메서드 필요
+        //순환참조를 피하기 위해 다음과 같이 리턴
+        return getMyInEventFiles(response);
+    }
+
+    public List<MyInEventDTO> getMyInEventFiles(List<MyInEventDTO> response) throws Exception {
+        for (MyInEventDTO myInEventDTO : response) {
+            //eventNo에 대응되는 ResponseFiles 반환
+            int eventNo = myInEventDTO.getEventNo();
+            List<EventFileDTO> responseFiles = myMapper.selectFilesByEventNo(eventNo);
+            myInEventDTO.setEventFiles(responseFiles);
+        }
         return response;
     }
 
@@ -99,9 +125,27 @@ public class MyServiceImpl implements MyService {
         char toggleValue = toggle.charAt(0);
         System.out.println("[MyService.getMyInMerchans] toggleValue: "+ toggleValue);
         List<MyInMerchanDTO> response = myMapper.selectListMyInMerchan(userNo, toggleValue, orderBy, searchBy, searchTerm, pageNDTO);
+        //사진 리스트 추가를 위해서는 같은 myService.getMyInMerchanFiles() 메서드 필요
+        //순환참조를 피하기 위해 다음과 같이 리턴
+        return getMyInMerchanFiles(response);
+    }
+
+    public List<MyInMerchanDTO> getMyInMerchanFiles(List<MyInMerchanDTO> response) throws Exception {
+        for (MyInMerchanDTO myInMerchanDTO : response) {
+            //merchanNo에 대응되는 ResponseFiles 반환
+            int merchanNo = myInMerchanDTO.getMerchanNo();
+            List<MyInMerchanFileDTO> responseFiles = myMapper.selectFilesByMerchanNo(merchanNo);
+            myInMerchanDTO.setMerchanFiles(responseFiles);
+        }
         return response;
     }
 
+    public List<MyRctOrderDTO> getMyRctFreeOrders(int boardNo, String toggle, String orderBy, String searchBy, String searchTerm, PageNDTO pageNDTO) throws Exception {
+        char toggleValue = toggle.charAt(0);
+        System.out.println("[MyService.getMyRctFreeOrders] toggleValue: "+ toggleValue);
+        List<MyRctOrderDTO> response = myMapper.selectListMyRctFreeOrder(boardNo, toggleValue, orderBy, searchBy, searchTerm, pageNDTO);
+        return response;
+    }
 
     //// countMy (14개)
     //1
@@ -191,6 +235,14 @@ public class MyServiceImpl implements MyService {
         int count = myMapper.selectCountMyInMerchan(userNo, toggleValue, orderBy, searchBy, searchTerm);
         return count;
     }
+
+    public int countMyRctFreeOrders(int boardNo, String toggle, String orderBy, String searchBy, String searchTerm) throws Exception {
+        char toggleValue = toggle.charAt(0);
+        System.out.println("[MyService.countMyRctFreeOrders] toggleValue: "+ toggleValue);
+        int count = myMapper.selectCountMyRctFreeOrder(boardNo, toggleValue, orderBy, searchBy, searchTerm);
+        return count;
+    }
+
 
 
 }
