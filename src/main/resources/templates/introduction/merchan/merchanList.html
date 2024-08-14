@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품 목록</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .card-img-top {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            color: #445566;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .card-title:hover {
+            color: #445566;
+            text-decoration: underline;
+        }
+
+        .card-content {
+            margin-bottom: 5px;
+            display: flex;
+        }
+
+        .form-check {
+            align-items: center;
+            margin-right: 10px;
+        }
+
+        .no-items {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 50px 0;
+        }
+
+        .pagination {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            color: #000;
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            padding: 8px 15px;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            height: 40px;
+        }
+
+        .pagination a:hover {
+            background-color: #e0e0e0;
+            color: #000;
+        }
+
+        .pagination .btn-custom {
+            background-color: #f0f0f0;
+            border-color: #f0f0f0;
+            color: #333;
+        }
+
+        .pagination .btn-custom:hover {
+            background-color: #fef4c3;
+            border-color: #fef4c3;
+            color: #333;
+        }
+
+        .pagination .btn-custom.active {
+            background-color: #fef4c3;
+            border-color: #fef4c3;
+            color: #333;
+        }
+
+        .search-container {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-container input[type="text"] {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s, background-color 0.3s;
+            color: #456;
+        }
+
+        .search-container input[type="text"]::placeholder {
+            color: #456;
+        }
+
+        .search-container input[type="text"]:focus {
+            border-color: #40bcf4;
+            background-color: #fef4c3;
+        }
+
+        .search-container button {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .search-container button i {
+            color: #666;
+        }
+
+        .search-container button:hover i {
+            color: #40bcf4;
+        }
+
+        .strikethrough {
+            text-decoration: line-through;
+        }
+
+        .bold-text {
+            font-weight: bold;
+        }
+        .inline-block {
+            display: inline-block;
+            margin-right: 7px; /* 두 요소 사이의 여백 조정 */
+        }
+    </style>
+    <script>
+        // 선택된 상품의 ID를 가져와서 수정 페이지로 이동하는 함수
+        function getCheckedNo() {
+            var checkedValue = document.querySelector('input[name="merchanCheck"]:checked');
+            if (checkedValue) {
+                var merchanNo = checkedValue.value;
+                // 수정 페이지로 이동
+                window.location.href = '/introduction/merchan/merchanUpdate?merchanNo=' + encodeURIComponent(merchanNo);
+            } else {
+                alert("수정할 상품을 선택하세요.");
+            }
+        }
+
+        // 선택된 상품의 ID를 가져와서 삭제 요청을 보내는 함수
+        function deleteSelectedMerchan() {
+            var checkedValue = document.querySelector('input[name="merchanCheck"]:checked');
+            if (checkedValue) {
+                var merchanNo = checkedValue.value;
+
+                // AJAX를 통해 삭제 요청 보내기
+                $.ajax({
+                    url: '/introduction/deleteMerchan',
+                    method: 'POST',
+                    data: JSON.stringify({merchanNo: merchanNo}),
+                    contentType: 'application/json',
+                    success: function(response) {
+                        alert("삭제가 완료되었습니다.");
+                        window.location.reload();
+                    },
+                    error: function(error) {
+                        console.error("Error deleting item:", error);
+                    }
+                });
+            } else {
+                alert("삭제할 상품을 선택하세요.");
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div th:replace="~{common/menubar}"></div>
+<div th:replace="~{introduction/inMenubar}"></div>
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between mb-3">
+        <div class="d-flex align-items-center">
+            <h2 class="mr-3">굿즈&북즈</h2>
+            <form class="search-container" th:action="@{/introduction/merchan/merchanList}" method="get">
+                <input type="text" placeholder="검색어 입력" name="keyword" th:value="${keyword}" maxlength="20">
+                <button type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+        <div class="d-flex" sec:authorize="hasRole('ROLE_ADMIN')">
+            <a href="/introduction/merchan/merchanInsert" class="btn btn-primary mr-2">작성</a>
+            <button class="btn btn-warning mr-2" onclick="getCheckedNo()">수정</button>
+            <button class="btn btn-danger" onclick="deleteSelectedMerchan()">삭제</button>
+        </div>
+    </div>
+
+    <div class="row" th:if="${merchans != null && !merchans.isEmpty()}">
+        <!-- 각 상품 항목을 카드로 표시 -->
+        <div class="col-md-4" th:each="merchan : ${merchans}">
+            <div class="card">
+
+                <!-- 상품 ID 히든 필드 -->
+                <input type="hidden" name="merchanNo" th:value="${merchan.merchanNo}">
+
+                <!-- 썸네일 이미지 없을 때 기본 이미지 -->
+                <img th:unless="${#lists.size(merchan.merchanFiles) > 0}" src="/images/introduction/default-thumbnail.png" class="card-img-top" alt="기본 썸네일 이미지" th:attr="onclick=|window.location.href='/introduction/merchan/merchanDetail?merchanNo=' + ${merchan.merchanNo};|" style="cursor: pointer;">
+
+                <!-- 썸네일 이미지 있을 때 -->
+                <img th:if="${#lists.size(merchan.merchanFiles) > 0}" th:src="@{/uploadFiles/{fileName}(fileName=${merchan.merchanFiles.get(0).fileName})}" class="card-img-top" alt="썸네일 이미지" th:attr="onclick=|window.location.href='/introduction/merchan/merchanDetail?merchanNo=' + ${merchan.merchanNo};|" style="cursor: pointer;">
+
+                <div class="card-body">
+                    <div class="card-content">
+                        <div class="form-check" sec:authorize="hasRole('ROLE_ADMIN')">
+                            <input class="form-check-input" type="radio" name="merchanCheck" th:value="${merchan.merchanNo}" th:id="'merchanCheck' + ${merchan.merchanNo}">
+                        </div>
+                        <div class="card-title-container">
+                            <a th:href="@{/introduction/merchan/merchanDetail(merchanNo=${merchan.merchanNo})}" class="card-title" th:text="${merchan.title}">상품명</a>
+                        </div>
+                    </div>
+                    <p class="card-text" th:attr="onclick=|window.location.href='/introduction/merchan/merchanDetail?merchanNo=' + ${merchan.merchanNo};|" style="cursor: pointer;"></p>
+                    <p class="bold-text inline-block" th:text="${merchan.formattedDiscountPrice} + '원'" style="margin-right: 7px;">할인가(판매가)</p>
+                    <p class="text-muted strikethrough inline-block" th:if="${merchan.regularPrice != null}" th:text="${merchan.formattedRegularPrice} + '원'">정가</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:if="${merchans == null || merchans.isEmpty()}">
+        <p class="no-items">등록된 상품이 없습니다.</p>
+    </div>
+
+    <!-- 페이징을 그리드 시스템 밖에 두고 조건문을 적용 -->
+    <div th:if="${merchans != null && !merchans.isEmpty()}">
+        <div class="pagination justify-content-center">
+            <a class="btn btn-custom" th:if="${currentPage > 0}" th:href="@{/introduction/merchan/merchanList(page=${currentPage - 1}, searchType=${searchType}, keyword=${keyword})}">&laquo;</a>
+            <a class="btn btn-custom" th:each="i : ${#numbers.sequence(1, totalPages)}"
+               th:href="@{/introduction/merchan/merchanList(page=${i - 1}, keyword=${keyword})}"
+               th:text="${i}"
+               th:classappend="${currentPage + 1 == i} ? 'active' : ''"></a>
+            <a class="btn btn-custom" th:if="${currentPage < totalPages - 1}" th:href="@{/introduction/merchan/merchanList(page=${currentPage + 1}, keyword=${keyword})}">&raquo;</a>
+        </div>
+    </div>
+
+</div>
+<div th:replace="~{common/footer.html}"></div>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품 수정</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        .form-container {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .form-control,
+        .custom-select {
+            border-radius: 0;
+        }
+
+        .required::after {
+            content: " *";
+            color: red;
+        }
+
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .image-preview img {
+            max-width: 150px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .image-preview .remove-button {
+            display: block;
+            background-color: #ff0000;
+            color: white;
+            text-align: center;
+            margin-top: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            padding: 2px 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div th:replace="~{common/menubar}"></div>
+<div th:replace="~{introduction/inMenubar}"></div>
+
+<div class="container mt-4">
+    <div class="form-container">
+        <h2 class="mb-4">상품 수정</h2>
+        <form th:action="@{/introduction/merchan/merchanUpdate}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="merchanNo" th:value="${merchan.merchanNo}">
+
+            <div class="form-group">
+                <label for="title" class="required">상품명</label>
+                <input type="text" class="form-control" id="title" name="title" maxlength="50"
+                       th:value="${merchan.title}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="regularPrice">정가</label>
+                <input type="number" class="form-control" id="regularPrice" name="regularPrice"
+                       th:value="${merchan.regularPrice}">
+            </div>
+
+            <div class="form-group">
+                <label for="discountPrice" class="required">할인가</label>
+                <input type="number" class="form-control" id="discountPrice" name="discountPrice"
+                       th:value="${merchan.discountPrice}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="shippingCost">배송비</label>
+                <input type="number" class="form-control" id="shippingCost" name="shippingCost"
+                       th:value="${merchan.shippingCost}">
+            </div>
+
+            <div class="form-group">
+                <label for="merchanInfo" class="required">상품 정보</label>
+                <textarea class="form-control" id="merchanInfo" name="merchanInfo" rows="3" maxlength="500"
+                          required th:text="${merchan.merchanInfo}"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="content" class="required">상품 내용</label>
+                <textarea class="form-control" id="content" name="content" rows="10" maxlength="1000"
+                          placeholder="1000자 이내로 입력하세요" required th:text="${merchan.content}"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>[썸네일] 첨부된 이미지</label>
+                <div class="image-preview" id="existingImagePreview">
+                    <div th:each="image : ${merchan.merchanFiles}" th:if="${image.fileType.startsWith('image/')}">
+                        <img th:src="@{'/uploadFiles/' + ${image.fileName}}" alt="첨부된 이미지">
+                        <div class="remove-button" th:attr="data-saved-name=${image.fileName}"
+                             onclick="removeExistingImage(this)">삭제</div>
+                        <input type="hidden" name="existingImages" th:value="${image.fileName}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="imageUpload">[썸네일] 이미지 추가</label>
+                <input type="file" class="form-control-file" id="imageUpload" name="images" multiple>
+                <div class="image-preview" id="imagePreview"></div>
+            </div>
+
+            <div class="form-group">
+                <label>[상세정보] 첨부된 이미지</label>
+                <div class="image-preview" id="existingDetailImagePreview">
+                    <div th:each="image : ${merchan.merchanFiles}" th:if="${image.fileType eq 'detail'}">
+                        <img th:src="@{'/uploadFiles/' + ${image.fileName}}" alt="첨부된 이미지">
+                        <div class="remove-button" th:attr="data-saved-name=${image.fileName}"
+                             onclick="removeExistingImage(this)">삭제</div>
+                        <input type="hidden" name="existingImages" th:value="${image.fileName}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="detailImageUpload">[상세정보] 이미지 추가</label>
+                <input type="file" class="form-control-file" id="detailImageUpload" name="detailImages" multiple>
+                <div class="image-preview" id="detailImagePreview"></div>
+            </div>
+
+            <button type="submit" class="btn btn-warning">수정</button>
+            <a href="/introduction/merchan/merchanList" class="btn btn-secondary">취소</a>
+        </form>
+    </div>
+</div>
+
+<div th:replace="~{common/footer.html}"></div>
+<script>
+    // [썸네일] 이미지 업로드 및 미리보기 기능
+    document.getElementById('imageUpload').addEventListener('change', function (event) {
+        const files = event.target.files;
+        const imagePreview = document.getElementById('imagePreview');
+        imagePreview.innerHTML = '';
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const imgElement = document.createElement('img');
+                imgElement.src = e.target.result;
+                const removeButton = document.createElement('div');
+                removeButton.innerText = '삭제';
+                removeButton.classList.add('remove-button');
+                removeButton.onclick = function () {
+                    imgElement.remove();
+                    removeButton.remove();
+                };
+                imagePreview.appendChild(imgElement);
+                imagePreview.appendChild(removeButton);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+
+    // [상세정보] 이미지 업로드 및 미리보기 기능
+    document.getElementById('detailImageUpload').addEventListener('change', function (event) {
+        const files = event.target.files;
+        const imagePreview = document.getElementById('detailImagePreview');
+        imagePreview.innerHTML = '';
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const imgElement = document.createElement('img');
+                imgElement.src = e.target.result;
+                const removeButton = document.createElement('div');
+                removeButton.innerText = '삭제';
+                removeButton.classList.add('remove-button');
+                removeButton.onclick = function () {
+                    imgElement.remove();
+                    removeButton.remove();
+                };
+                imagePreview.appendChild(imgElement);
+                imagePreview.appendChild(removeButton);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+    // [썸네일]
+    function removeExistingImage(element) {
+        const imageName = element.getAttribute('data-saved-name');
+        element.previousElementSibling.remove(); // 이미지 삭제
+        element.remove(); // 버튼 삭제
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'removedImages';
+        hiddenInput.value = imageName;
+        document.querySelector('form').appendChild(hiddenInput);
+        console.log("Removed image added to form: " + imageName); // 디버그 로그
+    }
+
+    // [상세정보]
+</script>
+</body>
+
+</html>
