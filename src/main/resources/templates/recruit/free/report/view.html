@@ -145,7 +145,7 @@
                     <label class="form-control" style="height:auto; border: none;">
                         <br>
                         <span class="font-weight-bold" style="font-size : 15pt;">신고 내용</span>
-                        <br> [[${report.content}]] <br> <br>
+                        <div style="white-space:pre-wrap; word-wrap:break-word;"><span th:text="${report.content}"></span></div>
                     </label>
                 </div>
                 <div class="mt-4 text-right">

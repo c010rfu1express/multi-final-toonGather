@@ -62,7 +62,7 @@
                   <!-- 개수를 입력받는 number 타입 필드 -->
                   <div style="display: flex; align-items: center;">
                     <label for="quantity" style="margin-right: 10px;">수량</label>
-                    <input class="form-control" type="number" id="quantity" name="quantity" value="1" min="1" style="width: 60px;">
+                    <input class="form-control" type="number" id="quantity" name="quantity" value="1" min="1" style="width: 80px;" required>
                   </div>
                 </div>
               </div>
@@ -160,7 +160,12 @@
     const bankName = document.getElementById('bank_name').value;
     const account = document.getElementById('account').value.trim();
     const paymentMethods = document.querySelectorAll('input[name="payment-method"]:checked');
+    const quantity = document.getElementById('quantity').value;
 
+    if (quantity === "" || quantity === null || quantity <= 0) {
+    alert('수량을 1 이상 입력해 주세요.');
+    return false;
+    }
     if (name === "") {
       alert('입금자 명을 입력해 주세요.');
       return false;
@@ -181,7 +186,6 @@
       alert('결제 수단을 선택해 주세요.');
       return false;
     }
-
     return true;
   }
 

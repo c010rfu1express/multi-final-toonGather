@@ -102,7 +102,8 @@
                         </script>
                         <br><br>
                         <span class="font-weight-bold" style="font-size : 15pt;">상세 요강</span>
-                        <hr>[[${job.content}]] <br>
+                        <hr>
+                        <div style="white-space:pre-wrap; word-wrap:break-word;"><span th:text="${job.content}"></span></div>
                         <div th:if="${job.img != null}">
                             <img th:src="@{'/uploadFiles/job/' + ${job.img}}" width="250" height="250" alt="게시글 이미지">
                         </div>

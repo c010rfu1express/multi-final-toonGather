@@ -126,7 +126,8 @@
                         </div>
                         <br> <br>
                         <span class="font-weight-bold" style="font-size : 15pt;">서비스 설명</span>
-                        <br> [[${free.content}]]<br><br>
+                        <div style="white-space:pre-wrap; word-wrap:break-word;"><span th:text="${free.content}"></span></div>
+                        <br> <br>
                         <span class="font-weight-bold" style="font-size : 15pt;">가격 정보</span>
                         <br> [[${free.price}]]원 <span style="font-size : 10pt; color:#b0b0b0">(VAT 포함)</span><br><br>
                         <br> <br>
@@ -206,7 +207,7 @@
                     <span style="margin-left: auto; color: #9CA3AF;" th:text="${#dates.format(re.created_date, 'yyyy-MM-dd HH:mm')} "></span>
                 </div>
                 <div class="text-right" th:if="${member_no == re.member.userNo or auth_code == 'A'}">
-                    <button class="btn btn-sm update-btn" id="updateReview" data-toggle="modal" data-target="#reviewModal" type="button" th:data-review-no="${re.review_no}">수정</button>
+                    <button class="btn btn-sm update-btn" id="updateReview" data-toggle="modal" data-target="#reviewModal" type="button" th:data-review-no="${re.review_no}" th:data-review-content="${re.content}" th:data-star-rating="${re.star_rating}">수정</button>
                     <a th:href="@{/recruit/free/review/delete(review_no=${re.review_no}, board_no=${re.board_no})}">
                         <button id="b1" class="btn btn-sm">삭제</button>
                     </a>
@@ -220,7 +221,7 @@
                     </button>
                 </div>
                 <br>
-                <span th:text="${re.content}"></span> <br>
+                <span style="white-space:pre-wrap; word-wrap:break-word;" th:text="${re.content}"></span> <br>
                 <hr>
             </div>
         </div>
@@ -246,8 +247,8 @@
                                 <label for="update-3-stars" class="star">★</label>
                                 <input type="radio" id="update-2-stars" name="rating" value="2"/>
                                 <label for="update-2-stars" class="star">★</label>
-                                <input type="radio" id="update-1-star" name="rating" value="1"/>
-                                <label for="update-1-star" class="star">★</label>
+                                <input type="radio" id="update-1-stars" name="rating" value="1"/>
+                                <label for="update-1-stars" class="star">★</label>
                             </div>
                             <!-- 리뷰 입력 필드 -->
                             <textarea id="update-reply" name="content" class="form-control" style="height:100px;" maxlength="500" required placeholder="수정 내용을 입력해주세요"></textarea>
@@ -255,12 +256,21 @@
                         </div>
                         <script>
                             $(document).on('click', '.update-btn', function() {
-                                   // 리뷰 번호 가져오기
-                                   var reviewNo = $(this).data('reviewNo');
+                               // 리뷰 번호 가져오기
+                               var reviewNo = $(this).data('reviewNo');
+                               var reviewContent = $(this).data('reviewContent');
+                               var starRating = $(this).data('starRating'); // 별점 값 가져오기
 
-                                   // 모달 내의 hidden input에 리뷰 번호 설정
-                                   $('#update-review_no').val(reviewNo);
-                               });
+                               // 모달 내의 hidden input에 리뷰 번호 설정
+                               $('#update-review_no').val(reviewNo);
+                               $('#update-reply').val(reviewContent);
+
+                               // 별점 선택 설정
+                                $('input[name="rating"]').prop('checked', false); // 모든 별점 라디오 버튼 해제
+                                if (starRating) {
+                                    $('#update-' + starRating + '-stars').prop('checked', true); // 해당 별점 라디오 버튼 선택
+                                }
+                            });
                         </script>
 
                         <div class="modal-footer">

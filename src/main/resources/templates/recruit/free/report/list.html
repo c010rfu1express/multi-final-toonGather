@@ -73,14 +73,14 @@
         .clickable-row:hover {
             background-color: #f8f9fa;
         }
-    </style>
-    <style>
         .navbar {
           position: fixed;
           z-index: 1000;
         }
+        .active-page {
+            font-weight: bold !important;
+        }
     </style>
-</head>
 <body>
 <div th:replace="~{common/menubar}"></div>
 <style>
@@ -168,7 +168,7 @@
                     </button>
                     <th:block th:each="p : ${#numbers.sequence(1, pages)}">
                         <button type="button" class="btn btn-sm me-2 pages"
-                                th:text="${p}" th:onclick="|location.href='@{/recruit/free/report/list(page=${p})}'|"></button>
+                                th:text="${p}" th:onclick="|location.href='@{/recruit/free/report/list(page=${p})}'|" th:id="'page-' + ${p}"></button>
                     </th:block>
                     <button type="button" class="btn btn-sm  next" th:onclick="|location.href='@{/recruit/free/report/list(page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
@@ -181,5 +181,13 @@
     </div>
 </div>
 <div th:replace="common/footer.html"></div>
+<script>
+    $(document).ready(function() {
+        var currentPage = [[${currentPage}]];
+        console.log('Current Page:', currentPage);
+        $('.pages').removeClass('active-page');
+        $('#page-' + currentPage).addClass('active-page');
+    });
+</script>
 </body>
 </html>
