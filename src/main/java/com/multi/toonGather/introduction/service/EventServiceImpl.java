@@ -220,6 +220,8 @@ public class EventServiceImpl implements EventService {
                 }
                 // 파일 정보 삭제
                 eventMapper.deleteFiles(event.getEventNo());
+                // 좋아요 정보 삭제
+                eventMapper.deleteLikes(event.getEventNo());
                 // 게시글 삭제
                 eventMapper.deleteEvent(event.getEventNo());
             }
