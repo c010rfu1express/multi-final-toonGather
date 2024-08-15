@@ -92,6 +92,8 @@
             const phoneNumber = phoneNumberInput.value;
 
             const termsCheckbox = document.getElementById('termsAgreementCheckbox');
+            var verificationCheckbox = document.getElementById('verificationCheckbox');
+
 
 
 
@@ -123,6 +125,13 @@
                 return;
             }
 
+            // 이메일 인증 검증
+            if (!verificationCheckbox.checked) {
+                alert('이메일 인증을 완료해야 합니다.');
+                event.preventDefault(); // 폼 제출을 막음
+                return false;
+            }
+
             // 비밀번호 일치 여부 검증
             if (!validatePasswordMatch()) {
             //alert('비밀번호를 다시 확인해주세요.'); // 비밀번호 불일치 시 경고
@@ -134,6 +143,17 @@
             // 중복 확인 검사
             const userId = document.getElementById('userId').value;
             const nickname = document.getElementById('nickname').value;
+
+            // 닉네임 검증
+            if(!nickname) {
+                alert('닉네임을 입력해 주세요.');
+                return;
+            }
+
+            if (nickname.length < 4) {
+                alert('닉네임의 글자수는 최소 4자입니다.');
+                return;
+            }
 
             // 아이디는 영문과 숫자의 조합만 가능
             const validIdPattern = /^[a-zA-Z0-9]+$/;
@@ -193,6 +213,51 @@ async function checkDuplicates(userId, nickname, email) {
         return true; // 에러 발생 시 중복 체크 실패로 간주
     }
 } //checkDuplicates
+
+
+    </script>
+    <script type="text/javascript">
+        function sendNumber(){
+        //먼저 이메일 중복체크부터
+        checkEmailDuplicate();
+    $.ajax({
+        url:"/user/mail/mailSend",
+        type:"post",
+        contentType: "application/json; charset=UTF-8",
+        dataType:"json",
+        data:JSON.stringify({ "mail": $("#email").val() }),
+        success: function(data){
+            alert("인증번호를 발송했습니다. 메일을 확인해주세요.");
+        },
+        }
+    );
+}
+
+function confirmNumber() {
+    $.ajax({
+        url: "/user/mail/mailCheck",
+        type: "get",
+        dataType: "json",
+        data: { "userNumber": $("#mailNumber").val() },
+        success: function(response) {
+            if (response === true) {
+                // 인증이 성공한 경우 hidden checkbox를 체크
+                $("#verificationCheckbox").prop("checked", true);
+                // 이메일 입력 박스를 readonly로 설정
+                $("#email").prop("readonly", true);
+                alert("인증되었습니다.");
+            } else {
+                // 인증이 실패한 경우
+                $("#verificationCheckbox").prop("checked", false);
+                alert("인증번호가 일치하지 않습니다.");
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error("인증 요청 실패:", textStatus, errorThrown);
+            alert("인증 과정 중 오류가 발생했습니다.");
+        }
+    });
+}
 
 
     </script>
@@ -369,7 +434,7 @@ async function checkDuplicates(userId, nickname, email) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.isDuplicate) alert('이미 등록된 이메일입니다.');
-                    else alert('등록 가능한 이메일입니다.');
+                    //else alert('등록 가능한 이메일입니다.');
                 })
                 .catch(error => {
                     console.error('Error: ', error);
@@ -488,10 +553,24 @@ async function checkDuplicates(userId, nickname, email) {
                             이메일 <span class="required-star">*</span>
                         </div>
                         <div class="col-6">
-                            <input class="form-control" type="text" th:field="*{email}"/>
+                            <input id="email" class="form-control" type="text" th:field="*{email}"/>
                         </div>
                         <div class="col-3">
-                            <button type="button" class="btn btn-primary btn-block" style="background-color:#03C75A;" onclick="checkEmailDuplicate()">중복확인</button>
+<!--                            <button type="button" class="btn btn-primary btn-block" style="background-color:#03C75A;" onclick="checkEmailDuplicate()">중복확인</button>-->
+                            <button type="button" class="btn btn-primary btn-block" style="background-color:#03C75A;" onclick="sendNumber()">인증하기</button>
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-3">
+                            인증번호 입력 <span class="required-star">*</span>
+                        </div>
+                        <div class="col-6">
+                            <input id="mailNumber" class="form-control" type="text" th:field="*{mailNumber}"/>
+                            <!-- 실제로는 보이지 않지만 폼에 포함될 hidden checkbox -->
+                            <input type="checkbox" id="verificationCheckbox" name="verificationCheckbox" style="display:none;"/>
+                        </div>
+                        <div class="col-3">
+                            <button type="button" class="btn btn-primary btn-block" style="background-color:#03C75A;" onclick="confirmNumber()">인증확인</button>
                         </div>
                     </div>
                     <div class="row p-2">
@@ -522,51 +601,6 @@ async function checkDuplicates(userId, nickname, email) {
                 </form>
             </div>
         </div>
-
-
-        <!--        <form th:action="@{/user/signup}" th:object="${user}" method="post" onsubmit="validateForm(event)">-->
-<!--            아이디 : <input class="form-control" type="text" th:field="*{userId}" maxlength="20" minlength="4"/>-->
-<!--            <button type="button" onclick="checkIdDuplicate()">중복확인</button>-->
-<!--            <br>-->
-<!--            비밀번호 : <input class="form-control" type="password" th:field="*{password}" maxlength="30" minlength="8"/><br>-->
-<!--            비밀번호 확인 : <br>-->
-<!--            닉네임 : <input class="form-control" type="text" th:field="*{nickname}" maxlength="20" minlength="4"/>-->
-<!--            <button type="button" onclick="checkNicknameDuplicate()">중복확인</button>-->
-<!--            <br>-->
-<!--            연락처 : <input class="form-control" type="text" th:field="*{contactNumber}" oninput="autoFormatPhoneNumber(this)" placeholder="000-0000-0000"/><br>-->
-<!--            성별 : <select th:field="*{gender}">-->
-<!--            <option value="P">성별을 공개하지 않습니다-->
-<!--            <option value="F">여-->
-<!--            <option value="M">남</select><br>-->
-<!--            생년월일 : <input class="form-control" type="text" th:field="*{dateOfBirth}" oninput="autoFormatDate(this)" placeholder="yyyy-mm-dd"/><br>-->
-<!--            실명 : <input class="form-control" type="text" th:field="*{realName}" maxlength="10"/><br>-->
-<!--            이메일 : <input class="form-control" type="text" th:field="*{email}"/>-->
-<!--            <button type="button" onclick="checkEmailDuplicate()">중복확인</button>-->
-<!--            <br>-->
-<!--            자기소개(선택사항) : <input class="form-control" type="text" th:field="*{bio}"/><br>-->
-<!--            <label>-->
-<!--                <input class="form-control" type="checkbox" id="termsAgreementCheckbox" th:field="*{termsAgreement}"/>[필수] 본인은 툰게더 회원 약관에 동의합니다.-->
-<!--            </label>-->
-<!--            <br>-->
-<!--            <input class="form-control" type="submit">가입하기-->
-<!--        </form>-->
-        <!--    <form th:action="@{/user/signup}" th:object="${user}" method="post">-->
-        <!--        아이디 : <input class="form-control" type="text" name="userId"><br>-->
-        <!--        비밀번호 : <input class="form-control" type="password" name="password"><br>-->
-        <!--        비밀번호 확인 : <br>-->
-        <!--        닉네임 : <input class="form-control" type="text" name="nickname"><br>-->
-        <!--        연락처 : <input class="form-control" type="text" name="contactNumber"><br>-->
-        <!--        성별 : <select name="gender">-->
-        <!--        <option>성별을 공개하지 않습니다-->
-        <!--        <option>여-->
-        <!--        <option>남</select><br>-->
-        <!--        생년월일 : <input class="form-control" type="text" name="dateOfBirth"><br>-->
-        <!--        이메일 : <input class="form-control" type="text" name="email"><br>-->
-        <!--        자기소개(선택사항) : <input class="form-control" type="text" name="bio"><br>-->
-        <!--        <input class="form-control" type="checkbox" name="termsAgreement">본인은 툰게더 회원 약관에 동의합니다.<br>-->
-
-        <!--        <input class="form-control" type="submit">가입하기-->
-        <!--    </form>-->
     </div>
 </div>
 <div th:replace="common/footer.html"></div>
