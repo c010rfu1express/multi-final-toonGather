@@ -21,7 +21,7 @@ public class MailServiceImpl implements MailService{
         number = (int)(Math.random() * (90000)) + 100000; //(int) Math.random() * (최댓값-최소값+1) + 최소값
     }
 
-    // 랜덤으로 비번 생성
+    // 랜덤으로 비밀번호 생성
     public static void createTempPw() {
         // 문자 집합 정의
         String uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -47,8 +47,8 @@ public class MailServiceImpl implements MailService{
         }
 
         // 비밀번호 무작위화
-        for (int i = 0; i < password.length(); i++) {
-            int randomIndex = random.nextInt(password.length());
+        for (int i = 0; i < passwordLength; i++) {
+            int randomIndex = random.nextInt(passwordLength);
             char temp = password.charAt(i);
             password.setCharAt(i, password.charAt(randomIndex));
             password.setCharAt(randomIndex, temp);
@@ -56,6 +56,7 @@ public class MailServiceImpl implements MailService{
 
         pwString = password.toString();
     }
+
 
     public MimeMessage CreateMail(String mail, boolean isPasswordMail) {
         createNumber();
