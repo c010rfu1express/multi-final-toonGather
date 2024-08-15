@@ -24,7 +24,9 @@ public class MyServiceImpl implements MyService {
         response.setSoReview(myMapper.selectCountMySoReview(userNo, "recent", "rTitle", ""));
         response.setSoDiary(myMapper.selectCountMySoDiary(userNo, "recent", "comment", ""));
         response.setRctJob(myMapper.selectCountMyRctJob(userNo, 'N',"recent", "title", ""));
+        response.setRctApplication(myMapper.selectCountMyRctApplication(userNo, 'N',"recent", "title", ""));
         response.setRctFree(myMapper.selectCountMyRctFree(userNo, "recent", "title", ""));
+        response.setRctOrder(myMapper.selectCountMyRctOrder(userNo, 'N', "recent", "boardNo", ""));
         response.setInJournal(myMapper.selectCountMyInJournal(userNo, "recent", "title", ""));
         response.setInEvent(myMapper.selectCountMyInEvent(userNo, 'N',"recent", "title", ""));
         response.setInMerchan(myMapper.selectCountMyInMerchan(userNo, 'N',"recent", "title", ""));

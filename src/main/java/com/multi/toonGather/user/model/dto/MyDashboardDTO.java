@@ -16,7 +16,9 @@ public class MyDashboardDTO {
     private int soReview;
     private int soDiary;
     private int rctJob;
+    private int rctApplication;
     private int rctFree;
+    private int rctOrder;
     private int inJournal;
     private int inEvent;
     private int inMerchan;

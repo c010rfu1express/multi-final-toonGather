@@ -684,7 +684,9 @@ public class MyController {
         ///
         int userNo = c.getUserDTO().getUserNo();
         UserDTO userDTO = userService.getProfile(userNo);
+        String tempAuthCode = Character.toString(userDTO.getAuthCode());    //thymeleaf상에서 primitive char type을 제대로 받아들이지 못함
         model.addAttribute("user", userDTO);
+        model.addAttribute("tempAuthCode", tempAuthCode);
 
         //대시보드에 필요한 수치들 가지고오기
         MyDashboardDTO myDashboardDTO = myService.getMyDashboard(userNo);
@@ -696,10 +698,15 @@ public class MyController {
         pageNDTO.setPage(1);
         pageNDTO.setStartEnd(pageNDTO.getPage(), N);
 
+        // 썸네일 이미지 출력을 위해 불러옴
         List<MyWtWebtoonDTO> myWtWebtoons = myService.getMyWtWebtoons(userNo, "recent", "comment", "", pageNDTO);
         List<MyWtCommentDTO> myWtComments = myService.getMyWtComments(userNo, "recent", "comment", "", pageNDTO);
+        List<MySoReviewDTO> mySoReviews = myService.getMySoReviews(userNo, "recent", "rTitle", "", pageNDTO);
+        List<MySoDiaryDTO> mySoDiaries = myService.getMySoDiaries(userNo, "recent", "comment", "", pageNDTO);
         model.addAttribute("myWtWebtoons", myWtWebtoons);
         model.addAttribute("myWtComments", myWtComments);
+        model.addAttribute("mySoReviews", mySoReviews);
+        model.addAttribute("mySoDiaries", mySoDiaries);
 
         ////////
 //        model.addAttribute("isToggled", toggle);
