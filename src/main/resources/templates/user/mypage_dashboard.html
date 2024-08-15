@@ -331,7 +331,7 @@
                             <div class="col-4">
                                 <div class="row p-2">
                                     <div class="col-4 m-0 p-0" id="profileimagebox">
-                                        <img th:if="${user.profileImagePath == null}" th:src="/images/defaultprofileimage.png" style="width: 100px; height: auto;" class="profile-image"/>
+                                        <img th:if="${user.profileImagePath == null}" th:src="@{/images/defaultprofileimage.png}" style="width: 100px; height: auto;" class="profile-image"/>
                                         <img th:if="${user.profileImagePath != null}" th:src="@{/uploadFiles/{fileName}(fileName=${user.profileImagePath})}" style="width: 100px; height: auto;" class="profile-image"/>
                                     </div>
                                     <div class="col-8">
