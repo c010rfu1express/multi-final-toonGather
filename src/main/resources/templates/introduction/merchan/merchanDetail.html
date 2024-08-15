@@ -287,10 +287,10 @@
 
 
                     <dl class="merchan-info">
-                        <dt th:if="${merchan.regularPrice != null}">정가</dt>
+                        <dt th:if="${merchan.regularPrice != null}">소비자가</dt>
                         <dd th:if="${merchan.regularPrice != null}" th:text="${merchan.formattedRegularPrice} + '원'"></dd>
 
-                        <dt th:if="${merchan.discountPrice != null}">할인가</dt>
+                        <dt th:if="${merchan.discountPrice != null}">판매가</dt>
                         <dd th:if="${merchan.discountPrice != null}" th:text="${merchan.formattedDiscountPrice} + '원'"></dd>
 
                         <dt th:if="${merchan.shippingCost != null}">배송비</dt>
