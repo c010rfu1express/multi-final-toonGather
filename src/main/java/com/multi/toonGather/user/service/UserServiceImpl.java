@@ -90,13 +90,17 @@ public class UserServiceImpl implements UserService {
 //        else return "ERROR";    //추후변경해야함!
     }
 
-    public String findPw(UserDTO userDTO) throws Exception{
+    public UserDTO findPw(UserDTO userDTO) throws Exception{
         try {
             UserDTO response = userMapper.selectOneByUserIdAndEmail(userDTO.getUserId(), userDTO.getEmail());
             System.out.println("userDTO: "+ userDTO);
             System.out.println("response: "+ response);
             if(response == null) return null;
-            else return response.getPassword();
+            else { //찾았으면
+                userDTO.setUserNo(response.getUserNo());
+                return userDTO;
+            }
+
         } catch(Exception e) {
             System.err.println("[ERROR] findPw 유저번호에 대응되는 프로필 찾지 못함. [userId: " + userDTO.getUserId() + ", email: "+ userDTO.getEmail()+"]");
             return null;
@@ -369,5 +373,16 @@ public class UserServiceImpl implements UserService {
             days.add(String.format("%02d", i)); // 두 자리 숫자로 포맷
         }
         return days;
+    }
+
+    public void updateTempPw(int userNo, String pwString) {
+        String encodedPassword = passwordEncoder.encode(pwString);
+        int result = 0;
+        try {
+            result = userMapper.updateTempPw(userNo, encodedPassword);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("[UserService.updateTempPw] result: "+ result);
     }
 }

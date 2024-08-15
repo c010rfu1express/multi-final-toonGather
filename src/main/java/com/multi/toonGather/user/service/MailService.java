@@ -8,8 +8,9 @@ public interface MailService {
 
     }
 
-    MimeMessage CreateMail(String mail);
+    MimeMessage CreateMail(String mail, boolean isPasswordMail);
 
     int sendMail(String mail);
+    String sendMailPw(String mail);
 
 }

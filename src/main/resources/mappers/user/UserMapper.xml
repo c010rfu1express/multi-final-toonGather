@@ -374,4 +374,12 @@
         </choose>
     </select>
 
+    <update id="updateTempPw" parameterType="map">
+        UPDATE users
+        SET
+        password = #{encodedPassword},
+        last_modified_datetime = NOW()
+        WHERE
+        user_no = #{userNo}
+    </update>
 </mapper>
