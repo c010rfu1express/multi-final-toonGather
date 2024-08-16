@@ -100,7 +100,7 @@ public class WebtoonController {
                         dto.setGenre2(Genre.getKey());
                     }
                     if(topGenres.size()<2){
-                        tage = topTags.get(2);
+                        if(topTags.size()>1)tage = topTags.get(1);
                         dto.setTag2(tage.getKey());
                         dto.setGenre2(Genre.getKey());
                         break;}
