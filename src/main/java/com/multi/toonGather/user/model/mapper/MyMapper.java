@@ -12,6 +12,10 @@ import java.util.List;
 @Mapper
 public interface MyMapper {
 
+    //기타
+    MyRctJobDTO selectOneMyRctJob(@Param("boardNo") int boardNo);
+    MyRctFreeDTO selectOneMyRctFree(@Param("boardNo") int boardNo);
+
     //eventfiles, merchanfiles
     List<EventFileDTO> selectFilesByEventNo(@Param("eventNo") int eventNo);
     List<MyInMerchanFileDTO> selectFilesByMerchanNo(@Param("merchanNo") int merchanNo);
