@@ -143,7 +143,11 @@
         SELECT *
         FROM webtoon
         WHERE (genre LIKE CONCAT('%', #{genre1}, '%') OR genre LIKE CONCAT('%', #{genre2}, '%'))
-        AND (tags LIKE CONCAT('%', #{tag1}, '%') AND tags LIKE CONCAT('%', #{tag2}, '%'))
+        AND (tags LIKE CONCAT('%', #{tag1}, '%') AND tags LIKE CONCAT('%', #{tag2}, '%')
+        <if test="tag3 != null">
+            OR tags LIKE CONCAT('%', #{tag1}, '%')
+        </if>
+        )
         <if test="platform == 'NAVER'">
             AND platform = 1
         </if>
