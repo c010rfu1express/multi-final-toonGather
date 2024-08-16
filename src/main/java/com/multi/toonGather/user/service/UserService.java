@@ -11,7 +11,7 @@ public interface UserService {
 
     void insertUser(UserDTO userDTO) throws Exception;
     String findId(UserDTO userDTO) throws Exception;
-    String findPw(UserDTO userDTO) throws Exception;
+    UserDTO findPw(UserDTO userDTO) throws Exception;
     UserDTO getProfile(int userNo) throws Exception;
     void updateProfile(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception;
     void updateProfileAdmin(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception;
@@ -33,4 +33,6 @@ public interface UserService {
     List<String> generateYears();
     List<String> generateMonths();
     List<String> generateDays();
+
+    void updateTempPw(int userNo, String pwString);
 }
