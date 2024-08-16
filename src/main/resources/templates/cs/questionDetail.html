@@ -78,25 +78,29 @@
         </div>
     </div>
     <div class="detail-footer">
-        <button th:onclick="'location.href=\'/cs/updateQuestion/' + ${question.csQNo} + '\';'" class="btn btn-warning">수정</button>
-        <button th:onclick="'location.href=\'/cs/deleteQuestion/' + ${question.csQNo} + '\';'" class="btn btn-danger">삭제</button>
+        <button id="updateButton"
+                th:onclick="'location.href=\'/cs/updateQuestion/' + ${question.csQNo} + '\';'"
+                class="btn btn-warning"
+                th:disabled="${#lists.isEmpty(answers) == false}">수정</button>
+        <button id="deleteButton"
+                th:onclick="'location.href=\'/cs/deleteQuestion/' + ${question.csQNo} + '\';'"
+                class="btn btn-danger"
+                th:disabled="${#lists.isEmpty(answers) == false}">삭제</button>
     </div>
     <div class="admin-reply">
-        <div class="admin-reply">
-            <div style="display: flex; align-items: center;">
-                <h3 style="margin: 0; padding-right: 10px; white-space: nowrap;">관리자 답변</h3>
-                <div sec:authorize="hasRole('ROLE_ADMIN')" style="display: flex; align-items: center; width: 100%;">
-                    <form th:action="@{'/cs/insertAnswer/' + ${question.csQNo}}" method="post" style="display: flex; align-items: center; width: 100%;">
-                        <textarea name="answer" th:placeholder="'답변을 입력하세요'" style="flex-grow: 1; resize: vertical; height: 30px; margin-right: 10px;" maxlength="1000"></textarea>
-                        <button type="submit" class="btn btn-primary">등록</button>
-                    </form>
-                </div>
+        <div style="display: flex; align-items: center;">
+            <h3 style="margin: 0; padding-right: 10px; white-space: nowrap;">관리자 답변</h3>
+            <div sec:authorize="hasRole('ROLE_ADMIN')" style="display: flex; align-items: center; width: 100%;">
+                <form th:action="@{'/cs/insertAnswer/' + ${question.csQNo}}" method="post" style="display: flex; align-items: center; width: 100%;">
+                    <textarea name="answer" th:placeholder="'답변을 입력하세요'" style="flex-grow: 1; resize: vertical; height: 30px; margin-right: 10px;" maxlength="1000"></textarea>
+                    <button type="submit" class="btn btn-primary">등록</button>
+                </form>
             </div>
-            <hr>
-            <div class="reply-content" style="margin-top: 20px;">
-                <div th:each="answer : ${answers}">
-                    <p th:text="${answer.csAContent != null ? '관리자 | ' + answer.csAContent : '관리자 답변 내용 없음'}"></p>
-                </div>
+        </div>
+        <hr>
+        <div class="reply-content" style="margin-top: 20px;">
+            <div th:each="answer : ${answers}">
+                <p th:text="${answer.csAContent != null ? '관리자 | ' + answer.csAContent : '관리자 답변 내용 없음'}"></p>
             </div>
         </div>
     </div>
