@@ -142,24 +142,13 @@
     <select id="recommendWebtoon" resultType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO">
         SELECT *
         FROM webtoon
-        WHERE tags LIKE CONCAT('%', #{tag1}, '%')
+        WHERE (genre LIKE CONCAT('%', #{genre1}, '%') OR genre LIKE CONCAT('%', #{genre2}, '%'))
+        AND (tags LIKE CONCAT('%', #{tag1}, '%') AND tags LIKE CONCAT('%', #{tag2}, '%'))
         <if test="platform == 'NAVER'">
             AND platform = 1
         </if>
         <if test="platform == 'KAKAO'">
             AND platform = 2
-        </if>
-        <if test="tag2 != null">
-            AND tags LIKE CONCAT('%', #{tag2}, '%')
-        </if>
-        <if test="tag3 != null">
-            AND tags LIKE CONCAT('%', #{tag3}, '%')
-        </if>
-        <if test="Genre1 != null">
-            AND genre LIKE CONCAT('%', #{Genre1}, '%')
-        </if>
-        <if test="Genre2 != null">
-            OR genre LIKE CONCAT('%', #{Genre2}, '%')
         </if>
         ORDER BY count DESC
         LIMIT 12;
@@ -257,11 +246,17 @@
         WHERE
         ul.user_no = #{userNo}  -- 사용자의 user_no
         AND ul.created_at >= NOW() - INTERVAL 30 DAY  -- 최근 30일 동안의 로그
+        <if test="platform == 'NAVER'">
+            AND platform = 1
+        </if>
+        <if test="platform == 'KAKAO'">
+            AND platform = 2
+        </if>
         GROUP BY
         w.webtoon_no
         ORDER BY
         SUM(ul.count) DESC  -- 총 조회수 기준으로 내림차순 정렬
-        ,w.count  DESC
+        ,w.count DESC
         LIMIT 10;
     </select>
 </mapper>

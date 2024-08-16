@@ -1,6 +1,5 @@
 package com.multi.toonGather.webtoon.service;
 
-import com.multi.toonGather.user.model.dto.UserDTO;
 import com.multi.toonGather.webtoon.model.dto.*;
 import com.multi.toonGather.webtoon.model.dao.WebToonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +47,7 @@ public class WebToonServiceImpl implements WebToonService{
     }
 
     @Override
-    public List<WebtoonDTO> webtoonUserBest(UserDTO userDTO) {
+    public List<WebtoonDTO> webtoonUserBest(WtUserSaveDTO userDTO) {
         List<WebtoonDTO> list=webToonMapper.webtoonUserBest(userDTO);
         return list;
     }

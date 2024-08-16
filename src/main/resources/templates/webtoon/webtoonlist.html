@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
 
@@ -16,11 +16,6 @@
     <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-        }
-
         #webtoonList {
             display: flex;
             flex-direction: column; /* 세로 정렬 */
@@ -33,7 +28,6 @@
 
         #webtoon-cards-container {
             display: flex;
-            gap: 10px;
             justify-content: center;
             max-width: 1150px;
         }
@@ -98,10 +92,61 @@
         .page-btn:hover {
             background-color: #0056b3;
         }
-        .page-button.active {
+        .page-btn.active {
             background-color: #0056b3;
             font-weight: bold;
         }
+
+
+
+
+        /* 버튼 기본 스타일 */
+        .slick-prev, .slick-next {
+            position: absolute;
+            top: 50%;
+            width: 50px; /* 버튼 너비 */
+            height: 50px; /* 버튼 높이 */
+            background-color: white; /* 배경색 흰색 */
+            border-radius: 50%; /* 둥근 모서리 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1; /* 슬라이더 위에 위치 */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 그림자 */
+            border: none; /* 기본 테두리 제거 */
+            text-align: center;
+        }
+
+        /* 텍스트 숨기기 */
+        .slick-prev {
+            left: -55px; /* 왼쪽 위치 조정 */
+        }
+
+        /* 오른쪽 화살표 아이콘 위치 조정 */
+        .slick-next {
+            right: -40px; /* 오른쪽 위치 조정 */
+        }
+
+        /* 아이콘 표시 */
+        .slick-prev::before, .slick-next::before {
+            content: ''; /* 기본 내용 제거 */
+            font-family: 'Font Awesome 5 Free'; /* Font Awesome 아이콘 폰트 패밀리 */
+            font-weight: 900; /* 두꺼운 아이콘 스타일 */
+            color: black; /* 아이콘 색상 검은색 */
+            font-size: 24px; /* 아이콘 크기 */
+        }
+
+        /* 이전 화살표 아이콘 */
+        .slick-prev::before {
+            content: '\f053'; /* Font Awesome 왼쪽 화살표 아이콘 */
+        }
+
+        /* 다음 화살표 아이콘 */
+        .slick-next::before {
+            content: '\f054'; /* Font Awesome 오른쪽 화살표 아이콘 */
+        }
+
 
     </style>
 </head>
@@ -113,7 +158,11 @@
 
 
 <div id="webtoonList">
+    <div>
+    <h1 sec:authorize="isAnonymous()">인기 웹툰 </h1>
+        <h1 sec:authorize="isAuthenticated()">추천 웹툰 </h1>
 <div id="webtoon-cards-container">
+
     <div th:each="webtoon : ${webtoonSelect}" class="webtoonBest-card" style="height: 333px; width: 380px">
         <img th:src="${webtoon.thumbnail_url}" class="webtoon-thumbnail">
         <div class="webtoon-info">
@@ -125,6 +174,7 @@
 
         </div>
     </div>
+</div>
 </div>
     <br>
 <div id="webtoonContainer"></div>
@@ -180,7 +230,7 @@ let provider = urlParams.get('provider');
 let updateDay = urlParams.get('updateDay');
 
 if (provider === null) {
-    provider = 'KAKAO'; // 원하는 값으로 초기화
+    provider = ''; // 원하는 값으로 초기화
 }
 
 if (provider === 'ALL') {
