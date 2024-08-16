@@ -45,34 +45,34 @@
                         ALL
                     </a>
                     <div class="dropdown-menu" aria-labelledby="platformDropdown">
-                        <a class="dropdown-item" href="/webtoon/test?provider=KAKAO" data-platform="KAKAO">KAKAO</a>
-                        <a class="dropdown-item" href="/webtoon/test?provider=NAVER" data-platform="NAVER">NAVER</a>
-                        <a class="dropdown-item" href="/webtoon/test?provider=ALL" data-platform="ALL">ALL</a>
+                        <a class="dropdown-item" href="/webtoon/main?provider=KAKAO" data-platform="KAKAO">KAKAO</a>
+                        <a class="dropdown-item" href="/webtoon/main?provider=NAVER" data-platform="NAVER">NAVER</a>
+                        <a class="dropdown-item" href="/webtoon/main?provider=ALL" data-platform="ALL">ALL</a>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{/webtoon/test?updateDay=MON}">월요일</a>
+                    <a class="nav-link" href="#" th:href="@{/webtoon/main?updateDay=MON}">월요일</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{/webtoon/test?updateDay=TUE}">화요일</a>
+                    <a class="nav-link" href="#" th:href="@{/webtoon/main?updateDay=TUE}">화요일</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{/webtoon/test?updateDay=WED}">수요일</a>
+                    <a class="nav-link" href="#" th:href="@{/webtoon/main?updateDay=WED}">수요일</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{/webtoon/test?updateDay=THU}">목요일</a>
+                    <a class="nav-link" href="#" th:href="@{/webtoon/main?updateDay=THU}">목요일</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{/webtoon/test?updateDay=FRI}">금요일</a>
+                    <a class="nav-link" href="#" th:href="@{/webtoon/main?updateDay=FRI}">금요일</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{/webtoon/test?updateDay=SAT}">토요일</a>
+                    <a class="nav-link" href="#" th:href="@{/webtoon/main?updateDay=SAT}">토요일</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{/webtoon/test?updateDay=SUN}">일요일</a>
+                    <a class="nav-link" href="#" th:href="@{/webtoon/main?updateDay=SUN}">일요일</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{/webtoon/test?updateDay=COM}">완결</a>
+                    <a class="nav-link" href="#" th:href="@{/webtoon/main?updateDay=COM}">완결</a>
                 </li>
             </ul>
             <form class="form-inline" th:action="@{/webtoon/search}" method="get" id="searchForm">
@@ -140,7 +140,7 @@
        function updateDayLinks(provider) {
            var days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN', 'COM'];
            for (var i = 0; i < days.length; i++) {
-               var dayLink = '/webtoon/test?updateDay=' + days[i] + '&provider=' + provider;
+               var dayLink = '/webtoon/main?updateDay=' + days[i] + '&provider=' + provider;
                $('a.nav-link[href*="updateDay=' + days[i] + '"]').attr('href', dayLink);
            }
        }
