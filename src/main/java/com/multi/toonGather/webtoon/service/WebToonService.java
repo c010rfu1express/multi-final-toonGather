@@ -1,6 +1,5 @@
 package com.multi.toonGather.webtoon.service;
 
-import com.multi.toonGather.user.model.dto.UserDTO;
 import com.multi.toonGather.webtoon.model.dto.*;
 
 import java.util.List;
@@ -50,7 +49,7 @@ public interface WebToonService {
 
     List<WebtoonDTO> webtoonBest();
 
-    List<WebtoonDTO> webtoonUserBest(UserDTO userDTO);
+    List<WebtoonDTO> webtoonUserBest(WtUserSaveDTO userDTO);
 
     List<WebtoonDTO> recommendWebtoon(TagPageDTO dto);
 }

@@ -165,7 +165,7 @@
     </div>
 
 
-    <div id="TagPageButtons" th:if="${totalPages > 1}">
+    <div id="TagPageButtons" th:if="${totalPages > 0}">
 
             <!-- '<<' 버튼: 첫 페이지로 이동 -->
             <form th:action="@{/webtoon/search}" method="get" th:if="${currentPage > 1}">

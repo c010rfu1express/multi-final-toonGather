@@ -6,4 +6,5 @@ public class WtUserSaveDTO {
     private int saveNo;
     private int webtoonNo;
     private int userNo;
+    private String platform;
 }

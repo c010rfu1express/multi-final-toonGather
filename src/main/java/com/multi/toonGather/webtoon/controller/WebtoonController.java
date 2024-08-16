@@ -41,14 +41,19 @@ public class WebtoonController {
         this.webToonService = webToonService;
     }
 
-    @GetMapping(value = {"/","webtoon/test"})
-    public String Webtoon( Model model,@AuthenticationPrincipal CustomUserDetails c){
+    @GetMapping(value = {"/","webtoon/main"})
+    public String Webtoon( Model model,@AuthenticationPrincipal CustomUserDetails c,
+                           @RequestParam(value = "provider", required = false) String provider){
         LocalDate currentDate = LocalDate.now();
+        System.out.println(provider);
         if(c!=null){
             LocalDate today = LocalDate.now();
             LocalDate dateOfBirth= c.getUserDTO().getDateOfBirth();
             model.addAttribute("isLoggedAge",Period.between(dateOfBirth, today).getYears());
-            UserDTO userDTO=c.getUserDTO();
+            WtUserSaveDTO userDTO=new WtUserSaveDTO();
+            userDTO.setUserNo(c.getUserDTO().getUserNo());
+            userDTO.setPlatform(provider);
+
 
             List<WebtoonDTO> webtoonDTOList=webToonService.webtoonUserBest(userDTO);
 
@@ -80,6 +85,8 @@ public class WebtoonController {
                 model.addAttribute("webtoonSelect",webtoonDTOList);
             } else {
                 TagPageDTO dto=new TagPageDTO();
+                dto.setPlatform(provider);
+                System.out.println(dto);
                 for (int i = 0; i < topTags.size(); i++) {
                     Map.Entry<String, Long> tage = topTags.get(i);
                     Map.Entry<String, Long> Genre = topGenres.get(i);
@@ -91,7 +98,10 @@ public class WebtoonController {
                         dto.setTag2(tage.getKey());
                         dto.setGenre2(Genre.getKey());
                     }
-                    if(topGenres.size()<2)break;
+                    if(topGenres.size()<2){
+                        dto.setTag2(tage.getKey());
+                        dto.setGenre2(Genre.getKey());
+                        break;}
                 }
                 webtoonDTOList=webToonService.recommendWebtoon(dto);
 
@@ -261,10 +271,11 @@ public class WebtoonController {
             model.addAttribute("endPage", endPage);
 
             model.addAttribute("totalPages", totalPages);
-            model.addAttribute("currentPage", tagPageDTO.getPage());
+
             if(tagPageDTO.getPage()==0){
                 tagPageDTO.setPage(1);
             }
+            model.addAttribute("currentPage", tagPageDTO.getPage());
             tagPageDTO.setStartEndTag(tagPageDTO.getPage());
             webtoonDTOS=webToonService.searchWebtoon(tagPageDTO);
 
