@@ -4,30 +4,50 @@
 <head>
   <title>KHG70: 프로필수정</title>
   <meta charset="UTF-8">
-
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <!-- 폰트: 'Noto Sans KR' 사용 -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
   <!-- 프로젝트 툰게더 전용 css 스타일 시트 -->
   <link rel="stylesheet" th:href="@{/css/styles.css}">
-
   <!-- jQuery library -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
   <!-- Latest compiled JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-
   <style>
     .navbar {
       position: fixed;
       z-index: 1000;
     }
   </style>
+  <script>
+    $(document).ready(function () {
+      // 폼 제출 시 공백 확인
+      $('#form').on('submit', function (e) {
+        var isValid = true;
+        var errorMessage = "필수 항목이 공백으로만 입력되었습니다."; // 오류 메시지
+
+        // 필수 입력 필드
+        var requiredFields = ['#account'];
+
+        for (var i = 0; i < requiredFields.length; i++) {
+          var value = $(requiredFields[i]).val().trim();
+
+          if (value === '') {
+            isValid = false;
+            break; // 첫 번째 공백 필드를 발견하면 반복문 종료
+          }
+        }
+
+        if (!isValid) {
+          alert(errorMessage);
+          e.preventDefault(); // 폼 제출 중지
+        }
+      });
+    });
+  </script>
 </head>
 <body>
-
 <div th:replace="~{common/menubar}"></div>
 <style>
   .jumbotron {
@@ -161,7 +181,7 @@
   <div class="col-md-9">
     <div class="row justify-content-start" style="color: #828282;">
       <div class="col-8 p-3" id="loginbox">
-        <form th:action="@{/recruit/creator/mypage_editCreator}" th:object="${creator}" method="post" id="editProfileForm">
+        <form th:action="@{/recruit/creator/mypage_editCreator}" th:object="${creator}" method="post" id="form">
           <div class="row p-2">
             <div class="col-3">
               카카오페이
