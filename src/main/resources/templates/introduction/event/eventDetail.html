@@ -5,6 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <title>행사 게시글 상세</title>
     <style>
         #event-details-container {
@@ -80,7 +82,7 @@
             color: #333;
             border: 1px solid #ddd;
             margin-top: 20px;
-            width: 100%; /* 버튼을 전체 폭으로 설정 */
+<!--            width: 100%; /* 버튼을 전체 폭으로 설정 */-->
         }
         .like-button:hover {
             background-color: #e0e0e0;
@@ -105,9 +107,7 @@
             font-size: 16px;
             color: #333;
         }
-        .d-flex { /* 행사-검색창 css */
-            margin-left: 107px;
-        }
+
         .event-info {
             margin-top: 1px;
             display: grid;
@@ -164,6 +164,7 @@
 
         }
     </style>
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -256,111 +257,142 @@
     <div th:replace="~{common/menubar}"></div>
     <div th:replace="~{introduction/inMenubar}"></div>
 
-    <div class="d-flex justify-content-between mb-3">
-        <div class="d-flex align-items-center">
-            <h2 class="mr-3">행사</h2>
-            <form class="search-container" th:action="@{/introduction/event/eventList}" method="get">
-                <input type="text" placeholder="검색어 입력" name="keyword" th:value="${keyword}" maxlength="20">
-                <button type="submit">
-                    <i class="fas fa-search"></i>
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- 전체 컨텐츠 컨테이너 -->
-    <div id="event-details-container">
-        <!-- 제목 영역 -->
-        <div class="event-header">
-            <h1 class="event-title" th:text="${event.title}">제목</h1>
-        </div>
-
-        <!-- 상세 페이지 컨텐츠 -->
-        <div id="event-details">
-
-            <!-- 왼쪽 영역: 이미지, 지도, 좋아요 버튼 -->
-            <div id="event-left">
-                <!-- 이미지 갤러리 -->
-                <div th:if="${#lists.size(event.eventFiles) > 0}" class="image-gallery">
-                    <img th:each="file : ${event.eventFiles}" th:if="${file.fileType.startsWith('image/')}" th:src="@{'/uploadFiles/' + ${file.fileName}}" alt="파일 이미지" />
-                </div>
-                <div th:unless="${#lists.size(event.eventFiles) > 0}" class="image-gallery">
-                    <img src="/images/introduction/default-thumbnail.png" alt="기본 썸네일 이미지" />
-                </div>
-
-                <!-- 좋아요 버튼-->
-                <button onclick="toggleLike()" class="like-button">좋아요 <span id="likeCount" th:text="${likeCount}">0</span></button>
-            </div>
-
-            <!-- 오른쪽 영역: 행사 정보, 내용 -->
-            <div id="event-right">
-
-                <!-- 행사 상세 내용 -->
-                <div class="event-body">
-
-                    <!-- 상태 라벨을 표시할 부분 -->
-                    <span class="status-label"></span>
-                    <span class="category" th:text="${eventCategoryTitle}"></span>
-<!--                    <dl class="event-info">-->
-<!--                        <dt>이용요금</dt>-->
-<!--                        <dd th:text="${event.cost}"></dd>-->
-
-<!--                        <dt>개요</dt>-->
-<!--                        <dd th:text="${event.content}" class="event-content"></dd>-->
-
-<!--                        <dt>주소</dt>-->
-<!--                        <dd th:text="${event.address}"></dd>-->
-
-<!--                        <dt>행사 장소</dt>-->
-<!--                        <dd th:text="${event.place}"></dd>-->
-
-<!--                        <dt>행사 시작일</dt>-->
-<!--                        <dd th:text="${#temporals.format(event.startDate, 'yyyy.MM.dd')}"></dd>-->
-
-<!--                        <dt>행사 종료일</dt>-->
-<!--                        <dd th:text="${#temporals.format(event.endDate, 'yyyy.MM.dd')}"></dd>-->
-
-<!--                        <dt>관련 웹사이트</dt>-->
-<!--                        <dd><a th:href="${event.site}" th:text="${event.site}"></a></dd>-->
-
-<!--                        <dt>행사 위치</dt>-->
-<!--                        <dd><div id="map"></div></dd>&lt;!&ndash; 지도 표시 영역 &ndash;&gt;-->
-<!--                    </dl>-->
-                    <dl class="event-info">
-                        <dt th:if="${event.cost}">이용요금</dt>
-                        <dd th:if="${event.cost}" th:text="${event.cost}"></dd>
-
-                        <dt th:if="${event.content != null and event.content != ''}">개요</dt>
-                        <dd th:if="${event.content != null and event.content != ''}" th:text="${event.content}" class="event-content"></dd>
-
-                        <dt th:if="${event.address != null and event.address != ''}">주소</dt>
-                        <dd th:if="${event.address != null and event.address != ''}" th:text="${event.address}"></dd>
-
-                        <dt th:if="${event.place != null and event.place != ''}">행사 장소</dt>
-                        <dd th:if="${event.place != null and event.place != ''}" th:text="${event.place}"></dd>
-
-                        <dt th:if="${event.startDate != null}">행사 시작일</dt>
-                        <dd th:if="${event.startDate != null}" th:text="${#temporals.format(event.startDate, 'yyyy.MM.dd')}"></dd>
-
-                        <dt th:if="${event.endDate != null}">행사 종료일</dt>
-                        <dd th:if="${event.endDate != null}" th:text="${#temporals.format(event.endDate, 'yyyy.MM.dd')}"></dd>
-
-                        <dt th:if="${event.site != null and event.site != ''}">관련 웹사이트</dt>
-                        <dd th:if="${event.site != null and event.site != ''}">
-                            <a th:href="${event.site}" th:text="${event.site}"></a>
-                        </dd>
-
-                        <dt th:if="${event.address != null and event.address != ''}">행사 위치</dt>
-                        <dd th:if="${event.address != null and event.address != ''}">
-                            <div id="map"></div> <!-- 지도 표시 영역 -->
-                        </dd>
-                    </dl>
-
-
-                </div>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between mb-3">
+            <div class="d-flex align-items-center">
+                <h2 class="mr-3">행사</h2>
+                <form class="search-container" th:action="@{/introduction/event/eventList}" method="get">
+                    <input type="text" placeholder="검색어 입력" name="keyword" th:value="${keyword}" maxlength="20">
+                    <button type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
             </div>
         </div>
-        <a href="/introduction/event/eventList" class="btn btn-secondary" id="back" style="margin-top: 20px;">돌아가기</a>
+
+        <!-- 전체 컨텐츠 컨테이너 -->
+        <div id="event-details-container">
+            <!-- 제목 영역 -->
+            <div class="event-header">
+                <h1 class="event-title" th:text="${event.title}">제목</h1>
+            </div>
+
+            <!-- 상세 페이지 컨텐츠 -->
+            <div id="event-details">
+
+                <!-- 왼쪽 영역: 이미지, 지도, 좋아요 버튼 -->
+                <div id="event-left">
+                    <!-- 이미지 갤러리 (세로로 나열) -->
+<!--                    <div th:if="${#lists.size(event.eventFiles) > 0}" class="image-gallery">-->
+<!--                        <img th:each="file : ${event.eventFiles}" th:if="${file.fileType.startsWith('image/')}" th:src="@{'/uploadFiles/' + ${file.fileName}}" alt="파일 이미지" />-->
+<!--                    </div>-->
+                    <!-- 이미지 갤러리 (Bootstrap Carousel) -->
+                    <div th:if="${#lists.size(event.eventFiles) > 0}" id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                        <ol class="carousel-indicators">
+                            <!-- 이미지 파일이 있는 경우에만 인디케이터를 생성 -->
+                            <li th:each="file, iterStat : ${event.eventFiles}"
+                                th:if="${file.fileType.startsWith('image/png')}"
+                                th:classappend="${iterStat.index == 0} ? 'active' : ''"
+                                data-target="#carouselExampleIndicators"
+                                th:data-slide-to="${iterStat.index}"></li>
+                        </ol>
+                        <div class="carousel-inner">
+                            <!-- 이미지 파일이 있는 경우에만 슬라이드 아이템을 생성 -->
+                            <div th:each="file, iterStat : ${event.eventFiles}"
+                                 th:if="${file.fileType.startsWith('image/png')}"
+                                 th:classappend="${iterStat.index == 0} ? 'active' : ''"
+                                 class="carousel-item">
+                                <img th:src="@{'/uploadFiles/' + ${file.fileName}}" class="d-block w-100" alt="파일 이미지">
+                            </div>
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                    <!-- 기본 썸네일 이미지 -->
+                    <div th:unless="${#lists.size(event.eventFiles) > 0}" class="image-gallery">
+                        <img src="/images/introduction/default-thumbnail.png" alt="기본 썸네일 이미지" />
+                    </div>
+
+                    <!-- 좋아요 버튼-->
+                    <button onclick="toggleLike()" class="like-button">좋아요 <span id="likeCount" th:text="${likeCount}">0</span></button>
+                </div>
+
+                <!-- 오른쪽 영역: 행사 정보, 내용 -->
+                <div id="event-right">
+
+                    <!-- 행사 상세 내용 -->
+                    <div class="event-body">
+
+                        <!-- 상태 라벨을 표시할 부분 -->
+                        <span class="status-label"></span>
+                        <span class="category" th:text="${eventCategoryTitle}"></span>
+    <!--                    <dl class="event-info">-->
+    <!--                        <dt>이용요금</dt>-->
+    <!--                        <dd th:text="${event.cost}"></dd>-->
+
+    <!--                        <dt>개요</dt>-->
+    <!--                        <dd th:text="${event.content}" class="event-content"></dd>-->
+
+    <!--                        <dt>주소</dt>-->
+    <!--                        <dd th:text="${event.address}"></dd>-->
+
+    <!--                        <dt>행사 장소</dt>-->
+    <!--                        <dd th:text="${event.place}"></dd>-->
+
+    <!--                        <dt>행사 시작일</dt>-->
+    <!--                        <dd th:text="${#temporals.format(event.startDate, 'yyyy.MM.dd')}"></dd>-->
+
+    <!--                        <dt>행사 종료일</dt>-->
+    <!--                        <dd th:text="${#temporals.format(event.endDate, 'yyyy.MM.dd')}"></dd>-->
+
+    <!--                        <dt>관련 웹사이트</dt>-->
+    <!--                        <dd><a th:href="${event.site}" th:text="${event.site}"></a></dd>-->
+
+    <!--                        <dt>행사 위치</dt>-->
+    <!--                        <dd><div id="map"></div></dd>&lt;!&ndash; 지도 표시 영역 &ndash;&gt;-->
+    <!--                    </dl>-->
+                        <dl class="event-info">
+                            <dt th:if="${event.cost}">이용요금</dt>
+                            <dd th:if="${event.cost}" th:text="${event.cost}"></dd>
+
+                            <dt th:if="${event.content != null and event.content != ''}">개요</dt>
+                            <dd th:if="${event.content != null and event.content != ''}" th:text="${event.content}" class="event-content"></dd>
+
+                            <dt th:if="${event.address != null and event.address != ''}">주소</dt>
+                            <dd th:if="${event.address != null and event.address != ''}" th:text="${event.address}"></dd>
+
+                            <dt th:if="${event.place != null and event.place != ''}">행사 장소</dt>
+                            <dd th:if="${event.place != null and event.place != ''}" th:text="${event.place}"></dd>
+
+                            <dt th:if="${event.startDate != null}">행사 시작일</dt>
+                            <dd th:if="${event.startDate != null}" th:text="${#temporals.format(event.startDate, 'yyyy.MM.dd')}"></dd>
+
+                            <dt th:if="${event.endDate != null}">행사 종료일</dt>
+                            <dd th:if="${event.endDate != null}" th:text="${#temporals.format(event.endDate, 'yyyy.MM.dd')}"></dd>
+
+                            <dt th:if="${event.site != null and event.site != ''}">관련 웹사이트</dt>
+                            <dd th:if="${event.site != null and event.site != ''}">
+                                <a th:href="${event.site}" th:text="${event.site}"></a>
+                            </dd>
+
+                            <dt th:if="${event.address != null and event.address != ''}">행사 위치</dt>
+                            <dd th:if="${event.address != null and event.address != ''}">
+                                <div id="map"></div> <!-- 지도 표시 영역 -->
+                            </dd>
+                        </dl>
+
+
+                    </div>
+                </div>
+            </div>
+            <a href="/introduction/event/eventList" class="btn btn-secondary" id="back" style="margin-top: 20px;">돌아가기</a>
+        </div>
     </div>
 
     <!-- 푸터 -->

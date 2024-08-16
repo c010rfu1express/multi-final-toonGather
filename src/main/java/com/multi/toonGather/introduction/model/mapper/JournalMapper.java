@@ -129,4 +129,6 @@ public interface JournalMapper {
     int getTotalCount();
 
     int countByTitleContaining(String keyword);
+
+    void deleteLikes(int journalNo);
 }
