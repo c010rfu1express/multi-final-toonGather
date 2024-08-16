@@ -105,6 +105,7 @@
 		FROM rct_free_review f
 		JOIN users m ON f.writer = m.user_no
 		WHERE f.board_no = #{no}
+		ORDER BY f.review_no DESC
 	</select>
 
 	<select id="getAverage" parameterType="int" resultType="double">

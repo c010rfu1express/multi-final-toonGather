@@ -119,7 +119,7 @@ public class RecruitController {
         boolean containsC = list.contains(creatorDTO.getRegist_no());
 
         if (containsA && containsB && containsC) {
-            model.addAttribute("message", "창작자 등록 성공");
+            model.addAttribute("message", "창작자 등록 성공! 마이페이지에서 창작자 정보를 등록한 후 프리랜서 게시판을 이용하실 수 있습니다.");
             System.out.println("성공");
             creatorDTO.setStatus("A");
             creatorDTO.setType_code("C");

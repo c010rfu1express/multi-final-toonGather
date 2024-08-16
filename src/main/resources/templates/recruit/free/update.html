@@ -6,6 +6,7 @@
     <title>툰게더 toonGather | 프리랜서</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <style>
         .choice {
           background-color: #ffffff;
@@ -30,6 +31,31 @@
           font-size: 14px;
         }
     </style>
+    <script>
+        $(document).ready(function () {
+            $('#form').on('submit', function (e) {
+                var isValid = true;
+                var errorMessage = "필수 항목이 공백으로만 입력되었습니다."; // 오류 메시지
+
+                // 필수 입력 필드
+                var requiredFields = ['#content'];
+
+                for (var i = 0; i < requiredFields.length; i++) {
+                    var value = $(requiredFields[i]).val().trim();
+                    // 공백만 입력된 경우
+                    if (value === '') {
+                        isValid = false;
+                        break; // 첫 번째 공백 필드를 발견하면 반복문 종료
+                    }
+                }
+
+                if (!isValid) {
+                    alert(errorMessage);
+                    e.preventDefault(); // 폼 제출 중지
+                }
+            });
+        });
+    </script>
 </head>
 <body>
 <div th:replace="~{common/menubar}"></div>
@@ -42,7 +68,7 @@
                 <h2 class="text-center mb-0">프리랜서 게시글 수정</h2>
             </div>
             <div class="text-body">
-                <form th:action="@{/recruit/free/update}" method="post" enctype="multipart/form-data">
+                <form th:action="@{/recruit/free/update}" method="post" enctype="multipart/form-data" id="form">
                     <input type="hidden" name="board_no" th:value="${free.board_no}" readonly>
                     <input type="hidden" name="existingImage" th:value="${free.img}">
                     <div class="form-group">
@@ -50,8 +76,8 @@
                         <input id="title" name="title" th:value="${free.title}" class="form-control" maxlength='50' required  pattern=".*\S+.*">
                     </div>
                     <div class="form-group">
-                        <label for="content">내용 *</label>
-                        <input id="content" name="content" th:value="${free.content}" class="form-control" style="height:300px;" required maxlength="1000"  pattern=".*\S+.*">
+                        <label for="content">서비스 설명 *</label>
+                        <textarea id="content" name="content" class="form-control" rows="8" required maxlength="1000">[[${free.content}]]</textarea>
                     </div>
                     <div class="form-group">
                         <label for="singleFile">이미지 변경</label>
@@ -67,7 +93,7 @@
                     </div>
                     <div class="form-group">
                         <label for="contact">판매자 연락처 *</label>
-                        <input type="text" id="contact" name="contact" th:value="${free.contact}" class="form-control" required pattern=".*\S+.*">
+                        <input type="text" id="contact" name="contact" th:value="${free.contact}" class="form-control" required pattern=".*\S+.*" maxlength="100">
                         <small class="form-text text-muted">전화번호 또는 이메일 중 선호하는 형식으로 작성해 주세요.</small>
                     </div>
                     <div class="form-group text-right">
