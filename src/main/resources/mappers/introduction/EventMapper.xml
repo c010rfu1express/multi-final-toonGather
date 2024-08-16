@@ -140,6 +140,11 @@
         WHERE event_no = #{eventNo} AND user_no = #{userNo}
     </delete>
 
+    <delete id="deleteLikes" parameterType="int">
+        DELETE FROM in_event_like
+        WHERE event_no = #{eventNo}
+    </delete>
+
     <!-- Insert like -->
     <insert id="insertLike" parameterType="com.multi.toonGather.introduction.model.dto.EventLikeDTO">
         INSERT INTO in_event_like (event_no, user_no, liked_date)

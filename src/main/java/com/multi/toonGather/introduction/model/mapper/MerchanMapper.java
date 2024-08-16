@@ -42,4 +42,6 @@ public interface MerchanMapper {
     int countMerchansByTitleKeyword(String keyword);
 
     List<MerchanDTO> selectMerchansByTitleKeyword(@Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit);
+
+    void deleteLikes(int merchanNo);
 }

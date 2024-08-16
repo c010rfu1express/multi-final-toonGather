@@ -50,9 +50,6 @@
             box-sizing: border-box; /* 패딩과 테두리가 너비에 포함되도록 설정 */
         }
 
-        .d-flex {
-            margin-left: 107px; /* 왼쪽 페이지 끝에서 간격 추가 - 소식&검색창 */
-        }
 /* 검색창 스타일 */
 
         .search-container {
@@ -97,19 +94,17 @@
         .search-container button:hover i {
             color: #40bcf4;
         }
-/* 좋아요 버튼 스타일 */
-        .btn-primary {
-            background-color: #fef4c3; /* 배경 색상 변경 */
-            color: #333; /* 텍스트 색상 변경 (선택 사항) */
-            border: 1px solid #ddd; /* 버튼의 테두리 색상 설정 (선택 사항) */
+        .like-button {
+            background-color: #fef4c3;
+            color: #333;
+            border: 1px solid #ddd;
+            margin-top: 20px;
         }
-
-        .btn-primary:hover {
-            background-color: #e0e0e0; /* 마우스 오버 시 배경 색상 변경 (선택 사항) */
+        .like-button:hover {
+            background-color: #e0e0e0;
         }
-
-        .btn-primary:focus {
-            box-shadow: 0 0 0 0.2rem rgba(240, 212, 182, 0.5); /* 포커스 시 그림자 효과 (선택 사항) */
+        .like-button:focus {
+            box-shadow: 0 0 0 0.2rem rgba(240, 212, 182, 0.5);
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -147,44 +142,45 @@
 <div th:replace="~{common/menubar}"></div>
 <div th:replace="~{introduction/inMenubar}"></div>
 
-<div class="d-flex justify-content-between mb-3" >
-    <div class="d-flex align-items-center">
-        <h2 class="mr-3">소식</h2>
-        <form class="search-container" th:action="@{/introduction/journalList}" method="get">
-            <input type="text" placeholder="검색어 입력"  name="keyword" th:value="${keyword}" maxlength="20">
-            <button type="submit">
-                <i class="fas fa-search"></i>
-            </button>
-        </form>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between mb-3" >
+        <div class="d-flex align-items-center">
+            <h2 class="mr-3">소식</h2>
+            <form class="search-container" th:action="@{/introduction/journalList}" method="get">
+                <input type="text" placeholder="검색어 입력"  name="keyword" th:value="${keyword}" maxlength="20">
+                <button type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+    <div id="journal-details">
+        <div th:if="${journal != null}">
+            <h1 class="journal-title" th:text="${journal.title}">제목</h1>
+            <p class="posting-date" th:text="${#dates.format(journal.postingDate, 'yyyy-MM-dd')}">게시일시</p>
+
+
+            <!-- 이미지 또는 기본 썸네일 표시 -->
+            <div th:if="${#lists.size(journal.journalFiles) > 0}">
+                <img th:each="file : ${journal.journalFiles}" th:if="${file.fileType.startsWith('image/')}" th:src="@{'/uploadFiles/' + ${file.fileName}}" alt="파일 이미지" />
+            </div>
+            <div th:unless="${#lists.size(journal.journalFiles) > 0}">
+                <img src="/images/introduction/default-thumbnail.png" alt="기본 썸네일 이미지" />
+            </div>
+
+
+
+            <div class="content" th:text="${journal.content}">내용</div>
+
+            <!-- 좋아요 기능 추가 -->
+            <div style="margin-bottom: 20px;">
+                <button onclick="toggleLike()" class="like-button">좋아요 <span id="likeCount" th:text="${likeCount}">0</span></button>
+            </div>
+
+            <a href="/introduction/journalList" class="btn btn-secondary">돌아가기</a>
+        </div>
     </div>
 </div>
-<div id="journal-details">
-    <div th:if="${journal != null}">
-        <h1 class="journal-title" th:text="${journal.title}">제목</h1>
-        <p class="posting-date" th:text="${#dates.format(journal.postingDate, 'yyyy-MM-dd')}">게시일시</p>
-
-
-        <!-- 이미지 또는 기본 썸네일 표시 -->
-        <div th:if="${#lists.size(journal.journalFiles) > 0}">
-            <img th:each="file : ${journal.journalFiles}" th:if="${file.fileType.startsWith('image/')}" th:src="@{'/uploadFiles/' + ${file.fileName}}" alt="파일 이미지" />
-        </div>
-        <div th:unless="${#lists.size(journal.journalFiles) > 0}">
-            <img src="/images/introduction/default-thumbnail.png" alt="기본 썸네일 이미지" />
-        </div>
-
-
-
-        <div class="content" th:text="${journal.content}">내용</div>
-
-        <!-- 좋아요 기능 추가 -->
-        <div style="margin-bottom: 20px;">
-            <button onclick="toggleLike()" class="btn btn-primary">좋아요 <span id="likeCount" th:text="${likeCount}">0</span></button>
-        </div>
-
-        <a href="/introduction/journalList" class="btn btn-secondary">돌아가기</a>
-    </div>
-</div>
-
 
 <!--<span>/ Current Journal No: <span id="currentJournalNo" th:text="${journal.journalNo}">0</span></span>-->
 <!--<span>/ Current User No: <span id="currentUserNo" th:text="${userNo}">0</span></span>-->
