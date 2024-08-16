@@ -155,7 +155,7 @@
             <img th:src="${webtoon.thumbnail_url}" class="webtoon-thumbnail">
             <div class="webtoon-info">
                 <a th:text="${webtoon.webtoon_name}"
-                   th:href="@{'/webtoon/one?webtoon_id=' + (${webtoon.platform} == 1 ? 'naver_' + ${webtoon.webtoon_id} : 'kakao_'+${webtoon.webtoon_id}) + '&amp;webtoon_name=' + ${webtoon.webtoon_name}}"
+                   th:href="@{'/webtoon/one?webtoon_id=' + (${webtoon.platform} == 1 ? 'naver_' + ${webtoon.webtoon_id} : 'kakao_'+${webtoon.webtoon_id}) + '&amp;webtoon_name=' + ${webtoon.encodedWebtoonName}}"
                    class="webtoon-title"></a>
                 <div th:text="'작가: ' + ${webtoon.author}" class="webtoon-authors"></div>
                 <div th:text="'플랫폼: ' + (${webtoon.platform} == 1 ? 'NAVER' : 'KAKAO')" class="webtoon-provider"></div>

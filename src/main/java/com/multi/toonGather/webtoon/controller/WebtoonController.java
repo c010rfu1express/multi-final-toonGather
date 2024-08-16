@@ -24,6 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Period;
@@ -69,7 +70,7 @@ public class WebtoonController {
                     .collect(Collectors.toList());
 
             Map<String, Long> tagCountMap = webtoonDTOList.stream()
-                    .flatMap(dto -> Arrays.stream(dto.getTags().split("[#/ ]")))  // 태그 문자열 분열
+                    .flatMap(dto -> Arrays.stream(dto.getTags().split("[#]")))  // 태그 문자열 분열
                     .filter(tag -> !tag.isEmpty())  // 빈 문자열 필터링
                     .collect(Collectors.groupingBy(tag -> tag, Collectors.counting()));  // 그룹화 및 개수 집계
 
@@ -99,11 +100,17 @@ public class WebtoonController {
                         dto.setGenre2(Genre.getKey());
                     }
                     if(topGenres.size()<2){
+                        tage = topTags.get(2);
                         dto.setTag2(tage.getKey());
                         dto.setGenre2(Genre.getKey());
                         break;}
                 }
                 webtoonDTOList=webToonService.recommendWebtoon(dto);
+                if(webtoonDTOList.size()<12){
+                    dto.setTag3("");
+                    webtoonDTOList=webToonService.recommendWebtoon(dto);
+
+                }
 
                 model.addAttribute("webtoonSelect",webtoonDTOList);
             }
@@ -285,6 +292,10 @@ public class WebtoonController {
 
         model.addAttribute("platform",tagPageDTO.getPlatform());
 
+        for (WebtoonDTO webtoon : webtoonDTOS) {
+            String encodedWebtoonName = URLEncoder.encode(webtoon.getWebtoon_name(), StandardCharsets.UTF_8.toString());
+            webtoon.setEncodedWebtoonName(encodedWebtoonName); // 인코딩된 이름을 설정
+        }
         model.addAttribute("searchTags",webtoonDTOS);
 
 //        String encodedString = URLEncoder.encode(search, "UTF-8");
@@ -532,7 +543,10 @@ public class WebtoonController {
                         JSONArray genreFilters = cards.getJSONObject(k).getJSONArray("genreFilters");
                         if (content.getInt("id") ==Integer.parseInt(kkao.getWebtoon_id())) {
                             webtoonData = content;
-                            g=genreFilters.getString(1);
+                            if(genreFilters.length()>1){
+                                g=genreFilters.getString(1);
+                            }else{
+                            g=genreFilters.getString(0);}
                             break;
                         }
                     }
