@@ -1,6 +1,5 @@
 package com.multi.toonGather.webtoon.model.dao;
 
-import com.multi.toonGather.user.model.dto.UserDTO;
 import com.multi.toonGather.webtoon.model.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -59,7 +58,7 @@ public interface WebToonMapper {
 
  List<WebtoonDTO> webtoonBest();
 
- List<WebtoonDTO> webtoonUserBest(UserDTO userDTO);
+ List<WebtoonDTO> webtoonUserBest(WtUserSaveDTO userDTO);
 
  List<WebtoonDTO> recommendWebtoon(TagPageDTO dto);
 }

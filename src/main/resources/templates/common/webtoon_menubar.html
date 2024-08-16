@@ -5,28 +5,30 @@
     <title>툰게더 toonGather</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- 폰트: 'Noto Sans KR' 사용 -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
     <!-- 프로젝트 툰게더 전용 css 스타일 시트 -->
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <style>
-    .navbar .form-inline .Search {
-            border-radius: 20px; /* 둥근 모서리를 위한 경계 반경 설정 */
-            padding-left: 15px; /* 왼쪽 내부 여백 */
-            padding-right: 15px; /* 오른쪽 내부 여백 */
-            width: 400px; /* 원하는 너비 */
-        }
-        .navbar .form-inline .Search:focus {
-            outline: none; /* 포커스 시 테두리 제거 */
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* 포커스 시 테두리 효과 */
-        }
-        .navbar .form-inline .btn-search {
-            border-radius: 20px; /* 둥근 모서리를 위한 경계 반경 설정 */
-        }
+    body {
+     font-family: 'Noto Sans KR', Arial, sans-serif!important;
+
+       }
+   .navbar .form-inline .Search {
+           border-radius: 20px; /* 둥근 모서리를 위한 경계 반경 설정 */
+           padding-left: 15px; /* 왼쪽 내부 여백 */
+           padding-right: 15px; /* 오른쪽 내부 여백 */
+           width: 400px; /* 원하는 너비 */
+       }
+       .navbar .form-inline .Search:focus {
+           outline: none; /* 포커스 시 테두리 제거 */
+           box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* 포커스 시 테두리 효과 */
+       }
+       .navbar .form-inline .btn-search {
+           border-radius: 20px; /* 둥근 모서리를 위한 경계 반경 설정 */
+       }
 </style>
 <body>
 
@@ -116,7 +118,9 @@
            if(provider==null){
            provider='ALL';
 
+
            }
+           console.log(provider);
            if (provider) {
                // provider 값에 따라 플랫폼 선택
                $('.dropdown-item').each(function() {
