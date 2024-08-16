@@ -14,6 +14,7 @@ public class WebtoonDTO {
     private String tags;
     private int count;
     private int user_count;
+    private String encodedWebtoonName;
 
 
 }
