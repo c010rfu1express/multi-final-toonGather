@@ -140,7 +140,7 @@
        function updateDayLinks(provider) {
            var days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN', 'COM'];
            for (var i = 0; i < days.length; i++) {
-               var dayLink = '/webtoon/test?updateDay=' + days[i] + '&provider=' + provider;
+               var dayLink = '/webtoon/main?updateDay=' + days[i] + '&provider=' + provider;
                $('a.nav-link[href*="updateDay=' + days[i] + '"]').attr('href', dayLink);
            }
        }
