@@ -17,10 +17,6 @@
 		<result property="content" column="content" />
 		<result property="img" column="img" />
 		<result property="price" column="price" />
-		<result property="kakao_pg" column="kakao_pg" />
-		<result property="inicis_pg" column="inicis_pg" />
-		<result property="bank_name" column="bank_name" />
-		<result property="account" column="account" />
 		<result property="contact" column="contact" />
 		<result property="created_date" column="created_date" />
 		<result property="modified_date" column="modified_date" />
@@ -75,10 +71,6 @@
 		, content
 		, img
 		, price
-		, kakao_pg
-		, inicis_pg
-		, bank_name
-		, account
 		, contact
 		)
 		VALUES
@@ -88,10 +80,6 @@
 		, #{ content }
 		, #{ img }
 		, #{ price }
-		, #{ kakao_pg }
-		, #{ inicis_pg }
-		, #{ bank_name }
-		, #{ account }
 		, #{ contact }
 		)
 	</insert>
@@ -239,5 +227,13 @@
 		, #{ contact }
 		)
 	</insert>
+
+	<select id="payInfo" resultType="boolean">
+		SELECT COUNT(1) > 0
+		FROM rct_creator_regist
+		WHERE member_no = #{memNo}
+		AND status = 'A'
+		AND account IS NULL
+	</select>
 
 </mapper>

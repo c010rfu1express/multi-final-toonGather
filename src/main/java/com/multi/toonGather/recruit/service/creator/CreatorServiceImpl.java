@@ -23,4 +23,17 @@ public class CreatorServiceImpl implements CreatorService {
         int result = creatorMapper.updateMember(member_no);
         if (result > 0) new Exception(("회원 정보 수정 실패"));
     }
+
+    @Override
+    public void updateInfo(CreatorDTO creatorDTO) throws Exception {
+        int result = creatorMapper.updateInfo(creatorDTO);
+        if (result > 0) new Exception(("정보 등록 실패"));
+    }
+
+    @Override
+    public CreatorDTO findInfo(int writer) throws Exception {
+        CreatorDTO creatorDTO = creatorMapper.selectInfo(writer);
+        if (creatorDTO != null) new Exception("정보 조회 실패");
+        return creatorDTO;
+    }
 }

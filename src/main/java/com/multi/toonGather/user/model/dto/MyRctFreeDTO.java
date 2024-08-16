@@ -22,4 +22,9 @@ public class MyRctFreeDTO {
     private LocalDateTime modifiedDate;
     private double averageRating;  // 평균 평점 추가
     private int reviewCount;       // 리뷰 갯수 추가
+
+    public String getFormattedCreatedDate() {
+        if(createdDate == null) return "언젠가";
+        return TimeAgoUtils.formatTimeAgo(createdDate);
+    }
 }

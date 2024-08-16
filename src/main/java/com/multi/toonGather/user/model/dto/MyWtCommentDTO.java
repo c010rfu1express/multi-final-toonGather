@@ -31,4 +31,10 @@ public class MyWtCommentDTO {
     private String genre;
     private String tags;
     private int count;
+
+    //시간 view에 뿌려줄 때
+    public String getFormattedCreatedAt() {
+        if(createdAt == null) return "언젠가";
+        return TimeAgoUtils.formatTimeAgo(createdAt);
+    }
 }

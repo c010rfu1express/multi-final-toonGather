@@ -30,4 +30,6 @@ public interface JobMapper {
 
     @Select("SELECT EXISTS (SELECT 1 FROM rct_job_apply WHERE board_no = #{board_no} AND writer = #{writer})")
     boolean hasApplied(@Param("board_no") int boardNo, @Param("writer") int writer) throws Exception;
+
+    List<JobDTO> selectOpenAll(PageDTO pageDTO) throws Exception;
 }

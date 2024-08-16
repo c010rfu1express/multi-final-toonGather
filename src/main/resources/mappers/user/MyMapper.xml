@@ -96,6 +96,27 @@
         <result property="postingDate" column="posting_date" />
     </resultMap>
 
+    <resultMap id="journalFileResultMap" type="com.multi.toonGather.introduction.model.dto.JournalFileDTO">
+        <id property="journalFileNo" column="journal_file_no"/>
+        <result property="journalNo" column="journal_no"/>
+        <result property="fileName" column="file_name"/>
+        <result property="filePath" column="file_path"/>
+        <result property="fileType" column="file_type"/>
+        <result property="uploadDate" column="upload_date"/>
+    </resultMap>
+
+    <select id="selectFilesByJournalNo" parameterType="int" resultType="com.multi.toonGather.introduction.model.dto.JournalFileDTO">
+        SELECT
+        journal_file_no AS journalFileNo,
+        journal_no AS journalNo,
+        file_name AS fileName,
+        file_path AS filePath,
+        file_type AS fileType,
+        upload_date AS uploadDate
+        FROM in_journal_files
+        WHERE journal_no = #{journalNo}
+    </select>
+
     <sql id="MyInJournalQueryA">
         SELECT
         ijl.liked_no AS likedNo,
@@ -248,6 +269,8 @@
         <result property="viewCnt" column="view_cnt" />
 
         <result property="writerUserId" column="writer_user_id"/>  <!-- 추가된 부분 -->
+        <result property="writerNickname" column="writer_nickname"/>  <!-- 추가된 부분 -->
+        <result property="thumbnailUrl" column="thumbnail_url"/> <!-- 추가된 부분 -->
     </resultMap>
 
     <sql id="MySoReviewQueryA">
@@ -265,7 +288,10 @@
         sr.modified_date AS modifiedDate,
         sr.view_cnt AS viewCnt,
 
-        u.user_id AS writerUserId  <!-- 추가된 부분 -->
+        u.user_id AS writerUserId,  <!-- 추가된 부분 -->
+        u.nickname AS writerNickname,  <!-- 추가된 부분 -->
+
+        w.thumbnail_url AS thumbnailUrl
     </sql>
 
     <sql id="MySoReviewQueryB">
@@ -275,6 +301,8 @@
         so_review_likes srl ON sr.review_no = srl.review_no
         INNER JOIN
         users u ON sr.writer_no = u.user_no  <!-- 추가된 부분 -->
+        INNER JOIN
+        webtoon w ON sr.webtoon_no = w.webtoon_no
         WHERE
         srl.liked_user = #{userNo}
         <if test="searchBy != null and searchTerm != null and searchTerm != ''">
@@ -436,6 +464,8 @@
         <result property="viewCnt" column="view_cnt"/>
 
         <result property="writerUserId" column="writer_user_id"/> <!-- 추가된 부분 -->
+        <result property="writerNickname" column="writer_nickname"/> <!-- 추가된 부분 -->
+        <result property="thumbnailUrl" column="thumbnail_url"/> <!-- 추가된 부분 -->
     </resultMap>
 
     <sql id="MySoDiaryQueryA">
@@ -455,7 +485,9 @@
         sd.modified_date AS diaryModifiedDate,
         sd.view_cnt AS viewCnt,
 
-        u.user_id AS writerUserId <!-- 추가된 부분 -->
+        u.user_id AS writerUserId, <!-- 추가된 부분 -->
+        u.nickname AS writerNickname,
+        w.thumbnail_url AS thumbnailUrl
     </sql>
 
     <sql id="MySoDiaryQueryB">
@@ -465,6 +497,8 @@
         so_diary_comments sdc ON sd.diary_no = sdc.diary_no
         INNER JOIN
         users u ON sd.writer_no = u.user_no <!-- 추가된 부분 -->
+        INNER JOIN
+        webtoon w ON sd.webtoon_no = w.webtoon_no
         WHERE
         sdc.commenter_no = #{userNo}
         <if test="searchBy != null and searchTerm != null and searchTerm != ''">
@@ -628,7 +662,31 @@
         <result property="coordinates" column="coordinates" />
         <result property="content" column="content" />
         <result property="postingDate" column="posting_date" />
+
+        <result property="eventCategoryTitle" column="event_category_title" />
     </resultMap>
+
+    <resultMap id="eventFileResultMap" type="com.multi.toonGather.introduction.model.dto.EventFileDTO">
+        <id property="eventFileNo" column="event_file_no"/>
+        <result property="eventNo" column="event_no"/>
+        <result property="fileName" column="file_name"/>
+        <result property="filePath" column="file_path"/>
+        <result property="fileType" column="file_type"/>
+        <result property="uploadDate" column="upload_date"/>
+    </resultMap>
+
+    <select id="selectFilesByEventNo" parameterType="int" resultType="com.multi.toonGather.introduction.model.dto.EventFileDTO">
+        SELECT
+        event_file_no AS eventFileNo,
+        event_no AS eventNo,
+        file_name AS fileName,
+        file_path AS filePath,
+        file_type AS fileType,
+        upload_date AS uploadDate
+        FROM in_event_files
+        WHERE event_no = #{eventNo}
+    </select>
+
     <sql id="MyInEventQueryA">
         SELECT
         iel.liked_no AS likedNo,
@@ -645,13 +703,17 @@
         ie.address AS address,
         ie.coordinates AS coordinates,
         ie.content AS content,
-        ie.posting_date AS postingDate
+        ie.posting_date AS postingDate,
+
+        iec.event_category_title AS eventCategoryTitle
     </sql>
     <sql id="MyInEventQueryB">
         FROM
         in_event ie
         INNER JOIN
         in_event_like iel ON ie.event_no = iel.event_no
+        INNER JOIN
+        in_event_category iec ON ie.event_category_code = iec.event_category_code
         WHERE
         iel.user_no = #{userNo}
         <if test="searchBy != null and searchTerm != null and searchTerm != ''">
@@ -1059,6 +1121,7 @@
 
     <!--    MyRctApplicationDTO 클래스를 사용하는 경우가 2가지임을 체크하기 (1)내가지원한목록 (2)내가올린공고_지원서 끝-->
 
+
     <resultMap type="MyRctFreeDTO" id="MyRctFreeResultMap">
         <id property="boardNo" column="board_no"/>
         <result property="writer" column="writer"/>
@@ -1193,6 +1256,7 @@
         <include refid="MyRctCreatorQueryB"/>
     </select>
 
+    <!--    MyRctOrderDTO 클래스를 사용하는 경우가 2가지임을 체크하기 (1)프리랜서게시글관리 (2)프리랜서구매목록 시작-->
     <resultMap type="MyRctOrderDTO" id="MyRctOrderResultMap">
         <id property="orderNo" column="order_no"/>
         <result property="memberNo" column="member_no"/>
@@ -1201,27 +1265,68 @@
         <result property="price" column="price"/>
         <result property="orderedDate" column="ordered_date"/>
         <result property="status" column="status"/>
+
+        <result property="bankName" column="bank_name"/>
+        <result property="account" column="account"/>
+        <result property="buyerName" column="buyer_name"/>
+        <result property="contact" column="contact"/>
+        <result property="typeCode" column="type_code"/>
+
+        <result property="writer" column="writer"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="img" column="img"/>
+        <result property="totalPrice" column="total_price"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="modifiedDate" column="modified_date"/>
+
+        <result property="nickname" column="nickname"/>
+
+
     </resultMap>
 
     <sql id="MyRctOrderQueryA">
         SELECT
-        order_no AS orderNo,
-        member_no AS memberNo,
-        board_no AS boardNo,
-        quantity AS quantity,
-        price AS price,
-        ordered_date AS orderedDate,
-        status AS status
+        rfp.order_no AS orderNo,
+        rfp.member_no AS memberNo,
+        rfp.board_no AS boardNo,
+        rfp.quantity AS quantity,
+        rfp.price AS price,
+        rfp.ordered_date AS orderedDate,
+        rfp.status AS status,
+
+        rfp.bank_name AS bankName,
+        rfp.account AS account,
+        rfp.buyer_name AS buyerName,
+        rfp.contact AS contact,
+        rfp.type_code AS typeCode,
+
+        rf.writer AS writer,
+        rf.title AS title,
+        rf.content AS content,
+        rf.img AS img,
+        rf.price AS totalPrice,
+        rf.created_date AS createdDate,
+        rf.modified_date AS modifiedDate,
+
+        u.nickname AS nickname
     </sql>
     <sql id="MyRctOrderQueryB">
         FROM
-        rct_free_pay
+        rct_free_pay rfp
+        INNER JOIN
+        rct_free rf ON rfp.board_no = rf.board_no
+        INNER JOIN
+        users u ON rf.writer = u.user_no  <!-- 추가된 부분 -->
         WHERE
-        member_no = #{userNo}
+        rfp.member_no = #{userNo}
         <if test="searchBy != null and searchTerm != null and searchTerm != ''">
             <choose>
-                <when test="searchBy == 'boardNo'">
-                    AND board_no LIKE CONCAT('%', #{searchTerm}, '%')
+                <when test="searchBy == 'title'">
+                    AND rf.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'nickname'">
+                    AND u.nickname LIKE CONCAT('%', #{searchTerm}, '%')
                 </when>
             </choose>
         </if>
@@ -1256,6 +1361,84 @@
         <include refid="pagingQuery"/>
     </select>
 
+    <sql id="MyRctFreeOrderQueryA">
+        SELECT
+        rfp.order_no AS orderNo,
+        rfp.member_no AS memberNo,
+        rfp.board_no AS boardNo,
+        rfp.quantity AS quantity,
+        rfp.price AS price,
+        rfp.ordered_date AS orderedDate,
+        rfp.status AS status,
+
+        rfp.bank_name AS bankName,
+        rfp.account AS account,
+        rfp.buyer_name AS buyerName,
+        rfp.contact AS contact,
+        rfp.type_code AS typeCode,
+
+        rf.writer AS writer,
+        rf.title AS title,
+        rf.content AS content,
+        rf.img AS img,
+        rf.price AS totalPrice,
+        rf.created_date AS createdDate,
+        rf.modified_date AS modifiedDate,
+
+        u.nickname AS nickname
+    </sql>
+    <sql id="MyRctFreeOrderQueryB">
+        FROM
+        rct_free_pay rfp
+        INNER JOIN
+        rct_free rf ON rfp.board_no = rf.board_no
+        INNER JOIN
+        users u ON rf.writer = u.user_no  <!-- 추가된 부분 -->
+        WHERE
+        rfp.board_no = #{boardNo}
+        <if test="searchBy != null and searchTerm != null and searchTerm != ''">
+            <choose>
+                <when test="searchBy == 'title'">
+                    AND rf.title LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+                <when test="searchBy == 'nickname'">
+                    AND u.nickname LIKE CONCAT('%', #{searchTerm}, '%')
+                </when>
+            </choose>
+        </if>
+        <if test="toggleValue == 'Y'">
+            AND status = 'C'
+        </if>
+        <choose>
+            <when test="orderBy == 'recent'">
+                ORDER BY order_no DESC
+            </when>
+            <when test="orderBy == 'oldest'">
+                ORDER BY order_no ASC
+            </when>
+            <when test="orderBy == 'expensive'">
+                ORDER BY price DESC
+            </when>
+            <when test="orderBy == 'cheap'">
+                ORDER BY price ASC
+            </when>
+            <otherwise>
+                ORDER BY order_no DESC
+            </otherwise>
+        </choose>
+    </sql>
+    <select id="selectCountMyRctFreeOrder" resultType="int">
+        SELECT COUNT(*)
+        <include refid="MyRctFreeOrderQueryB"/>
+    </select>
+    <select id="selectListMyRctFreeOrder" resultType="MyRctOrderDTO">
+        <include refid="MyRctFreeOrderQueryA"/>
+        <include refid="MyRctFreeOrderQueryB"/>
+        <include refid="pagingQuery"/>
+    </select>
+
+    <!--    MyRctOrderDTO 클래스를 사용하는 경우가 2가지임을 체크하기 (1)프리랜서게시글관리 (2)프리랜서구매목록 끝-->
+
     <resultMap type="MyInMerchanDTO" id="MyInMerchanResultMap">
         <id property="likedNo" column="liked_no"/>
         <result property="merchanNo" column="merchan_no"/>
@@ -1270,6 +1453,27 @@
         <result property="content" column="content"/>
         <result property="postingDate" column="posting_date"/>
     </resultMap>
+
+    <resultMap id="merchanFileResultMap" type="com.multi.toonGather.user.model.dto.MyInMerchanFileDTO">
+        <id property="merchanFileNo" column="merchan_file_no"/>
+        <result property="merchanNo" column="merchan_no"/>
+        <result property="fileName" column="file_name"/>
+        <result property="filePath" column="file_path"/>
+        <result property="fileType" column="file_type"/>
+        <result property="uploadDate" column="upload_date"/>
+    </resultMap>
+
+    <select id="selectFilesByMerchanNo" parameterType="int" resultType="com.multi.toonGather.user.model.dto.MyInMerchanFileDTO">
+        SELECT
+        merchan_file_no AS merchanFileNo,
+        merchan_no AS merchanNo,
+        file_name AS fileName,
+        file_path AS filePath,
+        file_type AS fileType,
+        upload_date AS uploadDate
+        FROM in_merchan_files
+        WHERE merchan_no = #{merchanNo}
+    </select>
 
     <sql id="MyInMerchanQueryA">
         SELECT

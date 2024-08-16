@@ -22,4 +22,6 @@ public interface JobService {
     ApplyDTO findApplyByNo(int no) throws Exception;
 
     boolean hasApplied(int board_no, int writer) throws Exception;
+
+    List<JobDTO> selectOpenAll(PageDTO pageDTO) throws Exception;
 }
