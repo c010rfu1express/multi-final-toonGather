@@ -40,7 +40,7 @@
         var errorMessage = "필수 항목이 공백으로만 입력되었습니다."; // 오류 메시지
 
         // 필수 입력 필드
-        var requiredFields = ['#title', '#content', '#contact', '#account'];
+        var requiredFields = ['#account'];
 
         for (var i = 0; i < requiredFields.length; i++) {
           var value = $(requiredFields[i]).val().trim();
@@ -73,11 +73,11 @@
         <form action="#" th:action="@{/recruit/free/pay/info}" th:object="${creator}" id="form" method="post">
           <div class="form-group">
             <label for="kakao">카카오페이</label>
-            <input id="kakao" name="kakao" type="text" class="form-control" placeholder="포트원 PG사명.CID 형식으로 입력해주세요">
+            <input id="kakao" name="kakao" type="text" class="form-control" placeholder="포트원 PG사명.CID 형식으로 입력해주세요" maxlength="30">
           </div>
           <div class="form-group">
             <label for="inicis">KG이니시스</label>
-            <input id="inicis" name="inicis" type="text" class="form-control" placeholder="포트원 PG사명.CID 형식으로 입력해주세요">
+            <input id="inicis" name="inicis" type="text" class="form-control" placeholder="포트원 PG사명.CID 형식으로 입력해주세요" maxlength="30">
           </div>
           <div class="form-group">
             <label for="bank_name">무통장 입금 *</label>

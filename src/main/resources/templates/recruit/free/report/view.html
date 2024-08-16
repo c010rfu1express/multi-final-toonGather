@@ -5,10 +5,15 @@
 <head>
     <meta charset="UTF-8">
     <title>툰게더 toonGather | 신고 관리</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/starRating.css}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- 폰트: 'Noto Sans KR' 사용 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+    <!-- 프로젝트 툰게더 전용 css 스타일 시트 -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
     <style>
         .centered-div {
             text-align: center;
@@ -36,11 +41,87 @@
           color: #6c757d;
           font-size: 14px;
         }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .review-list {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+    </style>
+    <style>
+        .navbar {
+          position: fixed;
+          z-index: 1000;
+        }
     </style>
 </head>
 <body>
 <div th:replace="~{common/menubar}"></div>
-<div layout:fragment="content">
+<style>
+    .jumbotron {
+    position : relative;
+    background-color : #EEEEEE;
+    }
+    .jumbotron .row {
+    position : absolute;
+    width : 100%;
+    bottom: 0%;
+    }
+
+     .nav-link {
+            color: #828282;
+    }
+    ul {
+  list-style: none;
+  padding-left : 0px;
+  }
+</style>
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-3 px-4">
+            <h3>신고 관리</h3>
+        </div>
+        <div class="col-md-9">
+            <nav class="navbar navbar-expand-md">
+                <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+                    <li><a th:href="@{/user/my}" class="nav-link px-2">마이페이지(테스트용)</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+<div layout:fragment="content" class="row">
+    <aside class="col-md-3 px-4">
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-6">
+                <div class="panel">
+                    <ul class="list-group">
+                        <li><a th:href="@{/user/admin/userlist}" class="nav-link px-2">회원 관리</a></li>
+                        <li><a th:href="@{/recruit/free/report/list}" class="nav-link px-2"  style="color: #03C75A;">신고 관리</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </aside>
     <br>
     <div class="container">
         <div class="text-header">
@@ -64,7 +145,7 @@
                     <label class="form-control" style="height:auto; border: none;">
                         <br>
                         <span class="font-weight-bold" style="font-size : 15pt;">신고 내용</span>
-                        <br> [[${report.content}]] <br> <br>
+                        <div style="white-space:pre-wrap; word-wrap:break-word;"><span th:text="${report.content}"></span></div>
                     </label>
                 </div>
                 <div class="mt-4 text-right">

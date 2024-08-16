@@ -59,8 +59,9 @@
                     <label class="form-control" style="height:auto; border: none;">
                         <br>
                         <span class="font-weight-bold" style="font-size : 15pt;">지원 내용</span>
-                        <br> [[${apply.content}]] <br>
+                        <div style="white-space:pre-wrap; word-wrap:break-word;"><span th:text="${apply.content}"></span></div>
                         <div th:if="${apply.img != null}">
+                            <br>
                             <img th:src="@{'/uploadFiles/job/apply/' + ${apply.img}}" width="250" height="250" alt="지원글 이미지">
                         </div>
                         <br> <br>
