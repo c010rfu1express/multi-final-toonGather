@@ -152,7 +152,7 @@
         </div>
 
         <div class="diary-edit-buttons">
-            <a th:href="@{/social/diaries/{diaryNo}(diaryNo=${diary.diaryNo})}" class="btn btn-secondary">취소</a>
+            <a th:href="@{/social/users/__${#authentication.principal.userDTO.userId}__/diaries/{diaryNo}(diaryNo=${diary.diaryNo})}" class="btn btn-secondary">취소</a>
             <button type="submit" class="btn btn-primary">수정</button>
         </div>
     </form>
