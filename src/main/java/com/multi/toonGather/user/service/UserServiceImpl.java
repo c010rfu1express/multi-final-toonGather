@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     public void insertUser(UserDTO userDTO) throws Exception {
         int result = 0;
         // 가장 먼저: password, confirmPassword의 일치여부 확인
-        if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
+        if(userDTO.getTypeCode() =='G' && !userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
             throw new Exception("[ERROR] insertUser 실패. 비밀번호 불일치");
         }
 
