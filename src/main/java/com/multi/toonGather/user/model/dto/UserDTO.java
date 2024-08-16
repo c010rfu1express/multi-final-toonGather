@@ -36,4 +36,5 @@ public class UserDTO {
    private String month;
    private String day;
    private String confirmPassword;
+   private String mailNumber;
 }

@@ -253,6 +253,22 @@
         <include refid="MyRctJobQueryB"/>
         <include refid="pagingQuery"/>
     </select>
+    <select id="selectOneMyRctJob" resultType="MyRctJobDTO">
+        SELECT
+        board_no AS boardNo,
+        writer AS writer,
+        title AS title,
+        content AS content,
+        location AS location,
+        img AS img,
+        created_date AS createdDate,
+        modified_date AS modifiedDate,
+        dead_line AS deadLine
+        FROM
+        rct_job
+        WHERE
+        board_no = #{boardNo}
+    </select>
 
     <resultMap type="MySoReviewDTO" id="MySoReviewResultMap">
         <id property="likeNo" column="like_no" />
@@ -1221,6 +1237,28 @@
         </if>
     </select>
 
+    <select id="selectOneMyRctFree" resultType="MyRctFreeDTO">
+        SELECT
+        rf.board_no AS boardNo,
+        rf.writer,
+        rf.title,
+        rf.content,
+        rf.img,
+        rf.price,
+        rf.created_date AS createdDate,
+        rf.modified_date AS modifiedDate,
+        COALESCE(AVG(rfr.star_rating), 0.0) AS averageRating,
+        COALESCE(COUNT(rfr.review_no), 0) AS reviewCount
+        FROM
+        rct_free rf
+        LEFT JOIN
+        rct_free_review rfr
+        ON
+        rf.board_no = rfr.board_no
+        WHERE
+        rf.board_no = #{boardNo}
+    </select>
+
     <resultMap type="MyRctCreatorDTO" id="MyRctCreatorResultMap">
         <id property="creatorNo" column="creator_no"/>
         <result property="memberNo" column="member_no"/>
@@ -1341,10 +1379,10 @@
                 ORDER BY order_no ASC
             </when>
             <when test="orderBy == 'expensive'">
-                ORDER BY price DESC
+                ORDER BY rfp.price DESC
             </when>
             <when test="orderBy == 'cheap'">
-                ORDER BY price ASC
+                ORDER BY rfp.price ASC
             </when>
             <otherwise>
                 ORDER BY order_no DESC
@@ -1417,10 +1455,10 @@
                 ORDER BY order_no ASC
             </when>
             <when test="orderBy == 'expensive'">
-                ORDER BY price DESC
+                ORDER BY rfp.price DESC
             </when>
             <when test="orderBy == 'cheap'">
-                ORDER BY price ASC
+                ORDER BY rfp.price ASC
             </when>
             <otherwise>
                 ORDER BY order_no DESC

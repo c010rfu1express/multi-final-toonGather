@@ -4,6 +4,7 @@ import com.multi.toonGather.common.model.dto.PageDTO;
 import com.multi.toonGather.common.service.PageService;
 import com.multi.toonGather.security.CustomUserDetails;
 import com.multi.toonGather.user.model.dto.UserDTO;
+import com.multi.toonGather.user.service.MailService;
 import com.multi.toonGather.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class UserController {
     //@RequiredArgsConstructor를 쓰는 이유.. Spring의 의존성 자동 주입을 위함
     private final UserService userService;
     private final PageService pageService;
+    private final MailService mailService;
 
     ///////////////////////////////////
     //요청시작
@@ -139,8 +141,17 @@ public class UserController {
     //KHG12-(2)POST
     @PostMapping("/findpw")
     public String findPwRequest(@ModelAttribute UserDTO userDTO, HttpServletRequest request, Model model) throws Exception {
-        String password = userService.findPw(userDTO);
-        model.addAttribute("password", password);
+        UserDTO result = userService.findPw(userDTO);
+        if(result != null) {
+            //이메일 전송
+            try {
+                String pwString = mailService.sendMailPw(userDTO.getEmail());
+                userService.updateTempPw(result.getUserNo(), pwString);
+            } catch (Exception e) {
+                throw new Exception("[ERROR] findPwRequest 실패. 이메일이 없음.");
+            }
+        }
+        model.addAttribute("password", result);
         return "forward:/user/pwfound";     //수정해야함!
     }
 
