@@ -11,6 +11,23 @@ spring:
     restart:
       enabled: true
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: hgk.2024.multi@gmail.com
+    password: wbunuzwdsvuchgmx
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+    auth-code-expiration-millis: 1800000  # 30 * 60 * 1000 == 30분
+
 server:
   port: 8099
   servlet:
@@ -42,3 +59,4 @@ naver:
     chatbot:
       url: "https://47rv9xlkxz.apigw.ntruss.com/custom/v1/15453/1d0c6942878611a5035ae2c26a030d4ad5cf83dd80bae0be2465b367c583b806"
       secret: "b2hFQ2VzeVpqU0txdHp0dWFDd1J4Q2x1R3pHVXRmSEc="
+

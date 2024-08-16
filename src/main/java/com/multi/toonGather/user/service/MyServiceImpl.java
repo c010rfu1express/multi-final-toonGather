@@ -15,6 +15,35 @@ import java.util.List;
 public class MyServiceImpl implements MyService {
     private final MyMapper myMapper;
 
+    //대시보드
+    public MyDashboardDTO getMyDashboard(int userNo) throws Exception {
+        MyDashboardDTO response = new MyDashboardDTO();
+
+        response.setWtWebtoon(myMapper.selectCountMyWtWebtoon(userNo, "recent", "comment", ""));
+        response.setWtComment(myMapper.selectCountMyWtComment(userNo, "recent", "comment", ""));
+        response.setSoReview(myMapper.selectCountMySoReview(userNo, "recent", "rTitle", ""));
+        response.setSoDiary(myMapper.selectCountMySoDiary(userNo, "recent", "comment", ""));
+        response.setRctJob(myMapper.selectCountMyRctJob(userNo, 'N',"recent", "title", ""));
+        response.setRctApplication(myMapper.selectCountMyRctApplication(userNo, 'N',"recent", "title", ""));
+        response.setRctFree(myMapper.selectCountMyRctFree(userNo, "recent", "title", ""));
+        response.setRctOrder(myMapper.selectCountMyRctOrder(userNo, 'N', "recent", "boardNo", ""));
+        response.setInJournal(myMapper.selectCountMyInJournal(userNo, "recent", "title", ""));
+        response.setInEvent(myMapper.selectCountMyInEvent(userNo, 'N',"recent", "title", ""));
+        response.setInMerchan(myMapper.selectCountMyInMerchan(userNo, 'N',"recent", "title", ""));
+        response.setCs(myMapper.selectCountMyCsQuestion(userNo, 'N',"recent", "title", ""));
+
+        return response;
+    }
+    //기타
+    public MyRctJobDTO getMyRctJobOne(int boardNo) throws Exception {
+        MyRctJobDTO response = myMapper.selectOneMyRctJob(boardNo);
+        return response;
+    }
+
+    public MyRctFreeDTO getMyRctFreeOne(int boardNo) throws Exception {
+        MyRctFreeDTO response = myMapper.selectOneMyRctFree(boardNo);
+        return response;
+    }
 
     //1
     public List<MyRctCreatorDTO> getMyRctCreators(int userNo) throws Exception {

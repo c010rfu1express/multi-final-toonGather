@@ -34,4 +34,6 @@ public interface UserMapper {
     //pagination 관련(토글과 소팅으로 나오는 총 갯수 리턴)
     int selectUserCount(@Param("toggleValue") char toggleValue, @Param("orderBy") String orderBy, @Param("searchBy") String searchBy, @Param("searchTerm") String searchTerm) throws Exception;
 
+    int updateTempPw(@Param("userNo") int userNo, @Param("encodedPassword") String encodedPassword) throws Exception;
+
 }
