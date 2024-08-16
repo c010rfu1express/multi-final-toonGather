@@ -293,6 +293,8 @@ public class JournalServiceImpl implements JournalService {
                 }
                 // 파일 정보 삭제
                 journalMapper.deleteFiles(journal.getJournalNo());
+                // 좋아요 정보 삭제
+                journalMapper.deleteLikes(journal.getJournalNo());
                 // 게시글 삭제
                 journalMapper.deleteJournal(journal.getJournalNo());
             }

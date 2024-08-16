@@ -158,6 +158,8 @@ public class MerchanServiceImpl implements MerchanService {
                 }
                 // 파일 정보 삭제
                 merchanMapper.deleteFiles(merchan.getMerchanNo());
+                // 좋아요 정보 삭제
+                merchanMapper.deleteLikes(merchan.getMerchanNo());
                 // 게시글 삭제
                 merchanMapper.deleteMerchan(merchan.getMerchanNo());
             }

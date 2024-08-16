@@ -46,4 +46,6 @@ public interface EventMapper {
     int countEventsByTitleKeyword(String s);
 
     List<EventDTO> selectEventsByTitleKeyword(@Param("keyword") String keyword, @Param("offset") int offset, @Param("limit") int limit    );
+
+    void deleteLikes(int eventNo);
 }

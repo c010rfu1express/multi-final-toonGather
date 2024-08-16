@@ -77,11 +77,15 @@
             </div>
             <div class="form-group">
                 <label for="merchanInfo" class="required">상품 정보</label>
-                <textarea class="form-control" id="merchanInfo" name="merchanInfo" rows="3" maxlength="500" required></textarea>
+                <textarea class="form-control" id="merchanInfo" name="merchanInfo" rows="7" maxlength="500" placeholder="500자 이내로 입력하세요" required></textarea>
             </div>
             <div class="form-group">
                 <label for="content" class="required">상품 내용</label>
-                <textarea class="form-control" id="content" name="content" rows="10" maxlength="1000" placeholder="1000자 이내로 입력하세요" required></textarea>
+                <textarea class="form-control" id="content" name="content" rows="7" maxlength="1000" placeholder="1000자 이내로 입력하세요" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="site">판매 사이트 주소(URL)</label>
+                <input type="text" class="form-control" id="site" name="site" maxlength="100">
             </div>
             <!-- 썸네일 이미지 업로드 -->
             <div class="form-group">
@@ -94,7 +98,7 @@
             <div class="form-group">
                 <label for="detailImages">상세 정보 이미지 첨부</label>
                 <input type="file" class="form-control-file" id="detailImages" name="detailImages" multiple>
-                <div class="image-preview" id="detailPreview"></div>
+                <div class="image-preview" id="detailImagePreview"></div>
             </div>
 
             <button type="submit" class="btn btn-primary">등록</button>
@@ -105,6 +109,7 @@
 
 <div th:replace="~{common/footer.html}"></div>
 <script>
+    // [썸네일] 이미지 업로드 및 미리보기 기능
     document.getElementById('images').addEventListener('change', function(event) {
         const files = event.target.files;
         const imagePreview = document.getElementById('imagePreview');
@@ -127,6 +132,31 @@
             reader.readAsDataURL(file);
         });
     });
+
+    // [상세정보] 이미지 업로드 및 미리보기 기능
+    document.getElementById('detailImages').addEventListener('change', function(event) {
+        const files = event.target.files;
+        const imagePreview = document.getElementById('detailImagePreview');
+        imagePreview.innerHTML = '';
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgElement = document.createElement('img');
+                imgElement.src = e.target.result;
+                const removeButton = document.createElement('div');
+                removeButton.innerText = '삭제';
+                removeButton.classList.add('remove-button');
+                removeButton.onclick = function() {
+                    imgElement.remove();
+                    removeButton.remove();
+                };
+                imagePreview.appendChild(imgElement);
+                imagePreview.appendChild(removeButton);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+
 </script>
 
 </body>
