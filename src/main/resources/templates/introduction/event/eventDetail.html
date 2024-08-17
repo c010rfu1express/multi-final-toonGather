@@ -291,7 +291,7 @@
                         <ol class="carousel-indicators">
                             <!-- 이미지 파일이 있는 경우에만 인디케이터를 생성 -->
                             <li th:each="file, iterStat : ${event.eventFiles}"
-                                th:if="${file.fileType.startsWith('image/png')}"
+                                th:if="${file.fileType.startsWith('image/')}"
                                 th:classappend="${iterStat.index == 0} ? 'active' : ''"
                                 data-target="#carouselExampleIndicators"
                                 th:data-slide-to="${iterStat.index}"></li>
@@ -299,7 +299,7 @@
                         <div class="carousel-inner">
                             <!-- 이미지 파일이 있는 경우에만 슬라이드 아이템을 생성 -->
                             <div th:each="file, iterStat : ${event.eventFiles}"
-                                 th:if="${file.fileType.startsWith('image/png')}"
+                                 th:if="${file.fileType.startsWith('image/')}"
                                  th:classappend="${iterStat.index == 0} ? 'active' : ''"
                                  class="carousel-item">
                                 <img th:src="@{'/uploadFiles/' + ${file.fileName}}" class="d-block w-100" alt="파일 이미지">
@@ -315,9 +315,9 @@
                         </a>
                     </div>
                     <!-- 기본 썸네일 이미지 -->
-                    <div th:unless="${#lists.size(event.eventFiles) > 0}" class="image-gallery">
-                        <img src="/images/introduction/default-thumbnail.png" alt="기본 썸네일 이미지" />
-                    </div>
+<!--                    <div th:unless="${#lists.size(event.eventFiles) > 0}" class="image-gallery">-->
+<!--                        <img src="/images/introduction/default-thumbnail.png" alt="기본 썸네일 이미지" />-->
+<!--                    </div>-->
 
                     <!-- 좋아요 버튼-->
                     <button onclick="toggleLike()" class="like-button">좋아요 <span id="likeCount" th:text="${likeCount}">0</span></button>
@@ -332,31 +332,6 @@
                         <!-- 상태 라벨을 표시할 부분 -->
                         <span class="status-label"></span>
                         <span class="category" th:text="${eventCategoryTitle}"></span>
-    <!--                    <dl class="event-info">-->
-    <!--                        <dt>이용요금</dt>-->
-    <!--                        <dd th:text="${event.cost}"></dd>-->
-
-    <!--                        <dt>개요</dt>-->
-    <!--                        <dd th:text="${event.content}" class="event-content"></dd>-->
-
-    <!--                        <dt>주소</dt>-->
-    <!--                        <dd th:text="${event.address}"></dd>-->
-
-    <!--                        <dt>행사 장소</dt>-->
-    <!--                        <dd th:text="${event.place}"></dd>-->
-
-    <!--                        <dt>행사 시작일</dt>-->
-    <!--                        <dd th:text="${#temporals.format(event.startDate, 'yyyy.MM.dd')}"></dd>-->
-
-    <!--                        <dt>행사 종료일</dt>-->
-    <!--                        <dd th:text="${#temporals.format(event.endDate, 'yyyy.MM.dd')}"></dd>-->
-
-    <!--                        <dt>관련 웹사이트</dt>-->
-    <!--                        <dd><a th:href="${event.site}" th:text="${event.site}"></a></dd>-->
-
-    <!--                        <dt>행사 위치</dt>-->
-    <!--                        <dd><div id="map"></div></dd>&lt;!&ndash; 지도 표시 영역 &ndash;&gt;-->
-    <!--                    </dl>-->
                         <dl class="event-info">
                             <dt th:if="${event.cost}">이용요금</dt>
                             <dd th:if="${event.cost}" th:text="${event.cost}"></dd>

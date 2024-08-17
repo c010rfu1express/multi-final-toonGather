@@ -164,9 +164,9 @@
             <div th:if="${#lists.size(journal.journalFiles) > 0}">
                 <img th:each="file : ${journal.journalFiles}" th:if="${file.fileType.startsWith('image/')}" th:src="@{'/uploadFiles/' + ${file.fileName}}" alt="파일 이미지" />
             </div>
-            <div th:unless="${#lists.size(journal.journalFiles) > 0}">
-                <img src="/images/introduction/default-thumbnail.png" alt="기본 썸네일 이미지" />
-            </div>
+<!--            <div th:unless="${#lists.size(journal.journalFiles) > 0}">-->
+<!--                <img src="/images/introduction/default-thumbnail.png" alt="기본 썸네일 이미지" />-->
+<!--            </div>-->
 
 
 
