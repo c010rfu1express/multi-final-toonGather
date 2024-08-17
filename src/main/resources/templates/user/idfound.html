@@ -82,49 +82,55 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <aside class="col-md-3 px-4">
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <div class="panel">
-                    <ul class="list-group">
-                        <li><a th:href="@{/user/login}" class="nav-link px-2" style="color: #03C75A;">로그인</a></li>
-                        <li><a th:href="@{/user/signup}" class="nav-link px-2">회원가입</a></li>
-                    </ul>
+<div class="container" style="padding:0;">
+    <div class="row">
+        <aside class="col-md-3 px-4">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <div class="panel">
+                        <ul class="list-group">
+                            <li><a th:href="@{/user/login}" class="nav-link px-2" style="color: #03C75A;">로그인</a></li>
+                            <li><a th:href="@{/user/signup}" class="nav-link px-2">회원가입</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-    </aside>
-    <div class="col-md-9">
-        <div class="row justify-content-center">
-            <div class="col-6 border" id="loginbox" style="text-align:center;">
-                <div class="px-3 py-4" style="text-align: center; ">
-                    <h2>아이디 찾기</h2>
-                </div>
-                <div class="px-3 py-2" style="text-align:center;">
-                    <a href="/user/findid" style="color: black;">아이디 찾기</a> | <a href="/user/findpw" style="color: black;">비밀번호 찾기</a>
-                </div>
+        </aside>
+        <div class="col-md-9">
+            <div class="row justify-content-center">
+                <div class="col-6 border" id="loginbox" style="text-align:center;">
+                    <div class="px-3 py-4" style="text-align: center; ">
+                        <h2>아이디 찾기</h2>
+                    </div>
+                    <div class="px-3 py-2" style="text-align:center;">
+                        <a href="/user/findid" style="color: black;">아이디 찾기</a> | <a href="/user/findpw"
+                                                                                     style="color: black;">비밀번호 찾기</a>
+                    </div>
 
-                <div class="row px-3 py-2">
-                    <div class="col-12"><hr></div>
+                    <div class="row px-3 py-2">
+                        <div class="col-12">
+                            <hr>
+                        </div>
+                    </div>
+
+                    <div th:if="${userId != null}">
+                        찾으시는 아이디는<br>
+                        <span th:text="${userId}"></span><br>
+                        입니다.<br>
+                    </div>
+                    <div th:if="${userId == null}">
+                        찾으시는 아이디가 존재하지 않습니다.<br>
+                    </div>
+
+                    <div class="col-12 pt-3 pb-4">
+                        <button type="submit" class="btn btn-primary btn-block" onclick="location.href='/user/login'"
+                                style="background-color:grey; height:50px;">로그인
+                        </button>
+                    </div>
+
+
                 </div>
-
-                <div th:if="${userId != null}">
-                    찾으시는 아이디는<br>
-                    <span th:text="${userId}"></span><br>
-                    입니다.<br>
-                </div>
-                <div th:if="${userId == null}">
-                    찾으시는 아이디가 존재하지 않습니다.<br>
-                </div>
-
-                <div class="col-12 pt-3 pb-4">
-                    <button type="submit" class="btn btn-primary btn-block" onclick="location.href='/user/login'" style="background-color:grey; height:50px;">로그인</button>
-                </div>
-
-
-
             </div>
         </div>
     </div>

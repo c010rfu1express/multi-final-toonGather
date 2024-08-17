@@ -106,54 +106,61 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <aside class="col-md-3 px-4">
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <div class="panel">
-                    <ul class="list-group">
-                        <li><a th:href="@{/user/login}" class="nav-link px-2" style="color: #03C75A;">로그인</a></li>
-                        <li><a th:href="@{/user/signup}" class="nav-link px-2">회원가입</a></li>
-                    </ul>
+<div class="container" style="padding:0;">
+    <div class="row">
+        <aside class="col-md-3 px-4">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <div class="panel">
+                        <ul class="list-group">
+                            <li><a th:href="@{/user/login}" class="nav-link px-2" style="color: #03C75A;">로그인</a></li>
+                            <li><a th:href="@{/user/signup}" class="nav-link px-2">회원가입</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-    </aside>
-    <div class="col-md-9">
-        <div class="row justify-content-center">
-            <div class="col-6 border" id="loginbox" style="text-align:center;">
-                <div class="px-3 py-4" style="text-align: center; ">
-                    <h2>비밀번호 찾기</h2>
-                </div>
-                <div class="px-3 py-2" style="text-align:center;">
-                    <a href="/user/findid" style="color: black;">아이디 찾기</a> | <a href="/user/findpw" style="color: black;">비밀번호 찾기</a>
-                </div>
-
-                <div class="row px-3 py-2">
-                    <div class="col-12"><hr></div>
-                </div>
-
-                <form th:action="@{/user/findpw}" th:object="${user}" method="post" onsubmit="validateForm(event)">
-                    <div class="row px-3">
-                        <div class="col-12 mb-3 py-1">
-                            <input type="text" th:field="*{userId}" class="form-control logininput" maxlength="20" minlength="4" placeholder="아이디"/>
-                        </div>
-
-                        <div class="col-12 mb-3 py-1">
-                            <input type="text" th:field="*{email}" class="form-control logininput" placeholder="이메일"/>
-                        </div>
-
-                        <div class="col-12 pt-3 pb-4">
-                            <button type="submit" class="btn btn-primary btn-block" style="background-color:grey; height:50px;">비밀번호 찾기</button>
-                        </div>
-
+        </aside>
+        <div class="col-md-9">
+            <div class="row justify-content-center">
+                <div class="col-6 border" id="loginbox" style="text-align:center;">
+                    <div class="px-3 py-4" style="text-align: center; ">
+                        <h2>비밀번호 찾기</h2>
                     </div>
-                </form>
+                    <div class="px-3 py-2" style="text-align:center;">
+                        <a href="/user/findid" style="color: black;">아이디 찾기</a> | <a href="/user/findpw"
+                                                                                     style="color: black;">비밀번호 찾기</a>
+                    </div>
+
+                    <div class="row px-3 py-2">
+                        <div class="col-12">
+                            <hr>
+                        </div>
+                    </div>
+
+                    <form th:action="@{/user/findpw}" th:object="${user}" method="post" onsubmit="validateForm(event)">
+                        <div class="row px-3">
+                            <div class="col-12 mb-3 py-1">
+                                <input type="text" th:field="*{userId}" class="form-control logininput" maxlength="20"
+                                       minlength="4" placeholder="아이디"/>
+                            </div>
+
+                            <div class="col-12 mb-3 py-1">
+                                <input type="text" th:field="*{email}" class="form-control logininput"
+                                       placeholder="이메일"/>
+                            </div>
+
+                            <div class="col-12 pt-3 pb-4">
+                                <button type="submit" class="btn btn-primary btn-block"
+                                        style="background-color:grey; height:50px;">비밀번호 찾기
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
 
 
-
-
+                </div>
             </div>
         </div>
     </div>

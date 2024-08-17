@@ -82,55 +82,61 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <aside class="col-md-3 px-4">
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <div class="panel">
-                    <ul class="list-group">
-                        <li><a th:href="@{/user/login}" class="nav-link px-2" style="color: #03C75A;">로그인</a></li>
-                        <li><a th:href="@{/user/signup}" class="nav-link px-2">회원가입</a></li>
-                    </ul>
+<div class="container" style="padding:0;">
+    <div class="row">
+        <aside class="col-md-3 px-4">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <div class="panel">
+                        <ul class="list-group">
+                            <li><a th:href="@{/user/login}" class="nav-link px-2" style="color: #03C75A;">로그인</a></li>
+                            <li><a th:href="@{/user/signup}" class="nav-link px-2">회원가입</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-    </aside>
-    <div class="col-md-9">
-        <div class="row justify-content-center">
-            <div class="col-6 border" id="loginbox" style="text-align:center;">
-                <div class="px-3 py-4" style="text-align: center; ">
-                    <h2>비밀번호 찾기</h2>
+        </aside>
+        <div class="col-md-9">
+            <div class="row justify-content-center">
+                <div class="col-6 border" id="loginbox" style="text-align:center;">
+                    <div class="px-3 py-4" style="text-align: center; ">
+                        <h2>비밀번호 찾기</h2>
+                    </div>
+                    <div class="px-3 py-2" style="text-align:center;">
+                        <a href="/user/findid" style="color: black;">아이디 찾기</a> | <a href="/user/findpw"
+                                                                                     style="color: black;">비밀번호 찾기</a>
+                    </div>
+
+                    <div class="row px-3 py-2">
+                        <div class="col-12">
+                            <hr>
+                        </div>
+                    </div>
+
+                    <div th:if="${password != null}">
+                        임시 비밀번호를<br>
+                        회원정보에 등록된 이메일 주소로<br>
+                        발송하였습니다.<br>
+                        메일함을 확인해 주세요.<br>
+                        <!--        (추후 수정예정)찾으시는 비밀번호는<br>-->
+                        <!--        <span th:text="${password}"></span><br>-->
+                        <!--        입니다.<br>-->
+                    </div>
+
+                    <div th:if="${password == null}">
+                        비밀번호 찾기에 실패했습니다.<br>
+                        다시 시도해주세요.<br>
+                    </div>
+
+                    <div class="col-12 pt-3 pb-4">
+                        <button type="submit" class="btn btn-primary btn-block" onclick="location.href='/user/login'"
+                                style="background-color:grey; height:50px;">로그인
+                        </button>
+                    </div>
+
+
                 </div>
-                <div class="px-3 py-2" style="text-align:center;">
-                    <a href="/user/findid" style="color: black;">아이디 찾기</a> | <a href="/user/findpw" style="color: black;">비밀번호 찾기</a>
-                </div>
-
-                <div class="row px-3 py-2">
-                    <div class="col-12"><hr></div>
-                </div>
-
-                <div th:if="${password != null}">
-                    임시 비밀번호를<br>
-                    회원정보에 등록된 이메일 주소로<br>
-                    발송하였습니다.<br>
-                    메일함을 확인해 주세요.<br>
-                    <!--        (추후 수정예정)찾으시는 비밀번호는<br>-->
-                    <!--        <span th:text="${password}"></span><br>-->
-                    <!--        입니다.<br>-->
-                </div>
-
-                <div th:if="${password == null}">
-                    비밀번호 찾기에 실패했습니다.<br>
-                    다시 시도해주세요.<br>
-                </div>
-
-                <div class="col-12 pt-3 pb-4">
-                    <button type="submit" class="btn btn-primary btn-block" onclick="location.href='/user/login'" style="background-color:grey; height:50px;">로그인</button>
-                </div>
-
-
-
             </div>
         </div>
     </div>

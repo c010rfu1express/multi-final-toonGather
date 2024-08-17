@@ -65,40 +65,46 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <aside class="col-md-3 px-4">
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <div class="panel">
-                    <ul class="list-group">
-                        <li><a th:href="@{/user/login}" class="nav-link px-2">로그인</a></li>
-                        <li><a th:href="@{/user/signup}" class="nav-link px-2" style="color: #03C75A;">회원가입</a></li>
-                    </ul>
+<div class="container" style="padding:0;">
+    <div class="row">
+        <aside class="col-md-3 px-4">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <div class="panel">
+                        <ul class="list-group">
+                            <li><a th:href="@{/user/login}" class="nav-link px-2">로그인</a></li>
+                            <li><a th:href="@{/user/signup}" class="nav-link px-2" style="color: #03C75A;">회원가입</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-    </aside>
-    <div class="col-md-9">
-        <div class="row justify-content-center">
-            <div class="col-6 border" id="loginbox" style="text-align:center;">
-                <div class="px-3 py-4" style="text-align: center; ">
-                    <h2>회원가입 완료</h2>
-                </div>
+        </aside>
+        <div class="col-md-9">
+            <div class="row justify-content-center">
+                <div class="col-6 border" id="loginbox" style="text-align:center;">
+                    <div class="px-3 py-4" style="text-align: center; ">
+                        <h2>회원가입 완료</h2>
+                    </div>
 
-                <div class="row px-3 py-2">
-                    <div class="col-12"><hr></div>
-                </div>
+                    <div class="row px-3 py-2">
+                        <div class="col-12">
+                            <hr>
+                        </div>
+                    </div>
 
-                <div>
-                    성공적으로 가입이 완료되었습니다.<br>
-                    로그인하여 다양한 플랫폼을 누려 보세요!<br>
-                </div>
+                    <div>
+                        성공적으로 가입이 완료되었습니다.<br>
+                        로그인하여 다양한 플랫폼을 누려 보세요!<br>
+                    </div>
 
-                <div class="col-12 pt-3 pb-4">
-                    <button type="submit" class="btn btn-primary btn-block" onclick="location.href='/user/login'" style="background-color:grey; height:50px;">툰게더 로그인하기</button>
-                </div>
+                    <div class="col-12 pt-3 pb-4">
+                        <button type="submit" class="btn btn-primary btn-block" onclick="location.href='/user/login'"
+                                style="background-color:grey; height:50px;">툰게더 로그인하기
+                        </button>
+                    </div>
 
+                </div>
             </div>
         </div>
     </div>
