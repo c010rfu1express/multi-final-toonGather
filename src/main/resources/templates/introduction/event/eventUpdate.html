@@ -47,6 +47,7 @@
             cursor: pointer;
             border-radius: 5px;
             padding: 2px 5px;
+            width: 70px; /* 삭제 버튼의 너비 설정 */
         }
     </style>
 </head>
@@ -160,7 +161,8 @@
             reader.readAsDataURL(file);
         });
     });
-
+</script>
+<script>
     function removeExistingImage(element) {
         const imageName = element.getAttribute('data-saved-name');
         element.previousElementSibling.remove(); // 이미지 삭제

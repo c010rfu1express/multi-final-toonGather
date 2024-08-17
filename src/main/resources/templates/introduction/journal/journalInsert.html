@@ -46,6 +46,7 @@
             cursor: pointer;
             border-radius: 5px;
             padding: 2px 5px;
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -79,29 +80,78 @@
 </div>
 <div th:replace="common/footer.html"></div>
 <script>
-    document.getElementById('file').addEventListener('change', function(event) {
-        const files = event.target.files;
-        const imagePreview = document.getElementById('imagePreview');
-        imagePreview.innerHTML = '';
-        Array.from(files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const imgElement = document.createElement('img');
-                imgElement.src = e.target.result;
-                const removeButton = document.createElement('div');
-                removeButton.innerText = '삭제';
-                removeButton.classList.add('remove-button');
-                removeButton.onclick = function() {
-                    imgElement.remove();
-                    removeButton.remove();
-                };
-                imagePreview.appendChild(imgElement);
-                imagePreview.appendChild(removeButton);
-            };
-            reader.readAsDataURL(file);
-        });
-    });
+<!--    document.getElementById('file').addEventListener('change', function(event) {-->
+<!--        const files = event.target.files;-->
+<!--        const imagePreview = document.getElementById('imagePreview');-->
+<!--        imagePreview.innerHTML = '';-->
+<!--        Array.from(files).forEach(file => {-->
+<!--            const reader = new FileReader();-->
+<!--            reader.onload = function(e) {-->
+<!--                const imgElement = document.createElement('img');-->
+<!--                imgElement.src = e.target.result;-->
+<!--                const removeButton = document.createElement('div');-->
+<!--                removeButton.innerText = '삭제';-->
+<!--                removeButton.classList.add('remove-button');-->
+<!--                removeButton.onclick = function() {-->
+<!--                    imgElement.remove();-->
+<!--                    removeButton.remove();-->
+<!--                };-->
+<!--                imagePreview.appendChild(imgElement);-->
+<!--                imagePreview.appendChild(removeButton);-->
+<!--            };-->
+<!--            reader.readAsDataURL(file);-->
+<!--        });-->
+<!--    });-->
 </script>
+<script>
+    document.getElementById('file').addEventListener('change', function(event) {
+    const files = Array.from(event.target.files); // 파일 배열로 복사
+    const imagePreview = document.getElementById('imagePreview');
+    imagePreview.innerHTML = '';  // 기존 미리보기 초기화
 
+    files.forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+
+            // 이미지와 삭제 버튼을 포함할 컨테이너 생성
+            const container = document.createElement('div');
+            container.style.display = 'inline-block';
+            container.style.marginRight = '10px';
+            container.style.marginBottom = '10px';
+            container.style.textAlign = 'center'; // 중앙 정렬
+
+            // 이미지 요소를 생성
+            const imgElement = document.createElement('img');
+            imgElement.src = e.target.result;
+            imgElement.style.display = 'block'; // 블록 요소로 설정하여 아래 버튼 위치
+
+            // 삭제 버튼을 생성
+            const removeButton = document.createElement('div');
+            removeButton.innerText = '삭제';
+            removeButton.classList.add('remove-button');
+
+            removeButton.onclick = function() {
+                container.remove(); // 컨테이너 전체를 제거하여 이미지와 버튼을 동시에 삭제
+                // 해당 파일을 파일 리스트에서 제거
+                const dt = new DataTransfer();
+                files.forEach((file, idx) => {
+                    if (idx !== index) {
+                        dt.items.add(file);
+                    }
+                });
+                document.getElementById('file').files = dt.files;
+            };
+
+            // 컨테이너에 이미지와 삭제 버튼 추가
+            container.appendChild(imgElement);
+            container.appendChild(removeButton);
+            imagePreview.appendChild(container);
+
+        };
+        reader.readAsDataURL(file);
+    });
+});
+
+</script>
 </body>
 </html>
