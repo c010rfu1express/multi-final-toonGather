@@ -109,16 +109,20 @@
 <div class="jumbotron">
     <div class="container">
         <div class="row">
-            <div class="col-md-3 px-4">
-                <h3>나의 웹툰</h3>
-            </div>
-            <div class="col-md-9">
-                <nav class="navbar navbar-expand-md">
-                    <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-                        <li><a th:href="@{/user/my/wt/webtoon}" class="nav-link px-2" style="color: #000;">북마크한 웹툰</a></li>
-                        <li><a th:href="@{/user/my/wt/comment}" class="nav-link px-2">내가 남긴 코멘트</a></li>
-                    </ul>
-                </nav>
+            <div class="col-9">
+                <div class="row">
+                    <div class="col-md-3 px-4">
+                        <h3>나의 웹툰</h3>
+                    </div>
+                    <div class="col-md-9">
+                        <nav class="navbar navbar-expand-md">
+                            <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+                                <li><a th:href="@{/user/my/wt/webtoon}" class="nav-link px-2" style="color: #000;">북마크한 웹툰</a></li>
+                                <li><a th:href="@{/user/my/wt/comment}" class="nav-link px-2">내가 남긴 코멘트</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -128,8 +132,8 @@
     <div class="row">
         <aside class="col-md-3 px-4">
             <div class="row">
-                <div class="col-3"></div>
-                <div class="col-6">
+                <div class="col-1"></div>
+                <div class="col-8">
                     <div class="panel">
                         <ul class="list-group">
                             <li><a th:href="@{/user/my/wt/webtoon}" class="nav-link px-2" style="color: #03C75A;">나의 웹툰</a></li>
