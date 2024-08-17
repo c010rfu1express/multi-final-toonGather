@@ -74,16 +74,36 @@ public class UserServiceImpl implements UserService {
 
     public String findId(UserDTO userDTO) throws Exception{
         UserDTO response = userMapper.selectOneByEmail(userDTO.getEmail());
-        System.out.println("userDTO: "+ userDTO);
-        System.out.println("response: "+ response);
+        UserDTO response2 = userMapper.selectOneByNickname(userDTO.getNickname());
+
+        System.out.println("userDTO: "+ userDTO);   //request
+        System.out.println("response: "+ response); //response1 : 이메일을 통해 검색
+        System.out.println("response2: "+ response2); //response2 : 닉네임을 통해 검색
         try{
             if(userDTO.getNickname().equals(response.getNickname())) return response.getUserId();
-            else{
-                System.out.println("[MESSAGE] 불일치. nickname: "+userDTO.getNickname()+" contact_number: "+userDTO.getContactNumber());
+            else if(response2.getTypeCode() == 'K') {//소셜 가입후 이메일을 수정한경우
+                System.out.println("[UserService.findId] 카카오");
+                return "RETURNMESSAGE:ALREADYSIGNEDUPBYKAKAOAPI";
+            }
+            else if(response2.getTypeCode() == 'N') {
+                System.out.println("[UserService.findId] 네이버");
+                return "RETURNMESSAGE:ALREADYSIGNEDUPBYNAVERAPI";
+            }
+            else {
+                System.out.println("[MESSAGE] 불일치. nickname: "+userDTO.getNickname()+" email: "+userDTO.getEmail());
                 return null;
             }
-        } catch(Exception e){
-            System.err.println("[ERROR] getProfile 예외처리 오류: " + e.getMessage());
+        } catch(Exception e){ //response가 null일 때. 이메일로 검색했더니 존재하지 않을 때
+            if(response2.getTypeCode() == 'K') {
+                System.out.println("[UserService.findId] 카카오");
+                return "RETURNMESSAGE:ALREADYSIGNEDUPBYKAKAOAPI";
+            }
+            else if(response2.getTypeCode() == 'N') {
+                System.out.println("[UserService.findId] 네이버");
+                return "RETURNMESSAGE:ALREADYSIGNEDUPBYNAVERAPI";
+            }
+
+            System.err.println("[UserService.findId] getProfile 예외처리 : response or response2가 null입니다! " + e.getMessage());
             return null;
         }
 //        if(userDTO.getNickname() == response.getNickname()) return response.getUserId();
