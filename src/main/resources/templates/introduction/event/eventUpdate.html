@@ -47,7 +47,7 @@
             cursor: pointer;
             border-radius: 5px;
             padding: 2px 5px;
-            width: 70px; /* 삭제 버튼의 너비 설정 */
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -138,30 +138,30 @@
 </div>
 
 <div th:replace="common/footer.html"></div>
-<script>
-    document.getElementById('imageUpload').addEventListener('change', function(event) {
-        const files = event.target.files;
-        const imagePreview = document.getElementById('imagePreview');
-        imagePreview.innerHTML = '';
-        Array.from(files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const imgElement = document.createElement('img');
-                imgElement.src = e.target.result;
-                const removeButton = document.createElement('div');
-                removeButton.innerText = '삭제';
-                removeButton.classList.add('remove-button');
-                removeButton.onclick = function() {
-                    imgElement.remove();
-                    removeButton.remove();
-                };
-                imagePreview.appendChild(imgElement);
-                imagePreview.appendChild(removeButton);
-            };
-            reader.readAsDataURL(file);
-        });
-    });
-</script>
+<!--<script>-->
+<!--    document.getElementById('imageUpload').addEventListener('change', function(event) {-->
+<!--        const files = event.target.files;-->
+<!--        const imagePreview = document.getElementById('imagePreview');-->
+<!--        imagePreview.innerHTML = '';-->
+<!--        Array.from(files).forEach(file => {-->
+<!--            const reader = new FileReader();-->
+<!--            reader.onload = function(e) {-->
+<!--                const imgElement = document.createElement('img');-->
+<!--                imgElement.src = e.target.result;-->
+<!--                const removeButton = document.createElement('div');-->
+<!--                removeButton.innerText = '삭제';-->
+<!--                removeButton.classList.add('remove-button');-->
+<!--                removeButton.onclick = function() {-->
+<!--                    imgElement.remove();-->
+<!--                    removeButton.remove();-->
+<!--                };-->
+<!--                imagePreview.appendChild(imgElement);-->
+<!--                imagePreview.appendChild(removeButton);-->
+<!--            };-->
+<!--            reader.readAsDataURL(file);-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
 <script>
     function removeExistingImage(element) {
         const imageName = element.getAttribute('data-saved-name');
@@ -174,6 +174,65 @@
         document.querySelector('form').appendChild(hiddenInput);
         console.log("Removed image added to form: " + imageName); // 디버그 로그
     }
+</script>
+<script>
+    document.getElementById('imageUpload').addEventListener('change', function(event) {
+        const imagePreview = document.getElementById('imagePreview');
+        imagePreview.innerHTML = '';
+
+        // 새로 선택한 파일들을 저장할 배열
+        let filesArray = Array.from(event.target.files);
+
+        // 파일 배열을 업데이트하고 미리보기를 생성하는 함수
+        function updatePreviewAndFiles() {
+            imagePreview.innerHTML = '';
+
+            filesArray.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // 이미지와 삭제 버튼을 포함할 컨테이너 생성
+                    const container = document.createElement('div');
+                    container.style.display = 'inline-block';
+                    container.style.marginRight = '10px';
+                    container.style.marginBottom = '10px';
+                    container.style.textAlign = 'center'; // 중앙 정렬
+
+                    // 이미지 요소를 생성
+                    const imgElement = document.createElement('img');
+                    imgElement.src = e.target.result;
+                    imgElement.style.display = 'block'; // 블록 요소로 설정하여 아래 버튼 위치
+
+                    // 삭제 버튼을 생성
+                    const removeButton = document.createElement('div');
+                    removeButton.innerText = '삭제';
+                    removeButton.classList.add('remove-button');
+
+                    // 삭제 버튼 클릭 시 실행되는 함수
+                    removeButton.onclick = function() {
+                        // 선택된 파일에서 삭제할 파일을 찾는다
+                        filesArray = filesArray.filter((_, i) => i !== index);
+
+                        // 미리보기와 파일 입력 필드를 업데이트한다
+                        updatePreviewAndFiles();
+                    };
+
+                    // 컨테이너에 이미지와 삭제 버튼 추가
+                    container.appendChild(imgElement);
+                    container.appendChild(removeButton);
+                    imagePreview.appendChild(container);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // 새 파일 리스트를 파일 입력 필드에 설정
+            const newFileList = new DataTransfer();
+            filesArray.forEach(file => newFileList.items.add(file));
+            document.getElementById('imageUpload').files = newFileList.files;
+        }
+
+        // 초기 파일 리스트 업데이트
+        updatePreviewAndFiles();
+    });
 </script>
 </body>
 </html>
