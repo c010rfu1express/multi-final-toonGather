@@ -328,11 +328,13 @@
                 onsubmit="validateForm(event)" id="editProfileForm">
             <div class="row p-2">
               <div class="col-3 m-0 p-0" id="profileimagebox">
-                <img th:if="${user.profileImagePath == null}" src="/images/defaultprofileimage.png"
-                     style="width: 100px; height: auto;" class="profile-image"/>
-                <img th:if="${user.profileImagePath != null}"
-                     th:src="@{/uploadFiles/{fileName}(fileName=${user.profileImagePath})}"
-                     style="width: 100px; height: auto;" class="profile-image"/>
+                <div id="imagePreview">
+                  <img th:if="${user.profileImagePath == null}" src="/images/defaultprofileimage.png"
+                       style="width: 100px; height: auto;" class="profile-image"/>
+                  <img th:if="${user.profileImagePath != null}"
+                       th:src="@{/uploadFiles/{fileName}(fileName=${user.profileImagePath})}"
+                       style="width: 100px; height: auto;" class="profile-image"/>
+                </div>
                 <div id="profileuploadbutton">
                   <label for="image">
                     <div class="btn-upload"
@@ -532,5 +534,27 @@
   </div>
 </div>
 <div th:replace="common/footer.html"></div>
+<script>
+  document.getElementById('image').addEventListener('change', function(event) {
+    const files = event.target.files;
+    const imagePreview = document.getElementById('imagePreview');
+    imagePreview.innerHTML = '';
+    Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imgElement = document.createElement('img');
+            imgElement.src = e.target.result;
+
+            // 스타일과 클래스 추가
+            imgElement.style.width = '100px';
+            imgElement.style.height = 'auto';
+            imgElement.className = 'profile-image';
+
+            imagePreview.appendChild(imgElement);
+        }; //reader.onload
+        reader.readAsDataURL(file);
+    }); //Array.from(files).forEach()
+}); //addEventListener()
+</script>
 </body>
 </html>
