@@ -118,7 +118,7 @@ public class AuthController {
                 userDTO.setTypeCode('N');
                 userDTO.setAuthCode('B');
                 userDTO.setPassword("BASEDNAVERLOGINAPIS@");  //고민해보기1
-                userDTO.setEmail("BASEDNAVERLOGINAPIS@");     //고민해보기1
+                userDTO.setEmail("BASEDNAVERLOGINAPIS@" +naverId +".naver");     //고민해보기1
 //                userDTO.setDateOfBirth(LocalDate.now());     //고민해보기3_웹툰 성인인증 관련해서 문제 해결
                 userDTO.setTermsAgreement(true);            //고민해보기2 추가수집?
 
@@ -238,7 +238,7 @@ public class AuthController {
                 userDTO.setTypeCode('K');
                 userDTO.setAuthCode('B');
                 userDTO.setPassword("BASEDKAKAOLOGINAPIS@");  //고민해보기1
-                userDTO.setEmail("BASEDKAKAOLOGINAPIS@");     //고민해보기1
+                userDTO.setEmail("BASEDKAKAOLOGINAPIS@" +kakaoId + ".kakao");     //고민해보기1
                 userDTO.setGender('P');                     //고민해보기2 추가수집해볼?
 //                userDTO.setDateOfBirth(LocalDate.now());     //고민해보기3_웹툰 성인인증 관련해서 문제 해결
                 userDTO.setTermsAgreement(true);            //고민해보기2
