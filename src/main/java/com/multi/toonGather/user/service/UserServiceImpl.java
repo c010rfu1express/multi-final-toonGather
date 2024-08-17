@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public String findId(UserDTO userDTO) throws Exception{
-        UserDTO response = userMapper.selectOneByContactNumber(userDTO.getContactNumber());
+        UserDTO response = userMapper.selectOneByEmail(userDTO.getEmail());
         System.out.println("userDTO: "+ userDTO);
         System.out.println("response: "+ response);
         try{
