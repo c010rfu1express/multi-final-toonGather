@@ -302,15 +302,69 @@
             <div class="row" style="color: #828282;">
                 <div class="col-11">
                     <div class="row">
-                        <div class="col-12">
-                            <form id="filter-and-sort-form" th:action="@{/user/my/rct/job/apply(boardNo=${boardNo})}"
-                                  method="get">
-                                <div class="row">
-                                    <div class="col-7">
+                        <div class="col-12 p-0">
+                            <style>
+                                .col-4 select {
+                                    border-radius: 50px;
+                                    text-align: center;
+                                }
+                                /* 검색창 스타일 */
+                                .search-container {
+                                    width: 300px;
+                                }
+
+                                .search-container select {
+                                    position: absolute;
+                                    left: 0%;
+                                    width: 30%;
+                                    height: 50px;
+                                    color: #828282;
+                                    font-size: 1rem;
+                                    border-radius: 50px 0 0 50px;
+                                    outline: none;
+                                }
+                                .search-container input[type="text"] {
+                                    position: absolute; /* 변경된 부분: 위치를 절대적으로 설정 */
+                                    left: 30%; /* 변경된 부분: 전체 너비의 30% 위치로 이동 */
+                                    width: 70%; /* 변경된 부분: 너비를 조정하여 적절한 위치에 맞춤 */
+                                    height: 50px;
+                                    padding: 10px 40px 10px 15px;
+                                    font-size: 1rem;
+                                    outline: none;
+                                    border-radius: 0 50px 50px 0;
+                                    transition: border-color 0.3s, background-color 0.3s;
+                                    color: #828282; /* 입력 텍스트 색상 변경 */
+                                }
+
+                                .search-container input[type="text"]::placeholder {
+                                    color: #BBBBBB; /* placeholder 색상 변경 */
+                                }
+
+
+                                .search-container button {
+                                    position: absolute;
+                                    right: 1rem;
+                                    top: 25px;
+                                    background: none;
+                                    transform: translateY(-50%);
+                                    border: none;
+                                    cursor: pointer;
+                                }
+
+                                .search-container button i {
+                                    color: #666;
+                                }
+
+                                .search-container button:hover i {
+                                    color: #03C75A;
+                                }
+                            </style>
+                            <form id="filter-and-sort-form" th:action="@{/user/my/rct/job/apply(boardNo=${boardNo})}" method="get">
+                                <div class="row m-0">
+                                    <div class="col-7 p-0">
                                         <div class="row justify-content-start m-0">
-                                            <div class="col-4">
-                                                <!-- 검색 조건 -->
-                                                <label>
+                                            <div class="col-12 p-0">
+                                                <div class="search-container">
                                                     <select class="form-select px-3" name="searchBy">
                                                         <option value="title" th:selected="${searchBy == 'title'}">
                                                             지원서제목
@@ -320,17 +374,13 @@
                                                         </option>
                                                         <!--                        <option value="realname" th:selected="${searchBy == 'realname'}">지원자성명</option>-->
                                                     </select>
-                                                </label>
-                                            </div>
-                                            <div class="col-6">
-                                                <input class="form-control px-3" type="text" name="searchTerm"
-                                                       placeholder="검색어를 입력하세요" th:value="${searchTerm}"/>
-                                            </div>
-                                            <div class="col-2">
-                                                <input type="hidden" name="boardNo" th:value="${boardNo}"/>
-                                                <!-- 검색 버튼 -->
-                                                <button id="searchbutton" type="submit" class="btn btn-primary">검색
-                                                </button>
+                                                    <input class="form-control px-3" type="text" name="searchTerm" placeholder="검색어를 입력하세요" th:value="${searchTerm}" />
+                                                    <!-- 검색 버튼 -->
+                                                    <input type="hidden" name="boardNo" th:value="${boardNo}"/>
+                                                    <button type="submit">
+                                                        <i class="fas fa-search"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
