@@ -101,7 +101,7 @@
             margin-top: 20px;
         }
         .like-button:hover {
-            background-color: #e0e0e0;
+            background-color: #f3d88d;
         }
         .like-button:focus {
             box-shadow: 0 0 0 0.2rem rgba(240, 212, 182, 0.5);
@@ -174,7 +174,17 @@
 
             <!-- 좋아요 기능 추가 -->
             <div style="margin-bottom: 20px;">
-                <button onclick="toggleLike()" class="like-button">좋아요 <span id="likeCount" th:text="${likeCount}">0</span></button>
+<!--                <button onclick="toggleLike()" class="like-button">좋아요 <span id="likeCount" th:text="${likeCount}">0</span></button>-->
+
+                <!-- 좋아요 버튼: 관리자가 아닌 경우에만 활성화 -->
+                <button onclick="toggleLike()" class="like-button" sec:authorize="!hasRole('ROLE_ADMIN')">
+                    좋아요 <span id="likeCount" th:text="${likeCount}">0</span>
+                </button>
+
+                <!-- 좋아요 버튼: 관리자인 경우 비활성화 -->
+                <button class="like-button" style="background-color: #e0e0e0; color: #999;" sec:authorize="hasRole('ROLE_ADMIN')" disabled>
+                    좋아요 <span th:text="${likeCount}">0</span>
+                </button>
             </div>
 
             <a href="/introduction/journalList" class="btn btn-secondary">돌아가기</a>

@@ -85,7 +85,7 @@
 <!--            width: 100%; /* 버튼을 전체 폭으로 설정 */-->
         }
         .like-button:hover {
-            background-color: #e0e0e0;
+            background-color: #f3d88d;
         }
         .like-button:focus {
             box-shadow: 0 0 0 0.2rem rgba(240, 212, 182, 0.5);
@@ -322,8 +322,16 @@
 <!--                        <img src="/images/introduction/default-thumbnail.png" alt="기본 썸네일 이미지" />-->
 <!--                    </div>-->
 
-                    <!-- 좋아요 버튼-->
-                    <button onclick="toggleLike()" class="like-button">좋아요 <span id="likeCount" th:text="${likeCount}">0</span></button>
+
+                    <!-- 좋아요 버튼: 관리자가 아닌 경우에만 활성화 -->
+                    <button onclick="toggleLike()" class="like-button" sec:authorize="!hasRole('ROLE_ADMIN')">
+                        좋아요 <span id="likeCount" th:text="${likeCount}">0</span>
+                    </button>
+
+                    <!-- 좋아요 버튼: 관리자인 경우 비활성화 -->
+                    <button class="like-button" style="background-color: #e0e0e0; color: #999;" sec:authorize="hasRole('ROLE_ADMIN')" disabled>
+                        좋아요 <span th:text="${likeCount}">0</span>
+                    </button>
                 </div>
 
                 <!-- 오른쪽 영역: 행사 정보, 내용 -->
