@@ -217,47 +217,71 @@ async function checkDuplicates(userId, nickname, email) {
 
     </script>
     <script type="text/javascript">
-        function sendNumber(){
-        //먼저 이메일 중복체크부터
-        checkEmailDuplicate();
-    $.ajax({
-        url:"/user/mail/mailSend",
-        type:"post",
-        contentType: "application/json; charset=UTF-8",
-        dataType:"json",
-        data:JSON.stringify({ "mail": $("#email").val() }),
-        success: function(data){
-            alert("인증번호를 발송했습니다. 메일을 확인해주세요.");
-        },
-        }
-    );
-}
+        function sendNumber() {
+     // 이메일 중복 체크 함수
+     checkEmailDuplicate();
 
-function confirmNumber() {
-    $.ajax({
-        url: "/user/mail/mailCheck",
-        type: "get",
-        dataType: "json",
-        data: { "userNumber": $("#mailNumber").val() },
-        success: function(response) {
-            if (response === true) {
-                // 인증이 성공한 경우 hidden checkbox를 체크
-                $("#verificationCheckbox").prop("checked", true);
-                // 이메일 입력 박스를 readonly로 설정
-                $("#email").prop("readonly", true);
-                alert("인증되었습니다.");
-            } else {
-                // 인증이 실패한 경우
-                $("#verificationCheckbox").prop("checked", false);
-                alert("인증번호가 일치하지 않습니다.");
-            }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.error("인증 요청 실패:", textStatus, errorThrown);
-            alert("인증 과정 중 오류가 발생했습니다.");
-        }
-    });
-}
+     $.ajax({
+         url: "/user/mail/mailSend",
+         type: "post",
+         contentType: "application/json; charset=UTF-8",
+         dataType: "json",
+         data: JSON.stringify({ "mail": $("#email").val() }),
+         success: function(response) {
+             if (response === true) {
+                 alert("인증번호를 발송했습니다. 메일을 확인해주세요.");
+                 // 인증하기 버튼 바꾸기
+                 $("#emailVerifyButton").text("다시 전송");
+             } else {
+                 alert("메일 발송에 실패했습니다");
+             }
+         },
+         error: function(xhr, status, error) {
+             alert("요청 처리 중 오류가 발생했습니다: " + error);
+         }
+     });
+ }
+
+
+ function confirmNumber() {
+     $.ajax({
+         url: "/user/mail/mailCheck",
+         type: "get",
+         dataType: "json",
+         data: { "userNumber": $("#mailNumber").val() },
+         success: function(response) {
+             if (response === true) {
+                 // 인증이 성공한 경우 hidden checkbox를 체크
+                 $("#verificationCheckbox").prop("checked", true);
+                 // 이메일 입력 박스를 readonly로 설정
+                 $("#email").prop("readonly", true);
+                 alert("인증되었습니다.");
+                 // 인증하기 버튼 바꾸기
+                 $("#emailVerifyButton").text("인증완료");
+                 // 인증번호란 readonly로 설정
+                 $("#mailNumber").prop("readonly", true);
+                 //버튼의 색 바꾸기 #EEEEEE
+                 $("#emailVerifyButton").css("background-color", "grey");
+                 // 인증하기 버튼 비활성화
+                 $("#emailVerifyButton").prop("disabled", true);
+                 // 인증확인 버튼 인증완료로 바꾸기
+                 $("#emailConfirmButton").text("인증완료");
+                 // 인증확인 버튼 색 바꾸기
+                 $("#emailConfirmButton").css("background-color", "grey");
+                 // 인증확인 버튼 비활성화
+                 $("#emailConfirmButton").prop("disabled", true);
+             } else {
+                 // 인증이 실패한 경우
+                 $("#verificationCheckbox").prop("checked", false);
+                 alert("인증번호가 일치하지 않습니다.");
+             }
+         },
+         error: function(jqXHR, textStatus, errorThrown) {
+             console.error("인증 요청 실패:", textStatus, errorThrown);
+             alert("인증 과정 중 오류가 발생했습니다.");
+         }
+     });
+ }
 
 
     </script>
@@ -581,7 +605,7 @@ function confirmNumber() {
                                 </div>
                                 <div class="col-3">
                                     <!--                            <button type="button" class="btn btn-primary btn-block" style="background-color:#03C75A;" onclick="checkEmailDuplicate()">중복확인</button>-->
-                                    <button type="button" class="btn btn-primary btn-block"
+                                    <button id="emailVerifyButton" type="button" class="btn btn-primary btn-block"
                                             style="background-color:#03C75A;" onclick="sendNumber()">인증하기
                                     </button>
                                 </div>
@@ -597,7 +621,7 @@ function confirmNumber() {
                                            style="display:none;"/>
                                 </div>
                                 <div class="col-3">
-                                    <button type="button" class="btn btn-primary btn-block"
+                                    <button id="emailConfirmButton" type="button" class="btn btn-primary btn-block"
                                             style="background-color:#03C75A;" onclick="confirmNumber()">인증확인
                                     </button>
                                 </div>
