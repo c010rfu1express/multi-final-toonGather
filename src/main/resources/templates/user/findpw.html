@@ -37,15 +37,29 @@
 
         // 폼 제출 전 이메일 형식을 검증하는 함수
         function validateForm(event) {
-        const emailInput = document.querySelector('input[name="email"]');
-        const email = emailInput.value;
 
-        // 이메일 검증
-        if (!validateEmail(email)) {
-            alert("이메일 형식이 올바르지 않습니다. 예: example@example.com");
-            event.preventDefault(); // 폼 제출을 막음
-            return;
-        }
+            // (1/2) userId available check
+            // 아이디는 영문과 숫자의 조합만 가능
+            const userIdInput = document.querySelector('input[name="userId"]');
+            const userId = userIdInput.value;
+
+            const validIdPattern = /^[a-zA-Z0-9]+$/;
+            if (!validIdPattern.test(userId)) {
+                alert('아이디는 영문과 숫자의 조합으로만 가능합니다.');
+                event.preventDefault(); // 폼 제출을 막음
+                return;
+            }
+
+            // (2/2) email available check
+            const emailInput = document.querySelector('input[name="email"]');
+            const email = emailInput.value;
+
+            // 이메일 검증
+            if (!validateEmail(email)) {
+                alert("이메일 형식이 올바르지 않습니다. 예: example@example.com");
+                event.preventDefault(); // 폼 제출을 막음
+                return;
+            }
     }
     </script>
 </head>

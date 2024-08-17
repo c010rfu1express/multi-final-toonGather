@@ -123,19 +123,20 @@
                         회원정보에 등록된 이메일 주소로<br>
                         발송하였습니다.<br>
                         메일함을 확인해 주세요.<br>
-                        <!--        (추후 수정예정)찾으시는 비밀번호는<br>-->
-                        <!--        <span th:text="${password}"></span><br>-->
-                        <!--        입니다.<br>-->
+                    </div>
+                    <div th:if="${password != null}" class="col-12 pt-3 pb-4">
+                        <button type="submit" class="btn btn-primary btn-block" onclick="location.href='/user/login'"
+                                style="background-color:grey; height:50px;">로그인
+                        </button>
                     </div>
 
-                    <div th:if="${password == null}">
+                    <div th:if="${password == null}" style="padding: 50px 0;">
                         비밀번호 찾기에 실패했습니다.<br>
                         다시 시도해주세요.<br>
                     </div>
-
-                    <div class="col-12 pt-3 pb-4">
-                        <button type="submit" class="btn btn-primary btn-block" onclick="location.href='/user/login'"
-                                style="background-color:grey; height:50px;">로그인
+                    <div th:if="${password == null}" class="col-12 pt-3 pb-4">
+                        <button type="submit" class="btn btn-primary btn-block" onclick="location.href='/user/findpw'"
+                                style="background-color:grey; height:50px;">다시 시도해보기
                         </button>
                     </div>
 
