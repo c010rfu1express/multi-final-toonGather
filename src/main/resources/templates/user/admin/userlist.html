@@ -86,264 +86,282 @@
 
 <div th:replace="~{common/menubar}"></div>
 <style>
-    .jumbotron {
-    position : relative;
-    background-color : #EEEEEE;
+    html, body {
+        height: 100%;
+        margin: 0;
     }
-    .jumbotron .row {
-    position : absolute;
-    width : 100%;
-    bottom: 0%;
+    body {
+        display: flex;
+        flex-direction: column;
+    }
+    .content-wrapper {
+        flex: 1 0 auto;
+    }
+    footer {
+        flex-shrink: 0;
     }
 
-     .nav-link {
-            color: #828282;
-    }
-    ul {
-  list-style: none;
-  padding-left : 0px;
-  }
 </style>
-<div class="jumbotron">
-    <div class="container">
-        <div class="row">
-            <div class="col-9">
-                <div class="row">
-                    <div class="col-md-3 px-4">
-                        <h3>회원 관리</h3>
-                    </div>
-                    <div class="col-md-9">
-                        <nav class="navbar navbar-expand-md">
-                            <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-                                <li><a th:href="@{/user/my}" class="nav-link px-2">마이페이지(테스트용)</a></li>
-                                <!--          <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">좋아요한 웹툰소식</a></li>-->
-                                <!--          <li><a th:href="@{/user/my/in/event}" class="nav-link px-2">좋아요한 행사</a></li>-->
-                                <!--          <li><a th:href="@{/user/my/in/merchan}" class="nav-link px-2">좋아요한 굿즈</a></li>-->
-                            </ul>
-                        </nav>
+<div class="content-wrapper">
+    <style>
+        .jumbotron {
+        position : relative;
+        background-color : #EEEEEE;
+        }
+        .jumbotron .row {
+        position : absolute;
+        width : 100%;
+        bottom: 0%;
+        }
+
+         .nav-link {
+                color: #828282;
+        }
+        ul {
+      list-style: none;
+      padding-left : 0px;
+      }
+    </style>
+    <div class="jumbotron">
+        <div class="container">
+            <div class="row">
+                <div class="col-9">
+                    <div class="row">
+                        <div class="col-md-3 px-4">
+                            <h3>회원 관리</h3>
+                        </div>
+                        <div class="col-md-9">
+                            <nav class="navbar navbar-expand-md">
+                                <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+                                    <li><a th:href="@{/user/my}" class="nav-link px-2">마이페이지(테스트용)</a></li>
+                                    <!--          <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">좋아요한 웹툰소식</a></li>-->
+                                    <!--          <li><a th:href="@{/user/my/in/event}" class="nav-link px-2">좋아요한 행사</a></li>-->
+                                    <!--          <li><a th:href="@{/user/my/in/merchan}" class="nav-link px-2">좋아요한 굿즈</a></li>-->
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div class="container" style="padding:0;">
-    <div class="row">
-        <aside class="col-md-3 px-4">
-            <div class="row">
-                <div class="col-1"></div>
-                <div class="col-8">
-                    <div class="panel">
-                        <ul class="list-group">
-                            <li><a th:href="@{/user/admin/userlist}" class="nav-link px-2" style="color: #03C75A;">회원
-                                관리</a></li>
-                            <li><a th:href="@{/recruit/free/report/list}" class="nav-link px-2">신고 관리</a></li>
-                        </ul>
+    <div class="container" style="padding:0;">
+        <div class="row">
+            <aside class="col-md-3 px-4">
+                <div class="row">
+                    <div class="col-1"></div>
+                    <div class="col-8">
+                        <div class="panel">
+                            <ul class="list-group">
+                                <li><a th:href="@{/user/admin/userlist}" class="nav-link px-2" style="color: #03C75A;">회원
+                                    관리</a></li>
+                                <li><a th:href="@{/recruit/free/report/list}" class="nav-link px-2">신고 관리</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </aside>
-        <script> // toggle + sorting
-        function updateCheckboxValueAndSubmit() {
-            const checkbox = document.getElementById('isToggledCheckbox');
-            const form = document.getElementById('filter-and-sort-form');
-            // 체크박스가 체크된 상태를 확인
-            checkbox.value = checkbox.checked ? 'Y' : 'N';
-            // 폼 제출
-            form.submit();
+            </aside>
+            <script> // toggle + sorting
+            function updateCheckboxValueAndSubmit() {
+                const checkbox = document.getElementById('isToggledCheckbox');
+                const form = document.getElementById('filter-and-sort-form');
+                // 체크박스가 체크된 상태를 확인
+                checkbox.value = checkbox.checked ? 'Y' : 'N';
+                // 폼 제출
+                form.submit();
+            }
+
+            function submitForm() {
+                document.getElementById('filter-and-sort-form').submit();
+            }
+            </script>
+            <style>
+                .form-select {
+                background-color : #FCFCFC;
+                border : none;
+                width : 100%;
+                height : 50px;
+                }
+                select {
+                color : #828282;
+                }
+                .form-control {
+                background-color : #FCFCFC;
+                border : none;
+                width : 100%;
+                height : 50px;
+                }
+
+
+                .form-control::placeholder {
+                color : #BBBBBB;
+                }
+
+                .date-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #8E4B6E;
+            color: white;
+            border-radius: 10px;
+            text-align:center;
+            font-family: "Work Sans", sans-serif;
         }
 
-        function submitForm() {
-            document.getElementById('filter-and-sort-form').submit();
+        .month {
+            font-size: 1.1rem; /* M의 크기를 설정 */
+            font-weight: 550;
+            line-height: 1;
         }
-        </script>
-        <style>
-            .form-select {
-            background-color : #FCFCFC;
-            border : none;
-            width : 100%;
-            height : 50px;
-            }
-            select {
-            color : #828282;
-            }
-            .form-control {
-            background-color : #FCFCFC;
-            border : none;
-            width : 100%;
-            height : 50px;
-            }
 
+        .year {
+            font-size: 0.65rem; /* yyyy의 크기를 설정 */
+            font-weight: 400;
+        }
+        :root {
+            --background-color-light: #FFFFFF;
+            --text-color-light: #000000;
+            --toggle-background-light: #CCCCCC;
+            --toggle-ball-light: #FFFFFF;
 
-            .form-control::placeholder {
-            color : #BBBBBB;
-            }
+            --background-color-dark: #333333;
+            --text-color-dark: #FFFFFF;
+            --toggle-background-dark: #03C75A;
+            --toggle-ball-dark: #FFFFFF;
 
-            .date-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background-color: #8E4B6E;
-        color: white;
-        border-radius: 10px;
-        text-align:center;
-        font-family: "Work Sans", sans-serif;
-    }
-
-    .month {
-        font-size: 1.1rem; /* M의 크기를 설정 */
-        font-weight: 550;
-        line-height: 1;
-    }
-
-    .year {
-        font-size: 0.65rem; /* yyyy의 크기를 설정 */
-        font-weight: 400;
-    }
-    :root {
-        --background-color-light: #FFFFFF;
-        --text-color-light: #000000;
-        --toggle-background-light: #CCCCCC;
-        --toggle-ball-light: #FFFFFF;
-
-        --background-color-dark: #333333;
-        --text-color-dark: #FFFFFF;
-        --toggle-background-dark: #03C75A;
-        --toggle-ball-dark: #FFFFFF;
-
-        --font-size-base: 32px; /* 기본 텍스트 크기 */
-        --font-size-large: 52px; /* 제목 등 큰 텍스트용 폰트 크기 */
-    }
+            --font-size-base: 32px; /* 기본 텍스트 크기 */
+            --font-size-large: 52px; /* 제목 등 큰 텍스트용 폰트 크기 */
+        }
 
 
 
-    .toggle-switch {
-        position: relative;
-        display: inline-block;
-        width: 62px; /* 너비 조정 */
-        height: 38px; /* 높이 조정 */
-    }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 62px; /* 너비 조정 */
+            height: 38px; /* 높이 조정 */
+        }
 
-    .toggle-switch .checkbox {
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
-    #isToggledCheckbox {
-         opacity: 0;
+        .toggle-switch .checkbox {
+            opacity: 0;
             width: 0;
             height: 0;
-    }
+        }
+        #isToggledCheckbox {
+             opacity: 0;
+                width: 0;
+                height: 0;
+        }
 
-    .toggle-switch .label {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: var(--toggle-background-light);
-        transition: background-color 0.4s;
-        border-radius: 38px; /* 둥근 모서리 반경 조정 */
-    }
+        .toggle-switch .label {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--toggle-background-light);
+            transition: background-color 0.4s;
+            border-radius: 38px; /* 둥근 모서리 반경 조정 */
+        }
 
-    .toggle-switch .label:before {
-        position: absolute;
-        content: "";
-        height: 30px; /* 내부 원 높이 조정 */
-        width: 30px; /* 내부 원 너비 조정 */
-        left: 2px;
-        bottom: 0px;
-        background-color: var(--toggle-ball-light);
-        transition: transform 0.4s;
-        border-radius: 50%;
-    }
+        .toggle-switch .label:before {
+            position: absolute;
+            content: "";
+            height: 30px; /* 내부 원 높이 조정 */
+            width: 30px; /* 내부 원 너비 조정 */
+            left: 2px;
+            bottom: 0px;
+            background-color: var(--toggle-ball-light);
+            transition: transform 0.4s;
+            border-radius: 50%;
+        }
 
-    .toggle-switch input:checked + .label {
-        background-color: var(--toggle-background-dark);
-    }
+        .toggle-switch input:checked + .label {
+            background-color: var(--toggle-background-dark);
+        }
 
-    .toggle-switch input:checked + .label:before {
-        transform: translateX(28px); /* 내부 원 이동 거리 조정 */
-    }
+        .toggle-switch input:checked + .label:before {
+            transform: translateX(28px); /* 내부 원 이동 거리 조정 */
+        }
 
-             #absdiv {
+                 #absdiv {
 
-                z-index : 1000;
-            }
-
-            #searchbutton {
-                background-color: #828282;
-            }
-            .truncate {
-    max-width: 150px;  /* 원하는 너비에 맞게 조정 */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-        </style>
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-              rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
-              rel="stylesheet">
-        <div class="col-md-9">
-            <style>
-                .col-4 select {
-                    border-radius: 50px;
-                    text-align: center;
-                }
-                /* 검색창 스타일 */
-                .search-container {
-                    width: 300px;
+                    z-index : 1000;
                 }
 
-                .search-container select {
-                    position: absolute;
-                    left: 0%;
-                    width: 30%;
-                    height: 50px;
-                    color: #828282;
-                    font-size: 1rem;
-                    border-radius: 50px 0 0 50px;
-                    outline: none;
+                #searchbutton {
+                    background-color: #828282;
                 }
-                .search-container input[type="text"] {
-                    position: absolute; /* 변경된 부분: 위치를 절대적으로 설정 */
-                    left: 30%; /* 변경된 부분: 전체 너비의 30% 위치로 이동 */
-                    width: 70%; /* 변경된 부분: 너비를 조정하여 적절한 위치에 맞춤 */
-                    height: 50px;
-                    padding: 10px 40px 10px 15px;
-                    font-size: 1rem;
-                    outline: none;
-                    border-radius: 0 50px 50px 0;
-                    transition: border-color 0.3s, background-color 0.3s;
-                    color: #828282; /* 입력 텍스트 색상 변경 */
-                }
-
-                .search-container input[type="text"]::placeholder {
-                    color: #BBBBBB; /* placeholder 색상 변경 */
-                }
-
-
-                .search-container button {
-                    position: absolute;
-                    right: 1rem;
-                    top: 25px;
-                    background: none;
-                    transform: translateY(-50%);
-                    border: none;
-                    cursor: pointer;
-                }
-
-                .search-container button i {
-                    color: #A6AAB5;
-                }
-
-                .search-container button:hover i {
-                    color: #03C75A;
-                }
+                .truncate {
+        max-width: 150px;  /* 원하는 너비에 맞게 조정 */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
             </style>
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+                  rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+                  rel="stylesheet">
+            <div class="col-md-9">
+                <style>
+                    .col-4 select {
+                        border-radius: 50px;
+                        text-align: center;
+                    }
+                    /* 검색창 스타일 */
+                    .search-container {
+                        width: 300px;
+                    }
+
+                    .search-container select {
+                        position: absolute;
+                        left: 0%;
+                        width: 30%;
+                        height: 50px;
+                        color: #828282;
+                        font-size: 1rem;
+                        border-radius: 50px 0 0 50px;
+                        outline: none;
+                    }
+                    .search-container input[type="text"] {
+                        position: absolute; /* 변경된 부분: 위치를 절대적으로 설정 */
+                        left: 30%; /* 변경된 부분: 전체 너비의 30% 위치로 이동 */
+                        width: 70%; /* 변경된 부분: 너비를 조정하여 적절한 위치에 맞춤 */
+                        height: 50px;
+                        padding: 10px 40px 10px 15px;
+                        font-size: 1rem;
+                        outline: none;
+                        border-radius: 0 50px 50px 0;
+                        transition: border-color 0.3s, background-color 0.3s;
+                        color: #828282; /* 입력 텍스트 색상 변경 */
+                    }
+
+                    .search-container input[type="text"]::placeholder {
+                        color: #BBBBBB; /* placeholder 색상 변경 */
+                    }
+
+
+                    .search-container button {
+                        position: absolute;
+                        right: 1rem;
+                        top: 25px;
+                        background: none;
+                        transform: translateY(-50%);
+                        border: none;
+                        cursor: pointer;
+                    }
+
+                    .search-container button i {
+                        color: #A6AAB5;
+                    }
+
+                    .search-container button:hover i {
+                        color: #03C75A;
+                    }
+                </style>
                 <form id="filter-and-sort-form" th:action="@{/user/admin/userlist}" method="get">
                     <div class="row m-0">
                         <div class="col-7 p-0">
@@ -354,15 +372,20 @@
                                             <option value="id" th:selected="${searchBy == 'id'}">아이디</option>
                                             <option value="type" th:selected="${searchBy == 'type'}">가입유형코드</option>
                                             <option value="auth" th:selected="${searchBy == 'auth'}">권한코드</option>
-                                            <option value="nickname" th:selected="${searchBy == 'nickname'}">닉네임</option>
-                                            <option value="contactNo" th:selected="${searchBy == 'contactNo'}">연락처</option>
+                                            <option value="nickname" th:selected="${searchBy == 'nickname'}">닉네임
+                                            </option>
+                                            <option value="contactNo" th:selected="${searchBy == 'contactNo'}">연락처
+                                            </option>
                                             <option value="email" th:selected="${searchBy == 'email'}">이메일</option>
                                             <option value="bio" th:selected="${searchBy == 'bio'}">소개</option>
                                             <option value="gender" th:selected="${searchBy == 'gender'}">성별</option>
-                                            <option value="dateOfBirth" th:selected="${searchBy == 'dateOfBirth'}">생년월일</option>
+                                            <option value="dateOfBirth" th:selected="${searchBy == 'dateOfBirth'}">
+                                                생년월일
+                                            </option>
                                             <option value="realName" th:selected="${searchBy == 'realName'}">실명</option>
                                         </select>
-                                        <input class="form-control px-3" type="text" name="searchTerm" placeholder="검색어를 입력하세요" th:value="${searchTerm}" />
+                                        <input class="form-control px-3" type="text" name="searchTerm"
+                                               placeholder="검색어를 입력하세요" th:value="${searchTerm}"/>
                                         <!-- 검색 버튼 -->
                                         <button type="submit">
                                             <i class="fas fa-search"></i>
@@ -409,42 +432,42 @@
                     </div> <!--토글-->
                 </form>
                 <!--수정전 폼-->
-<!--                <form id="filter-and-sort-form" th:action="@{/user/admin/userlist}" method="get">-->
-<!--                    &lt;!&ndash; 검색 조건 &ndash;&gt;-->
-<!--                    <label>-->
-<!--                        <select name="searchBy">-->
-<!--                            <option value="id" th:selected="${searchBy == 'id'}">아이디</option>-->
-<!--                            <option value="type" th:selected="${searchBy == 'type'}">가입유형코드</option>-->
-<!--                            <option value="auth" th:selected="${searchBy == 'auth'}">권한코드</option>-->
-<!--                            <option value="nickname" th:selected="${searchBy == 'nickname'}">닉네임</option>-->
-<!--                            <option value="contactNo" th:selected="${searchBy == 'contactNo'}">연락처</option>-->
-<!--                            <option value="email" th:selected="${searchBy == 'email'}">이메일</option>-->
-<!--                            <option value="bio" th:selected="${searchBy == 'bio'}">소개</option>-->
-<!--                            <option value="gender" th:selected="${searchBy == 'gender'}">성별</option>-->
-<!--                            <option value="dateOfBirth" th:selected="${searchBy == 'dateOfBirth'}">생년월일</option>-->
-<!--                            <option value="realName" th:selected="${searchBy == 'realName'}">실명</option>-->
-<!--                        </select>-->
-<!--                    </label>-->
-<!--                    <input type="text logininput" name="searchTerm" placeholder="검색어를 입력하세요" th:value="${searchTerm}"/>-->
+                <!--                <form id="filter-and-sort-form" th:action="@{/user/admin/userlist}" method="get">-->
+                <!--                    &lt;!&ndash; 검색 조건 &ndash;&gt;-->
+                <!--                    <label>-->
+                <!--                        <select name="searchBy">-->
+                <!--                            <option value="id" th:selected="${searchBy == 'id'}">아이디</option>-->
+                <!--                            <option value="type" th:selected="${searchBy == 'type'}">가입유형코드</option>-->
+                <!--                            <option value="auth" th:selected="${searchBy == 'auth'}">권한코드</option>-->
+                <!--                            <option value="nickname" th:selected="${searchBy == 'nickname'}">닉네임</option>-->
+                <!--                            <option value="contactNo" th:selected="${searchBy == 'contactNo'}">연락처</option>-->
+                <!--                            <option value="email" th:selected="${searchBy == 'email'}">이메일</option>-->
+                <!--                            <option value="bio" th:selected="${searchBy == 'bio'}">소개</option>-->
+                <!--                            <option value="gender" th:selected="${searchBy == 'gender'}">성별</option>-->
+                <!--                            <option value="dateOfBirth" th:selected="${searchBy == 'dateOfBirth'}">생년월일</option>-->
+                <!--                            <option value="realName" th:selected="${searchBy == 'realName'}">실명</option>-->
+                <!--                        </select>-->
+                <!--                    </label>-->
+                <!--                    <input type="text logininput" name="searchTerm" placeholder="검색어를 입력하세요" th:value="${searchTerm}"/>-->
 
-<!--                    &lt;!&ndash; 검색 버튼 &ndash;&gt;-->
-<!--                    <button type="submit">검색</button>-->
+                <!--                    &lt;!&ndash; 검색 버튼 &ndash;&gt;-->
+                <!--                    <button type="submit">검색</button>-->
 
-<!--                    &lt;!&ndash; 정렬 또는 토글 &ndash;&gt;-->
-<!--                    <label>-->
-<!--                        <input type="checkbox" name="isToggled" id="isToggledCheckbox" value="Y"-->
-<!--                               th:checked="${isToggled == 'Y'}" onchange="updateCheckboxValueAndSubmit()">창작자-->
-<!--                    </label>-->
-<!--                    &lt;!&ndash;                &lt;!&ndash; Hidden field for boardNo &ndash;&gt;&ndash;&gt;-->
-<!--                    &lt;!&ndash;                <input type="hidden" name="page" th:value="${page}" />&ndash;&gt;-->
-<!--                    <label>-->
-<!--                        <select name="orderBy" onchange="submitForm()">-->
-<!--                            <option value="recent" th:selected="${orderBy == 'recent'}">최근가입순</option>-->
-<!--                            <option value="oldest" th:selected="${orderBy == 'oldest'}">오래된순</option>-->
-<!--                            <option value="nickname" th:selected="${orderBy == 'nickname'}">닉네임가나다순</option>-->
-<!--                        </select>-->
-<!--                    </label>-->
-<!--                </form>-->
+                <!--                    &lt;!&ndash; 정렬 또는 토글 &ndash;&gt;-->
+                <!--                    <label>-->
+                <!--                        <input type="checkbox" name="isToggled" id="isToggledCheckbox" value="Y"-->
+                <!--                               th:checked="${isToggled == 'Y'}" onchange="updateCheckboxValueAndSubmit()">창작자-->
+                <!--                    </label>-->
+                <!--                    &lt;!&ndash;                &lt;!&ndash; Hidden field for boardNo &ndash;&gt;&ndash;&gt;-->
+                <!--                    &lt;!&ndash;                <input type="hidden" name="page" th:value="${page}" />&ndash;&gt;-->
+                <!--                    <label>-->
+                <!--                        <select name="orderBy" onchange="submitForm()">-->
+                <!--                            <option value="recent" th:selected="${orderBy == 'recent'}">최근가입순</option>-->
+                <!--                            <option value="oldest" th:selected="${orderBy == 'oldest'}">오래된순</option>-->
+                <!--                            <option value="nickname" th:selected="${orderBy == 'nickname'}">닉네임가나다순</option>-->
+                <!--                        </select>-->
+                <!--                    </label>-->
+                <!--                </form>-->
                 <table>
                     <thead>
                     <tr style="font-size: 0.5 rem;">
@@ -500,29 +523,30 @@
                         </div>
                     </div>
                 </th:block>
+            </div>
         </div>
     </div>
-</div>
-<script>
+    <script>
 
-    //탈퇴 폼 제출 후처리
-    window.onload = function() {
-          const urlParams = new URLSearchParams(window.location.search);
-          const status = urlParams.get('status');
-          if (status === 'editSuccess') {
-              alert("프로필 수정이 완료되었습니다.");
+        //탈퇴 폼 제출 후처리
+        window.onload = function() {
+              const urlParams = new URLSearchParams(window.location.search);
+              const status = urlParams.get('status');
+              if (status === 'editSuccess') {
+                  alert("프로필 수정이 완료되었습니다.");
+              }
+              else if (status === 'editFailure') {
+                  alert("프로필 수정 중 문제가 발생했습니다. 다시 시도해주세요.");
+              }
+              else if (status === 'withdrawnSuccess') {
+                  alert("해당 회원을 강제 탈퇴처리하였습니다.");
+              }
+              else if (status === 'withdrawnFailure') {
+                  alert("회원 탈퇴 처리 중 문제가 발생했습니다.");
+              }
           }
-          else if (status === 'editFailure') {
-              alert("프로필 수정 중 문제가 발생했습니다. 다시 시도해주세요.");
-          }
-          else if (status === 'withdrawnSuccess') {
-              alert("해당 회원을 강제 탈퇴처리하였습니다.");
-          }
-          else if (status === 'withdrawnFailure') {
-              alert("회원 탈퇴 처리 중 문제가 발생했습니다.");
-          }
-      }
-</script>
+    </script>
+</div>
 <div th:replace="common/footer.html"></div>
 </body>
 </html>

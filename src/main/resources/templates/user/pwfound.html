@@ -29,118 +29,141 @@
 
 <div th:replace="~{common/menubar}"></div>
 <style>
-    .jumbotron {
-    position : relative;
-    background-color : #EEEEEE;
+    html, body {
+        height: 100%;
+        margin: 0;
     }
-    .jumbotron .row {
-    position : absolute;
-    width : 100%;
-    bottom: 0%;
+    body {
+        display: flex;
+        flex-direction: column;
     }
-
-    #loginbox {
-    border-radius : 5%;
-    border-color : #F2F2F2;
+    .content-wrapper {
+        flex: 1 0 auto;
     }
-
-    .logininput {
-    background-color : #FCFCFC;
-    border : none;
-    height : 50px;
+    footer {
+        flex-shrink: 0;
     }
-
-    .logininput::placeholder {
-    color : #BBBBBB;
-    }
-
-     .nav-link {
-            color: #828282;
-    }
-    ul {
-  list-style: none;
-  padding-left : 0px;
-  }
 
 </style>
-<div class="jumbotron">
-    <div class="container">
-        <div class="row">
-            <div class="col-9">
-                <div class="row">
-                    <div class="col-md-3 px-4">
-                        <h3>로그인</h3>
-                    </div>
-                    <div class="col-md-9">
-                        <nav class="navbar navbar-expand-md">
-                            <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-                                <li>-</li>
-                                <!--          <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">좋아요한 웹툰소식</a></li>-->
-                                <!--          <li><a th:href="@{/user/my/in/event}" class="nav-link px-2">좋아요한 행사</a></li>-->
-                                <!--          <li><a th:href="@{/user/my/in/merchan}" class="nav-link px-2">좋아요한 굿즈</a></li>-->
-                            </ul>
-                        </nav>
+<div class="content-wrapper">
+    <style>
+        .jumbotron {
+        position : relative;
+        background-color : #EEEEEE;
+        }
+        .jumbotron .row {
+        position : absolute;
+        width : 100%;
+        bottom: 0%;
+        }
+
+        #loginbox {
+        border-radius : 5%;
+        border-color : #F2F2F2;
+        }
+
+        .logininput {
+        background-color : #FCFCFC;
+        border : none;
+        height : 50px;
+        }
+
+        .logininput::placeholder {
+        color : #BBBBBB;
+        }
+
+         .nav-link {
+                color: #828282;
+        }
+        ul {
+      list-style: none;
+      padding-left : 0px;
+      }
+
+    </style>
+    <div class="jumbotron">
+        <div class="container">
+            <div class="row">
+                <div class="col-9">
+                    <div class="row">
+                        <div class="col-md-3 px-4">
+                            <h3>로그인</h3>
+                        </div>
+                        <div class="col-md-9">
+                            <nav class="navbar navbar-expand-md">
+                                <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+                                    <li>-</li>
+                                    <!--          <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">좋아요한 웹툰소식</a></li>-->
+                                    <!--          <li><a th:href="@{/user/my/in/event}" class="nav-link px-2">좋아요한 행사</a></li>-->
+                                    <!--          <li><a th:href="@{/user/my/in/merchan}" class="nav-link px-2">좋아요한 굿즈</a></li>-->
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div class="container" style="padding:0;">
-    <div class="row">
-        <aside class="col-md-3 px-4">
-            <div class="row">
-                <div class="col-1"></div>
-                <div class="col-8">
-                    <div class="panel">
-                        <ul class="list-group">
-                            <li><a th:href="@{/user/login}" class="nav-link px-2" style="color: #03C75A;">로그인</a></li>
-                            <li><a th:href="@{/user/signup}" class="nav-link px-2">회원가입</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </aside>
-        <div class="col-md-9">
-            <div class="row justify-content-center">
-                <div class="col-6 border" id="loginbox" style="text-align:center;">
-                    <div class="px-3 py-4" style="text-align: center; ">
-                        <h2>비밀번호 찾기</h2>
-                    </div>
-                    <div class="px-3 py-2" style="text-align:center;">
-                        <a href="/user/findid" style="color: black;">아이디 찾기</a> | <a href="/user/findpw"
-                                                                                     style="color: black;">비밀번호 찾기</a>
-                    </div>
-
-                    <div class="row px-3 py-2">
-                        <div class="col-12">
-                            <hr>
+    <div class="container" style="padding:0;">
+        <div class="row">
+            <aside class="col-md-3 px-4">
+                <div class="row">
+                    <div class="col-1"></div>
+                    <div class="col-8">
+                        <div class="panel">
+                            <ul class="list-group">
+                                <li><a th:href="@{/user/login}" class="nav-link px-2" style="color: #03C75A;">로그인</a>
+                                </li>
+                                <li><a th:href="@{/user/signup}" class="nav-link px-2">회원가입</a></li>
+                            </ul>
                         </div>
                     </div>
+                </div>
+            </aside>
+            <div class="col-md-9">
+                <div class="row justify-content-center">
+                    <div class="col-6 border" id="loginbox" style="text-align:center;">
+                        <div class="px-3 py-4" style="text-align: center; ">
+                            <h2>비밀번호 찾기</h2>
+                        </div>
+                        <div class="px-3 py-2" style="text-align:center;">
+                            <a href="/user/findid" style="color: black;">아이디 찾기</a> | <a href="/user/findpw"
+                                                                                         style="color: black;">비밀번호
+                            찾기</a>
+                        </div>
 
-                    <div th:if="${password != null}">
-                        임시 비밀번호를<br>
-                        회원정보에 등록된 이메일 주소로<br>
-                        발송하였습니다.<br>
-                        메일함을 확인해 주세요.<br>
-                    </div>
-                    <div th:if="${password != null}" class="col-12 pt-3 pb-4">
-                        <button type="submit" class="btn btn-primary btn-block" onclick="location.href='/user/login'"
-                                style="background-color:grey; height:50px;">로그인
-                        </button>
-                    </div>
+                        <div class="row px-3 py-2">
+                            <div class="col-12">
+                                <hr>
+                            </div>
+                        </div>
 
-                    <div th:if="${password == null}" style="padding: 50px 0;">
-                        비밀번호 찾기에 실패했습니다.<br>
-                        다시 시도해주세요.<br>
-                    </div>
-                    <div th:if="${password == null}" class="col-12 pt-3 pb-4">
-                        <button type="submit" class="btn btn-primary btn-block" onclick="location.href='/user/findpw'"
-                                style="background-color:grey; height:50px;">다시 시도해보기
-                        </button>
-                    </div>
+                        <div th:if="${password != null}">
+                            임시 비밀번호를<br>
+                            회원정보에 등록된 이메일 주소로<br>
+                            발송하였습니다.<br>
+                            메일함을 확인해 주세요.<br>
+                        </div>
+                        <div th:if="${password != null}" class="col-12 pt-3 pb-4">
+                            <button type="submit" class="btn btn-primary btn-block"
+                                    onclick="location.href='/user/login'"
+                                    style="background-color:grey; height:50px;">로그인
+                            </button>
+                        </div>
+
+                        <div th:if="${password == null}" style="padding: 50px 0;">
+                            비밀번호 찾기에 실패했습니다.<br>
+                            다시 시도해주세요.<br>
+                        </div>
+                        <div th:if="${password == null}" class="col-12 pt-3 pb-4">
+                            <button type="submit" class="btn btn-primary btn-block"
+                                    onclick="location.href='/user/findpw'"
+                                    style="background-color:grey; height:50px;">다시 시도해보기
+                            </button>
+                        </div>
 
 
+                    </div>
                 </div>
             </div>
         </div>
