@@ -34,6 +34,7 @@
 
         // 폼 제출 전 이메일 형식을 검증하는 함수
         function validateForm(event) {
+            event.preventDefault();
 
             // (1/2) nickname available check
             const nickname = document.getElementById('nickname').value;

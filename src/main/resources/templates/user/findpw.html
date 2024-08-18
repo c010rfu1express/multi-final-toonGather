@@ -37,16 +37,24 @@
 
         // 폼 제출 전 이메일 형식을 검증하는 함수
         function validateForm(event) {
-
+            event.preventDefault();
             // (1/2) userId available check
             // 아이디는 영문과 숫자의 조합만 가능
             const userIdInput = document.querySelector('input[name="userId"]');
             const userId = userIdInput.value;
-
             const validIdPattern = /^[a-zA-Z0-9]+$/;
+
+            // (B0) 아이디 검증 (공란O/형식O/자수O)
+            if(!userId) {
+                alert('아이디를 입력해 주세요.');
+                return;
+            }
             if (!validIdPattern.test(userId)) {
                 alert('아이디는 영문과 숫자의 조합으로만 가능합니다.');
-                event.preventDefault(); // 폼 제출을 막음
+                return;
+            }
+            if (userId.length < 4 || userId.length >20) {
+                alert('아이디의 글자수는 4~20자를 허용합니다.');
                 return;
             }
 
@@ -54,10 +62,18 @@
             const emailInput = document.querySelector('input[name="email"]');
             const email = emailInput.value;
 
-            // 이메일 검증
+            // (B4-1) 이메일 검증 (공란O/형식O/자수O)
+            if(!email) {
+                alert('이메일을 입력해 주세요.');
+                return;
+            }
             if (!validateEmail(email)) {
                 alert("이메일 형식이 올바르지 않습니다. 예: example@example.com");
                 event.preventDefault(); // 폼 제출을 막음
+                return;
+            }
+            if (email.length < 5 || email.length >100) {
+                alert('이메일의 허용범위는 최대 100자입니다.');
                 return;
             }
     }
