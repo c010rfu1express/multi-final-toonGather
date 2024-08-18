@@ -301,7 +301,7 @@
         <div class="col-md-9">
             <div class="row justify-content-start" style="color: #828282;">
                 <div class="col-8 p-3" id="loginbox">
-                    <form th:action="@{/user/admin/updateuser(userNo=${user.userNo})}" th:object="${user}" method="post"
+                    <form th:object="${user}" method="post"
                           enctype="multipart/form-data" onsubmit="validateForm(event)">
                         <div class="row p-2">
                             <div class="col-3 m-0 p-0" id="profileimagebox">
@@ -477,57 +477,89 @@
                         <div class="row">
                             <div class="col-3 p-2">
                                 <button type="submit" class="btn btn-primary btn-block"
-                                        style="background-color:#03C75A; height:50px;">수정하기
+                                        style="background-color:#03C75A; height:50px;" th:attr="formaction=@{/user/admin/updateuser(userNo=${user.userNo})}">수정하기
                                 </button>
+
+                                <th:block th:if="${#strings.toString(user.withdrawn) == 'N'}">
+                                    <button id="deleteUserForm" type="submit" class="btn btn-primary btn-block"
+                                            style="background-color: red; height:50px; display:block;" th:attr="formaction=@{/user/admin/deleteuser(userNo=${user.userNo})}">강제탈퇴
+                                    </button>
+
+                                    <button id="reactiveUserForm" type="submit" class="btn btn-primary btn-block"
+                                            style="background-color:#03C75A; height:50px; display:none; " th:attr="formaction=@{/user/admin/reactiveuser(userNo=${user.userNo})}">강제탈퇴 취소
+                                    </button>
+                                </th:block>
+                                <th:block th:if="${#strings.toString(user.withdrawn) == 'Y'}">
+                                    <button id="deleteUserForm" type="submit" class="btn btn-primary btn-block"
+                                            style="background-color: red; height:50px; display:none;" th:attr="formaction=@{/user/admin/deleteuser(userNo=${user.userNo})}">강제탈퇴
+                                    </button>
+
+                                    <button id="reactiveUserForm" type="submit" class="btn btn-primary btn-block"
+                                            style="background-color:#03C75A; height:50px; display:block; " th:attr="formaction=@{/user/admin/reactiveuser(userNo=${user.userNo})}">강제탈퇴 취소
+                                    </button>
+                                </th:block>
+
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
 
-            <div class="row justify-content-start" style="color: #828282;">
-                <div class="col-6" id="loginbox2">
-                    <form th:action="@{/user/admin/deleteuser(userNo=${user.userNo})}" method="post">
-                        <div class="row">
-                            <div class="col-3 p-2">
-                                <button id="ban" type="submit" class="btn btn-primary btn-block"
-                                        style="background-color: red; height:50px;">강제탈퇴
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                    <!--                <form id="deleteUserForm" th:action="@{/user/admin/deleteuser(userNo=${user.userNo})}" method="post">-->
-                    <!--                    <div class="col-12">-->
-                    <!--                        <a href="javascript:void(0);" onclick="document.getElementById('deleteUserForm').submit();" style="color: #828282;">탈퇴하기</a>-->
-                    <!--                    </div>-->
-                    <!--                </form>-->
-                </div>
-            </div>
+<!--            <div class="row justify-content-start" style="color: #828282;">-->
+<!--                <div class="col-6" id="loginbox2">-->
+<!--                    <form th:action="@{/user/admin/deleteuser(userNo=${user.userNo})}" method="post">-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-3 p-2">-->
 
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </form>-->
+<!--                </div>-->
+<!--            </div>-->
 
-            <!--        <form th:action="@{/user/admin/deleteuser(userNo=${user.userNo})}" method="post">-->
-            <!--            <button type="submit">탈퇴하기(누르면 바로 삭제되니 조심!)</button>-->
-            <!--        </form>-->
         </div>
     </div>
 </div>
 <div th:replace="common/footer.html"></div>
 <script>
+    //탈퇴 관련
+    function confirmAndValidateDeletion(event) {
+          event.preventDefault(); // 기본 동작을 방지하여 링크 클릭 시 바로 제출되지 않도록 합니다.
 
-    //탈퇴 폼 제출 후처리
-    window.onload = function() {
-          const urlParams = new URLSearchParams(window.location.search);
-          const status = urlParams.get('status');
-          if (status === 'editSuccess') {
-              alert("프로필 수정이 완료되었습니다.");
-          }
-          else if (status === 'editFailure') {
-              alert("프로필 수정 중 문제가 발생했습니다. 다시 시도해주세요.");
-          }
-          else if (status === 'withdrawnFailure') {
-              alert("회원 탈퇴 처리 중 문제가 발생했습니다.");
+          const confirmation = confirm("정말로 해당 회원을 탈퇴처리하시겠습니까?");
+
+          if (confirmation && validatePasswordMatch()) {
+              // 확인 창에서 "예"를 선택하고, 비밀번호가 유효한 경우에 폼을 제출합니다.
+              // 폼을 제출하였을 때 비밀번호 일치여부를 UserService에서 확인할 것임
+              document.getElementById('deleteUserForm').click();
           }
       }
+      //탈퇴 버튼 관련
+
+      //탈퇴 폼 제출 후처리
+      window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            if (status === 'editSuccess') {
+                alert("프로필 수정이 완료되었습니다.");
+            }
+            else if (status === 'editFailure') {
+                alert("프로필 수정 중 문제가 발생했습니다. 다시 시도해주세요.");
+            }
+            else if (status === 'withdrawnSuccess') {
+              alert("해당 회원을 강제 탈퇴처리하였습니다.");
+              //toggleButtons();
+
+            }
+            else if (status === 'reactiveSuccess') {
+              alert("해당 회원을 재활성화하였습니다.");
+              //toggleButtons();
+
+            }
+            else if (status === 'withdrawnFailure') {
+                alert("회원 탈퇴 처리 중 문제가 발생했습니다.");
+            }
+        }
 </script>
 <script>
     document.getElementById('image').addEventListener('change', function(event) {

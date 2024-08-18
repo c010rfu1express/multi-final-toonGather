@@ -402,7 +402,7 @@
                                     </div>
                                 </div>
                                 <div class="col-8" style="text-align: right; padding: 0px; margin : 0px;">
-                                    창작자
+                                    탈퇴회원
                                 </div>
                             </div>
                         </div>
@@ -514,6 +514,9 @@
           }
           else if (status === 'editFailure') {
               alert("프로필 수정 중 문제가 발생했습니다. 다시 시도해주세요.");
+          }
+          else if (status === 'withdrawnSuccess') {
+              alert("해당 회원을 강제 탈퇴처리하였습니다.");
           }
           else if (status === 'withdrawnFailure') {
               alert("회원 탈퇴 처리 중 문제가 발생했습니다.");

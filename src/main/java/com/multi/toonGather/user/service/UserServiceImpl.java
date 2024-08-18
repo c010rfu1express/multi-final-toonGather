@@ -334,6 +334,26 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
+    public int deleteProfileAdmin(int userNo) throws Exception{
+        int result = 0;
+        System.out.println("[service.deleteProfileAdmin()]userNo: " + userNo);
+
+        // (1A) 관리자의 경우 특별한 확인과정 없이 바로 deleteUser (from UserService.deleteProfile()의 1A)
+        result = userMapper.deleteUser(userNo); //탈퇴허가: withdrawn만 'Y'으로 바뀜.
+
+        if(result == 0) System.out.println("[ERROR] deleteUser 실패. [userNo: " + userNo + "]");
+        return result;
+    }
+
+    public int reactiveProfileAdmin(int userNo) throws Exception {
+        int result = 0;
+        System.out.println("[service.reactiveProfileAdmin()]userNo: " + userNo);
+        result = userMapper.reactiveUserByUserNo(userNo); //탈퇴취소: withdrawn만 'N'으로 바뀜.
+
+        if(result == 0) System.out.println("[ERROR] reactiveUser 실패. [userNo: " + userNo + "]");
+        return result;
+    }
+
     public int checkUserIdExists(String userId)  {
         int result = 0;
         try{

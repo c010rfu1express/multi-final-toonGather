@@ -356,8 +356,17 @@ public class UserController {
     public String adminDeleteUser(@RequestParam("userNo") int userNo, @ModelAttribute UserDTO userDTO, HttpServletRequest request, Model model) throws Exception {
         System.out.println("adminDeleteUser @RequestParam userNo: "+userNo);
         //회원 정보 삭제 처리
-        userService.deleteProfile(userNo, userDTO);
-        return "redirect:/user/admin/userlist";
+        userService.deleteProfileAdmin(userNo);
+        return "redirect:/user/admin/userdetails?userNo="+userNo+"&status=withdrawnSuccess";
+    }
+
+    //KHG81-(4)POST
+    @PostMapping("/admin/reactiveuser")
+    public String adminRcactiveUser(@RequestParam("userNo") int userNo, @ModelAttribute UserDTO userDTO, HttpServletRequest request, Model model) throws Exception {
+        System.out.println("adminRcactiveUser @RequestParam userNo: "+userNo);
+        //회원 정보 삭제 처리
+        userService.reactiveProfileAdmin(userNo);
+        return "redirect:/user/admin/userdetails?userNo="+userNo+"&status=reactiveSuccess";
     }
 
 

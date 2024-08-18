@@ -17,6 +17,7 @@ public interface UserMapper {
     UserDTO selectOneByUserId(@Param("userId") String userId) throws Exception;
     UserDTO selectOneByUserIdWithdrawn(@Param("userId") String userId) throws Exception;
     int reactiveUserByUserId(@Param("userId") String userId) throws Exception;
+    int reactiveUserByUserNo(@Param("userNo") int userNo) throws Exception;
 
     UserDTO selectOneByContactNumber(@Param("contactNumber") String contactNumber) throws Exception;
     UserDTO selectOneByUserIdAndEmail(@Param("userId") String userId, @Param("email") String email) throws Exception;

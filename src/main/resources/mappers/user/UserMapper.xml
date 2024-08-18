@@ -51,7 +51,8 @@
         terms_agreement AS termsAgreement,
         terms_agreement_datetime AS termsAgreementDatetime,
         registration_datetime AS registrationDatetime,
-        last_modified_datetime AS lastModifiedDatetime
+        last_modified_datetime AS lastModifiedDatetime,
+        withdrawn AS withdrawn
         FROM users
         WHERE user_id = #{userId}
         AND
@@ -75,7 +76,8 @@
         terms_agreement AS termsAgreement,
         terms_agreement_datetime AS termsAgreementDatetime,
         registration_datetime AS registrationDatetime,
-        last_modified_datetime AS lastModifiedDatetime
+        last_modified_datetime AS lastModifiedDatetime,
+        withdrawn AS withdrawn
         FROM users
         WHERE user_id = #{userId}
         AND
@@ -89,6 +91,15 @@
         last_modified_datetime = NOW()
         WHERE
         user_id = #{userId}
+    </update>
+
+    <update id="reactiveUserByUserNo" parameterType="int">
+        UPDATE users
+        SET
+        withdrawn = 'N',
+        last_modified_datetime = NOW()
+        WHERE
+        user_no = #{userNo}
     </update>
 
     <select id="selectOneByNickname" parameterType="string" resultType="userDTO">
@@ -109,7 +120,8 @@
         terms_agreement AS termsAgreement,
         terms_agreement_datetime AS termsAgreementDatetime,
         registration_datetime AS registrationDatetime,
-        last_modified_datetime AS lastModifiedDatetime
+        last_modified_datetime AS lastModifiedDatetime,
+        withdrawn AS withdrawn
         FROM users
         WHERE nickname = #{nickname}
     </select>
@@ -132,7 +144,8 @@
         terms_agreement AS termsAgreement,
         terms_agreement_datetime AS termsAgreementDatetime,
         registration_datetime AS registrationDatetime,
-        last_modified_datetime AS lastModifiedDatetime
+        last_modified_datetime AS lastModifiedDatetime,
+        withdrawn AS withdrawn
         FROM users
         WHERE email = #{email}
     </select>
@@ -197,7 +210,8 @@
         terms_agreement AS termsAgreement,
         terms_agreement_datetime AS termsAgreementDatetime,
         registration_datetime AS registrationDatetime,
-        last_modified_datetime AS lastModifiedDatetime
+        last_modified_datetime AS lastModifiedDatetime,
+        withdrawn AS withdrawn
         FROM users
         WHERE contact_number = #{contactNumber}
     </select>
@@ -220,7 +234,8 @@
         terms_agreement AS termsAgreement,
         terms_agreement_datetime AS termsAgreementDatetime,
         registration_datetime AS registrationDatetime,
-        last_modified_datetime AS lastModifiedDatetime
+        last_modified_datetime AS lastModifiedDatetime,
+        withdrawn AS withdrawn
         FROM users
         WHERE user_id = #{userId} AND email = #{email}
     </select>
@@ -243,7 +258,8 @@
         terms_agreement AS termsAgreement,
         terms_agreement_datetime AS termsAgreementDatetime,
         registration_datetime AS registrationDatetime,
-        last_modified_datetime AS lastModifiedDatetime
+        last_modified_datetime AS lastModifiedDatetime,
+        withdrawn AS withdrawn
         FROM users
         WHERE user_no = #{userNo}
     </select>
@@ -299,7 +315,8 @@
         terms_agreement AS termsAgreement,
         terms_agreement_datetime AS termsAgreementDatetime,
         registration_datetime AS registrationDatetime,
-        last_modified_datetime AS lastModifiedDatetime
+        last_modified_datetime AS lastModifiedDatetime,
+        withdrawn AS withdrawn
         FROM users
         WHERE 1=1
         <if test="searchBy != null and searchTerm != null and searchTerm != ''">
@@ -337,7 +354,10 @@
             </choose>
         </if>
         <if test="toggleValue == 'Y'">
-            AND auth_code = 'C'
+            AND withdrawn = 'Y'
+        </if>
+        <if test="toggleValue == 'N'">
+            AND withdrawn = 'N'
         </if>
         <choose>
             <when test="orderBy == 'recent'">
@@ -397,7 +417,10 @@
             </choose>
         </if>
         <if test="toggleValue == 'Y'">
-            AND auth_code = 'C'
+            AND withdrawn = 'Y'
+        </if>
+        <if test="toggleValue == 'N'">
+            AND withdrawn = 'N'
         </if>
         <choose>
             <when test="orderBy == 'recent'">
