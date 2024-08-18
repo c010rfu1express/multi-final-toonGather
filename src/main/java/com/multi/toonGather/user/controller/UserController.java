@@ -344,8 +344,11 @@ public class UserController {
     public String adminUpdateUser(@RequestParam("userNo") int userNo, @ModelAttribute UserDTO userDTO, @RequestParam("image") MultipartFile image, HttpServletRequest request, Model model) throws Exception {
         System.out.println("adminUpdateUser @RequestParam userNo: "+userNo);
         //회원 정보 수정 처리
-        userService.updateProfileAdmin(userNo, userDTO, image, request);
-        return "redirect:/user/admin/userlist";
+        int result = userService.updateProfileAdmin(userNo, userDTO, image, request);
+        if(result > 0) {
+            return "redirect:/user/admin/userlist?status=editSuccess";
+        }
+        else return "redirect:/user/admin/userdetails?userNo="+userNo+"&status=editFailure";
     }
 
     //KHG81-(3)POST

@@ -239,13 +239,13 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
-    public void updateProfileAdmin(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception {
+    public int updateProfileAdmin(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception {
 
-        if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
-            String currentPassword = userMapper.selectOneByUserNo(Integer.toString(userNo)).getPassword();
-            userDTO.setPassword(currentPassword);
-            System.out.println("UserService.updateProfileAdmin(): 비밀번호를 변경하지 않았음.");
-        }
+//        if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
+//            String currentPassword = userMapper.selectOneByUserNo(Integer.toString(userNo)).getPassword();
+//            userDTO.setPassword(currentPassword);
+//            System.out.println("UserService.updateProfileAdmin(): 비밀번호를 변경하지 않았음.");
+//        }
 
             System.out.println("userNo: " + userNo);
             System.out.println("userDTO: " + userDTO);
@@ -300,9 +300,9 @@ public class UserServiceImpl implements UserService {
 
             // 회원정보 수정
             int result = userMapper.updateUser(userNo, userDTO);
+            if(result == 0) System.out.println("[ERROR] updateUser 실패. [userNo: " + userNo + "]");
 
-            if(result == 0) new Exception("[ERROR] updateUser 실패. [userNo: " + userNo + "]");
-
+            return result;
     }
 
     public int deleteProfile(int userNo, UserDTO userDTO) throws Exception{

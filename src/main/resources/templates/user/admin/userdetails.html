@@ -513,6 +513,23 @@
 </div>
 <div th:replace="common/footer.html"></div>
 <script>
+
+    //탈퇴 폼 제출 후처리
+    window.onload = function() {
+          const urlParams = new URLSearchParams(window.location.search);
+          const status = urlParams.get('status');
+          if (status === 'editSuccess') {
+              alert("프로필 수정이 완료되었습니다.");
+          }
+          else if (status === 'editFailure') {
+              alert("프로필 수정 중 문제가 발생했습니다. 다시 시도해주세요.");
+          }
+          else if (status === 'withdrawnFailure') {
+              alert("회원 탈퇴 처리 중 문제가 발생했습니다.");
+          }
+      }
+</script>
+<script>
     document.getElementById('image').addEventListener('change', function(event) {
       const files = event.target.files;
       const imagePreview = document.getElementById('imagePreview');

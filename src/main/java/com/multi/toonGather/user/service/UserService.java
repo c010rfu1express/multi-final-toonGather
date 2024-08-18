@@ -14,7 +14,7 @@ public interface UserService {
     UserDTO findPw(UserDTO userDTO) throws Exception;
     UserDTO getProfile(int userNo) throws Exception;
     int updateProfile(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception;
-    void updateProfileAdmin(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception;
+    int updateProfileAdmin(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception;
     int deleteProfile(int userNo, UserDTO userDTO) throws Exception;
 
     int checkUserIdExists(String userId) throws Exception;
