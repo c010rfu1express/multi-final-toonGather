@@ -218,29 +218,33 @@ async function checkDuplicates(userId, nickname, email) {
     </script>
     <script type="text/javascript">
         function sendNumber() {
-     // 이메일 중복 체크 함수
-     checkEmailDuplicate();
-
-     $.ajax({
-         url: "/user/mail/mailSend",
-         type: "post",
-         contentType: "application/json; charset=UTF-8",
-         dataType: "json",
-         data: JSON.stringify({ "mail": $("#email").val() }),
-         success: function(response) {
-             if (response === true) {
-                 alert("인증번호를 발송했습니다. 메일을 확인해주세요.");
-                 // 인증하기 버튼 바꾸기
-                 $("#emailVerifyButton").text("다시 전송");
-             } else {
-                 alert("메일 발송에 실패했습니다");
-             }
-         },
-         error: function(xhr, status, error) {
-             alert("요청 처리 중 오류가 발생했습니다: " + error);
-         }
-     });
- }
+    checkEmailDuplicatePromise()
+        .then(() => {
+            // 이메일 중복이 확인되지 않았을 때만 AJAX 요청 실행
+            $.ajax({
+                url: "/user/mail/mailSend",
+                type: "post",
+                contentType: "application/json; charset=UTF-8",
+                dataType: "json",
+                data: JSON.stringify({ "mail": $("#email").val() }),
+                success: function(response) {
+                    if (response === true) {
+                        alert("인증번호를 발송했습니다. 메일을 확인해주세요.");
+                        // 인증하기 버튼 바꾸기
+                        $("#emailVerifyButton").text("다시 전송");
+                    } else {
+                        alert("메일 발송에 실패했습니다");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("요청 처리 중 오류가 발생했습니다: " + error);
+                }
+            });
+        })
+        .catch(() => {
+            // 중복된 이메일이거나, 오류가 발생했을 경우 AJAX 요청이 실행되지 않음
+        });
+}
 
 
  function confirmNumber() {
@@ -468,30 +472,39 @@ async function checkDuplicates(userId, nickname, email) {
                     } //checkNicknameDuplicate()
 
                     // email available check
-                    function checkEmailDuplicate() {
-                        const email = document.getElementById('email').value;
+                    function checkEmailDuplicatePromise() {
+                        return new Promise((resolve, reject) => {
+                            const email = document.getElementById('email').value;
 
-                        if(!email) {
-                            alert('이메일을 입력해 주세요.');
-                            return;
-                        }
+                            if (!email) {
+                                alert('이메일을 입력해 주세요.');
+                                reject(); // 이메일이 없으면 Promise를 reject
+                                return;
+                            }
 
-                        // 이메일 검증
-                        if (!validateEmail(email)) {
-                            alert("이메일 형식이 올바르지 않습니다. 예: example@example.com");
-                            return;
-                        }
+                            // 이메일 검증
+                            if (!validateEmail(email)) {
+                                alert("이메일 형식이 올바르지 않습니다. 예: example@example.com");
+                                reject(); // 이메일 형식이 올바르지 않으면 Promise를 reject
+                                return;
+                            }
 
-                        fetch(`/user/checkEmailDuplicate?email=${encodeURIComponent(email)}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.isDuplicate) alert('이미 등록된 이메일입니다.');
-                                //else alert('등록 가능한 이메일입니다.');
-                            })
-                            .catch(error => {
-                                console.error('Error: ', error);
-                            });
-                    } //checkEmailDuplicate()
+                            fetch(`/user/checkEmailDuplicate?email=${encodeURIComponent(email)}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.isDuplicate) {
+                                        alert('이미 등록된 이메일입니다.');
+                                        reject(); // 중복된 이메일일 경우 Promise를 reject
+                                    } else {
+                                        resolve(); // 이메일이 중복되지 않으면 Promise를 resolve
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error: ', error);
+                                    reject(); // 오류 발생 시 Promise를 reject
+                                });
+                        });
+                    }
                 </script>
                 <div class="col-md-9">
                     <div class="row justify-content-start" style="color: #828282;">
