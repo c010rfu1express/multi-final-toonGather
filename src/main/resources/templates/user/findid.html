@@ -38,30 +38,34 @@
             // (1/2) nickname available check
             const nickname = document.getElementById('nickname').value;
 
+            // (B2) 닉네임 검증 (공란O/형식-/자수O)
             if(!nickname) {
                 alert('닉네임을 입력해 주세요.');
                 return;
             }
-
-            if (nickname.length < 4) {
-                alert('닉네임의 글자수는 최소 4자입니다.');
+            if (nickname.length < 4 || nickname.length >20) {
+                alert('닉네임의 글자수는 4~20자를 허용합니다.');
                 return;
             }
 
             // (2/2) email available check
             const email = document.getElementById('email').value;
 
+            // (B4-1) 이메일 검증 (공란O/형식O/자수O)
             if(!email) {
                 alert('이메일을 입력해 주세요.');
                 return;
             }
-
-            // 이메일 검증
             if (!validateEmail(email)) {
                 alert("이메일 형식이 올바르지 않습니다. 예: example@example.com");
                 event.preventDefault(); // 폼 제출을 막음
                 return;
             }
+            if (email.length < 5 || email.length >100) {
+                alert('이메일의 허용범위는 최대 100자입니다.');
+                return;
+            }
+
     }
     </script>
 </head>
