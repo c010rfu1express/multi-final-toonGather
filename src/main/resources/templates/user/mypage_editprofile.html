@@ -123,14 +123,20 @@
 
     // 비밀번호 일치 여부를 검증하는 함수
     function validatePasswordMatch() {
-        const password = document.querySelector('input[name="password"]').value;
-        const confirmPassword = document.querySelector('input[name="confirmPassword"]').value;
+      const password = document.querySelector('input[name="password"]').value;
+      const confirmPassword = document.querySelector('input[name="confirmPassword"]').value;
 
-        if (password !== confirmPassword) {
-            alert('비밀번호를 다시 확인해주세요.');
-            return false; // 비밀번호가 일치하지 않으면 폼 제출을 막음
-        }
-        return true; // 비밀번호가 일치하면 폼 제출을 진행
+      if (!password || !confirmPassword) {
+          alert('비밀번호와 비밀번호 확인란 모두 입력해 주세요.');
+          return false; // 비밀번호가 입력되지 않으면 폼 제출을 막음
+      }
+
+      if (password !== confirmPassword) {
+          alert('비밀번호를 다시 확인해주세요.');
+          return false; // 비밀번호가 일치하지 않으면 폼 제출을 막음
+      }
+
+      return true; // 비밀번호가 일치하고 둘 다 입력되었으면 폼 제출을 진행
     }
 
 
@@ -329,7 +335,7 @@
     <div class="col-md-9">
       <div class="row justify-content-start" style="color: #828282;">
         <div class="col-8 p-3" id="loginbox">
-          <form th:action="@{/user/my/editprofile}" th:object="${user}" method="post" enctype="multipart/form-data"
+          <form th:object="${user}" method="post" enctype="multipart/form-data"
                 onsubmit="validateForm(event)" id="editProfileForm">
             <div class="row p-2">
               <div class="col-3 m-0 p-0" id="profileimagebox">
@@ -497,8 +503,11 @@
             </div>
             <div class="row">
               <div class="col-3 p-2">
-                <button type="submit" class="btn btn-primary btn-block" style="background-color:#03C75A; height:50px;">
+                <button type="submit" class="btn btn-primary btn-block" style="background-color:#03C75A; height:50px;" th:attr="formaction=@{/user/my/editprofile}">
                   수정하기
+                </button>
+                <button id="deleteUserForm" type="submit" style="display: none;" th:attr="formaction=@{/user/my/deleteprofile}">
+                  탈퇴하기
                 </button>
               </div>
             </div>
@@ -508,37 +517,40 @@
 
       <div class="row justify-content-start" style="color: #828282;">
         <div class="col-6" id="loginbox2">
-          <form id="deleteUserForm" th:action="@{/user/my/deleteprofile}" method="post">
             <div class="row px-3">
-              <a href="javascript:void(0);" onclick="document.getElementById('deleteUserForm').submit();"
+              <a href="javascript:void(0);" onclick="confirmAndValidateDeletion(event);"
                  style="color: #828282;">탈퇴하기</a>
             </div>
-          </form>
         </div>
       </div>
-
-
-      <!--    <form th:action="@{/user/signup}" th:object="${user}" method="post">-->
-      <!--        아이디 : <input type="text" name="userId"><br>-->
-      <!--        비밀번호 : <input type="password" name="password"><br>-->
-      <!--        비밀번호 확인 : <br>-->
-      <!--        닉네임 : <input type="text" name="nickname"><br>-->
-      <!--        연락처 : <input type="text" name="contactNumber"><br>-->
-      <!--        성별 : <select name="gender">-->
-      <!--        <option>성별을 공개하지 않습니다-->
-      <!--        <option>여-->
-      <!--        <option>남</select><br>-->
-      <!--        생년월일 : <input type="text" name="dateOfBirth"><br>-->
-      <!--        이메일 : <input type="text" name="email"><br>-->
-      <!--        자기소개(선택사항) : <input type="text" name="bio"><br>-->
-      <!--        <input type="checkbox" name="termsAgreement">본인은 툰게더 회원 약관에 동의합니다.<br>-->
-
-      <!--        <input type="submit">가입하기-->
-      <!--    </form>-->
     </div>
   </div>
 </div>
 <div th:replace="common/footer.html"></div>
+<script>
+  //탈퇴 관련
+  function confirmAndValidateDeletion(event) {
+        event.preventDefault(); // 기본 동작을 방지하여 링크 클릭 시 바로 제출되지 않도록 합니다.
+
+        const confirmation = confirm("정말로 탈퇴하시겠습니까?");
+
+        if (confirmation && validatePasswordMatch()) {
+            // 확인 창에서 "예"를 선택하고, 비밀번호가 유효한 경우에 폼을 제출합니다.
+            // 폼을 제출하였을 때 비밀번호 일치여부를 UserService에서 확인할 것임
+            document.getElementById('deleteUserForm').click();
+        }
+    }
+
+  //탈퇴 폼 제출 후처리
+  window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+
+        if (status === 'failure') {
+            alert("회원 탈퇴 처리 중 문제가 발생했습니다.");
+        }
+    }
+</script>
 <script>
   document.getElementById('image').addEventListener('change', function(event) {
     const files = event.target.files;

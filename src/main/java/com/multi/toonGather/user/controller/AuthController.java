@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -135,12 +136,21 @@ public class AuthController {
         else return "redirect:/user/login";
 
         // 유저로 등록된 적이 없으면 새로 등록.
+        // 탈퇴후 다시 로그인할 때 문제가 생긴다. 이런경우에는 withdrawn = 'N'으로 변경..
         if(userService.checkUserIdExists(userDTO.getUserId()) == 0) userService.insertUser(userDTO);
 
         // 스프링 시큐리티 인증
         System.out.println("[TEST] customUserDetailsService.loadUserByUsername(): "+customUserDetailsService.loadUserByUsername(userDTO.getUserId()).getPassword());
 
-        UserDetails customUserDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(userDTO.getUserId());   //이거 왜 CustomUserDetails 안될까? 의문이당..
+//        UserDetails customUserDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(userDTO.getUserId());   //이거 왜 CustomUserDetails 안될까? 의문이당..
+        UserDetails customUserDetails;
+
+        try {
+            customUserDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(userDTO.getUserId());
+        } catch (UsernameNotFoundException e) {
+            System.out.println("예외처리?");
+            return "redirect:/user/login?error";
+        }
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
 
@@ -255,12 +265,21 @@ public class AuthController {
         else return "redirect:/user/login";
 
         // 유저로 등록된 적이 없으면 새로 등록.
+        // 탈퇴후 다시 로그인할 때 문제가 생긴다. 이런경우에는 withdrawn = 'N'으로 변경..
         if(userService.checkUserIdExists(userDTO.getUserId()) == 0) userService.insertUser(userDTO);
 
         // 스프링 시큐리티 인증
         System.out.println("[TEST] customUserDetailsService.loadUserByUsername(): "+customUserDetailsService.loadUserByUsername(userDTO.getUserId()).getPassword());
 
-        UserDetails customUserDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(userDTO.getUserId());   //이거 왜 CustomUserDetails 안될까? 의문이당..
+//        UserDetails customUserDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(userDTO.getUserId());   //이거 왜 CustomUserDetails 안될까? 의문이당..
+        UserDetails customUserDetails;
+
+        try {
+            customUserDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(userDTO.getUserId());
+        } catch (UsernameNotFoundException e) {
+            System.out.println("예외처리?");
+            return "redirect:/user/login?error";
+        }
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
 

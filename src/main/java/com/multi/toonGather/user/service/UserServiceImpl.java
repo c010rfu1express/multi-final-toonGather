@@ -60,8 +60,20 @@ public class UserServiceImpl implements UserService {
         }
 
         //소셜 로그인 관련(typecode가 'K', 'N', or 'G'여야 하는 제약조건 존재하므로)
-        if(userDTO.getTypeCode() == 'K' || userDTO.getTypeCode() == 'N')
-        result = userMapper.insertUser(userDTO);
+        if(userDTO.getTypeCode() == 'K' || userDTO.getTypeCode() == 'N'){
+            //소셜로그인회원 탈퇴후 재가입시, withdrawn만 'N'으로 변경
+            UserDTO checkWithdrawnUser = userMapper.selectOneByUserIdWithdrawn(userDTO.getUserId());
+            System.out.println("[UserService.insertUser] checkWithdrawnUser 확인: " +checkWithdrawnUser);
+            if( checkWithdrawnUser != null){
+                System.out.println("[UserService.insertUser] 재활성화 실행 ");
+                //탈퇴목록에 존재시 재활성화
+                userMapper.reactiveUserByUserId(userDTO.getUserId());
+                //이걸 해줘야 예외처리 안넘어감
+                result = 1;
+            }
+            else result = userMapper.insertUser(userDTO);   //탈퇴목록에 없을시 최초가입으로 판단
+        }
+
         else {
             userDTO.setTypeCode('G');
             result = userMapper.insertUser(userDTO);
@@ -290,16 +302,41 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    public void deleteProfile(int userNo) throws Exception{
+    public int deleteProfile(int userNo, UserDTO userDTO) throws Exception{
+        int result = 0;
         System.out.println("[service.deleteProfile()]userNo: " + userNo);
-        int result = userMapper.deleteUser(userNo);
-        if(result == 0) new Exception("[ERROR] deleteUser 실패. [userNo: " + userNo + "]");
+        System.out.println("userDTO 확인: " +userDTO.toString());
+        //현재 로그인된 유저의 정보를 불러오기
+        CustomUserDetails c = (CustomUserDetails)
+                customUserDetailsService.loadUserByUsername(userMapper.selectOneByUserNo(Integer.toString(userNo)).getUserId());
+        // 탈퇴시 입력한 비밀번호 체크
+        if(userDTO.getPassword().equals(userDTO.getConfirmPassword())) { // (1) 비번 입력이 정확했다면
+            System.out.println("<<입력한 비번간의 일치>>");
+            if(passwordEncoder.matches(userDTO.getPassword(), c.getPassword())) { // (1A) 비번이 현재 로그인된 유저의 비번과 일치한다면
+                System.out.println("<<입력한 비번과 DB비번의 일치>>");
+                result = userMapper.deleteUser(userNo); //탈퇴허가: withdrawn만 'Y'으로 바뀜.
+            }
+            else { // (1B) 비번이 현재 로그인된 유저의 비번과 일치하지 않는다면
+                System.out.println("[ERROR] deleteUser 실패. DB상 비번과 불일치 [userNo: " + userNo + "]");
+                result = 0;
+//                throw new Exception();
+            }
+
+        }
+        else { // (2) 비번 입력이 부정확했다면
+            System.out.println("[ERROR] deleteUser 실패. 입력한 비번간의 불일치 [userNo: " + userNo + "]");
+            result = 0;
+        }
+//        if(result == 0) throw new Exception("[ERROR] deleteUser 실패. [userNo: " + userNo + "]");
+        return result;
     }
 
     public int checkUserIdExists(String userId)  {
         int result = 0;
         try{
             UserDTO userDTO = userMapper.selectOneByUserId(userId);
+            //탈퇴한 회원의 아이디도 사용할 수 없음
+            if(userDTO == null) userDTO = userMapper.selectOneByUserIdWithdrawn(userId);
             if(userId.equals(userDTO.getUserId())) result = 1;
             return result;
         } catch(Exception e) {

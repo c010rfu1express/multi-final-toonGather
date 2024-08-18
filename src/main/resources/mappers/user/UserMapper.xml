@@ -54,7 +54,42 @@
         last_modified_datetime AS lastModifiedDatetime
         FROM users
         WHERE user_id = #{userId}
+        AND
+        withdrawn = 'N'
     </select>
+    <select id="selectOneByUserIdWithdrawn" parameterType="string" resultType="userDTO">
+        SELECT
+        user_no AS userNo,
+        type_code AS typeCode,
+        auth_code AS authCode,
+        user_id AS userId,
+        password,
+        nickname,
+        contact_number AS contactNumber,
+        email,
+        profile_image_path AS profileImagePath,
+        bio,
+        gender,
+        date_of_birth AS dateOfBirth,
+        real_name AS realName,
+        terms_agreement AS termsAgreement,
+        terms_agreement_datetime AS termsAgreementDatetime,
+        registration_datetime AS registrationDatetime,
+        last_modified_datetime AS lastModifiedDatetime
+        FROM users
+        WHERE user_id = #{userId}
+        AND
+        withdrawn = 'Y'
+    </select>
+
+    <update id="reactiveUserByUserId" parameterType="string">
+        UPDATE users
+        SET
+        withdrawn = 'N',
+        last_modified_datetime = NOW()
+        WHERE
+        user_id = #{userId}
+    </update>
 
     <select id="selectOneByNickname" parameterType="string" resultType="userDTO">
         SELECT
@@ -236,10 +271,16 @@
         WHERE user_no = #{userNo}
     </update>
 
-    <delete id="deleteUser" parameterType="int">
-        DELETE FROM users
-        WHERE user_no = #{userNo}
-    </delete>
+    <update id="deleteUser" parameterType="int">
+        <!--DELETE FROM users
+        WHERE user_no = #{userNo} -->
+        UPDATE users
+        SET
+        withdrawn = 'Y',
+        last_modified_datetime = NOW()
+        WHERE
+        user_no = #{userNo}
+    </update>
 
     <select id="selectList" resultType="userDTO">
         SELECT
