@@ -354,7 +354,15 @@
                 } else {
                     // 인증이 실패한 경우
                     $("#verificationCheckbox").prop("checked", false);
-                    alert("인증번호가 일치하지 않습니다.");
+                    //alert("인증번호가 일치하지 않습니다.");
+                    // #emailVerifyButton의 text를 가져와서 조건에 따라 alert 메시지 변경
+                    var buttonText = $("#emailVerifyButton").text().trim();
+
+                    if (buttonText === "인증하기") {
+                        alert("먼저 이메일을 입력해서 이메일 인증을 진행해 주세요.");
+                    } else {
+                        alert("인증번호가 일치하지 않습니다.");
+                    }
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
