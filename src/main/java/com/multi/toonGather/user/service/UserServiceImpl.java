@@ -163,7 +163,8 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    public void updateProfile(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception {
+    public int updateProfile(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception {
+        int result = 0;
         // 가장 먼저: password, confirmPassword의 일치여부 확인
         if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
             throw new Exception("[ERROR] insertUser 실패. 비밀번호 불일치");
@@ -223,7 +224,7 @@ public class UserServiceImpl implements UserService {
             } // if origin not null
 
             // 회원정보 수정 후 세션등록
-            int result = userMapper.updateUser(userNo, userDTO);
+            result = userMapper.updateUser(userNo, userDTO);
             CustomUserDetails c = (CustomUserDetails)
                     customUserDetailsService.loadUserByUsername(userMapper.selectOneByUserNo(Integer.toString(userNo)).getUserId());
 
@@ -231,9 +232,11 @@ public class UserServiceImpl implements UserService {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            if(result == 0) throw new Exception("[ERROR] updateUser 실패. [userNo: " + userNo + "]");
+            if(result == 0)
+                System.out.println("[ERROR] updateUser 실패. [userNo: " + userNo + "]");
         }
 
+        return result;
     }
 
     public void updateProfileAdmin(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception {

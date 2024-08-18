@@ -192,8 +192,10 @@ public class UserController {
 
 
         //회원 정보 수정 처리
-        userService.updateProfile(userNo, userDTO, image, request);
-        return "redirect:/user/my/editprofile";
+        int result = userService.updateProfile(userNo, userDTO, image, request);
+        if(result > 0){
+            return "redirect:/user/my/editprofile?status=editSuccess";
+        } else return "redirect:/user/my/editprofile?status=editFailure";
 
     }
 
@@ -209,7 +211,7 @@ public class UserController {
             request.getSession().invalidate();
             return "redirect:/user/withdrawn"; // 성공 메시지
         } else {
-            return "redirect:/user/my/editprofile?status=failure"; // 실패 메시지
+            return "redirect:/user/my/editprofile?status=withdrawnFailure"; // 실패 메시지
         }
     }
 
