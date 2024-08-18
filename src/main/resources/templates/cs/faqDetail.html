@@ -56,32 +56,37 @@
 </head>
 <body>
 <div th:replace="common/menubar.html"></div>
-<div class="detail-container">
-    <div class="detail-header">
-        <div>작성자 | <span th:text="${faq.nickname}"></span></div>
-        <div>
-            작성일 |
-            <span th:text="${#dates.format(faq.createdDate, 'yyyy-MM-dd')}"></span>
-            <span th:if="${faq.createdDate != faq.modifiedDate}">
-                (<span th:text="${#dates.format(faq.modifiedDate, 'yyyy-MM-dd')}" />에 수정됨)
-            </span>
+
+
+<div class="content-wrapper">
+    <div class="detail-container">
+        <div class="detail-header">
+            <div>작성자 | <span th:text="${faq.nickname}"></span></div>
+            <div>
+                작성일 |
+                <span th:text="${#dates.format(faq.createdDate, 'yyyy-MM-dd')}"></span>
+                <span th:if="${faq.createdDate != faq.modifiedDate}">
+                    (<span th:text="${#dates.format(faq.modifiedDate, 'yyyy-MM-dd')}" />에 수정됨)
+                </span>
+            </div>
+            <div>조회수 | <span th:text="${faq.csFaqViewCount}"></span></div>
         </div>
-        <div>조회수 | <span th:text="${faq.csFaqViewCount}"></span></div>
-    </div>
-    <div class="detail-header">
-        <div>제목 | <span th:text="${faq.csFaqTitle}"></span></div>
-    </div>
-    <div class="detail-body">
-        <div class="content">
-            <p th:text="${faq.csFaqContent}"></p>
+        <div class="detail-header">
+            <div>제목 | <span th:text="${faq.csFaqTitle}"></span></div>
         </div>
+        <div class="detail-body">
+            <div class="content">
+                <p th:text="${faq.csFaqContent}"></p>
+            </div>
+        </div>
+        <div sec:authorize="hasRole('ROLE_ADMIN')" class="detail-footer">
+            <button th:onclick="'location.href=\'/cs/updateFaq/' + ${faq.csFaqNo} + '\';'" class="btn btn-warning">수정</button>
+            <button th:onclick="'location.href=\'/cs/deleteFaq/' + ${faq.csFaqNo} + '\';'" class="btn btn-danger">삭제</button>
+        </div>
+        <div class="spacer"></div>
     </div>
-    <div sec:authorize="hasRole('ROLE_ADMIN')" class="detail-footer">
-        <button th:onclick="'location.href=\'/cs/updateFaq/' + ${faq.csFaqNo} + '\';'" class="btn btn-warning">수정</button>
-        <button th:onclick="'location.href=\'/cs/deleteFaq/' + ${faq.csFaqNo} + '\';'" class="btn btn-danger">삭제</button>
-    </div>
-    <div class="spacer"></div>
 </div>
+
 <div th:replace="common/footer.html"></div>
 </body>
 </html>
