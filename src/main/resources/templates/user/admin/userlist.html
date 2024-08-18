@@ -402,6 +402,7 @@
                                     <select class="form-select px-3" name="orderBy" onchange="submitForm()">
                                         <option value="recent" th:selected="${orderBy == 'recent'}">최근가입순</option>
                                         <option value="oldest" th:selected="${orderBy == 'oldest'}">오래된순</option>
+                                        <option value="recentUpdated" th:selected="${orderBy == 'recentUpdated'}">최근수정순</option>
                                         <option value="nickname" th:selected="${orderBy == 'nickname'}">닉네임가나다순</option>
                                     </select>
                                 </label>

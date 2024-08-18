@@ -366,6 +366,9 @@
             <when test="orderBy == 'oldest'">
                 ORDER BY user_no ASC
             </when>
+            <when test="orderBy == 'recentUpdated'">
+                ORDER BY last_modified_datetime DESC
+            </when>
             <when test="orderBy == 'nickname'">
                 ORDER BY nickname ASC
             </when>
@@ -428,6 +431,9 @@
             </when>
             <when test="orderBy == 'oldest'">
                 ORDER BY user_no ASC
+            </when>
+            <when test="orderBy == 'recentUpdated'">
+                ORDER BY last_modified_datetime DESC
             </when>
             <when test="orderBy == 'nickname'">
                 ORDER BY nickname ASC
