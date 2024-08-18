@@ -358,8 +358,9 @@ public class UserServiceImpl implements UserService {
         int result = 0;
         try{
             UserDTO userDTO = userMapper.selectOneByUserId(userId);
-            //탈퇴한 회원의 아이디도 사용할 수 없음
-            if(userDTO == null) userDTO = userMapper.selectOneByUserIdWithdrawn(userId);
+//            //탈퇴한 회원의 아이디도 사용할 수 없음
+//            if(userDTO == null)
+//                userDTO = userMapper.selectOneByUserIdWithdrawn(userId);
             if(userId.equals(userDTO.getUserId())) result = 1;
             return result;
         } catch(Exception e) {
