@@ -759,10 +759,10 @@
                 ORDER BY iel.liked_no ASC
             </when>
             <when test="orderBy == 'recent'">
-                ORDER BY ie.event_no DESC
+                ORDER BY ie.start_date DESC
             </when>
             <when test="orderBy == 'oldest'">
-                ORDER BY ie.event_no ASC
+                ORDER BY ie.start_date ASC
             </when>
             <when test="orderBy == 'title'">
                 ORDER BY ie.title ASC
