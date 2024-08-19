@@ -488,9 +488,14 @@
                                             <!--                                    <div class="col-2 p-0 d-flex align-items-center justify-content-center" style="aspect-ratio: 1; border-radius: 5px;">-->
                                             <!--                                        <div th:text="${T(java.time.format.DateTimeFormatter).ofPattern('MM월 yyyy').format(myRctJob.createdDate)}" style="background-color: #8E4B6E; color: white; border-radius: 5px; font-size: 0.8rem; text-align: center;"></div>-->
                                             <!--                                    </div>-->
-                                            <div class="col-5"
+                                            <div th:if="${myInEvent.endDate != null}" class="col-5"
                                                  style="color: #333333; font-size: 0.8rem; font-weight: 530;"
                                                  th:text="${T(java.time.format.DateTimeFormatter).ofPattern('M월 d일').format(myInEvent.startDate)} + ' ~ ' + ${T(java.time.format.DateTimeFormatter).ofPattern('M월 d일').format(myInEvent.endDate)}">
+                                                닉네임
+                                            </div>
+                                            <div th:if="${myInEvent.endDate == null}" class="col-5"
+                                                 style="color: #333333; font-size: 0.8rem; font-weight: 530;"
+                                                 th:text="${T(java.time.format.DateTimeFormatter).ofPattern('M월 d일').format(myInEvent.startDate)}">
                                                 닉네임
                                             </div>
 
@@ -558,9 +563,14 @@
                                             <!--                                    <div class="col-2 p-0 d-flex align-items-center justify-content-center" style="aspect-ratio: 1; border-radius: 5px;">-->
                                             <!--                                        <div th:text="${T(java.time.format.DateTimeFormatter).ofPattern('MM월 yyyy').format(myRctJob.createdDate)}" style="background-color: #8E4B6E; color: white; border-radius: 5px; font-size: 0.8rem; text-align: center;"></div>-->
                                             <!--                                    </div>-->
-                                            <div class="col-4"
+                                            <div th:if="${myInEvent.endDate != null}" class="col-5"
                                                  style="color: #333333; font-size: 0.8rem; font-weight: 530;"
                                                  th:text="${T(java.time.format.DateTimeFormatter).ofPattern('M월 d일').format(myInEvent.startDate)} + ' ~ ' + ${T(java.time.format.DateTimeFormatter).ofPattern('M월 d일').format(myInEvent.endDate)}">
+                                                닉네임
+                                            </div>
+                                            <div th:if="${myInEvent.endDate == null}" class="col-5"
+                                                 style="color: #333333; font-size: 0.8rem; font-weight: 530;"
+                                                 th:text="${T(java.time.format.DateTimeFormatter).ofPattern('M월 d일').format(myInEvent.startDate)}">
                                                 닉네임
                                             </div>
 
@@ -570,7 +580,13 @@
                                             </div>
                                         </div>
                                         <div class="row justify-content-center">
-                                            <div class="col-10" style="color: white;" th:text="${myInEvent.eventNo}">사진
+                                            <div class="col-12 my-3" style="">
+                                                <!-- 썸네일 이미지 없을때 : 기본 썸네일 이미지 -->
+                                                <img th:unless="${#lists.size(myInEvent.eventFiles) > 0}" src="/images/user/mypage_bg01.jpg" class="card-img-top" alt="기본 썸네일 이미지" style="filter: brightness(1.2);" >
+                                                <!-- 썸네일 이미지 있을때  -->
+                                                <img th:if="${#lists.size(myInEvent.eventFiles) > 0}"
+                                                     th:src="@{/uploadFiles/{fileName}(fileName=${myInEvent.eventFiles.get(0).fileName})}"
+                                                     class="card-img-top" alt="썸네일 이미지">
                                             </div>
                                         </div>
                                         <div class="row" style="padding: 0; margin: 0;">
