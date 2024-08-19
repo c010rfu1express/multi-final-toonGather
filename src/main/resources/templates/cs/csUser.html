@@ -92,76 +92,82 @@
     </style>
 </head>
 <body>
-    <div th:replace="common/menubar.html"></div>
+<div th:replace="common/menubar.html"></div>
 
-<main class="content">
-    <section class="faq">
-        <h2>자주 묻는 질문 (FAQ)</h2>
-        <div th:if="${faqList == null || faqList.isEmpty()}">
-            <p>현재 FAQ 정비 중</p>
-            <p>이용에 불편을 드려 죄송합니다.</p>
-        </div>
-        <div th:if="${faqList != null && !faqList.isEmpty()}">
-            <div th:each="faq, iterStat : ${faqList}">
-                <a th:href="@{/cs/faqDetail/{csFaqNo}(csFaqNo=${faq.csFaqNo})}">
-                    <p th:text="'Q' + ${iterStat.index + 1} + '. ' + ${faq.csFaqTitle}"></p>
-                </a>
+
+<div class="content-wrapper">
+
+    <main class="content">
+        <section class="faq">
+            <h2>자주 묻는 질문 (FAQ)</h2>
+            <div th:if="${faqList == null || faqList.isEmpty()}">
+                <p>현재 FAQ 정비 중</p>
+                <p>이용에 불편을 드려 죄송합니다.</p>
             </div>
-        </div>
-    </section>
-    <section class="my-questions">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-            <h2>내가 쓴 문의글</h2>
-            <div class="create-button-container">
-                <button><a th:href="@{${#authorization.expression('isAuthenticated()') ? '/cs/insertQuestion' : '/user/login'}}" class="create-button">문의글 작성</a></button>
+            <div th:if="${faqList != null && !faqList.isEmpty()}">
+                <div th:each="faq, iterStat : ${faqList}">
+                    <a th:href="@{/cs/faqDetail/{csFaqNo}(csFaqNo=${faq.csFaqNo})}">
+                        <p th:text="'Q' + ${iterStat.index + 1} + '. ' + ${faq.csFaqTitle}"></p>
+                    </a>
+                </div>
             </div>
-        </div>
-        <div th:if="${questions != null && !questions.isEmpty()}">
-            <table>
-                <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>카테고리</th>
-                    <th>제목</th>
-                    <th>작성일</th>
-                    <th>상태</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="myQuestion : ${questions}">
-                    <td th:text="${myQuestion.csQNo}"></td>
-                    <td th:text="${myQuestion.csQCategory.csCategoryDesc}"></td>
-                    <td>
-                        <a th:href="@{/cs/questionDetail/{csQNo}(csQNo=${myQuestion.csQNo})}" th:text="${myQuestion.csQTitle}"></a>
-                    </td>
-                    <td th:text="${#dates.format(myQuestion.createdDate, 'yyyy-MM-dd')}"></td>
-                    <td th:text="${myQuestion.csQStatus.csStatusDesc}"></td>
-                </tr>
-                </tbody>
-            </table>
-            <div class="pagination">
-                <a th:if="${currentPage > 0}" th:href="@{/cs/csUser(page=${currentPage - 1})}">&laquo;</a>
-                <a th:each="i : ${#numbers.sequence(1, totalPages)}"
-                   th:href="@{/cs/csUser(page=${i - 1})}"
-                   th:text="${i}"
-                   th:classappend="${currentPage + 1 == i} ? 'active' : ''"></a>
-                <a th:if="${currentPage < totalPages - 1}" th:href="@{/cs/csUser(page=${currentPage + 1})}">&raquo;</a>
+        </section>
+        <section class="my-questions">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h2>내가 쓴 문의글</h2>
+                <div class="create-button-container">
+                    <button><a th:href="@{${#authorization.expression('isAuthenticated()') ? '/cs/insertQuestion' : '/user/login'}}" class="create-button">문의글 작성</a></button>
+                </div>
             </div>
-        </div>
-        <div th:if="${questions == null || questions.isEmpty()}">
-            <div th:if="${#authorization.expression('isAuthenticated()')}">
-                <p>작성한 문의글이 없습니다.</p>
+            <div th:if="${questions != null && !questions.isEmpty()}">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>카테고리</th>
+                        <th>제목</th>
+                        <th>작성일</th>
+                        <th>상태</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="myQuestion : ${questions}">
+                        <td th:text="${myQuestion.csQNo}"></td>
+                        <td th:text="${myQuestion.csQCategory.csCategoryDesc}"></td>
+                        <td>
+                            <a th:href="@{/cs/questionDetail/{csQNo}(csQNo=${myQuestion.csQNo})}"
+                               th:text="${#strings.abbreviate(myQuestion.csQTitle, 15)}"></a>
+                        </td>
+                        <td th:text="${#dates.format(myQuestion.createdDate, 'yyyy-MM-dd')}"></td>
+                        <td th:text="${myQuestion.csQStatus.csStatusDesc}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <a th:if="${currentPage > 0}" th:href="@{/cs/csUser(page=${currentPage - 1})}">&laquo;</a>
+                    <a th:each="i : ${#numbers.sequence(1, totalPages)}"
+                       th:href="@{/cs/csUser(page=${i - 1})}"
+                       th:text="${i}"
+                       th:classappend="${currentPage + 1 == i} ? 'active' : ''"></a>
+                    <a th:if="${currentPage < totalPages - 1}" th:href="@{/cs/csUser(page=${currentPage + 1})}">&raquo;</a>
+                </div>
             </div>
-            <div th:if="${!#authorization.expression('isAuthenticated()')}">
-                <p>문의글 조회는 로그인을 해야 볼 수 있습니다.</p>
+            <div th:if="${questions == null || questions.isEmpty()}">
+                <div th:if="${#authorization.expression('isAuthenticated()')}">
+                    <p>작성한 문의글이 없습니다.</p>
+                </div>
+                <div th:if="${!#authorization.expression('isAuthenticated()')}">
+                    <p>문의글 조회는 로그인을 해야 볼 수 있습니다.</p>
+                </div>
             </div>
-        </div>
-    </section>
-</main>
+        </section>
+    </main>
     <div class="chatbot">
         <button onclick="openChatbotWindow()">챗봇</button>
     </div>
-    <div th:replace="common/footer.html"></div>
+</div>
+
+<div th:replace="common/footer.html"></div>
     <script>
         function openChatbotWindow() {
             window.open('/chatbot/chatbotPage', 'Chatbot', 'width=600,height=800');
