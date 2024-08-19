@@ -158,7 +158,7 @@
                     <span style="font-size: 0.75em; color: gray;">리뷰 [[${review}]]건</span>
                 </span>
             </div>
-            <div th:if="${member_no != null and member_no != ''}">
+            <div th:if="${member_no != null and member_no != '' and member_no != free.writer}">
                 <form th:action="@{/recruit/free/review/insert}" id="form" method="post" >
                     <input type="hidden" id="writer_no" name="writer_no" th:value="${free.writer}"/>
                     <div>
