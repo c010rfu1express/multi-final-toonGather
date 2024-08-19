@@ -140,21 +140,48 @@
 <div th:replace="common/footer.html"></div>
 
 <script>
-    document.getElementById('content').addEventListener('input', function() {
-        var charCount = this.value.length;
-        document.getElementById('charCount').textContent = charCount;
-        if (charCount > 1000) {
-            this.value = this.value.slice(0, 1000);
-            document.getElementById('charCount').textContent = 1000;
-        }
-    });
-
-    // 초기 글자 수 표시
-    window.onload = function() {
+    document.addEventListener('DOMContentLoaded', function() {
         var content = document.getElementById('content');
         var charCountSpan = document.getElementById('charCount');
+        var form = document.querySelector('form');
+
+        content.addEventListener('input', function() {
+            var charCount = this.value.length;
+            charCountSpan.textContent = charCount;
+            if (charCount > 1000) {
+                this.value = this.value.slice(0, 1000);
+                charCountSpan.textContent = 1000;
+            }
+        });
+
+        // 초기 글자 수 표시
         charCountSpan.textContent = content.value.length;
-    };
+
+        form.addEventListener('submit', function(e) {
+            var title = document.getElementById('title').value.trim();
+            var content = document.getElementById('content').value.trim();
+            var starRating = document.querySelector('input[name="starRating"]:checked');
+
+            if (title === '') {
+                e.preventDefault();
+                alert('제목을 입력해주세요.');
+                return;
+            }
+
+            if (content === '') {
+                e.preventDefault();
+                alert('내용을 입력해주세요.');
+                return;
+            }
+
+            if (!starRating) {
+                e.preventDefault();
+                alert('별점을 선택해주세요.');
+                return;
+            }
+        });
+    });
 </script>
+
 </body>
 </html>

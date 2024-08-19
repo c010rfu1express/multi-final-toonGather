@@ -161,37 +161,54 @@
 <div th:replace="common/footer.html"></div>
 
 <script>
-    document.getElementById('content').addEventListener('input', function() {
-        var maxLength = 140;
-        var currentLength = this.value.length;
-        var charCountSpan = document.getElementById('charCount');
-
-        if (currentLength > maxLength) {
-            this.value = this.value.substring(0, maxLength);
-            currentLength = maxLength;
-        }
-
-        charCountSpan.textContent = currentLength;
-    });
-
-    document.getElementById('statusCode').addEventListener('change', function() {
-        this.classList.remove('c-status', 'r-status');
-        if (this.value === 'C') {
-            this.classList.add('c-status');
-        } else if (this.value === 'R') {
-            this.classList.add('r-status');
-        }
-    });
-
-    // 초기 상태 및 글자 수 설정
-    window.onload = function() {
+    document.addEventListener('DOMContentLoaded', function() {
         var content = document.getElementById('content');
         var charCountSpan = document.getElementById('charCount');
-        charCountSpan.textContent = content.value.length;
-
+        var form = document.querySelector('form');
         var statusCode = document.getElementById('statusCode');
+
+        content.addEventListener('input', function() {
+            var maxLength = 140;
+            var currentLength = this.value.length;
+
+            if (currentLength > maxLength) {
+                this.value = this.value.substring(0, maxLength);
+                currentLength = maxLength;
+            }
+
+            charCountSpan.textContent = currentLength;
+        });
+
+        statusCode.addEventListener('change', function() {
+            this.classList.remove('c-status', 'r-status');
+            if (this.value === 'C') {
+                this.classList.add('c-status');
+            } else if (this.value === 'R') {
+                this.classList.add('r-status');
+            }
+        });
+
+        form.addEventListener('submit', function(e) {
+            var title = document.getElementById('title').value.trim();
+            var content = document.getElementById('content').value.trim();
+
+            if (title === '') {
+                e.preventDefault();
+                alert('제목을 입력해주세요.');
+                return;
+            }
+
+            if (content === '') {
+                e.preventDefault();
+                alert('내용을 입력해주세요.');
+                return;
+            }
+        });
+
+        // 초기 상태 및 글자 수 설정
+        charCountSpan.textContent = content.value.length;
         statusCode.dispatchEvent(new Event('change'));
-    };
+    });
 </script>
 
 </body>
