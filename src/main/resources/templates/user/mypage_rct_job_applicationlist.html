@@ -516,7 +516,7 @@
                                                         class="clickable-row"
                                                         th:attr="data-href=@{/recruit/job/applyView(no=${myRctJobApplication.applyNo})}">
                                                         <td th:text="${myRctJobApplication.applyNo}">지원글 번호</td>
-                                                        <td th:text="${myRctJobApplication.writer}">지원자</td>
+                                                        <td th:text="${myRctJobApplication.applyUserId}">지원자</td>
                                                         <td th:text="${myRctJobApplication.applyTitle}">제목</td>
                                                         <td th:text="${myRctJobApplication.applyCreatedDate}">작성 일자</td>
                                                         <td th:text="${myRctJobApplication.applyCheckStatus}">조회 여부</td>

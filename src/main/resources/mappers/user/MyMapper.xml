@@ -982,6 +982,8 @@
         <result property="jobCreatedDate" column="created_date"/>
         <result property="jobModifiedDate" column="modified_date"/>
         <result property="jobDeadLine" column="dead_line"/>
+
+        <result property="applyUserId" column="user_id"/>
     </resultMap>
     <sql id="MyRctApplicationQueryA">
         SELECT
@@ -1001,7 +1003,9 @@
         rj.img AS jobImg,
         rj.created_date AS jobCreatedDate,
         rj.modified_date AS jobModifiedDate,
-        rj.dead_line AS jobDeadLine
+        rj.dead_line AS jobDeadLine,
+
+        u.user_id AS applyUserId
     </sql>
     <sql id="MyRctApplicationQueryB">
         FROM
@@ -1010,6 +1014,9 @@
         rct_job_apply rja
         ON
         rj.board_no = rja.board_no
+        INNER JOIN
+        users u
+        ON rja.writer = u.user_no  <!-- 추가된 부분 -->
         WHERE
         rja.writer = #{userNo}
         <if test="searchBy != null and searchTerm != null and searchTerm != ''">
@@ -1089,7 +1096,9 @@
         rj.img AS jobImg,
         rj.created_date AS jobCreatedDate,
         rj.modified_date AS jobModifiedDate,
-        rj.dead_line AS jobDeadLine
+        rj.dead_line AS jobDeadLine,
+
+        u.user_id AS applyUserId
     </sql>
     <sql id="MyRctJobApplicationQueryB">
         FROM
@@ -1098,6 +1107,9 @@
         rct_job_apply rja
         ON
         rj.board_no = rja.board_no
+        INNER JOIN
+        users u
+        ON rja.writer = u.user_no  <!-- 추가된 부분 -->
         WHERE
         rja.board_no = #{boardNo}
         <if test="searchBy != null and searchTerm != null and searchTerm != ''">

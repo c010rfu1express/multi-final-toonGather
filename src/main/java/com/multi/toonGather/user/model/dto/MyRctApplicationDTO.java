@@ -30,6 +30,9 @@ public class MyRctApplicationDTO {
     private LocalDateTime jobModifiedDate;
     private LocalDateTime jobDeadLine;
 
+    //조인2하여 가져올 것 (from users)
+    private String applyUserId;//
+
     //시간 view에 뿌려줄 때
     public String getFormattedApplyCreatedDate() {
         if(applyCreatedDate == null) return "미정";
