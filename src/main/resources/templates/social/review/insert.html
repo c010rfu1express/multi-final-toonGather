@@ -152,14 +152,30 @@
         }
     });
 
-    // 별점 확인
     document.getElementById('reviewForm').addEventListener('submit', function(e) {
+        var title = document.getElementById('title').value.trim();
+        var content = document.getElementById('content').value.trim();
         var starRating = document.querySelector('input[name="starRating"]:checked');
+
+        if (title === '') {
+            e.preventDefault();
+            alert('제목을 입력해주세요.');
+            return;
+        }
+
+        if (content === '') {
+            e.preventDefault();
+            alert('내용을 입력해주세요.');
+            return;
+        }
+
         if (!starRating) {
-            e.preventDefault(); // 폼 제출 중지
-            alert('별점은 1점부터 입력할 수 있어요 🌟'); // 사용자에게 알림
+            e.preventDefault();
+            alert('별점은 1점부터 입력할 수 있어요 🌟');
+            return;
         }
     });
 </script>
+
 </body>
 </html>
