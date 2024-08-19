@@ -3,7 +3,7 @@
 <html layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>툰게더 toonGather | 신고 관리</title>
+    <title>툰게더 toonGather | 관리자</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- 폰트: 'Noto Sans KR' 사용 -->
@@ -93,6 +93,13 @@
         }
         footer {
         flex-shrink: 0
+        }
+    </style>
+    <style>
+        .navbar {
+          position: fixed;
+          z-index: 1000;
+        }
     </style>
 <body>
 <div th:replace="~{common/menubar}"></div>
@@ -115,84 +122,96 @@
       padding-left : 0px;
       }
 </style>
-<div class="jumbotron">
-    <div class="row">
-        <div class="col-md-3 px-4">
-            <h3>신고 관리</h3>
-        </div>
-        <div class="col-md-9">
-            <nav class="navbar navbar-expand-md">
-                <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-                    <li><a th:href="@{/user/my}" class="nav-link px-2">마이페이지(테스트용)</a></li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-</div>
-<div layout:fragment="content" class="row content-wrapper">
-    <aside class="col-md-3 px-4">
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-8">
-                <div class="panel">
-                    <ul class="list-group">
-                        <li><a th:href="@{/user/admin/userlist}" class="nav-link px-2">회원 관리</a></li>
-                        <li><a th:href="@{/recruit/free/report/list}" class="nav-link px-2"  style="color: #03C75A;">신고 관리</a></li>
-                    </ul>
+<div class="content-wrapper">
+    <div class="jumbotron">
+        <div class="container">
+            <div class="row">
+                <div class="col-9">
+                    <div class="row">
+                        <div class="col-md-3 px-4">
+                            <h3>신고 관리</h3>
+                        </div>
+                        <div class="col-md-9">
+                            <nav class="navbar navbar-expand-md">
+                                <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+                                    <li><a th:href="@{/user/my}" class="nav-link px-2">마이페이지(테스트용)</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </aside>
-    <br>
-    <div class="container">
-        <h2 class="text-center mb-4">리뷰 신고 목록</h2>
-        <hr color="grey">
-        <div id="d1">
-            <table class="table table-hover">
-                <thead class="table-light">
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">신고 내용</th>
-                    <th scope="col">신고자</th>
-                    <th scope="col">신고일</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="report : ${reports}">
-                    <td scope="row" th:text="${report.report_no}"></td>
-                    <td><a th:href="@{/recruit/free/report/view(no=${report.report_no})}" th:text="${#strings.abbreviate(report.content, 15)}"></a></td>
-                    <td>
-                        <span th:text="${report.member.nickname}"></span>
-                    </td>
-                    <td th:text="${#dates.format(report.reported_date, 'yyyy-MM-dd')}"></td>
-                </tr>
-                </tbody>
-            </table>
-            <p th:if="${reports == null}" style="text-align: center;">신고 목록이 존재하지 않습니다.</p>
+    </div>
+    <div class="container" style="padding:0;">
+        <div class="row">
+            <aside class="col-md-3 px-4">
+                <div class="row">
+                    <div class="col-1"></div>
+                    <div class="col-8">
+                        <div class="panel">
+                            <ul class="list-group">
+                                <li><a th:href="@{/user/admin/userlist}" class="nav-link px-2">회원 관리</a></li>
+                                <li><a th:href="@{/recruit/free/report/list}" class="nav-link px-2"  style="color: #03C75A;">신고 관리</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            <br>
+            <div class="col-md-9">
+                <h2 class="text-center mb-4">리뷰 신고 목록</h2>
+                <hr color="grey">
+                <div id="d1">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">신고 내용</th>
+                            <th scope="col">신고자</th>
+                            <th scope="col">신고일</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="report : ${reports}">
+                            <td scope="row" th:text="${report.report_no}"></td>
+                            <td><a th:href="@{/recruit/free/report/view(no=${report.report_no})}" th:text="${#strings.abbreviate(report.content, 15)}"></a></td>
+                            <td>
+                                <span th:text="${report.member.nickname}"></span>
+                            </td>
+                            <td th:text="${#dates.format(report.reported_date, 'yyyy-MM-dd')}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p th:if="${reports == null}" style="text-align: center;">신고 목록이 존재하지 않습니다.</p>
+                </div>
+
+                <th:block th:if="${pages != null}">
+                    <div class="d-flex justify-content-center">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm previous" th:onclick="|location.href='@{/recruit/free/report/list(page=${currentPage - 1})}'|" th:disabled="${currentPage == 1}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                                </svg>
+                            </button>
+                            <th:block th:each="p : ${#numbers.sequence(1, pages)}">
+                                <button type="button" class="btn btn-sm me-2 pages"
+                                        th:text="${p}" th:onclick="|location.href='@{/recruit/free/report/list(page=${p})}'|" th:id="'page-' + ${p}"></button>
+                            </th:block>
+                            <button type="button" class="btn btn-sm  next" th:onclick="|location.href='@{/recruit/free/report/list(page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
         </div>
 
-        <th:block th:if="${pages != null}">
-            <div class="d-flex justify-content-center">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-sm previous" th:onclick="|location.href='@{/recruit/free/report/list(page=${currentPage - 1})}'|" th:disabled="${currentPage == 1}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
-                        </svg>
-                    </button>
-                    <th:block th:each="p : ${#numbers.sequence(1, pages)}">
-                        <button type="button" class="btn btn-sm me-2 pages"
-                                th:text="${p}" th:onclick="|location.href='@{/recruit/free/report/list(page=${p})}'|" th:id="'page-' + ${p}"></button>
-                    </th:block>
-                    <button type="button" class="btn btn-sm  next" th:onclick="|location.href='@{/recruit/free/report/list(page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </th:block>
     </div>
 </div>
+
 <div th:replace="common/footer.html"></div>
 <script>
     $(document).ready(function() {

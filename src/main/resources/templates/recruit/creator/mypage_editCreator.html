@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
 <html layout:decorate="~{layout}">
 <head>
-  <title>KHG70: 프로필수정</title>
+  <title>툰게더 toonGather | 마이페이지</title>
   <meta charset="UTF-8">
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -14,6 +14,55 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <!-- Latest compiled JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <style>
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .review-list {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 30px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+    .webtoon-info {
+        display: flex;
+        align-items: center;
+    }
+    .webtoon-image {
+        height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-right: 10px;
+    }
+    .webtoon-details {
+        display: flex;
+        flex-direction: column;
+    }
+    .rating {
+        color: #f39c12;
+    }
+    .clickable-row {
+        cursor: pointer;
+    }
+    .clickable-row:hover {
+        background-color: #f8f9fa;
+    }
+  </style>
   <style>
     .navbar {
       position: fixed;
@@ -50,197 +99,206 @@
 <body>
 <div th:replace="~{common/menubar}"></div>
 <style>
-  .jumbotron {
-    position : relative;
-    background-color : #EEEEEE;
-    }
-    .jumbotron .row {
-    position : absolute;
-    width : 100%;
-    bottom: 0%;
-    }
-
-    .nav-link {
-            color: #828282;
-    }
-
-    #loginbox {
-    border-radius : 5%;
-    border-color : #F2F2F2;
-    }
-
-    #loginbox2 {
-    border-radius : 5%;
-    border-color : #F2F2F2;
-    }
-
-    .form-control {
-    background-color : #FCFCFC;
-    border : none;
-    width : 100%;
-    height : 50px;
-    }
-
-    .logininput {
-    background-color : #FCFCFC;
-    border : none;
-    height : 50px;
-    }
-
-    .logininput::placeholder {
-    color : #BBBBBB;
-    }
-
-    button {
-    background-color : #03C75A;
-    }
-
-    #ban {
-    background-color : red;
-    }
-
-    .form-select {
-    background-color : #FCFCFC;
-    border : none;
-    width : 100%;
-    height : 50px;
-    }
-
-    .form-check-input {
-    accent-color: #03C75A;
-    }
-
-    .profile-image {
-    width: 100px;
-    height: auto;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 15px;
-    }
-
-  ul {
-  list-style: none;
-  padding-left : 0px;
+  html, body {
+      height: 100%;
+      margin: 0;
+  }
+  body {
+      display: flex;
+      flex-direction: column;
+  }
+  .content-wrapper {
+      flex: 1 0 auto;
+  }
+  footer {
+      flex-shrink: 0;
   }
 
-   .required-star {
-        color: #03C75A;
-    }
-
-  #image {
-    display: none;
-  }
-
-  #profileimagebox {
-    position : relative;
-  }
-  #profileuploadbutton {
-    position : absolute;
-    bottom : -10%;
-    right : 25%;
-  }
 </style>
-<div class="jumbotron">
-  <div class="row">
-    <div class="col-md-3 px-4">
-      <h3>나의 채용</h3>
-    </div>
-    <div class="col-md-9">
-      <nav class="navbar navbar-expand-md">
-        <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-          <li><a th:href="@{/user/my/rct/job}" class="nav-link px-2">내가 올린 공고</a></li>
-          <li><a th:href="@{/user/my/rct/creator}" class="nav-link px-2">창작자 등록 현황</a></li>
-          <li><a th:href="@{/recruit/creator/mypage_editCreator}" class="nav-link px-2" style="color:#000;">창작자 정보 수정</a></li>
-          <li><a th:href="@{/user/my/rct/apply}" class="nav-link px-2">나의 지원서 관리</a></li>
-          <li><a th:href="@{/user/my/rct/free}" class="nav-link px-2">프리랜서 게시글 관리</a></li>
-          <li><a th:href="@{/user/my/rct/order}" class="nav-link px-2">프리랜서 구매 목록</a></li>
-        </ul>
-      </nav>
-    </div>
-  </div>
-</div>
-<div class="row">
-  <aside class="col-md-3 px-4">
-    <div class="row">
-      <div class="col-3"></div>
-      <div class="col-6">
-        <div class="panel">
-          <ul class="list-group">
-            <li><a th:href="@{/user/my}" class="nav-link px-2">나의 웹툰</a></li>
-            <li><a th:href="@{/user/my/so/review}" class="nav-link px-2">나의 소셜</a></li>
-            <li><a th:href="@{/user/my/rct/job}" class="nav-link px-2" style="color: #03C75A;">나의 채용</a></li>
-            <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">나의 소식</a></li>
-            <li><a th:href="@{/user/my/editprofile}" class="nav-link px-2">프로필 수정</a></li>
-            <li><a th:href="@{/user/my/cs}" class="nav-link px-2">나의 문의</a></li>
-          </ul>
+<div class="content-wrapper">
+  <style>
+    .jumbotron {
+      position : relative;
+      background-color : #EEEEEE;
+      }
+      .jumbotron .row {
+      position : absolute;
+      width : 100%;
+      bottom: 0%;
+      }
+
+      .nav-link {
+              color: #828282;
+      }
+
+      #loginbox {
+      border-radius : 5%;
+      border-color : #F2F2F2;
+      }
+
+      #loginbox2 {
+      border-radius : 5%;
+      border-color : #F2F2F2;
+      }
+
+      .form-control {
+      background-color : #FCFCFC;
+      border : none;
+      width : 100%;
+      height : 50px;
+      }
+
+      .logininput {
+      background-color : #FCFCFC;
+      border : none;
+      height : 50px;
+      }
+
+      .logininput::placeholder {
+      color : #BBBBBB;
+      }
+
+      button {
+      background-color : #03C75A;
+      }
+
+      #ban {
+      background-color : red;
+      }
+
+      .form-select {
+      background-color : #FCFCFC;
+      border : none;
+      width : 100%;
+      height : 50px;
+      }
+
+      .form-check-input {
+      accent-color: #03C75A;
+      }
+    ul {
+    list-style: none;
+    padding-left : 0px;
+    }
+
+     .required-star {
+          color: #03C75A;
+      }
+  </style>
+  <div class="jumbotron">
+    <div class="container">
+      <div class="row">
+        <div class="col-9">
+          <div class="row">
+            <div class="col-md-3 px-4">
+              <h3>나의 채용</h3>
+            </div>
+            <div class="col-md-9">
+              <nav class="navbar navbar-expand-md">
+                <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+                  <li><a th:href="@{/user/my/rct/job}" class="nav-link px-2">내가 올린
+                    공고</a></li>
+                  <li><a th:href="@{/user/my/rct/apply}" class="nav-link px-2">나의 지원서 관리</a>
+                  </li>
+                  <li><a th:href="@{/user/my/rct/free}" class="nav-link px-2">프리랜서 게시글 관리</a></li>
+                  <li><a th:href="@{/user/my/rct/order}" class="nav-link px-2">프리랜서 구매 목록</a></li>
+                  <li><a th:href="@{/recruit/creator/mypage_editCreator}" class="nav-link px-2" style="color:#000;">창작자 정보
+                    수정</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </aside>
+  </div>
+  <div class="container" style="padding:0;">
+    <div class="row">
+      <aside class="col-md-3 px-4">
+        <div class="row">
+          <div class="col-1"></div>
+          <div class="col-8">
+            <div class="panel">
+              <ul class="list-group">
+                <li><a th:href="@{/user/my}" class="nav-link px-2">나의 웹툰</a></li>
+                <li><a th:href="@{/user/my/so/review}" class="nav-link px-2">나의 소셜</a></li>
+                <li><a th:href="@{/user/my/rct/job}" class="nav-link px-2" style="color: #03C75A;">나의 채용</a></li>
+                <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">나의 소식</a></li>
+                <li><a th:href="@{/user/my/editprofile}" class="nav-link px-2">프로필 수정</a></li>
+                <li><a th:href="@{/user/my/cs}" class="nav-link px-2">나의 문의</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </aside>
 
-  <div class="col-md-9">
-    <div class="row justify-content-start" style="color: #828282;">
-      <div class="col-8 p-3" id="loginbox">
-        <form th:action="@{/recruit/creator/mypage_editCreator}" th:object="${creator}" method="post" id="form">
-          <div class="row p-2">
-            <div class="col-3">
-              카카오페이
-            </div>
-            <div class="col-6">
-              <input class="form-control px-3 logininput" type="text" th:field="*{kakao_pg}" maxlength="30" placeholder="포트원 PG사명.CID 형식으로 입력해주세요" id="kakao" name="kakao"/>
-            </div>
-            <div class="col-3">
-            </div>
-          </div>
-          <div class="row p-2">
-            <div class="col-3">
-              KG이니시스
-            </div>
-            <div class="col-6">
-              <input class="form-control px-3 logininput" type="text" th:field="*{inicis_pg}" maxlength="30" placeholder="포트원 PG사명.CID 형식으로 입력해주세요" id="inicis" name="inicis"/>
-            </div>
-            <div class="col-3">
-            </div>
-          </div>
-          <div class="row p-2">
-            <div class="col-3">
-              무통장 입금 <span class="required-star">*</span>
-            </div>
-            <div class="col-6">
-              <select id="bank_name" name="bank_name" class="form-select px-3" style="width: 200px;" required th:field="*{bank_name}">
-                <option value="" disabled selected>은행을 선택하세요</option>
-                <option value="국민은행">국민은행</option>
-                <option value="신한은행">신한은행</option>
-                <option value="우리은행">우리은행</option>
-                <option value="하나은행">하나은행</option>
-                <option value="기업은행">기업은행</option>
-                <option value="농협은행">농협은행</option>
-                <option value="대구은행">대구은행</option>
-                <option value="부산은행">부산은행</option>
-                <option value="광주은행">광주은행</option>
-                <option value="전북은행">전북은행</option>
-                <option value="제주은행">제주은행</option>
-                <option value="카카오뱅크">카카오뱅크</option>
-                <option value="토스뱅크">토스뱅크</option>
-                <option value="SC제일은행">SC제일은행</option>
-              </select>
+      <div class="col-md-9">
+        <div class="row" style="color: #828282;">
+          <div class="col-11" id="loginbox">
+            <form th:action="@{/recruit/creator/mypage_editCreator}" th:object="${creator}" method="post" id="form">
+              <div class="row p-2">
+                <div class="col-3">
+                  카카오페이
+                </div>
+                <div class="col-6">
+                  <input class="form-control px-3 logininput" type="text" th:field="*{kakao_pg}" maxlength="30" placeholder="포트원 PG사명.CID 형식으로 입력해주세요" id="kakao" name="kakao"/>
+                </div>
+                <div class="col-3">
+                </div>
+              </div>
+              <div class="row p-2">
+                <div class="col-3">
+                  KG이니시스
+                </div>
+                <div class="col-6">
+                  <input class="form-control px-3 logininput" type="text" th:field="*{inicis_pg}" maxlength="30" placeholder="포트원 PG사명.CID 형식으로 입력해주세요" id="inicis" name="inicis"/>
+                </div>
+                <div class="col-3">
+                </div>
+              </div>
+              <div class="row p-2">
+                <div class="col-3">
+                  무통장 입금 <span class="required-star">*</span>
+                </div>
+                <div class="col-6">
+                  <select id="bank_name" name="bank_name" class="form-select px-3" style="width: 200px;" required th:field="*{bank_name}">
+                    <option value="" disabled selected>은행을 선택하세요</option>
+                    <option value="국민은행">국민은행</option>
+                    <option value="신한은행">신한은행</option>
+                    <option value="우리은행">우리은행</option>
+                    <option value="하나은행">하나은행</option>
+                    <option value="기업은행">기업은행</option>
+                    <option value="농협은행">농협은행</option>
+                    <option value="대구은행">대구은행</option>
+                    <option value="부산은행">부산은행</option>
+                    <option value="광주은행">광주은행</option>
+                    <option value="전북은행">전북은행</option>
+                    <option value="제주은행">제주은행</option>
+                    <option value="카카오뱅크">카카오뱅크</option>
+                    <option value="토스뱅크">토스뱅크</option>
+                    <option value="SC제일은행">SC제일은행</option>
+                  </select>
+                  <div class="col-12 p-2">
+                  </div>
+                  <input class="form-control px-3" type="text" th:field="*{account}" required maxlength="20" placeholder="계좌번호를 입력해주세요"/>
+                </div>
+              </div>
               <div class="col-12 p-2">
               </div>
-              <input class="form-control px-3" type="text" th:field="*{account}" required maxlength="20" placeholder="계좌번호를 입력해주세요"/>
-            </div>
+              <div class="row">
+                <div class="col-3 p-2">
+                  <button type="submit" class="btn btn-primary btn-block" style="background-color:#03C75A; height:50px;">수정하기</button>
+                </div>
+              </div>
+            </form>
           </div>
-          <div class="col-12 p-2">
-          </div>
-          <div class="row">
-            <div class="col-3 p-2">
-              <button type="submit" class="btn btn-primary btn-block" style="background-color:#03C75A; height:50px;">수정하기</button>
-            </div>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+
 <div th:replace="common/footer.html"></div>
 </body>
 </html>
