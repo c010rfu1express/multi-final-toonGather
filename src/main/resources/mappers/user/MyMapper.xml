@@ -339,10 +339,10 @@
                 ORDER BY srl.like_no ASC
             </when>
             <when test="orderBy == 'recentadded'">
-                ORDER BY sr.created_date DESC
+                ORDER BY srl.review_no DESC
             </when>
             <when test="orderBy == 'oldestadded'">
-                ORDER BY sr.created_date ASC
+                ORDER BY srl.review_no ASC
             </when>
             <when test="orderBy == 'highrated'">
                 ORDER BY sr.star_rating DESC
