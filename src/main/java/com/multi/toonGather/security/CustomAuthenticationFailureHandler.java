@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
@@ -22,16 +23,24 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         String msg = "";
         String ID = request.getParameter("username");
         String PW = request.getParameter("password");
+
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        CustomUserDetails customUserDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(ID);
-        String password = customUserDetails.getPassword();
-        if(password == null || password.equals("")) {
-            msg = "NotFound";
+        try {
+            CustomUserDetails customUserDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(ID);
+            String password = customUserDetails.getPassword();
+            if(password == null || password.equals("")) {
+                msg = "notFound";
+            }
+            boolean result = encoder.matches(PW, password);
+            if(result == false) {
+                msg = "notFound";
+            }
+        } catch(UsernameNotFoundException e) {
+            msg ="notFound";
         }
-        boolean result = encoder.matches(PW, password);
-        if(result == false) {
-            msg = "NotFound";
-        }
+
+
+
 
         //msg = URLEncoder.encode(msg, "UTF-8");
         response.sendRedirect("/user/login?msg=" + msg);
