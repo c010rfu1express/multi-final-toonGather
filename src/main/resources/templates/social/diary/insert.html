@@ -164,25 +164,49 @@
 <div th:replace="common/footer.html"></div>
 
 <script>
-    document.getElementById('content').addEventListener('input', function() {
-        var charCount = this.value.length;
-        document.getElementById('charCount').textContent = charCount;
-        if (charCount > 140) {
-            this.value = this.value.slice(0, 140);
-            document.getElementById('charCount').textContent = 140;
-        }
-    });
+    document.addEventListener('DOMContentLoaded', function() {
+        var content = document.getElementById('content');
+        var charCountSpan = document.getElementById('charCount');
+        var form = document.querySelector('form');
+        var statusCode = document.getElementById('statusCode');
 
-    document.getElementById('statusCode').addEventListener('change', function() {
-        if (this.value === 'C') {
-            this.className = 'c-status';
-        } else if (this.value === 'R') {
-            this.className = 'r-status';
-        }
-    });
+        content.addEventListener('input', function() {
+            var charCount = this.value.length;
+            charCountSpan.textContent = charCount;
+            if (charCount > 140) {
+                this.value = this.value.slice(0, 140);
+                charCountSpan.textContent = 140;
+            }
+        });
 
-    // 초기 상태 설정
-    document.getElementById('statusCode').dispatchEvent(new Event('change'));
+        statusCode.addEventListener('change', function() {
+            if (this.value === 'C') {
+                this.className = 'c-status';
+            } else if (this.value === 'R') {
+                this.className = 'r-status';
+            }
+        });
+
+        form.addEventListener('submit', function(e) {
+            var title = document.getElementById('title').value.trim();
+            var content = document.getElementById('content').value.trim();
+
+            if (title === '') {
+                e.preventDefault();
+                alert('제목을 입력해주세요.');
+                return;
+            }
+
+            if (content === '') {
+                e.preventDefault();
+                alert('내용을 입력해주세요.');
+                return;
+            }
+        });
+
+        // 초기 상태 설정
+        statusCode.dispatchEvent(new Event('change'));
+    });
 </script>
 
 </body>

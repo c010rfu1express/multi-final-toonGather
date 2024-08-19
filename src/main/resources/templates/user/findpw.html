@@ -76,6 +76,10 @@
                 alert('이메일의 허용범위는 최대 100자입니다.');
                 return;
             }
+
+            // 모든 검증이 성공하면 폼을 제출
+            event.target.submit();
+
     }
     </script>
 </head>

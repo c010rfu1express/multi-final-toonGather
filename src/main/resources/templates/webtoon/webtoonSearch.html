@@ -122,7 +122,7 @@
 <br>
 
 <div id="webtoonList">
-    <form class="form-inline" th:action="@{/webtoon/search}" method="get">
+    <form class="form-inline" th:action="@{/webtoon/search}" method="get" id="webtoonSearch">
         <select name="Method">
             <option  value="name" th:selected="${Method == 'name'}">이름, 작가</option>
             <option value="tags" th:selected="${Method == 'tags'}">태그</option>
@@ -222,6 +222,21 @@
 
 
 <script>
+    document.getElementById('webtoonSearch').onsubmit = function(event) {
+        var searchInput = document.getElementById('searchInput').value.trim();
+
+
+        if (searchInput === '') {
+            alert('검색어를 입력 하시오.');
+            event.preventDefault(); // 폼 제출 방지
+            return false; // 폼 제출 방지
+        }
+
+
+        return true; // 폼 제출 허용
+    };
+
+
     let currentPage = 1; // 초기 페이지 번호
     const isLoggedAge=[[${isLoggedAge}]];
     const search = '[[${search}]]';
