@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         try {
             userDTO = userMapper.selectOneByUserId(userId);
         } catch(Exception e) {
-            throw new UsernameNotFoundException("[CustomUserDetailsService] 해당 아이디는 DB에 존재하지 않습니다: " + userId, e);
+            throw new UsernameNotFoundException("[CustomUserDetailsService] 해당 아이디는 DB에 존재하지 않습니다: " + userId);
         }
 
         if(userDTO == null) {
