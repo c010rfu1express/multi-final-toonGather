@@ -234,7 +234,12 @@
                 ORDER BY board_no ASC
             </when>
             <when test="orderBy == 'dueSoon'">
-                ORDER BY dead_line ASC
+                ORDER BY
+                CASE
+                WHEN dead_line IS NULL THEN 1
+                ELSE 0
+                END ASC,
+                dead_line ASC
             </when>
             <when test="orderBy == 'title'">
                 ORDER BY title ASC
@@ -1058,7 +1063,12 @@
                 ORDER BY rja.board_no ASC
             </when>
             <when test="orderBy == 'dueSoon'">
-                ORDER BY rj.dead_line ASC
+                ORDER BY
+                CASE
+                WHEN rj.dead_line IS NULL THEN 1
+                ELSE 0
+                END ASC,
+                dead_line ASC
             </when>
             <when test="orderBy == 'title'">
                 ORDER BY rj.title ASC
