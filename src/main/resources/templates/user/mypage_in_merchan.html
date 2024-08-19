@@ -468,7 +468,7 @@
                                     <div class="col-3 clickable-row"
                                          style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;"
                                          th:each="myInMerchan, iterStat : ${myInMerchans}"
-                                         th:attr="data-href=@{/introduction/merchanDetail(no=${myInMerchan.merchanNo})}"
+                                         th:attr="data-href=@{/introduction/merchan/merchanDetail(merchanNo=${myInMerchan.merchanNo})}"
                                          th:if="${iterStat.index < 3}">
                                         <div class="row justify-content-center">
                                             <div class="col-2 p-0 d-flex align-items-center justify-content-center"
