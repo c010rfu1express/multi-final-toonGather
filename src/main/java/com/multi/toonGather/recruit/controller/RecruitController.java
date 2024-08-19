@@ -89,19 +89,16 @@ public class RecruitController {
                       @RequestParam("regist_no") String regist_no) throws Exception {
 
 
-        //파일첨부한 경우에는 file이름 텍스트 + 이미지파일자체
-
-        //1. 파일의 이름 + 파일 저장 위치를 알아와야한다. ==> String!
         String originFileName = file.getOriginalFilename();
         String ext = originFileName.substring(originFileName.lastIndexOf("."));
         String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
         String resources = request.getSession().getServletContext().getRealPath("/");
         String savePath = resources + "uploadFiles/creator/";
 
-        //2. File객체(폴더/디렉토리 + 파일명)를 생성 ==> 파일을 인식(램에 저장)
+
         File target = new File(savePath + savedName);
         System.out.println(target);
-        //3. 서버 컴퓨터에 파일을 저장시켜야한다. ==> resources아래에 저장!
+
         file.transferTo(target);
 //
         NaverOcr ocr2 = new NaverOcr();
@@ -338,9 +335,6 @@ public class RecruitController {
 
     @PostMapping("/job/apply")
     public String insertApply(@ModelAttribute ApplyDTO applyDTO, HttpServletRequest request, @RequestPart("singleFile") MultipartFile singleFile, Model model, @RequestParam("board_no") int board_no, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        // 현재 인증된 사용자 정보를 가져옴
-
-
         // 작성자의 memberNo와 userName을 설정
         UserDTO writer = new UserDTO();
         writer.setUserNo(userDetails.getMemNo());
@@ -802,6 +796,7 @@ public class RecruitController {
         return "redirect:/recruit/free/view?no=" + board_no;
     }
 
+    // 무통장 입금 안내
     @GetMapping("/free/pay/bank")
     public String bank(@RequestParam("no") int no, Model model) throws Exception {
         FreeDTO freeDTO = freeService.findBoardByNo(no);
@@ -831,6 +826,7 @@ public class RecruitController {
 
     }
 
+    // 마감되지 않은 공고 페이지
     @GetMapping("/job/open")
     public String listOpen(@RequestParam(value = "page", required = false, defaultValue = "1")  int page, Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

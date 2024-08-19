@@ -100,7 +100,7 @@ public class WebtoonController {
                         dto.setGenre2(Genre.getKey());
                     }
                     if(topGenres.size()<2){
-                        tage = topTags.get(2);
+                        if(topTags.size()>1)tage = topTags.get(1);
                         dto.setTag2(tage.getKey());
                         dto.setGenre2(Genre.getKey());
                         break;}
@@ -190,6 +190,8 @@ public class WebtoonController {
                     .collect(Collectors.toList());
 
             System.out.println(comments.toArray());
+            System.out.println(comments);
+            System.out.println(bestComments);
             model.addAttribute("comments",comments);
             model.addAttribute("bestComments",bestComments);
         }catch (Exception e){
@@ -208,7 +210,7 @@ public class WebtoonController {
                 e.printStackTrace();
             }
         }else {
-            model.addAttribute("isLoggedAge",0);
+            model.addAttribute("isLoggedAge",-1);
         }
         System.out.println(wtUserSaveDTO);
         CommentLikeDTO commentLikeDTO=new CommentLikeDTO();
