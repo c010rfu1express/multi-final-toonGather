@@ -94,9 +94,14 @@
         $('#searchForm').submit(function(e) {
             e.preventDefault();
             currentCategory = $('#searchCategory').val();
-            currentKeyword = $('#searchKeyword').val();
-            currentPage = 0;
+            currentKeyword = $('#searchKeyword').val().trim();
 
+            if (currentKeyword === '') {
+                alert('검색어를 입력해주세요.');
+                return;
+            }
+
+            currentPage = 0;
             searchAndDisplayResults(currentCategory, currentKeyword, currentPage, 6);
         });
 

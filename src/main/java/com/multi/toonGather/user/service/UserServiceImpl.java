@@ -60,8 +60,20 @@ public class UserServiceImpl implements UserService {
         }
 
         //소셜 로그인 관련(typecode가 'K', 'N', or 'G'여야 하는 제약조건 존재하므로)
-        if(userDTO.getTypeCode() == 'K' || userDTO.getTypeCode() == 'N')
-        result = userMapper.insertUser(userDTO);
+        if(userDTO.getTypeCode() == 'K' || userDTO.getTypeCode() == 'N'){
+            //소셜로그인회원 탈퇴후 재가입시, withdrawn만 'N'으로 변경
+            UserDTO checkWithdrawnUser = userMapper.selectOneByUserIdWithdrawn(userDTO.getUserId());
+            System.out.println("[UserService.insertUser] checkWithdrawnUser 확인: " +checkWithdrawnUser);
+            if( checkWithdrawnUser != null){
+                System.out.println("[UserService.insertUser] 재활성화 실행 ");
+                //탈퇴목록에 존재시 재활성화
+                userMapper.reactiveUserByUserId(userDTO.getUserId());
+                //이걸 해줘야 예외처리 안넘어감
+                result = 1;
+            }
+            else result = userMapper.insertUser(userDTO);   //탈퇴목록에 없을시 최초가입으로 판단
+        }
+
         else {
             userDTO.setTypeCode('G');
             result = userMapper.insertUser(userDTO);
@@ -73,18 +85,56 @@ public class UserServiceImpl implements UserService {
     }
 
     public String findId(UserDTO userDTO) throws Exception{
-        UserDTO response = userMapper.selectOneByContactNumber(userDTO.getContactNumber());
-        System.out.println("userDTO: "+ userDTO);
-        System.out.println("response: "+ response);
-        try{
-            if(userDTO.getNickname().equals(response.getNickname())) return response.getUserId();
-            else{
-                System.out.println("[MESSAGE] 불일치. nickname: "+userDTO.getNickname()+" contact_number: "+userDTO.getContactNumber());
-                return null;
+        UserDTO response = userMapper.selectOneByEmail(userDTO.getEmail());
+        UserDTO response2 = userMapper.selectOneByNickname(userDTO.getNickname());
+
+        System.out.println("userDTO: "+ userDTO);   //request
+        System.out.println("response: "+ response); //response1 : 이메일을 통해 조회해온 결과
+        System.out.println("response2: "+ response2); //response2 : 닉네임을 통해 조회해온 결과
+        if(response == null || response2 == null) {
+            if(response == null && response2 != null) { //닉네임은 찾았으나 이메일 못찾음
+                if(response2.getTypeCode() == 'K') {
+                    System.out.println("[UserService.findId] 카카오");
+                    return "RETURNMESSAGE:ALREADYSIGNEDUPBYKAKAOAPI";
+                }
+                else if(response2.getTypeCode() == 'N') {
+                    System.out.println("[UserService.findId] 네이버");
+                    return "RETURNMESSAGE:ALREADYSIGNEDUPBYNAVERAPI";
+                }
             }
-        } catch(Exception e){
-            System.err.println("[ERROR] getProfile 예외처리 오류: " + e.getMessage());
             return null;
+        }
+        else { //둘다 not null일 때는, response1(이메일)과 response2(닉네임)의 각각 userNo가 일치하는지부터 본다.
+            if(response.getUserNo() == response2.getUserNo()){
+                if(response.getTypeCode() == 'K') {
+                    System.out.println("[UserService.findId] 카카오");
+                    return "RETURNMESSAGE:ALREADYSIGNEDUPBYKAKAOAPI";
+                }
+                else if(response.getTypeCode() == 'N') {
+                    System.out.println("[UserService.findId] 네이버");
+                    return "RETURNMESSAGE:ALREADYSIGNEDUPBYNAVERAPI";
+                }
+                else return response.getUserId();
+            }
+            else return null;
+//            try{
+//                if(userDTO.getNickname().equals(response.getNickname())) return response.getUserId();
+//                else if(response2.getTypeCode() == 'K') {//소셜 가입후 이메일을 수정한경우
+//                    System.out.println("[UserService.findId] 카카오");
+//                    return "RETURNMESSAGE:ALREADYSIGNEDUPBYKAKAOAPI";
+//                }
+//                else if(response2.getTypeCode() == 'N') {
+//                    System.out.println("[UserService.findId] 네이버");
+//                    return "RETURNMESSAGE:ALREADYSIGNEDUPBYNAVERAPI";
+//                }
+//                else {
+//                    System.out.println("[MESSAGE] 불일치. nickname: "+userDTO.getNickname()+" email: "+userDTO.getEmail());
+//                    return null;
+//                }
+//            } catch(Exception e){
+//        }
+//
+//            return null;
         }
 //        if(userDTO.getNickname() == response.getNickname()) return response.getUserId();
 //        else return "ERROR";    //추후변경해야함!
@@ -131,7 +181,8 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    public void updateProfile(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception {
+    public int updateProfile(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception {
+        int result = 0;
         // 가장 먼저: password, confirmPassword의 일치여부 확인
         if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
             throw new Exception("[ERROR] insertUser 실패. 비밀번호 불일치");
@@ -191,7 +242,7 @@ public class UserServiceImpl implements UserService {
             } // if origin not null
 
             // 회원정보 수정 후 세션등록
-            int result = userMapper.updateUser(userNo, userDTO);
+            result = userMapper.updateUser(userNo, userDTO);
             CustomUserDetails c = (CustomUserDetails)
                     customUserDetailsService.loadUserByUsername(userMapper.selectOneByUserNo(Integer.toString(userNo)).getUserId());
 
@@ -199,18 +250,20 @@ public class UserServiceImpl implements UserService {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            if(result == 0) throw new Exception("[ERROR] updateUser 실패. [userNo: " + userNo + "]");
+            if(result == 0)
+                System.out.println("[ERROR] updateUser 실패. [userNo: " + userNo + "]");
         }
 
+        return result;
     }
 
-    public void updateProfileAdmin(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception {
+    public int updateProfileAdmin(int userNo, UserDTO userDTO, MultipartFile image, HttpServletRequest request) throws Exception {
 
-        if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
-            String currentPassword = userMapper.selectOneByUserNo(Integer.toString(userNo)).getPassword();
-            userDTO.setPassword(currentPassword);
-            System.out.println("UserService.updateProfileAdmin(): 비밀번호를 변경하지 않았음.");
-        }
+//        if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
+//            String currentPassword = userMapper.selectOneByUserNo(Integer.toString(userNo)).getPassword();
+//            userDTO.setPassword(currentPassword);
+//            System.out.println("UserService.updateProfileAdmin(): 비밀번호를 변경하지 않았음.");
+//        }
 
             System.out.println("userNo: " + userNo);
             System.out.println("userDTO: " + userDTO);
@@ -265,21 +318,67 @@ public class UserServiceImpl implements UserService {
 
             // 회원정보 수정
             int result = userMapper.updateUser(userNo, userDTO);
+            if(result == 0) System.out.println("[ERROR] updateUser 실패. [userNo: " + userNo + "]");
 
-            if(result == 0) new Exception("[ERROR] updateUser 실패. [userNo: " + userNo + "]");
-
+            return result;
     }
 
-    public void deleteProfile(int userNo) throws Exception{
+    public int deleteProfile(int userNo, UserDTO userDTO) throws Exception{
+        int result = 0;
         System.out.println("[service.deleteProfile()]userNo: " + userNo);
-        int result = userMapper.deleteUser(userNo);
-        if(result == 0) new Exception("[ERROR] deleteUser 실패. [userNo: " + userNo + "]");
+        System.out.println("userDTO 확인: " +userDTO.toString());
+        //현재 로그인된 유저의 정보를 불러오기
+        CustomUserDetails c = (CustomUserDetails)
+                customUserDetailsService.loadUserByUsername(userMapper.selectOneByUserNo(Integer.toString(userNo)).getUserId());
+        // 탈퇴시 입력한 비밀번호 체크
+        if(userDTO.getPassword().equals(userDTO.getConfirmPassword())) { // (1) 비번 입력이 정확했다면
+            System.out.println("<<입력한 비번간의 일치>>");
+            if(passwordEncoder.matches(userDTO.getPassword(), c.getPassword())) { // (1A) 비번이 현재 로그인된 유저의 비번과 일치한다면
+                System.out.println("<<입력한 비번과 DB비번의 일치>>");
+                result = userMapper.deleteUser(userNo); //탈퇴허가: withdrawn만 'Y'으로 바뀜.
+            }
+            else { // (1B) 비번이 현재 로그인된 유저의 비번과 일치하지 않는다면
+                System.out.println("[ERROR] deleteUser 실패. DB상 비번과 불일치 [userNo: " + userNo + "]");
+                result = 0;
+//                throw new Exception();
+            }
+
+        }
+        else { // (2) 비번 입력이 부정확했다면
+            System.out.println("[ERROR] deleteUser 실패. 입력한 비번간의 불일치 [userNo: " + userNo + "]");
+            result = 0;
+        }
+//        if(result == 0) throw new Exception("[ERROR] deleteUser 실패. [userNo: " + userNo + "]");
+        return result;
+    }
+
+    public int deleteProfileAdmin(int userNo) throws Exception{
+        int result = 0;
+        System.out.println("[service.deleteProfileAdmin()]userNo: " + userNo);
+
+        // (1A) 관리자의 경우 특별한 확인과정 없이 바로 deleteUser (from UserService.deleteProfile()의 1A)
+        result = userMapper.deleteUser(userNo); //탈퇴허가: withdrawn만 'Y'으로 바뀜.
+
+        if(result == 0) System.out.println("[ERROR] deleteUser 실패. [userNo: " + userNo + "]");
+        return result;
+    }
+
+    public int reactiveProfileAdmin(int userNo) throws Exception {
+        int result = 0;
+        System.out.println("[service.reactiveProfileAdmin()]userNo: " + userNo);
+        result = userMapper.reactiveUserByUserNo(userNo); //탈퇴취소: withdrawn만 'N'으로 바뀜.
+
+        if(result == 0) System.out.println("[ERROR] reactiveUser 실패. [userNo: " + userNo + "]");
+        return result;
     }
 
     public int checkUserIdExists(String userId)  {
         int result = 0;
         try{
             UserDTO userDTO = userMapper.selectOneByUserId(userId);
+//            //탈퇴한 회원의 아이디도 사용할 수 없음
+//            if(userDTO == null)
+//                userDTO = userMapper.selectOneByUserIdWithdrawn(userId);
             if(userId.equals(userDTO.getUserId())) result = 1;
             return result;
         } catch(Exception e) {

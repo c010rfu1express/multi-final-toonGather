@@ -37,15 +37,45 @@
 
         // 폼 제출 전 이메일 형식을 검증하는 함수
         function validateForm(event) {
-        const emailInput = document.querySelector('input[name="email"]');
-        const email = emailInput.value;
+            event.preventDefault();
+            // (1/2) userId available check
+            // 아이디는 영문과 숫자의 조합만 가능
+            const userIdInput = document.querySelector('input[name="userId"]');
+            const userId = userIdInput.value;
+            const validIdPattern = /^[a-zA-Z0-9]+$/;
 
-        // 이메일 검증
-        if (!validateEmail(email)) {
-            alert("이메일 형식이 올바르지 않습니다. 예: example@example.com");
-            event.preventDefault(); // 폼 제출을 막음
-            return;
-        }
+            // (B0) 아이디 검증 (공란O/형식O/자수O)
+            if(!userId) {
+                alert('아이디를 입력해 주세요.');
+                return;
+            }
+            if (!validIdPattern.test(userId)) {
+                alert('아이디는 영문과 숫자의 조합으로만 가능합니다.');
+                return;
+            }
+            if (userId.length < 4 || userId.length >20) {
+                alert('아이디의 글자수는 4~20자를 허용합니다.');
+                return;
+            }
+
+            // (2/2) email available check
+            const emailInput = document.querySelector('input[name="email"]');
+            const email = emailInput.value;
+
+            // (B4-1) 이메일 검증 (공란O/형식O/자수O)
+            if(!email) {
+                alert('이메일을 입력해 주세요.');
+                return;
+            }
+            if (!validateEmail(email)) {
+                alert("이메일 형식이 올바르지 않습니다. 예: example@example.com");
+                event.preventDefault(); // 폼 제출을 막음
+                return;
+            }
+            if (email.length < 5 || email.length >100) {
+                alert('이메일의 허용범위는 최대 100자입니다.');
+                return;
+            }
     }
     </script>
 </head>
@@ -53,105 +83,141 @@
 
 <div th:replace="~{common/menubar}"></div>
 <style>
-    .jumbotron {
-    position : relative;
-    background-color : #EEEEEE;
+    html, body {
+        height: 100%;
+        margin: 0;
     }
-    .jumbotron .row {
-    position : absolute;
-    width : 100%;
-    bottom: 0%;
+    body {
+        display: flex;
+        flex-direction: column;
     }
-
-    #loginbox {
-    border-radius : 5%;
-    border-color : #F2F2F2;
+    .content-wrapper {
+        flex: 1 0 auto;
     }
-
-    .logininput {
-    background-color : #FCFCFC;
-    border : none;
-    height : 50px;
+    footer {
+        flex-shrink: 0;
     }
-
-    .logininput::placeholder {
-    color : #BBBBBB;
-    }
-
-     .nav-link {
-            color: #828282;
-    }
-    ul {
-  list-style: none;
-  padding-left : 0px;
-  }
 
 </style>
-<div class="jumbotron">
-    <div class="row">
-        <div class="col-md-3 px-4">
-            <h3>로그인</h3>
-        </div>
-        <div class="col-md-9">
-            <nav class="navbar navbar-expand-md">
-                <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-                    <li>-</li>
-                    <!--          <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">좋아요한 웹툰소식</a></li>-->
-                    <!--          <li><a th:href="@{/user/my/in/event}" class="nav-link px-2">좋아요한 행사</a></li>-->
-                    <!--          <li><a th:href="@{/user/my/in/merchan}" class="nav-link px-2">좋아요한 굿즈</a></li>-->
-                </ul>
-            </nav>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <aside class="col-md-3 px-4">
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <div class="panel">
-                    <ul class="list-group">
-                        <li><a th:href="@{/user/login}" class="nav-link px-2" style="color: #03C75A;">로그인</a></li>
-                        <li><a th:href="@{/user/signup}" class="nav-link px-2">회원가입</a></li>
-                    </ul>
+<div class="content-wrapper">
+    <style>
+        .jumbotron {
+        position : relative;
+        background-color : #EEEEEE;
+        }
+        .jumbotron .row {
+        position : absolute;
+        width : 100%;
+        bottom: 0%;
+        }
+
+        #loginbox {
+        border-radius : 5%;
+        border-color : #F2F2F2;
+        }
+
+        .logininput {
+        background-color : #FCFCFC;
+        border : none;
+        height : 50px;
+        }
+
+        .logininput::placeholder {
+        color : #BBBBBB;
+        }
+
+         .nav-link {
+                color: #828282;
+        }
+        ul {
+      list-style: none;
+      padding-left : 0px;
+      }
+
+    </style>
+    <div class="jumbotron">
+        <div class="container">
+            <div class="row">
+                <div class="col-9">
+                    <div class="row">
+                        <div class="col-md-3 px-4">
+                            <h3>로그인</h3>
+                        </div>
+                        <div class="col-md-9">
+                            <nav class="navbar navbar-expand-md">
+                                <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+                                    <li>-</li>
+                                    <!--          <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">좋아요한 웹툰소식</a></li>-->
+                                    <!--          <li><a th:href="@{/user/my/in/event}" class="nav-link px-2">좋아요한 행사</a></li>-->
+                                    <!--          <li><a th:href="@{/user/my/in/merchan}" class="nav-link px-2">좋아요한 굿즈</a></li>-->
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </aside>
-    <div class="col-md-9">
-        <div class="row justify-content-center">
-            <div class="col-6 border" id="loginbox" style="text-align:center;">
-                <div class="px-3 py-4" style="text-align: center; ">
-                    <h2>비밀번호 찾기</h2>
+    </div>
+    <div class="container" style="padding:0;">
+        <div class="row">
+            <aside class="col-md-3 px-4">
+                <div class="row">
+                    <div class="col-1"></div>
+                    <div class="col-8">
+                        <div class="panel">
+                            <ul class="list-group">
+                                <li><a th:href="@{/user/login}" class="nav-link px-2" style="color: #03C75A;">로그인</a>
+                                </li>
+                                <li><a th:href="@{/user/signup}" class="nav-link px-2">회원가입</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="px-3 py-2" style="text-align:center;">
-                    <a href="/user/findid" style="color: black;">아이디 찾기</a> | <a href="/user/findpw" style="color: black;">비밀번호 찾기</a>
-                </div>
-
-                <div class="row px-3 py-2">
-                    <div class="col-12"><hr></div>
-                </div>
-
-                <form th:action="@{/user/findpw}" th:object="${user}" method="post" onsubmit="validateForm(event)">
-                    <div class="row px-3">
-                        <div class="col-12 mb-3 py-1">
-                            <input type="text" th:field="*{userId}" class="form-control logininput" maxlength="20" minlength="4" placeholder="아이디"/>
+            </aside>
+            <div class="col-md-9">
+                <div class="row justify-content-center">
+                    <div class="col-6 border" id="loginbox" style="text-align:center;">
+                        <div class="px-3 py-4" style="text-align: center; ">
+                            <h2>비밀번호 찾기</h2>
+                        </div>
+                        <div class="px-3 py-2" style="text-align:center;">
+                            <a href="/user/findid" style="color: black;">아이디 찾기</a> | <a href="/user/findpw"
+                                                                                         style="color: black;">비밀번호
+                            찾기</a>
                         </div>
 
-                        <div class="col-12 mb-3 py-1">
-                            <input type="text" th:field="*{email}" class="form-control logininput" placeholder="이메일"/>
+                        <div class="row px-3 py-2">
+                            <div class="col-12">
+                                <hr>
+                            </div>
                         </div>
 
-                        <div class="col-12 pt-3 pb-4">
-                            <button type="submit" class="btn btn-primary btn-block" style="background-color:grey; height:50px;">비밀번호 찾기</button>
-                        </div>
+                        <form th:action="@{/user/findpw}" th:object="${user}" method="post"
+                              onsubmit="validateForm(event)">
+                            <div class="row px-3">
+                                <div class="col-12 mb-3 py-1">
+                                    <input type="text" th:field="*{userId}" class="form-control logininput"
+                                           maxlength="20"
+                                           minlength="4" placeholder="아이디"/>
+                                </div>
+
+                                <div class="col-12 mb-3 py-1">
+                                    <input type="text" th:field="*{email}" class="form-control logininput"
+                                           placeholder="이메일"/>
+                                </div>
+
+                                <div class="col-12 pt-3 pb-4">
+                                    <button type="submit" class="btn btn-primary btn-block"
+                                            style="background-color:grey; height:50px;">비밀번호 찾기
+                                    </button>
+                                </div>
+
+                            </div>
+                        </form>
+
 
                     </div>
-                </form>
-
-
-
-
+                </div>
             </div>
         </div>
     </div>

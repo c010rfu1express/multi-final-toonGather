@@ -103,10 +103,10 @@
                         <br><br>
                         <span class="font-weight-bold" style="font-size : 15pt;">상세 요강</span>
                         <hr>
-                        <div style="white-space:pre-wrap; word-wrap:break-word;"><span th:text="${job.content}"></span></div>
                         <div th:if="${job.img != null}">
-                            <img th:src="@{'/uploadFiles/job/' + ${job.img}}" width="250" height="250" alt="게시글 이미지">
+                            <img th:src="@{'/uploadFiles/job/' + ${job.img}}" alt="게시글 이미지">
                         </div>
+                        <div style="white-space:pre-wrap; word-wrap:break-word;"><span th:text="${job.content}"></span></div>
                         <br> <br>
                         <span class="font-weight-bold" style="font-size : 15pt;">채용담당자 연락처</span>
                         <br> [[${job.contact}]] <br>
