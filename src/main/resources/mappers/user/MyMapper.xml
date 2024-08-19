@@ -1572,7 +1572,7 @@
             </choose>
         </if>
         <if test="toggleValue == 'Y'">
-            AND im.discount_price > 1000
+            AND im.regular_price IS NOT NULL
         </if>
         <choose>
             <when test="orderBy == 'recentliked'">
@@ -1588,10 +1588,10 @@
                 ORDER BY iml.merchan_no ASC
             </when>
             <when test="orderBy == 'expensive'">
-                ORDER BY im.regular_price DESC
+                ORDER BY im.discount_price DESC
             </when>
             <when test="orderBy == 'cheap'">
-                ORDER BY im.regular_price ASC
+                ORDER BY im.discount_price ASC
             </when>
             <when test="orderBy == 'title'">
                 ORDER BY im.title ASC
