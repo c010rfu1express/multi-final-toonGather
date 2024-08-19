@@ -313,12 +313,14 @@
 
 
 
+
         </div>
         <th:block th:if="${user.userNo > 0}">
         <button type="submit" class="btn btn-primary">댓글 등록</button>
         </th:block>
     </form>
     </div>
+
 
     <div id="comments">
         <h2>댓글 목록</h2>
@@ -418,8 +420,24 @@
     </div>
 </div>
 <div th:replace="common/footer.html"></div>
-
 <script>
+    function validateContent() {
+        const content = document.getElementById('content').value.trim(); // 공백 제거 후 값 얻기
+        if (content.length === 0) { // 내용이 없는 경우
+            alert('댓글을 입력해 주세요.'); // 경고 메시지
+            return false; // 폼 제출을 막음
+        }
+        return true; // 폼 제출을 허용
+    }
+
+    document.getElementById('commentForm').addEventListener('submit', function(event) {
+        if (!validateContent()) {
+            event.preventDefault(); // 폼 제출 방지
+        }
+    });
+</script>
+<script>
+
 
 
 
@@ -632,6 +650,12 @@
             // 저장 버튼 클릭 시 처리할 함수
             const handleEditSave = function() {
                 const editedContent = commentTextarea.value;
+                const Content = commentTextarea.value.trim(); // 공백을 제거한 댓글 내용
+
+            if (Content.length === 0) {
+                alert('댓글 내용을 입력해 주세요.'); // 공백만 포함된 경우 경고
+                return; // 저장 동작을 중지
+            }
                 if(commentTextarea.value.length>0){
                 fetch(`/webtoon/one/update`, {
                     method: 'POST',

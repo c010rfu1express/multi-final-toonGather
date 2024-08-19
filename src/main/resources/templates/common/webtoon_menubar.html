@@ -90,16 +90,28 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     document.getElementById('searchForm').onsubmit = function(event) {
-       var searchInput = document.querySelector('input[name="search"]').value;
-       var methodInput = document.getElementById('methodInput');
+       var searchInput = document.querySelector('input[name="search"]').value.trim();
+        var methodInput = document.getElementById('methodInput');
 
-       if (searchInput.includes('#')) {
-           // 'search' 입력값에 '#'가 포함되어 있으면 'Method' 값을 'tags'로 변경
-           methodInput.value = 'tags';
-       } else {
-           // '#'가 포함되어 있지 않으면 기본 값 'name' 유지
-           methodInput.value = 'name';
-       }
+
+
+        if (searchInput.includes('#')) {
+        if (searchInput.length < 2 || searchInput === '') {
+            alert('검색어를 입력하시오');
+            event.preventDefault(); // 폼 제출 방지
+            return false; // 폼 제출 방지
+        }
+            methodInput.value = 'tags'; // '#가 포함되어 있으면 methodInput 값 설정
+        } else {
+        if (searchInput.length < 1 || searchInput === '') {
+            alert('검색어를 입력하시오');
+            event.preventDefault(); // 폼 제출 방지
+            return false; // 폼 제출 방지
+        }
+            methodInput.value = 'name'; // 기본값 유지
+        }
+
+        return true;
    };
 
 
