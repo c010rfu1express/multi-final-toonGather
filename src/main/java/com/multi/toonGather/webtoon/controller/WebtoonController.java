@@ -190,6 +190,8 @@ public class WebtoonController {
                     .collect(Collectors.toList());
 
             System.out.println(comments.toArray());
+            System.out.println(comments);
+            System.out.println(bestComments);
             model.addAttribute("comments",comments);
             model.addAttribute("bestComments",bestComments);
         }catch (Exception e){
@@ -208,7 +210,7 @@ public class WebtoonController {
                 e.printStackTrace();
             }
         }else {
-            model.addAttribute("isLoggedAge",0);
+            model.addAttribute("isLoggedAge",-1);
         }
         System.out.println(wtUserSaveDTO);
         CommentLikeDTO commentLikeDTO=new CommentLikeDTO();
