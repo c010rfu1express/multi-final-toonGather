@@ -86,173 +86,467 @@
 
 <div th:replace="~{common/menubar}"></div>
 <style>
-    .jumbotron {
-    position : relative;
-    background-color : #EEEEEE;
+    html, body {
+        height: 100%;
+        margin: 0;
     }
-    .jumbotron .row {
-    position : absolute;
-    width : 100%;
-    bottom: 0%;
+    body {
+        display: flex;
+        flex-direction: column;
+    }
+    .content-wrapper {
+        flex: 1 0 auto;
+    }
+    footer {
+        flex-shrink: 0;
     }
 
-     .nav-link {
-            color: #828282;
-    }
-    ul {
-  list-style: none;
-  padding-left : 0px;
-  }
 </style>
-<div class="jumbotron">
-    <div class="row">
-        <div class="col-md-3 px-4">
-            <h3>회원 관리</h3>
-        </div>
-        <div class="col-md-9">
-            <nav class="navbar navbar-expand-md">
-                <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-                    <li><a th:href="@{/user/my}" class="nav-link px-2">마이페이지(테스트용)</a></li>
-                    <!--          <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">좋아요한 웹툰소식</a></li>-->
-                    <!--          <li><a th:href="@{/user/my/in/event}" class="nav-link px-2">좋아요한 행사</a></li>-->
-                    <!--          <li><a th:href="@{/user/my/in/merchan}" class="nav-link px-2">좋아요한 굿즈</a></li>-->
-                </ul>
-            </nav>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <aside class="col-md-3 px-4">
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <div class="panel">
-                    <ul class="list-group">
-                        <li><a th:href="@{/user/admin/userlist}" class="nav-link px-2" style="color: #03C75A;">회원 관리</a></li>
-                        <li><a th:href="@{/recruit/free/report/list}" class="nav-link px-2">신고 관리</a></li>
-                    </ul>
+<div class="content-wrapper">
+    <style>
+        .jumbotron {
+        position : relative;
+        background-color : #EEEEEE;
+        }
+        .jumbotron .row {
+        position : absolute;
+        width : 100%;
+        bottom: 0%;
+        }
+
+         .nav-link {
+                color: #828282;
+        }
+        ul {
+      list-style: none;
+      padding-left : 0px;
+      }
+    </style>
+    <div class="jumbotron">
+        <div class="container">
+            <div class="row">
+                <div class="col-9">
+                    <div class="row">
+                        <div class="col-md-3 px-4">
+                            <h3>회원 관리</h3>
+                        </div>
+                        <div class="col-md-9">
+                            <nav class="navbar navbar-expand-md">
+                                <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+                                    <li><a th:href="@{/user/my}" class="nav-link px-2">마이페이지(테스트용)</a></li>
+                                    <!--          <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">좋아요한 웹툰소식</a></li>-->
+                                    <!--          <li><a th:href="@{/user/my/in/event}" class="nav-link px-2">좋아요한 행사</a></li>-->
+                                    <!--          <li><a th:href="@{/user/my/in/merchan}" class="nav-link px-2">좋아요한 굿즈</a></li>-->
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </aside>
-    <script> // toggle + sorting
-        function updateCheckboxValueAndSubmit() {
-            const checkbox = document.getElementById('isToggledCheckbox');
-            const form = document.getElementById('filter-and-sort-form');
-            // 체크박스가 체크된 상태를 확인
-            checkbox.value = checkbox.checked ? 'Y' : 'N';
-            // 폼 제출
-            form.submit();
-        }
-
-        function submitForm() {
-            document.getElementById('filter-and-sort-form').submit();
-        }
-    </script>
-    <div class="col-md-9">
-        <div class="review-list">
-            <h2>회원 목록</h2>
-            <form id="filter-and-sort-form" th:action="@{/user/admin/userlist}" method="get">
-                <!-- 검색 조건 -->
-                <label>
-                    <select name="searchBy">
-                        <option value="id" th:selected="${searchBy == 'id'}">아이디</option>
-                        <option value="type" th:selected="${searchBy == 'type'}">가입유형코드</option>
-                        <option value="auth" th:selected="${searchBy == 'auth'}">권한코드</option>
-                        <option value="nickname" th:selected="${searchBy == 'nickname'}">닉네임</option>
-                        <option value="contactNo" th:selected="${searchBy == 'contactNo'}">연락처</option>
-                        <option value="email" th:selected="${searchBy == 'email'}">이메일</option>
-                        <option value="bio" th:selected="${searchBy == 'bio'}">소개</option>
-                        <option value="gender" th:selected="${searchBy == 'gender'}">성별</option>
-                        <option value="dateOfBirth" th:selected="${searchBy == 'dateOfBirth'}">생년월일</option>
-                        <option value="realName" th:selected="${searchBy == 'realName'}">실명</option>
-                    </select>
-                </label>
-                <input type="text logininput" name="searchTerm" placeholder="검색어를 입력하세요" th:value="${searchTerm}" />
-
-                <!-- 검색 버튼 -->
-                <button type="submit">검색</button>
-
-                <!-- 정렬 또는 토글 -->
-                <label>
-                    <input type="checkbox" name="isToggled" id="isToggledCheckbox" value="Y" th:checked="${isToggled == 'Y'}" onchange="updateCheckboxValueAndSubmit()">창작자
-                </label>
-<!--                &lt;!&ndash; Hidden field for boardNo &ndash;&gt;-->
-<!--                <input type="hidden" name="page" th:value="${page}" />-->
-                <label>
-                    <select name="orderBy" onchange="submitForm()">
-                        <option value="recent" th:selected="${orderBy == 'recent'}">최근가입순</option>
-                        <option value="oldest" th:selected="${orderBy == 'oldest'}">오래된순</option>
-                        <option value="nickname" th:selected="${orderBy == 'nickname'}">닉네임가나다순</option>
-                    </select>
-                </label>
-            </form>
-            <table>
-                <thead>
-                <tr>
-                    <th>회원번호</th>
-                    <th>유형 코드</th>
-                    <th>권한 코드</th>
-                    <th>사용자 ID</th>
-                    <th>닉네임</th>
-                    <th>연락처</th>
-                    <th>이메일</th>
-                    <th>프로필 이미지 경로</th>
-                    <th>소개</th>
-                    <th>성별</th>
-                    <th>생년월일</th>
-                    <th>실명</th>
-                    <th>약관 동의</th>
-                    <th>약관 동의 시간</th>
-                    <th>등록 시간</th>
-                    <th>마지막 수정 시간</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="user : ${users}" class="clickable-row" th:attr="data-href=@{/user/admin/userdetails(userNo=${user.userNo})}">
-                    <td th:text="${user.userNo}">회원번호</td>
-                    <td th:text="${user.typeCode}">유형 코드</td>
-                    <td th:text="${user.authCode}">권한 코드</td>
-                    <td th:text="${user.userId}">사용자 ID</td>
-                    <td th:text="${user.nickname}">닉네임</td>
-                    <td th:text="${user.contactNumber}">연락처</td>
-                    <td th:text="${user.email}">이메일</td>
-                    <td th:text="${user.profileImagePath}">프로필 이미지 경로</td>
-                    <td th:text="${user.bio}">소개</td>
-                    <td th:text="${user.gender}">성별</td>
-                    <td th:text="${user.dateOfBirth}">생년월일</td>
-                    <td th:text="${user.realName}">실명</td>
-                    <td th:text="${user.termsAgreement}">약관 동의</td>
-                    <td th:text="${user.termsAgreementDatetime}">약관 동의 시간</td>
-                    <td th:text="${user.registrationDatetime}">등록 시간</td>
-                    <td th:text="${user.lastModifiedDatetime}">마지막 수정 시간</td>
-                </tr>
-                </tbody>
-            </table>
-
-            <!-- 페이징 -->
-            <th:block th:if="${pages != null}">
-                <div class="d-flex justify-content-center">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-sm previous" th:onclick="|location.href='@{/user/admin/userlist(isToggled=${isToggled}, orderBy=${orderBy}, page=${currentPage - 1})}'|" th:disabled="${currentPage == 1}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
-                            </svg>
-                        </button>
-                        <th:block th:each="p : ${#numbers.sequence(1, pages)}">
-                            <button type="button" class="btn btn-sm me-2 pages"
-                                    th:text="${p}" th:onclick="|location.href='@{/user/admin/userlist(isToggled=${isToggled}, orderBy=${orderBy}, page=${p})}'|"></button>
-                        </th:block>
-                        <button type="button" class="btn btn-sm  next" th:onclick="|location.href='@{/user/admin/userlist(isToggled=${isToggled}, orderBy=${orderBy}, page=${currentPage + 1})}'|" th:disabled="${currentPage == pages}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
-                            </svg>
-                        </button>
+    </div>
+    <div class="container" style="padding:0;">
+        <div class="row">
+            <aside class="col-md-3 px-4">
+                <div class="row">
+                    <div class="col-1"></div>
+                    <div class="col-8">
+                        <div class="panel">
+                            <ul class="list-group">
+                                <li><a th:href="@{/user/admin/userlist}" class="nav-link px-2" style="color: #03C75A;">회원
+                                    관리</a></li>
+                                <li><a th:href="@{/recruit/free/report/list}" class="nav-link px-2">신고 관리</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </th:block>
+            </aside>
+            <script> // toggle + sorting
+            function updateCheckboxValueAndSubmit() {
+                const checkbox = document.getElementById('isToggledCheckbox');
+                const form = document.getElementById('filter-and-sort-form');
+                // 체크박스가 체크된 상태를 확인
+                checkbox.value = checkbox.checked ? 'Y' : 'N';
+                // 폼 제출
+                form.submit();
+            }
+
+            function submitForm() {
+                document.getElementById('filter-and-sort-form').submit();
+            }
+            </script>
+            <style>
+                .form-select {
+                background-color : #FCFCFC;
+                border : none;
+                width : 100%;
+                height : 50px;
+                }
+                select {
+                color : #828282;
+                }
+                .form-control {
+                background-color : #FCFCFC;
+                border : none;
+                width : 100%;
+                height : 50px;
+                }
+
+
+                .form-control::placeholder {
+                color : #BBBBBB;
+                }
+
+                .date-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #8E4B6E;
+            color: white;
+            border-radius: 10px;
+            text-align:center;
+            font-family: "Work Sans", sans-serif;
+        }
+
+        .month {
+            font-size: 1.1rem; /* M의 크기를 설정 */
+            font-weight: 550;
+            line-height: 1;
+        }
+
+        .year {
+            font-size: 0.65rem; /* yyyy의 크기를 설정 */
+            font-weight: 400;
+        }
+        :root {
+            --background-color-light: #FFFFFF;
+            --text-color-light: #000000;
+            --toggle-background-light: #CCCCCC;
+            --toggle-ball-light: #FFFFFF;
+
+            --background-color-dark: #333333;
+            --text-color-dark: #FFFFFF;
+            --toggle-background-dark: #03C75A;
+            --toggle-ball-dark: #FFFFFF;
+
+            --font-size-base: 32px; /* 기본 텍스트 크기 */
+            --font-size-large: 52px; /* 제목 등 큰 텍스트용 폰트 크기 */
+        }
+
+
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 62px; /* 너비 조정 */
+            height: 38px; /* 높이 조정 */
+        }
+
+        .toggle-switch .checkbox {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        #isToggledCheckbox {
+             opacity: 0;
+                width: 0;
+                height: 0;
+        }
+
+        .toggle-switch .label {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--toggle-background-light);
+            transition: background-color 0.4s;
+            border-radius: 38px; /* 둥근 모서리 반경 조정 */
+        }
+
+        .toggle-switch .label:before {
+            position: absolute;
+            content: "";
+            height: 30px; /* 내부 원 높이 조정 */
+            width: 30px; /* 내부 원 너비 조정 */
+            left: 2px;
+            bottom: 0px;
+            background-color: var(--toggle-ball-light);
+            transition: transform 0.4s;
+            border-radius: 50%;
+        }
+
+        .toggle-switch input:checked + .label {
+            background-color: var(--toggle-background-dark);
+        }
+
+        .toggle-switch input:checked + .label:before {
+            transform: translateX(28px); /* 내부 원 이동 거리 조정 */
+        }
+
+                 #absdiv {
+
+                    z-index : 1000;
+                }
+
+                #searchbutton {
+                    background-color: #828282;
+                }
+                .truncate {
+        max-width: 150px;  /* 원하는 너비에 맞게 조정 */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+            </style>
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+                  rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+                  rel="stylesheet">
+            <div class="col-md-9">
+                <style>
+                    .col-4 select {
+                        border-radius: 50px;
+                        text-align: center;
+                    }
+                    /* 검색창 스타일 */
+                    .search-container {
+                        width: 300px;
+                    }
+
+                    .search-container select {
+                        position: absolute;
+                        left: 0%;
+                        width: 30%;
+                        height: 50px;
+                        color: #828282;
+                        font-size: 1rem;
+                        border-radius: 50px 0 0 50px;
+                        outline: none;
+                    }
+                    .search-container input[type="text"] {
+                        position: absolute; /* 변경된 부분: 위치를 절대적으로 설정 */
+                        left: 30%; /* 변경된 부분: 전체 너비의 30% 위치로 이동 */
+                        width: 70%; /* 변경된 부분: 너비를 조정하여 적절한 위치에 맞춤 */
+                        height: 50px;
+                        padding: 10px 40px 10px 15px;
+                        font-size: 1rem;
+                        outline: none;
+                        border-radius: 0 50px 50px 0;
+                        transition: border-color 0.3s, background-color 0.3s;
+                        color: #828282; /* 입력 텍스트 색상 변경 */
+                    }
+
+                    .search-container input[type="text"]::placeholder {
+                        color: #BBBBBB; /* placeholder 색상 변경 */
+                    }
+
+
+                    .search-container button {
+                        position: absolute;
+                        right: 1rem;
+                        top: 25px;
+                        background: none;
+                        transform: translateY(-50%);
+                        border: none;
+                        cursor: pointer;
+                    }
+
+                    .search-container button i {
+                        color: #A6AAB5;
+                    }
+
+                    .search-container button:hover i {
+                        color: #03C75A;
+                    }
+                </style>
+                <form id="filter-and-sort-form" th:action="@{/user/admin/userlist}" method="get">
+                    <div class="row m-0">
+                        <div class="col-7 p-0">
+                            <div class="row justify-content-start m-0">
+                                <div class="col-12 p-0">
+                                    <div class="search-container">
+                                        <select class="form-select px-3" name="searchBy">
+                                            <option value="id" th:selected="${searchBy == 'id'}">아이디</option>
+                                            <option value="type" th:selected="${searchBy == 'type'}">가입유형코드</option>
+                                            <option value="auth" th:selected="${searchBy == 'auth'}">권한코드</option>
+                                            <option value="nickname" th:selected="${searchBy == 'nickname'}">닉네임
+                                            </option>
+                                            <option value="contactNo" th:selected="${searchBy == 'contactNo'}">연락처
+                                            </option>
+                                            <option value="email" th:selected="${searchBy == 'email'}">이메일</option>
+                                            <option value="bio" th:selected="${searchBy == 'bio'}">소개</option>
+                                            <option value="gender" th:selected="${searchBy == 'gender'}">성별</option>
+                                            <option value="dateOfBirth" th:selected="${searchBy == 'dateOfBirth'}">
+                                                생년월일
+                                            </option>
+                                            <option value="realName" th:selected="${searchBy == 'realName'}">실명</option>
+                                        </select>
+                                        <input class="form-control px-3" type="text" name="searchTerm"
+                                               placeholder="검색어를 입력하세요" th:value="${searchTerm}"/>
+                                        <!-- 검색 버튼 -->
+                                        <button type="submit">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-1" style=""></div>
+                        <div class="col-4">
+                            <div class="row justify-content-end">
+                                <!-- 정렬 또는 토글2 -->
+                                <label>
+                                    <select class="form-select px-3" name="orderBy" onchange="submitForm()">
+                                        <option value="recent" th:selected="${orderBy == 'recent'}">최근가입순</option>
+                                        <option value="oldest" th:selected="${orderBy == 'oldest'}">오래된순</option>
+                                        <option value="recentUpdated" th:selected="${orderBy == 'recentUpdated'}">최근수정순</option>
+                                        <option value="nickname" th:selected="${orderBy == 'nickname'}">닉네임가나다순</option>
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+                    </div> <!--검색, 소팅 (토글X)-->
+                    <div class="row justify-content-around">
+                        <div class="col-3" style="padding: 0 1.2rem;"></div>
+                        <div class="col-3" style="padding: 0 1.2rem;"></div>
+                        <div class="col-3" style="padding: 0 1.2rem;">
+                            <div id="absdiv" class="row justify-content-end">
+                                <div class="col-3">
+                                    <div class="toggle-switch">
+                                        <!-- 정렬 또는 토글1 -->
+                                        <input type="checkbox" name="isToggled" id="isToggledCheckbox"
+                                               value="Y" th:checked="${isToggled == 'Y'}"
+                                               onchange="updateCheckboxValueAndSubmit()">
+                                        <label for="isToggledCheckbox" class="label">
+                                            <div class="ball"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-8" style="text-align: right; padding: 0px; margin : 0px;">
+                                    탈퇴회원
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!--토글-->
+                </form>
+                <!--수정전 폼-->
+                <!--                <form id="filter-and-sort-form" th:action="@{/user/admin/userlist}" method="get">-->
+                <!--                    &lt;!&ndash; 검색 조건 &ndash;&gt;-->
+                <!--                    <label>-->
+                <!--                        <select name="searchBy">-->
+                <!--                            <option value="id" th:selected="${searchBy == 'id'}">아이디</option>-->
+                <!--                            <option value="type" th:selected="${searchBy == 'type'}">가입유형코드</option>-->
+                <!--                            <option value="auth" th:selected="${searchBy == 'auth'}">권한코드</option>-->
+                <!--                            <option value="nickname" th:selected="${searchBy == 'nickname'}">닉네임</option>-->
+                <!--                            <option value="contactNo" th:selected="${searchBy == 'contactNo'}">연락처</option>-->
+                <!--                            <option value="email" th:selected="${searchBy == 'email'}">이메일</option>-->
+                <!--                            <option value="bio" th:selected="${searchBy == 'bio'}">소개</option>-->
+                <!--                            <option value="gender" th:selected="${searchBy == 'gender'}">성별</option>-->
+                <!--                            <option value="dateOfBirth" th:selected="${searchBy == 'dateOfBirth'}">생년월일</option>-->
+                <!--                            <option value="realName" th:selected="${searchBy == 'realName'}">실명</option>-->
+                <!--                        </select>-->
+                <!--                    </label>-->
+                <!--                    <input type="text logininput" name="searchTerm" placeholder="검색어를 입력하세요" th:value="${searchTerm}"/>-->
+
+                <!--                    &lt;!&ndash; 검색 버튼 &ndash;&gt;-->
+                <!--                    <button type="submit">검색</button>-->
+
+                <!--                    &lt;!&ndash; 정렬 또는 토글 &ndash;&gt;-->
+                <!--                    <label>-->
+                <!--                        <input type="checkbox" name="isToggled" id="isToggledCheckbox" value="Y"-->
+                <!--                               th:checked="${isToggled == 'Y'}" onchange="updateCheckboxValueAndSubmit()">창작자-->
+                <!--                    </label>-->
+                <!--                    &lt;!&ndash;                &lt;!&ndash; Hidden field for boardNo &ndash;&gt;&ndash;&gt;-->
+                <!--                    &lt;!&ndash;                <input type="hidden" name="page" th:value="${page}" />&ndash;&gt;-->
+                <!--                    <label>-->
+                <!--                        <select name="orderBy" onchange="submitForm()">-->
+                <!--                            <option value="recent" th:selected="${orderBy == 'recent'}">최근가입순</option>-->
+                <!--                            <option value="oldest" th:selected="${orderBy == 'oldest'}">오래된순</option>-->
+                <!--                            <option value="nickname" th:selected="${orderBy == 'nickname'}">닉네임가나다순</option>-->
+                <!--                        </select>-->
+                <!--                    </label>-->
+                <!--                </form>-->
+                <table>
+                    <thead>
+                    <tr style="font-size: 0.5 rem;">
+                        <th>회원번호</th>
+                        <th>유형 코드</th>
+                        <th>권한 코드</th>
+                        <th>사용자 ID</th>
+                        <th>닉네임</th>
+                        <th>마지막 수정 시간</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${users}" class="clickable-row"
+                        th:attr="data-href=@{/user/admin/userdetails(userNo=${user.userNo})}">
+                        <td th:text="${user.userNo}">회원번호</td>
+                        <td th:text="${user.typeCode}">유형 코드</td>
+                        <td th:text="${user.authCode}">권한 코드</td>
+                        <td th:text="${user.userId}" class="truncate">사용자 ID</td>
+                        <td th:text="${user.nickname}" class="truncate">닉네임</td>
+                        <td th:text="${user.lastModifiedDatetime}">마지막 수정 시간</td>
+                    </tr>
+                    </tbody>
+
+                </table>
+
+                <!-- 페이징 -->
+                <th:block th:if="${pages != null}">
+                    <div class="d-flex justify-content-center">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm previous"
+                                    th:onclick="|location.href='@{/user/admin/userlist(isToggled=${isToggled}, orderBy=${orderBy}, page=${currentPage - 1})}'|"
+                                    th:disabled="${currentPage == 1}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-chevron-left" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                          d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                                </svg>
+                            </button>
+                            <th:block th:each="p : ${#numbers.sequence(1, pages)}">
+                                <button type="button" class="btn btn-sm me-2 pages"
+                                        th:text="${p}"
+                                        th:onclick="|location.href='@{/user/admin/userlist(isToggled=${isToggled}, orderBy=${orderBy}, page=${p})}'|"></button>
+                            </th:block>
+                            <button type="button" class="btn btn-sm  next"
+                                    th:onclick="|location.href='@{/user/admin/userlist(isToggled=${isToggled}, orderBy=${orderBy}, page=${currentPage + 1})}'|"
+                                    th:disabled="${currentPage == pages}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                          d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
         </div>
     </div>
+    <script>
+
+        //탈퇴 폼 제출 후처리
+        window.onload = function() {
+              const urlParams = new URLSearchParams(window.location.search);
+              const status = urlParams.get('status');
+              if (status === 'editSuccess') {
+                  alert("프로필 수정이 완료되었습니다.");
+              }
+              else if (status === 'editFailure') {
+                  alert("프로필 수정 중 문제가 발생했습니다. 다시 시도해주세요.");
+              }
+              else if (status === 'withdrawnSuccess') {
+                  alert("해당 회원을 강제 탈퇴처리하였습니다.");
+              }
+              else if (status === 'withdrawnFailure') {
+                  alert("회원 탈퇴 처리 중 문제가 발생했습니다.");
+              }
+          }
+    </script>
 </div>
 <div th:replace="common/footer.html"></div>
 </body>

@@ -86,92 +86,124 @@
 
 <div th:replace="~{common/menubar}"></div>
 <style>
-    .jumbotron {
-    position : relative;
-    background-color : #EEEEEE;
+    html, body {
+        height: 100%;
+        margin: 0;
     }
-    .jumbotron .row {
-    position : absolute;
-    width : 100%;
-    bottom: 0%;
+    body {
+        display: flex;
+        flex-direction: column;
     }
-    .nav-link {
-            color: #828282;
+    .content-wrapper {
+        flex: 1 0 auto;
     }
-    ul {
-  list-style: none;
-  padding-left : 0px;
-  }
+    footer {
+        flex-shrink: 0;
+    }
+
 </style>
-<div class="jumbotron">
-    <div class="row">
-        <div class="col-md-3 px-4">
-            <h3>나의 채용</h3>
-        </div>
-        <div class="col-md-9">
-            <nav class="navbar navbar-expand-md">
-                <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
-                    <li><a th:href="@{/user/my/rct/job}" class="nav-link px-2">내가 올린 공고</a></li>
-                    <li><a th:href="@{/user/my/rct/creator}" class="nav-link px-2" style="color:#000;">창작자 등록 현황</a></li>
-                    <li><a th:href="@{/user/my/rct/apply}" class="nav-link px-2">나의 지원서 관리</a></li>
-                    <li><a th:href="@{/user/my/rct/free}" class="nav-link px-2">프리랜서 게시글 관리</a></li>
-                    <li><a th:href="@{/user/my/rct/order}" class="nav-link px-2">프리랜서 구매 목록</a></li>
-                </ul>
-            </nav>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <aside class="col-md-3 px-4">
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <div class="panel">
-                    <ul class="list-group">
-                        <li><a th:href="@{/user/my/wt/webtoon}" class="nav-link px-2">나의 웹툰</a></li>
-                        <li><a th:href="@{/user/my/so/review}" class="nav-link px-2">나의 소셜</a></li>
-                        <li><a th:href="@{/user/my/rct/job}" class="nav-link px-2" style="color: #03C75A;">나의 채용</a></li>
-                        <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">나의 소식</a></li>
-                        <li><a th:href="@{/user/my/editprofile}" class="nav-link px-2">프로필 수정</a></li>
-                        <li><a th:href="@{/user/my/cs}" class="nav-link px-2">나의 문의</a></li>
-                    </ul>
+<div class="content-wrapper">
+    <style>
+        .jumbotron {
+        position : relative;
+        background-color : #EEEEEE;
+        }
+        .jumbotron .row {
+        position : absolute;
+        width : 100%;
+        bottom: 0%;
+        }
+        .nav-link {
+                color: #828282;
+        }
+        ul {
+      list-style: none;
+      padding-left : 0px;
+      }
+    </style>
+    <div class="jumbotron">
+        <div class="container">
+            <div class="row">
+                <div class="col-9">
+                    <div class="row">
+                        <div class="col-md-3 px-4">
+                            <h3>나의 채용</h3>
+                        </div>
+                        <div class="col-md-9">
+                            <nav class="navbar navbar-expand-md">
+                                <ul class="nav col-12 col-md-auto mb-4 justify-content mb-md-3">
+                                    <li><a th:href="@{/user/my/rct/job}" class="nav-link px-2">내가 올린 공고</a></li>
+                                    <li><a th:href="@{/user/my/rct/creator}" class="nav-link px-2" style="color:#000;">창작자
+                                        등록 현황</a>
+                                    </li>
+                                    <li><a th:href="@{/user/my/rct/apply}" class="nav-link px-2">나의 지원서 관리</a></li>
+                                    <li><a th:href="@{/user/my/rct/free}" class="nav-link px-2">프리랜서 게시글 관리</a></li>
+                                    <li><a th:href="@{/user/my/rct/order}" class="nav-link px-2">프리랜서 구매 목록</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </aside>
-    <div class="col-md-9">
-        <div class="review-list">
-            <h2>창작자 등록 현황</h2>
-            <th:block th:if="${!auth_code.equals('C')}">
-                <a th:href="@{/recruit/creator/choice}">창작자 등록 신청</a>
-            </th:block>
-            <th:block th:if="${auth_code.equals('C')}">
-                <button type="button" onclick="">등록증 확인(미구현)</button>
-            </th:block><br>
-            <table>
-                <thead>
-                <tr>
-                    <th>창작자 번호</th>
-                    <th>회원 번호</th>
-                    <th>내용</th>
-                    <th>이미지</th>
-                    <th>사업자 등록번호</th>
-                    <th>심사 현황</th>
-                    <th>등록 유형 코드</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="myRctCreator : ${myRctCreators}" class="clickable-row">
-                    <td th:text="${myRctCreator.creatorNo}">창작자 번호</td>
-                    <td th:text="${myRctCreator.memberNo}">회원 번호</td>
-                    <td th:text="${myRctCreator.content}">내용</td>
-                    <td th:text="${myRctCreator.img}">이미지</td>
-                    <td th:text="${myRctCreator.registNo}">사업자 등록번호</td>
-                    <td th:text="${myRctCreator.status}">심사 현황</td>
-                    <td th:text="${myRctCreator.typeCode}">등록 유형 코드</td>
-                </tr>
-                </tbody>
-            </table>
+    </div>
+    <div class="container" style="padding:0;">
+        <div class="row">
+            <aside class="col-md-3 px-4">
+                <div class="row">
+                    <div class="col-1"></div>
+                    <div class="col-8">
+                        <div class="panel">
+                            <ul class="list-group">
+                                <li><a th:href="@{/user/my/wt/webtoon}" class="nav-link px-2">나의 웹툰</a></li>
+                                <li><a th:href="@{/user/my/so/review}" class="nav-link px-2">나의 소셜</a></li>
+                                <li><a th:href="@{/user/my/rct/job}" class="nav-link px-2" style="color: #03C75A;">나의
+                                    채용</a>
+                                </li>
+                                <li><a th:href="@{/user/my/in/journal}" class="nav-link px-2">나의 소식</a></li>
+                                <li><a th:href="@{/user/my/editprofile}" class="nav-link px-2">프로필 수정</a></li>
+                                <li><a th:href="@{/user/my/cs}" class="nav-link px-2">나의 문의</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            <div class="col-md-9">
+                <div class="review-list">
+                    <h2>창작자 등록 현황</h2>
+                    <th:block th:if="${!auth_code.equals('C')}">
+                        <a th:href="@{/recruit/creator/choice}">창작자 등록 신청</a>
+                    </th:block>
+                    <th:block th:if="${auth_code.equals('C')}">
+                        <button type="button" onclick="">등록증 확인(미구현)</button>
+                    </th:block>
+                    <br>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>창작자 번호</th>
+                            <th>회원 번호</th>
+                            <th>내용</th>
+                            <th>이미지</th>
+                            <th>사업자 등록번호</th>
+                            <th>심사 현황</th>
+                            <th>등록 유형 코드</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="myRctCreator : ${myRctCreators}" class="clickable-row">
+                            <td th:text="${myRctCreator.creatorNo}">창작자 번호</td>
+                            <td th:text="${myRctCreator.memberNo}">회원 번호</td>
+                            <td th:text="${myRctCreator.content}">내용</td>
+                            <td th:text="${myRctCreator.img}">이미지</td>
+                            <td th:text="${myRctCreator.registNo}">사업자 등록번호</td>
+                            <td th:text="${myRctCreator.status}">심사 현황</td>
+                            <td th:text="${myRctCreator.typeCode}">등록 유형 코드</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
