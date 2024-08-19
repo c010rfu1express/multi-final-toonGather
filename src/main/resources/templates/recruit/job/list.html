@@ -50,7 +50,7 @@
                 <tbody>
                 <tr th:each="job : ${jobs}">
                     <td scope="row" th:text="${job.board_no}"></td>
-                    <td><a th:href="@{/recruit/job/view(no=${job.board_no})}" th:text="${#strings.abbreviate(job.title, 15)}"></a></td>
+                    <td><a th:href="@{/recruit/job/view(no=${job.board_no})}" th:text="${#strings.abbreviate(job.title, 20)}"></a></td>
                     <td th:text="${job.member.nickname}"></td>
                     <td class="deadline" th:text="${job.dead_line}"></td>
                     <td th:text="${#dates.format(job.created_date, 'yyyy-MM-dd')}"></td>
