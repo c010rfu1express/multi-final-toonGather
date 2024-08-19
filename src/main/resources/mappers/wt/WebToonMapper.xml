@@ -224,7 +224,7 @@
 
 
     <select id="CommentBestList" parameterType="com.multi.toonGather.webtoon.model.dto.WebtoonDTO" resultMap="commentResultMap">
-        SELECT c.comment_no, c.webtoon_no, c.user_no, u.nickname, c.content, c.liked, c.dislike
+        SELECT c.comment_no, c.webtoon_no, c.user_no, u.nickname, c.content, c.liked, c.dislike,c.created_at,updated_at
         FROM wt_comment c
         INNER JOIN users u ON c.user_no = u.user_no
         WHERE c.webtoon_no = #{webtoon_no}

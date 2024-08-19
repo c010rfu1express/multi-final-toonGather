@@ -18,23 +18,24 @@ public class MailController {
 
     // 인증 이메일 전송
     @PostMapping("/mailSend")
-    public HashMap<String, Object> mailSend(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<Boolean> mailSend(@RequestBody Map<String, String> payload) {
         HashMap<String, Object> map = new HashMap<>();
         System.out.println("mailsend 실행됨");
         String mail = payload.get("mail");
 
         try {
             number = mailService.sendMail(mail);
-            String num = String.valueOf(number);
-
-            map.put("success", Boolean.TRUE);
-            map.put("number", num);
+//            String num = String.valueOf(number);
+//            map.put("success", Boolean.TRUE);
+//            map.put("number", num);
+            return ResponseEntity.ok(Boolean.TRUE);
         } catch (Exception e) {
-            map.put("success", Boolean.FALSE);
-            map.put("error", e.getMessage());
+//            map.put("success", Boolean.FALSE);
+//            map.put("error", e.getMessage());
+            return ResponseEntity.ok(Boolean.FALSE);
         }
 
-        return map;
+//        return ResponseEntity.ok(Boolean.FALSE);
     }
 
     // 인증번호 일치여부 확인

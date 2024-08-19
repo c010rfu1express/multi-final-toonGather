@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>소식 게시글 상세</title>
+    <title>툰게더 toonGather | 소식(상세)</title>
     <style>
         #journal-details {
             max-width: 1100px;
@@ -101,7 +101,7 @@
             margin-top: 20px;
         }
         .like-button:hover {
-            background-color: #e0e0e0;
+            background-color: #f3d88d;
         }
         .like-button:focus {
             box-shadow: 0 0 0 0.2rem rgba(240, 212, 182, 0.5);
@@ -118,7 +118,7 @@
         function toggleLike() {
 <!--            alert('Journal No: ' + journalNo + ', User No: ' + userNo);-->
             if (userNo === null) {
-                alert('로그인이 필요합니다. 로그인 페이지로 이동합니다. -> 로그인이 필요한 서비스 입니다. 로그인 하시겠습니까? 변경 예정');
+                alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
                 window.location.href = '/user/login'; // 로그인 페이지 URL로 리다이렉트
                 return;
             }
@@ -164,9 +164,9 @@
             <div th:if="${#lists.size(journal.journalFiles) > 0}">
                 <img th:each="file : ${journal.journalFiles}" th:if="${file.fileType.startsWith('image/')}" th:src="@{'/uploadFiles/' + ${file.fileName}}" alt="파일 이미지" />
             </div>
-            <div th:unless="${#lists.size(journal.journalFiles) > 0}">
-                <img src="/images/introduction/default-thumbnail.png" alt="기본 썸네일 이미지" />
-            </div>
+<!--            <div th:unless="${#lists.size(journal.journalFiles) > 0}">-->
+<!--                <img src="/images/introduction/default-thumbnail.png" alt="기본 썸네일 이미지" />-->
+<!--            </div>-->
 
 
 
@@ -174,7 +174,17 @@
 
             <!-- 좋아요 기능 추가 -->
             <div style="margin-bottom: 20px;">
-                <button onclick="toggleLike()" class="like-button">좋아요 <span id="likeCount" th:text="${likeCount}">0</span></button>
+<!--                <button onclick="toggleLike()" class="like-button">좋아요 <span id="likeCount" th:text="${likeCount}">0</span></button>-->
+
+                <!-- 좋아요 버튼: 관리자가 아닌 경우에만 활성화 -->
+                <button onclick="toggleLike()" class="like-button" sec:authorize="!hasRole('ROLE_ADMIN')">
+                    좋아요 <span id="likeCount" th:text="${likeCount}">0</span>
+                </button>
+
+                <!-- 좋아요 버튼: 관리자인 경우 비활성화 -->
+                <button class="like-button" style="background-color: #e0e0e0; color: #999;" sec:authorize="hasRole('ROLE_ADMIN')" disabled>
+                    좋아요 <span th:text="${likeCount}">0</span>
+                </button>
             </div>
 
             <a href="/introduction/journalList" class="btn btn-secondary">돌아가기</a>

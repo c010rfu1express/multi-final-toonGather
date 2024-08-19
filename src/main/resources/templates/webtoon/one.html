@@ -351,6 +351,12 @@
                 <p class="comment-text" th:text="${comment.content}"></p>
             </div>
             <div class="comments-footer">
+                <span class="createdAtr"  th:if="${comment.createdAt == comment.updatedAt}">작성일:
+                       <span th:text="${#dates.format(comment.createdAt, 'yyyy-MM-dd')}"></span>
+                     </span>
+                <span class="updatedAt" th:if="${comment.createdAt != comment.updatedAt}">수정일:
+                       <span th:text="${#dates.format(comment.updatedAt, 'yyyy-MM-dd')}"></span>
+                     </span>
                 <th:block th:if="${user.userNo == comment.userNo}">
                     <button type="button" class="btn btn-primary btn-edit" th:data-comment-no="${comment.commentNo}">수정</button>
                     <form th:action="@{/webtoon/comment/delete}" method="post">
@@ -388,10 +394,10 @@
 
                 </div>
                 <div class="comments-footer">
-                    <span class="author" th:if="${comment.createdAt == comment.updatedAt}">작성일:
+                    <span class="createdAt" id="createdAt" th:if="${comment.createdAt == comment.updatedAt}">작성일:
                        <span th:text="${#dates.format(comment.createdAt, 'yyyy-MM-dd')}"></span>
                      </span>
-                    <span class="author" th:if="${comment.createdAt != comment.updatedAt}">수정일:
+                    <span class="updatedAt" id="updatedAt" th:if="${comment.createdAt != comment.updatedAt}">수정일:
                        <span th:text="${#dates.format(comment.updatedAt, 'yyyy-MM-dd')}"></span>
                      </span>
                     <th:block th:if="${user.userNo == comment.userNo}">
@@ -472,7 +478,7 @@
                     if (webtoon) {
 
                     if (webtoon.ageGrade> 18 && isLoggedAge<19) {
-                        if(isLoggedAge>0){
+                        if(isLoggedAge>=0){
                         alert("19세 이용가 입니다");
                         window.location.href = `/`;
                         }else{
@@ -560,6 +566,18 @@
             const commentTextarea = commentDiv.querySelector('.comment-textarea');
             const commentNoInput = commentDiv.querySelector('.commentNoInput');
 
+            const deleteButton = commentDiv.querySelector('form button[type="submit"]');
+            const deleteForm = commentDiv.querySelector('.delete-form')
+
+            const createdDateElement = commentDiv.querySelector('.createdAt');
+            const updatedDateElement = commentDiv.querySelector('.updatedAt');
+
+
+
+
+
+
+
             // 이전에 추가된 이벤트 리스너 제거
             button.removeEventListener('click', handleEditButtonClick);
 
@@ -569,12 +587,46 @@
 
             // 수정할 댓글의 내용을 textarea에 설정
             commentTextarea.value = commentText.textContent.trim();
-
+            const value=commentText.textContent.trim();
             // 수정할 댓글의 commentNo 값을 가져옴
             const commentNo = button.getAttribute('data-comment-no');
 
             // 수정 버튼을 '저장'으로 변경
             button.textContent = '저장';
+        if (deleteButton) {
+            deleteButton.style.display = 'none'; // 삭제 버튼 숨기기
+        }
+
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = '취소';
+        cancelButton.className = 'btn btn-secondary btn-cancel'; // 스타일을 위한 클래스 추가
+        cancelButton.type = 'button'; // 'button'으로 설정하여 폼 제출 방지
+        commentDiv.querySelector('.comments-footer').appendChild(cancelButton);
+
+        // 취소 버튼 클릭 시 처리할 함수
+        cancelButton.addEventListener('click', function handleCancelButtonClick() {
+            // 댓글 내용 및 버튼 상태를 원래대로 복원
+            commentTextarea.style.display = 'none';
+            commentText.style.display = 'block';
+            commentText.textContent = value; // 수정된 내용을 원래 내용으로 되돌리기
+            commentTextarea.value= value;
+            button.textContent = '수정'; // 버튼 텍스트를 원래대로 복원
+
+            // 취소 버튼 제거 및 삭제 버튼 다시 표시
+            cancelButton.remove();
+            if (deleteButton) {
+                deleteButton.style.display = 'inline-block'; // 삭제 버튼 다시 표시
+            }
+            // 이전에 추가된 이벤트 리스너 제거
+            button.removeEventListener('click', handleEditSave);
+
+            button.addEventListener('click', handleEditButtonClick);
+
+            // 클릭 이벤트 리스너 제거
+            cancelButton.removeEventListener('click', handleCancelButtonClick);
+        });
+
+
 
 
             // 저장 버튼 클릭 시 처리할 함수
@@ -593,13 +645,28 @@
                 }).then(response => {
                     if (response.ok) {
                         console.log('댓글 수정 성공');
-                        // 원하는 작업 수행 (예: 댓글 목록 업데이트)
+                        if (createdDateElement) {
+                            console.log('현재 작성일 텍스트:', createdDateElement.textContent.trim());
+                            const currentDate = new Date().toISOString().split('T')[0];
+                            createdDateElement.textContent=`수정일: ${currentDate}`;
+                        }
+                        if (updatedDateElement) {
+                            console.log('현재 수정일 텍스트:', updatedDateElement.textContent.trim());
+                            const currentDate = new Date().toISOString().split('T')[0];
+                            updatedDateElement.textContent=`수정일: ${currentDate}`;
+                        }
+                         if (deleteButton) {
+                deleteButton.style.display = 'inline-block'; // 삭제 버튼 다시 표시
+            }
+                        cancelButton.remove();
                     } else {
                         console.error('댓글 수정 실패');
                     }
                 }).catch(error => {
                     console.error('에러 발생:', error);
                 });
+
+
 
                 // '저장' 버튼을 다시 '수정'으로 변경
                 button.textContent = '수정';
@@ -608,6 +675,7 @@
                 commentTextarea.style.display = 'none';
                 commentText.textContent = editedContent;
                 commentText.style.display = 'block';
+                button.removeEventListener('click', handleEditSave);
 
                 // 수정 버튼 클릭 시 다시 handleEditButtonClick 함수 실행
                 button.addEventListener('click', handleEditButtonClick);

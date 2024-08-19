@@ -15,6 +15,10 @@ public interface UserMapper {
     // Mybatis가 내가 mapper에 짜놓은 "실행된 쿼리"를 바탕으로 반환된 행의 수를 리턴해준다고 함.
 
     UserDTO selectOneByUserId(@Param("userId") String userId) throws Exception;
+    UserDTO selectOneByUserIdWithdrawn(@Param("userId") String userId) throws Exception;
+    int reactiveUserByUserId(@Param("userId") String userId) throws Exception;
+    int reactiveUserByUserNo(@Param("userNo") int userNo) throws Exception;
+
     UserDTO selectOneByContactNumber(@Param("contactNumber") String contactNumber) throws Exception;
     UserDTO selectOneByUserIdAndEmail(@Param("userId") String userId, @Param("email") String email) throws Exception;
     UserDTO selectOneByUserNo(@Param("userNo") String userNo) throws Exception;

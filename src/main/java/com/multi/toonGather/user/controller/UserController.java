@@ -192,8 +192,10 @@ public class UserController {
 
 
         //회원 정보 수정 처리
-        userService.updateProfile(userNo, userDTO, image, request);
-        return "redirect:/user/my/editprofile";
+        int result = userService.updateProfile(userNo, userDTO, image, request);
+        if(result > 0){
+            return "redirect:/user/my/editprofile?status=editSuccess";
+        } else return "redirect:/user/my/editprofile?status=editFailure";
 
     }
 
@@ -203,8 +205,20 @@ public class UserController {
         int userNo = c.getUserDTO().getUserNo();
         System.out.println("deleteProfileReq @RequestParam userNo: "+userNo);
         //회원 정보 삭제 처리
-        userService.deleteProfile(userNo);
-        return "redirect:/logout";
+        int result = userService.deleteProfile(userNo, userDTO);
+        if (result > 0) {
+            System.out.println("탈퇴처리 됨");
+            request.getSession().invalidate();
+            return "redirect:/user/withdrawn"; // 성공 메시지
+        } else {
+            return "redirect:/user/my/editprofile?status=withdrawnFailure"; // 실패 메시지
+        }
+    }
+
+    //KHG70-(3)탈퇴후 이동
+    @RequestMapping("/withdrawn")
+    public String withdrawn(HttpServletRequest request) throws Exception {
+        return "/user/withdrawn";
     }
 
     //KHG80
@@ -330,8 +344,11 @@ public class UserController {
     public String adminUpdateUser(@RequestParam("userNo") int userNo, @ModelAttribute UserDTO userDTO, @RequestParam("image") MultipartFile image, HttpServletRequest request, Model model) throws Exception {
         System.out.println("adminUpdateUser @RequestParam userNo: "+userNo);
         //회원 정보 수정 처리
-        userService.updateProfileAdmin(userNo, userDTO, image, request);
-        return "redirect:/user/admin/userlist";
+        int result = userService.updateProfileAdmin(userNo, userDTO, image, request);
+        if(result > 0) {
+            return "redirect:/user/admin/userlist?status=editSuccess";
+        }
+        else return "redirect:/user/admin/userdetails?userNo="+userNo+"&status=editFailure";
     }
 
     //KHG81-(3)POST
@@ -339,8 +356,17 @@ public class UserController {
     public String adminDeleteUser(@RequestParam("userNo") int userNo, @ModelAttribute UserDTO userDTO, HttpServletRequest request, Model model) throws Exception {
         System.out.println("adminDeleteUser @RequestParam userNo: "+userNo);
         //회원 정보 삭제 처리
-        userService.deleteProfile(userNo);
-        return "redirect:/user/admin/userlist";
+        userService.deleteProfileAdmin(userNo);
+        return "redirect:/user/admin/userdetails?userNo="+userNo+"&status=withdrawnSuccess";
+    }
+
+    //KHG81-(4)POST
+    @PostMapping("/admin/reactiveuser")
+    public String adminRcactiveUser(@RequestParam("userNo") int userNo, @ModelAttribute UserDTO userDTO, HttpServletRequest request, Model model) throws Exception {
+        System.out.println("adminRcactiveUser @RequestParam userNo: "+userNo);
+        //회원 정보 삭제 처리
+        userService.reactiveProfileAdmin(userNo);
+        return "redirect:/user/admin/userdetails?userNo="+userNo+"&status=reactiveSuccess";
     }
 
 
