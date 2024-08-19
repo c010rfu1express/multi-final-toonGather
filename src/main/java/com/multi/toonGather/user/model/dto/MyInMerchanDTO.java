@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,5 +33,9 @@ public class MyInMerchanDTO {
     //시간 view에 뿌려줄 때
     public String getFormattedPostingDate() {
         return TimeAgoUtils.formatTimeAgo(postingDate);
+    }
+
+    public String getFormattedDiscountPrice() {
+        return NumberFormat.getInstance().format(this.discountPrice);
     }
 }
