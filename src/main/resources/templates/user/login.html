@@ -184,5 +184,15 @@
 </div>
 
 <div th:replace="common/footer.html"></div>
+<script>
+    //로그인 실패시 알림
+      window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const msg = urlParams.get('msg');
+            if (msg === 'NotFound') {
+                alert("로그인에 실패했습니다. 다시 시도해주세요.");
+            }
+        }
+</script>
 </body>
 </html>
