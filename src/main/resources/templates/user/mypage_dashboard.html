@@ -143,7 +143,7 @@
 
         .profile-image {
         width: 100px;
-        height: auto;
+        height: 100px;
         border-radius: 50%;
         object-fit: cover;
         margin-right: 15px;
@@ -337,10 +337,10 @@
                                         <div class="col-4 m-0 p-0" id="profileimagebox">
                                             <img th:if="${user.profileImagePath == null}"
                                                  th:src="@{/images/defaultprofileimage.png}"
-                                                 style="width: 100px; height: auto;" class="profile-image"/>
+                                                 style="width: 100px; height: 100px;" class="profile-image"/>
                                             <img th:if="${user.profileImagePath != null}"
                                                  th:src="@{/uploadFiles/{fileName}(fileName=${user.profileImagePath})}"
-                                                 style="width: 100px; height: auto;" class="profile-image"/>
+                                                 style="width: 100px; height: 100px;" class="profile-image"/>
                                         </div>
                                         <div class="col-8">
                                             <div class="row">
