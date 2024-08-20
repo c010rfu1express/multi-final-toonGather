@@ -91,8 +91,9 @@
                     </div>
                     <div class="form-group">
                         <label for="singleFile">이미지 변경</label>
-                        <input type="file" name="singleFile" class="form-control" onchange="handleFileSelect(event)">
+                        <input type="file" name="singleFile" class="form-control" onchange="handleFileSelect(event)" style="height:40px; line-height: 20px;">
                         <div id="selectedImage" th:if="${job.img != '' && job.img != null}">
+                            <br>
                             <img th:src="@{'/uploadFiles/job/' + ${job.img}}" alt="Selected Image" style="max-width: 200px; max-height: 200px;">
                             <button type="button" onclick="removeImage()" class="btn btn-sm">x</button>
                         </div>
