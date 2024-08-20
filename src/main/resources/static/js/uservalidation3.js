@@ -176,6 +176,24 @@
         //     return;
         // }
 
+        // (B6) 생년월일의 유효성 (공란-/형식O/자수-)
+        const yearSelect = document.getElementById('year');
+        const monthSelect = document.getElementById('month');
+        const daySelect = document.getElementById('day');
+
+        const year = parseInt(yearSelect.value);
+        const month = parseInt(monthSelect.value) - 1; // JS에서 월은 0부터 시작
+        const day = parseInt(daySelect.value);
+
+        const selectedDate = new Date(year, month, day);
+        const today = new Date();
+
+        if (selectedDate > today) {
+            alert("생년월일을 정확히 입력해주세요.");
+            event.preventDefault(); // 폼 제출을 막음
+            return;
+        }
+
         // (C1~C3) 중복체크 3종(아이디/닉네임/이메일)의 더블체크
         const isDuplicate = await checkDuplicates(/*userId,*/ nickname, email);
 

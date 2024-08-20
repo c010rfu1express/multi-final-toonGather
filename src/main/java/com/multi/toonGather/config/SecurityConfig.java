@@ -1,5 +1,6 @@
 package com.multi.toonGather.config;
 
+import com.multi.toonGather.security.CustomAuthenticationFailureHandler;
 import com.multi.toonGather.security.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -35,6 +37,11 @@ public class SecurityConfig {
         authProvider.setUserDetailsService(customUserDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
+    }
+
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new CustomAuthenticationFailureHandler();
     }
 
 //    @Bean
@@ -84,7 +91,8 @@ public class SecurityConfig {
 //                );
         http    //Form 로그인 설정 : 커스텀로그인 페이지와 로그인처리URL을 설정함
                 .formLogin((auth) -> auth.loginPage("/user/login")
-                        .loginProcessingUrl("/user/login").permitAll());
+                        .loginProcessingUrl("/user/login").permitAll()
+                        .failureHandler(authenticationFailureHandler()));
 
         http    //로그아웃 설정
                 .logout(logout -> logout

@@ -143,7 +143,7 @@
 
         .profile-image {
         width: 100px;
-        height: auto;
+        height: 100px;
         border-radius: 50%;
         object-fit: cover;
         margin-right: 15px;
@@ -337,10 +337,10 @@
                                         <div class="col-4 m-0 p-0" id="profileimagebox">
                                             <img th:if="${user.profileImagePath == null}"
                                                  th:src="@{/images/defaultprofileimage.png}"
-                                                 style="width: 100px; height: auto;" class="profile-image"/>
+                                                 style="width: 100px; height: 100px;" class="profile-image"/>
                                             <img th:if="${user.profileImagePath != null}"
                                                  th:src="@{/uploadFiles/{fileName}(fileName=${user.profileImagePath})}"
-                                                 style="width: 100px; height: auto;" class="profile-image"/>
+                                                 style="width: 100px; height: 100px;" class="profile-image"/>
                                         </div>
                                         <div class="col-8">
                                             <div class="row">
@@ -577,11 +577,11 @@
                                 <h3>나의 채용</h3>
                             </div>
                             <div class="col-12 clickable-row my-4"
-                                 style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;"
+                                 style="background-color: rgba(255,255,255,0.9); border-radius: 15px; padding: 1.5rem 1.2rem;"
                                  th:attr="data-href=@{/user/my/rct/job}">
                                 <div class="row justify-content-center">
                                     <div class="col-2 p-0 d-flex align-items-center justify-content-center"
-                                         style="aspect-ratio: 1; border-radius: 5px;">
+                                         style="opacity:0; aspect-ratio: 1; border-radius: 5px;">
                                         <div class="date-container px-2 py-1">
                                             <div class="month">8</div>
                                             <div class="year">2024</div>
@@ -627,11 +627,11 @@
 
                             </div>
                             <div class="col-12 clickable-row"
-                                 style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;"
+                                 style="background-color: rgba(255,255,255,0.9); border-radius: 15px; padding: 1.5rem 1.2rem;"
                                  th:attr="data-href=@{/user/my/rct/free}">
                                 <div class="row justify-content-center">
                                     <div class="col-2 p-0 d-flex align-items-center justify-content-center"
-                                         style="aspect-ratio: 1; border-radius: 5px;">
+                                         style="opacity:0; aspect-ratio: 1; border-radius: 5px;">
                                         <div class="date-container px-2 py-1">
                                             <div class="month">8</div>
                                             <div class="year">2024</div>
@@ -684,11 +684,11 @@
                                 <h3>나의 지원서</h3>
                             </div>
                             <div class="col-12 clickable-row my-4"
-                                 style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;"
+                                 style="background-color: rgba(255,255,255,0.9); border-radius: 15px; padding: 1.5rem 1.2rem;"
                                  th:attr="data-href=@{/user/my/rct/apply}">
                                 <div class="row justify-content-center">
                                     <div class="col-2 p-0 d-flex align-items-center justify-content-center"
-                                         style="aspect-ratio: 1; border-radius: 5px;">
+                                         style="opacity:0; aspect-ratio: 1; border-radius: 5px;">
                                         <div class="date-container px-2 py-1">
                                             <div class="month">8</div>
                                             <div class="year">2024</div>
@@ -734,11 +734,11 @@
 
                             </div>
                             <div class="col-12 clickable-row"
-                                 style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;"
+                                 style="background-color: rgba(255,255,255,0.9); border-radius: 15px; padding: 1.5rem 1.2rem;"
                                  th:attr="data-href=@{/user/my/rct/order}">
                                 <div class="row justify-content-center">
                                     <div class="col-2 p-0 d-flex align-items-center justify-content-center"
-                                         style="aspect-ratio: 1; border-radius: 5px;">
+                                         style="opacity:0; aspect-ratio: 1; border-radius: 5px;">
                                         <div class="date-container px-2 py-1">
                                             <div class="month">8</div>
                                             <div class="year">2024</div>
@@ -790,11 +790,11 @@
                                 <h3>나의 소식</h3>
                             </div>
                             <div class="col-12 clickable-row my-4"
-                                 style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;"
+                                 style="background-color: rgba(255,255,255,0.9); border-radius: 15px; padding: 1.5rem 1.2rem;"
                                  th:attr="data-href=@{/user/my/in/journal}">
                                 <div class="row justify-content-center">
                                     <div class="col-2 p-0 d-flex align-items-center justify-content-center"
-                                         style="aspect-ratio: 1; border-radius: 5px;">
+                                         style="opacity:0; aspect-ratio: 1; border-radius: 5px;">
                                         <div class="date-container px-2 py-1">
                                             <div class="month">8</div>
                                             <div class="year">2024</div>
@@ -840,11 +840,11 @@
 
                             </div>
                             <div class="col-12 clickable-row"
-                                 style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;"
+                                 style="background-color: rgba(255,255,255,0.9); border-radius: 15px; padding: 1.5rem 1.2rem;"
                                  th:attr="data-href=@{/user/my/in/event}">
                                 <div class="row justify-content-center">
                                     <div class="col-2 p-0 d-flex align-items-center justify-content-center"
-                                         style="aspect-ratio: 1; border-radius: 5px;">
+                                         style="opacity:0; aspect-ratio: 1; border-radius: 5px;">
                                         <div class="date-container px-2 py-1">
                                             <div class="month">8</div>
                                             <div class="year">2024</div>

@@ -467,7 +467,7 @@
                                         <div class="row justify-content-center">
                                             <div class="col-12 my-3" style="">
                                                 <!-- 썸네일 이미지 없을때 : 기본 썸네일 이미지 -->
-                                                <!--                                        <img th:unless="${#lists.size(event.eventFiles) > 0}" src="/images/introduction/default-thumbnail.png" class="card-img-top" alt="기본 썸네일 이미지">-->
+                                                <img th:unless="${#lists.size(myInJournal.journalFiles) > 0}" src="/images/user/mypage_bg01.jpg" class="card-img-top" alt="기본 썸네일 이미지" style="filter: brightness(1.2);" >
                                                 <!-- 썸네일 이미지 있을때  -->
                                                 <img th:if="${#lists.size(myInJournal.journalFiles) > 0}"
                                                      th:src="@{/uploadFiles/{fileName}(fileName=${myInJournal.journalFiles.get(0).fileName})}"
@@ -529,7 +529,7 @@
                                         <div class="row justify-content-center">
                                             <div class="col-12 my-3" style="">
                                                 <!-- 썸네일 이미지 없을때 : 기본 썸네일 이미지 -->
-                                                <!--                                        <img th:unless="${#lists.size(event.eventFiles) > 0}" src="/images/introduction/default-thumbnail.png" class="card-img-top" alt="기본 썸네일 이미지">-->
+                                                <img th:unless="${#lists.size(myInJournal.journalFiles) > 0}" src="/images/user/mypage_bg01.jpg" class="card-img-top" alt="기본 썸네일 이미지" style="filter: brightness(1.2);" >
                                                 <!-- 썸네일 이미지 있을때  -->
                                                 <img th:if="${#lists.size(myInJournal.journalFiles) > 0}"
                                                      th:src="@{/uploadFiles/{fileName}(fileName=${myInJournal.journalFiles.get(0).fileName})}"

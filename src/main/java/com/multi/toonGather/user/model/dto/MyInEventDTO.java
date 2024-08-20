@@ -42,11 +42,21 @@ public class MyInEventDTO {
     public String getFormattedEventDuration() {
         LocalDate today = LocalDate.now();
 
-        // NOW > 시작날짜 return "시작"+"전";
-        if(today.isBefore(startDate)){
-            return "시작 "+ TimeAgoUtils.formatTimeAgo(startDate.atStartOfDay());
+        // endDate가 NULL인 경우
+        if (endDate == null) {
+            if (today.isBefore(startDate)) {
+                return "시작 " + TimeAgoUtils.formatTimeAgo(startDate.atStartOfDay());
+            } else if (today.isEqual(startDate)) {
+                return "오늘 진행";
+            } else {
+                return "종료됨";
+            }
         }
-        else if (!today.isAfter(endDate)) {
+
+        // endDate가 NULL이 아닌 경우
+        if (today.isBefore(startDate)) {
+            return "시작 " + TimeAgoUtils.formatTimeAgo(startDate.atStartOfDay());
+        } else if (!today.isAfter(endDate)) {
             // 시작날짜 <= NOW <= 종료날짜
             if (today.equals(endDate)) {
                 return "오늘 종료";
@@ -57,6 +67,6 @@ public class MyInEventDTO {
             // NOW > 종료날짜
             return "종료됨";
         }
-
     }
+
 }

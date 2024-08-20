@@ -56,6 +56,7 @@
         return emailPattern.test(email);
     }
 
+
     // 폼 제출 전에 모든 필드를 검증하는 함수
     async function validateForm(event) {
         event.preventDefault(); // 폼 제출 기본 동작 방지
@@ -92,6 +93,7 @@
             // (B5) 약관동의
             const termsCheckbox = document.getElementById('termsAgreementCheckbox');
             var verificationCheckbox = document.getElementById('verificationCheckbox');
+
 
 
         // (B0) 아이디 검증 (공란O/형식O/자수O)
@@ -160,6 +162,24 @@
         // (B5) 필수 약관동의 검증 (공란O/형식-/자수-)
         if (!termsCheckbox.checked) {
             alert('필수 약관에 동의하지 않았습니다.');
+            event.preventDefault(); // 폼 제출을 막음
+            return;
+        }
+
+        // (B6) 생년월일의 유효성 (공란-/형식O/자수-)
+        const yearSelect = document.getElementById('year');
+        const monthSelect = document.getElementById('month');
+        const daySelect = document.getElementById('day');
+
+        const year = parseInt(yearSelect.value);
+        const month = parseInt(monthSelect.value) - 1; // JS에서 월은 0부터 시작
+        const day = parseInt(daySelect.value);
+
+        const selectedDate = new Date(year, month, day);
+        const today = new Date();
+
+        if (selectedDate > today) {
+            alert("생년월일을 정확히 입력해주세요.");
             event.preventDefault(); // 폼 제출을 막음
             return;
         }

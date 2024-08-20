@@ -454,7 +454,7 @@
                                                 </div>
                                                 <div class="col-8"
                                                      style="text-align: right; padding: 0px; margin : 0px;">
-                                                    품절됨
+                                                    할인중
                                                 </div>
                                             </div>
                                         </div>
@@ -468,7 +468,7 @@
                                     <div class="col-3 clickable-row"
                                          style="background-color: #FFFFFF; border-radius: 15px; padding: 1.5rem 1.2rem;"
                                          th:each="myInMerchan, iterStat : ${myInMerchans}"
-                                         th:attr="data-href=@{/introduction/merchanDetail(no=${myInMerchan.merchanNo})}"
+                                         th:attr="data-href=@{/introduction/merchan/merchanDetail(merchanNo=${myInMerchan.merchanNo})}"
                                          th:if="${iterStat.index < 3}">
                                         <div class="row justify-content-center">
                                             <div class="col-2 p-0 d-flex align-items-center justify-content-center"
@@ -496,7 +496,7 @@
                                         <div class="row justify-content-center">
                                             <div class="col-12 my-3" style="">
                                                 <!-- 썸네일 이미지 없을때 : 기본 썸네일 이미지 -->
-                                                <!--                                        <img th:unless="${#lists.size(event.eventFiles) > 0}" src="/images/introduction/default-thumbnail.png" class="card-img-top" alt="기본 썸네일 이미지">-->
+                                                <img th:unless="${#lists.size(myInMerchan.merchanFiles) > 0}" src="/images/user/mypage_bg01.jpg" class="card-img-top" alt="기본 썸네일 이미지" style="filter: brightness(1.2);" >
                                                 <!-- 썸네일 이미지 있을때  -->
                                                 <img th:if="${#lists.size(myInMerchan.merchanFiles) > 0}"
                                                      th:src="@{/uploadFiles/{fileName}(fileName=${myInMerchan.merchanFiles.get(0).fileName})}"
@@ -513,7 +513,7 @@
                                         <div class="row" style="padding: 0; margin: 0;">
                                             <div class="col-9"
                                                  style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; "
-                                                 th:text="${myInMerchan.merchanInfo}">내용
+                                                 th:text="${myInMerchan.formattedDiscountPrice+'원'}">내용
                                             </div>
                                             <div class="col-3" style="padding: 0; text-align: right;"></div>
                                         </div>
@@ -558,7 +558,7 @@
                                         <div class="row justify-content-center">
                                             <div class="col-12 my-3" style="">
                                                 <!-- 썸네일 이미지 없을때 : 기본 썸네일 이미지 -->
-                                                <!--                                        <img th:unless="${#lists.size(event.eventFiles) > 0}" src="/images/introduction/default-thumbnail.png" class="card-img-top" alt="기본 썸네일 이미지">-->
+                                                <img th:unless="${#lists.size(myInMerchan.merchanFiles) > 0}" src="/images/user/mypage_bg01.jpg" class="card-img-top" alt="기본 썸네일 이미지" style="filter: brightness(1.2);" >
                                                 <!-- 썸네일 이미지 있을때  -->
                                                 <img th:if="${#lists.size(myInMerchan.merchanFiles) > 0}"
                                                      th:src="@{/uploadFiles/{fileName}(fileName=${myInMerchan.merchanFiles.get(0).fileName})}"
@@ -575,7 +575,7 @@
                                         <div class="row" style="padding: 0; margin: 0;">
                                             <div class="col-9"
                                                  style="padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;   color:#BDBDBD; font-size: 0.8rem; "
-                                                 th:text="${myInMerchan.merchanInfo}">내용
+                                                 th:text="${myInMerchan.formattedDiscountPrice+'원'}">내용
                                             </div>
                                             <div class="col-3" style="padding: 0; text-align: right;"></div>
                                         </div>
