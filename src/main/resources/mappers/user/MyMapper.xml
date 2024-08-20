@@ -1611,4 +1611,12 @@
         <include refid="pagingQuery"/>
     </select>
 
+    <update id="setViewedFlagMyRctApplication" parameterType="int">
+        UPDATE rct_job_apply
+        SET
+        check_status = 1
+        WHERE
+        apply_no = #{applyNo}
+    </update>
+
 </mapper>
