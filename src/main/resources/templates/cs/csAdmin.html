@@ -116,6 +116,15 @@
         <section class="my-questions">
             <div style="display: flex; align-items: center;">
                 <h2>문의글 전체 조회</h2>
+                <!-- 상태값 변경을 위한 폼 -->
+                <form th:action="@{/cs/csAdmin}" method="get" id="statusForm" style="margin-left: 20px;">
+                    <select name="status" onchange="document.getElementById('statusForm').submit();">
+                        <option value="">전체</option>
+                        <option value="N" th:selected="${status == 'N'}">신규</option>
+                        <option value="P" th:selected="${status == 'P'}">진행중</option>
+                        <option value="S" th:selected="${status == 'S'}">해결</option>
+                    </select>
+                </form>
                 <form th:action="@{/cs/csAdmin}" method="get">
                     <!-- 검색 타입 선택 -->
                     <select name="searchType" style="margin-left: 10px;">
@@ -132,15 +141,7 @@
 
                     <button type="submit">검색</button>
                 </form>
-                <!-- 상태값 변경을 위한 폼 -->
-                <form th:action="@{/cs/csAdmin}" method="get" id="statusForm" style="margin-left: 20px;">
-                    <select name="status" onchange="document.getElementById('statusForm').submit();">
-                        <option value="">전체</option>
-                        <option value="N" th:selected="${status == 'N'}">신규</option>
-                        <option value="P" th:selected="${status == 'P'}">진행중</option>
-                        <option value="S" th:selected="${status == 'S'}">해결</option>
-                    </select>
-                </form>
+
             </div>
             <div th:if="${questions != null && !questions.isEmpty()}">
                 <table>
