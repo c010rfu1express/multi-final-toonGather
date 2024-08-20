@@ -15,6 +15,15 @@ import java.util.List;
 public class MyServiceImpl implements MyService {
     private final MyMapper myMapper;
 
+    //지원서 열람 체크
+    public int setViewedFlagMyRctApplication(int applyNo) throws Exception {
+        int result = 0;
+        MyRctApplicationDTO myRctApplicationDTO = new MyRctApplicationDTO();
+
+        result = myMapper.setViewedFlagMyRctApplication(applyNo);
+        return result;
+    }
+
     //대시보드
     public MyDashboardDTO getMyDashboard(int userNo) throws Exception {
         MyDashboardDTO response = new MyDashboardDTO();

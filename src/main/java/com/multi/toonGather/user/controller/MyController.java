@@ -259,7 +259,7 @@ public class MyController {
 
         //pagination 추가( ref by RecruitController)
         // pageDTO 세팅(start, end, page) : RequestParam인 page에 의해 모든 것이 결정됨, N=10고정
-        int N = 6;
+        int N = 10;
         PageNDTO pageNDTO = new PageNDTO();
         pageNDTO.setPage(page);
         pageNDTO.setStartEnd(pageNDTO.getPage(), N);
@@ -298,6 +298,16 @@ public class MyController {
         model.addAttribute("searchTerm", searchTerm);
 
         return "/user/mypage_rct_job_applicationlist";
+    }
+
+    //KHG41(2) POST
+    @GetMapping("/rct/job/applyView")
+    public String myRctJobApplicationViewed(@RequestParam("no") int applyNo, @AuthenticationPrincipal CustomUserDetails c, Model model) throws Exception{
+
+        //boardNo hidden input 전달
+        int result = myService.setViewedFlagMyRctApplication(applyNo);
+
+        return "redirect:/recruit/job/applyView?no="+applyNo;
     }
 
     //KHG43
@@ -416,7 +426,7 @@ public class MyController {
 
         //pagination 추가( ref by RecruitController)
         // pageDTO 세팅(start, end, page) : RequestParam인 page에 의해 모든 것이 결정됨, N=10고정
-        int N = 6;
+        int N = 10;
         PageNDTO pageNDTO = new PageNDTO();
         pageNDTO.setPage(page);
         pageNDTO.setStartEnd(pageNDTO.getPage(), N);

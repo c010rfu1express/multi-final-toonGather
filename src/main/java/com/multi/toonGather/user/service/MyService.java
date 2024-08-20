@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface MyService {
 
+    //지원서 열람 체크
+    int setViewedFlagMyRctApplication(int applyNo) throws Exception;
     //대시보드
     MyDashboardDTO getMyDashboard(int userNo) throws Exception;
 

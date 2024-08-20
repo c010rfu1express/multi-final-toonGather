@@ -491,8 +491,8 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-4" style="color: white;"
-                                                 th:text="${myRctApplication.applyNo}">
+                                            <div class="col-4"  style="color: #333333; font-size: 0.8rem; font-weight: 550;"
+                                                 th:text="${myRctApplication.applyCheckStatus ? '읽음' : '읽지 않음'}">
                                                 닉네임
                                             </div>
                                             <div class="col-4"
@@ -546,8 +546,8 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-4" style="color: white;"
-                                                 th:text="${myRctApplication.applyNo}">
+                                            <div class="col-4" style="color: #333333; font-size: 0.7rem; font-weight: 550;"
+                                                 th:text="${myRctApplication.applyCheckStatus ? '읽음' : '읽지 않음'}">
                                                 닉네임
                                             </div>
                                             <div class="col-4"
