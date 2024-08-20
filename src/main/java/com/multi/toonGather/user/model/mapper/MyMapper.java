@@ -12,6 +12,9 @@ import java.util.List;
 @Mapper
 public interface MyMapper {
 
+    //조회수 체크(지원서)
+    int setViewedFlagMyRctApplication(@Param("applyNo") int applyNo);
+
     //기타
     MyRctJobDTO selectOneMyRctJob(@Param("boardNo") int boardNo);
     MyRctFreeDTO selectOneMyRctFree(@Param("boardNo") int boardNo);
