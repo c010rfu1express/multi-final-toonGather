@@ -51,11 +51,6 @@
 </style>
 <div class="content-wrapper">
     <style>
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
         .jumbotron {
         position : relative;
         background-color : #EEEEEE;
@@ -188,7 +183,7 @@
 
             <div class="col-md-9" style="position:relative; top:-30px; z-index:1000;">
                 <div class="row justify-content-start" style="color: #828282;">
-                    <div class="col-8 p-3" id="loginbox">
+                    <div class="col-9 p-3" id="loginbox">
                         <form th:action="@{/user/admin/updateuser(userNo=${user.userNo})}" th:object="${user}" method="post"
                               enctype="multipart/form-data">
                             <div class="row p-2">
