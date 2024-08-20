@@ -89,9 +89,9 @@
             <label for="content">상세 요강 *</label>
             <textarea id="content" name="content" th:field="*{content}" class="form-control" rows="8" required maxlength="1000"></textarea>
           </div>
-          <div class="form-group">
-            <label for="singleFile">이미지</label>
-            <input type="file" name="singleFile" class="form-control">
+          <div class="form-group" >
+            <label for="file">이미지</label>
+            <input type="file" name="singleFile" id="file" class="form-control" style="height:40px; line-height: 20px;">
           </div>
           <div class="form-group">
             <label for="contact">채용담당자 연락처 *</label>
