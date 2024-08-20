@@ -109,7 +109,7 @@
 
         .profile-image {
         width: 100px;
-        height: auto;
+        height: 100px;
         border-radius: 50%;
         object-fit: cover;
         margin-right: 15px;
@@ -192,10 +192,10 @@
                                     <div id="imagePreview">
                                         <img th:if="${user.profileImagePath == null}"
                                              src="/images/defaultprofileimage.png"
-                                             style="width: 100px; height: auto;" class="profile-image"/>
+                                             style="width: 100px; height: 100px;" class="profile-image"/>
                                         <img th:if="${user.profileImagePath != null}"
                                              th:src="@{/uploadFiles/{fileName}(fileName=${user.profileImagePath})}"
-                                             style="width: 100px; height: auto;" class="profile-image"/>
+                                             style="width: 100px; height: 100px;" class="profile-image"/>
                                     </div>
                                     <div id="profileuploadbutton">
                                         <label for="image">
@@ -469,7 +469,7 @@
 
               // 스타일과 클래스 추가
               imgElement.style.width = '100px';
-              imgElement.style.height = 'auto';
+              imgElement.style.height = '100px';
               imgElement.className = 'profile-image';
 
               imagePreview.appendChild(imgElement);

@@ -234,7 +234,12 @@
                 ORDER BY board_no ASC
             </when>
             <when test="orderBy == 'dueSoon'">
-                ORDER BY dead_line ASC
+                ORDER BY
+                CASE
+                WHEN dead_line IS NULL THEN 1
+                ELSE 0
+                END ASC,
+                dead_line ASC
             </when>
             <when test="orderBy == 'title'">
                 ORDER BY title ASC
@@ -339,10 +344,10 @@
                 ORDER BY srl.like_no ASC
             </when>
             <when test="orderBy == 'recentadded'">
-                ORDER BY sr.created_date DESC
+                ORDER BY srl.review_no DESC
             </when>
             <when test="orderBy == 'oldestadded'">
-                ORDER BY sr.created_date ASC
+                ORDER BY srl.review_no ASC
             </when>
             <when test="orderBy == 'highrated'">
                 ORDER BY sr.star_rating DESC
@@ -759,10 +764,10 @@
                 ORDER BY iel.liked_no ASC
             </when>
             <when test="orderBy == 'recent'">
-                ORDER BY ie.event_no DESC
+                ORDER BY ie.start_date DESC
             </when>
             <when test="orderBy == 'oldest'">
-                ORDER BY ie.event_no ASC
+                ORDER BY ie.start_date ASC
             </when>
             <when test="orderBy == 'title'">
                 ORDER BY ie.title ASC
@@ -982,6 +987,8 @@
         <result property="jobCreatedDate" column="created_date"/>
         <result property="jobModifiedDate" column="modified_date"/>
         <result property="jobDeadLine" column="dead_line"/>
+
+        <result property="applyUserId" column="user_id"/>
     </resultMap>
     <sql id="MyRctApplicationQueryA">
         SELECT
@@ -1001,7 +1008,9 @@
         rj.img AS jobImg,
         rj.created_date AS jobCreatedDate,
         rj.modified_date AS jobModifiedDate,
-        rj.dead_line AS jobDeadLine
+        rj.dead_line AS jobDeadLine,
+
+        u.user_id AS applyUserId
     </sql>
     <sql id="MyRctApplicationQueryB">
         FROM
@@ -1010,6 +1019,9 @@
         rct_job_apply rja
         ON
         rj.board_no = rja.board_no
+        INNER JOIN
+        users u
+        ON rja.writer = u.user_no  <!-- 추가된 부분 -->
         WHERE
         rja.writer = #{userNo}
         <if test="searchBy != null and searchTerm != null and searchTerm != ''">
@@ -1051,7 +1063,12 @@
                 ORDER BY rja.board_no ASC
             </when>
             <when test="orderBy == 'dueSoon'">
-                ORDER BY rj.dead_line ASC
+                ORDER BY
+                CASE
+                WHEN rj.dead_line IS NULL THEN 1
+                ELSE 0
+                END ASC,
+                dead_line ASC
             </when>
             <when test="orderBy == 'title'">
                 ORDER BY rj.title ASC
@@ -1089,7 +1106,9 @@
         rj.img AS jobImg,
         rj.created_date AS jobCreatedDate,
         rj.modified_date AS jobModifiedDate,
-        rj.dead_line AS jobDeadLine
+        rj.dead_line AS jobDeadLine,
+
+        u.user_id AS applyUserId
     </sql>
     <sql id="MyRctJobApplicationQueryB">
         FROM
@@ -1098,6 +1117,9 @@
         rct_job_apply rja
         ON
         rj.board_no = rja.board_no
+        INNER JOIN
+        users u
+        ON rja.writer = u.user_no  <!-- 추가된 부분 -->
         WHERE
         rja.board_no = #{boardNo}
         <if test="searchBy != null and searchTerm != null and searchTerm != ''">
@@ -1550,7 +1572,7 @@
             </choose>
         </if>
         <if test="toggleValue == 'Y'">
-            AND im.discount_price > 1000
+            AND im.regular_price IS NOT NULL
         </if>
         <choose>
             <when test="orderBy == 'recentliked'">
@@ -1566,10 +1588,10 @@
                 ORDER BY iml.merchan_no ASC
             </when>
             <when test="orderBy == 'expensive'">
-                ORDER BY im.regular_price DESC
+                ORDER BY im.discount_price DESC
             </when>
             <when test="orderBy == 'cheap'">
-                ORDER BY im.regular_price ASC
+                ORDER BY im.discount_price ASC
             </when>
             <when test="orderBy == 'title'">
                 ORDER BY im.title ASC
