@@ -1458,7 +1458,7 @@
         INNER JOIN
         rct_free rf ON rfp.board_no = rf.board_no
         INNER JOIN
-        users u ON rf.writer = u.user_no  <!-- 추가된 부분 -->
+        users u ON rfp.member_no = u.user_no  <!-- 추가된 부분 -->
         WHERE
         rfp.board_no = #{boardNo}
         <if test="searchBy != null and searchTerm != null and searchTerm != ''">
