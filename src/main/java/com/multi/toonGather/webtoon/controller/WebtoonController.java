@@ -118,7 +118,7 @@ public class WebtoonController {
 
 
         }else {
-            model.addAttribute("isLoggedAge",0);
+            model.addAttribute("isLoggedAge",-1);
            List<WebtoonDTO> webtoonDTOList=webToonService.webtoonBest();
             model.addAttribute("webtoonSelect",webtoonDTOList);
         }
