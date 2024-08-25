@@ -60,3 +60,24 @@
 팀 툰게더는 프로젝트 기간동안 다양한 협업 툴을 활용, 보다 효율적인 개발을 위해 지속적으로 고민하였습니다.
 - Discord와 Notion을 활용하여 팀 툰게더의 전체적인 협업 상황을 한눈에 볼 수 있도록 하였습니다.
 - Google Docs를 활용하여 매일 진행되는 회의 내용과 TO-DO-LIST를 실시간으로 확인할 수 있도록 하였습니다.
+
+## ⚓️ API Docs
+팀 툰게더 프로젝트에 활용된 API 문서 목록입니다.
+- 웹툰 통합 API 
+  - https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/webtoons
+  - https://korea-webtoon-api-cc7dda2f0d77.herokuapp.com/api-docs/#/Health%20status/get_health_check
+- 카카오 웹툰 API
+  - https://gateway-kw.kakao.com/section/v2/timetables/days?placement=timetable_mon
+- 네이버 웹툰 API
+  - https://comic.naver.com/api/webtoon/titlelist/weekday?order=user
+- 카카오 맵 API
+  - https://apis.map.kakao.com/
+- 네이버 CLOVA OCR API
+  - https://www.ncloud.com/product/aiService/ocr
+- 네이버 CLOVA Chatbot API
+  - https://www.ncloud.com/product/aiService/chatbot
+- PortOne 포트원 (아임포트) API
+  - https://portone.io/korea/ko
+- 카카오/네이버 로그인 API
+  - https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api
+  - https://developers.naver.com/products/login/api/api.md
