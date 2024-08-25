@@ -20,12 +20,12 @@
   - 김희철
   - 강현구
 
-## ⚙️ 기술환경
+## ⚙️ 기술스택
 작성 중...
 
 ## ⚡️ Git flow
 팀 툰게더는 Git flow Workflow를 적용하여, Master/Develop/Feature Branch로 구분한 후 개발에 착수하였습니다.
-- Master Branch : 프로덕트로 출시될 수 있는 브랜치로, 이곳에서 배포 가능한 상태만을 관리하도록 합니다.
+- Master Branch : 프로덕트로 출시될 수 있는 상태의 브랜치로, 이곳에서 배포 가능한 상태만을 관리하도록 합니다.
 - Develop Branch : 배포 가능한 안정적인 상태의 브랜치로, Master Branch로 merged 이전 상태이기도 합니다.
 - Feature Branch : 기능 단위로 분류한 브랜치로, 실질적 개발작업이 이루어지는 브랜치입니다. 아래는 담당 feature에 대한 Feature Branch의 목록입니다.
   - test_webtoon : 박재형님 담당(webtoon)
