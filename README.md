@@ -21,13 +21,16 @@
   - 강현구 ('회원/마이페이지' 서비스)
 
 ## ⚙️ 기술스택
-작성 중...
+팀 툰게더는 각 서비스 개발 과정에서 다음과 같은 기술스택을 사용하였습니다.
+![2조-툰게더(toonGather)-최종 발표 PPT의 사본(2408251401)](https://github.com/user-attachments/assets/141318a6-0272-49fb-8574-b6d14f6b1980)
+
 
 ## ⚡️ Git flow
 팀 툰게더는 Git flow Workflow를 적용하여, Master/Develop/Feature Branch로 구분한 후 개발에 착수하였습니다.
 - Master Branch : 프로덕트로 출시될 수 있는 상태의 브랜치로, 이곳에서 배포 가능한 상태만을 관리하도록 합니다.
 - Develop Branch : 배포 가능한 안정적인 상태의 브랜치로, Master Branch로 merged 이전 상태이기도 합니다.
-- Feature Branch : 기능 단위로 분류한 브랜치로, 실질적 개발작업이 이루어지는 브랜치입니다. 아래는 담당 feature에 대한 Feature Branch의 목록입니다.
+- Feature Branch : 기능 단위로 분류한 브랜치로, 실질적 개발작업이 이루어지는 브랜치입니다.
+아래는 담당 feature에 대한 Feature Branch의 목록입니다.
   - test_webtoon : 박재형님 담당(webtoon)
   - test_social_new : 최서윤님 담당(social)
   - test_recruit : 박서영님 담당(recruit)
@@ -40,7 +43,7 @@
 팀 툰게더는 프로젝트 기간동안 다음의 프로젝트 컨벤션을 준수하여 개발하였습니다.
 - 데일리 스크럼 : 매일 오전 9시
   - 팀원 모두가 각자의 개발 진행상황을 공유합니다.
-  - feature 단위로 통합된 브랜치(develop)로의 merging을 위한 pull request를 실시합니다.
+  - feature 단위로 Pull Request를 실시, Develop Branch로의 merging을 진행합니다.
 - 커밋 메시지 태그
   - project ::  프로젝트를 세팅
   - build ::  시스템 또는 외부 종속 파일에 영향을 미치는 설정을 변경
