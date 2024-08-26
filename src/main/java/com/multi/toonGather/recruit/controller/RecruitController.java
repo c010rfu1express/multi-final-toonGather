@@ -116,7 +116,21 @@ public class RecruitController {
         boolean containsC = list.contains(creatorDTO.getRegist_no());
 
         if (containsA && containsB && containsC) {
-            model.addAttribute("message", "창작자 등록 성공! 마이페이지에서 창작자 정보를 등록한 후 프리랜서 게시판을 이용하실 수 있습니다.");
+            String ocrName = "";
+            String ocrRegistNo = "";
+
+            for (String item : list) {
+                if (item.contains(userDetails.getRealName())) {
+                    ocrName = item;  // OCR로 추출한 실명
+                }
+                if (item.contains(creatorDTO.getRegist_no())) {
+                    ocrRegistNo = item;  // OCR로 추출한 사업자 등록번호
+                }
+            }
+            String successMessage = "창작자 등록 성공!\n인식된 이름: " + ocrName + "\n인식된 사업자 등록번호: " + ocrRegistNo
+                    + "\n마이페이지에서 창작자 정보를 등록한 후 프리랜서 게시판을 이용하실 수 있습니다.";
+
+            model.addAttribute("message", successMessage);
             System.out.println("성공");
             creatorDTO.setStatus("A");
             creatorDTO.setType_code("C");

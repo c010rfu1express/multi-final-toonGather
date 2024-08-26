@@ -293,7 +293,19 @@ function fetchWebtoons(page) {
                 webtoonTitle.addEventListener('click', (event) => {
                     event.preventDefault(); // 기본 동작 중단
                     const queryString = `webtoon_id=${id}&webtoon_name=${encodeURIComponent(title)}`;
+                    if (webtoon.ageGrade> 18 && isLoggedAge<19) {
+                        if(isLoggedAge>=0){
+                        alert("19세 이용가 입니다");
+                        window.location.href = `/`;
+                        }else{
+                        alert("19세 이용가 입니다 로그인을 하시오");
+                        window.location.href = `/user/login`;
+                        }
+
+
+                    }else{
                     window.location.href = `/webtoon/one?${queryString}`;
+                    }
                 });
                 webtoonInfo.appendChild(webtoonTitle);
 
